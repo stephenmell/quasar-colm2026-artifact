@@ -1,0 +1,64 @@
+def execute_command():
+    NamesSchema = None
+    RatingSchema = None
+    best_company_name = None
+    best_company_rating = None
+    candidate_companies = None
+    city = None
+    companies_schema = None
+    companies_str = None
+    company_names = None
+    current_types = None
+    has_suv = None
+    ratings_text = None
+    rr = None
+    rtext = None
+    suv_companies = None
+    types_by_company = None
+    types_list = None
+    city = 'Los Angeles'
+    companies_str = get_all_car_rental_companies_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    companies_schema = query_ai_assistant('Here is a list of car rental companies in {}: {}. Extract ONLY the company names as a clean JSON list of strings, preserving exact names and order.'.format(city, companies_str), NamesSchema)
+    company_names = companies_schema.names
+    types_by_company = get_car_types_available(company_names)
+    suv_companies = []
+
+    def _for(c, NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list):
+        types_list = types_by_company.get(c)
+        current_types = types_list if bool(types_list) else []
+        has_suv = False
+
+        def _for(t, NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list):
+
+            def _if(NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list):
+                has_suv = True
+                return (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list)
+            NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list = if_stmt(_if, None, or_expr(t == 'SUV', t.find('SUV') != -1), (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list))
+            return (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list)
+        NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list = for_stmt(_for, current_types, (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list))
+
+        def _if(NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list):
+            suv_companies = suv_companies + [c]
+            return (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list)
+        NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list = if_stmt(_if, None, has_suv, (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list))
+        return (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list)
+    NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list = for_stmt(_for, company_names, (NamesSchema, city, companies_schema, companies_str, company_names, current_types, has_suv, suv_companies, types_by_company, types_list))
+    candidate_companies = suv_companies if len(suv_companies) > 0 else company_names
+    ratings_text = get_rating_reviews_for_car_rental(candidate_companies)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_company_name = None
+    best_company_rating = -1.0
+
+    def _for(c, NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list):
+        rtext = ratings_text.get(c)
+        rr = query_ai_assistant('Extract ONLY the numeric overall rating as a float and the list of review strings from this car rental rating and reviews text: {}'.format(rtext), RatingSchema)
+
+        def _if(NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list):
+            best_company_name = c
+            best_company_rating = rr.rating
+            return (NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list)
+        NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list = if_stmt(_if, None, rr.rating > best_company_rating, (NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list))
+        return (NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list)
+    NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list = for_stmt(_for, candidate_companies, (NamesSchema, RatingSchema, best_company_name, best_company_rating, candidate_companies, city, companies_schema, companies_str, company_names, current_types, has_suv, ratings_text, rr, rtext, suv_companies, types_by_company, types_list))
+    return {'company_name': best_company_name, 'rating': best_company_rating}

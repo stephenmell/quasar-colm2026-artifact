@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      null,
+      "Mouse",
+      "Keyboard",
+      "monitor"
+    ]
+  },
+  "time_ns": 79638774155
+}

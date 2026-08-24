@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    metal_door_patches = image_patch.find("metal door")
+    if len(metal_door_patches) == 0:
+        door_patches = image_patch.find("door")
+        if len(door_patches) == 0:
+            result = image_patch.simple_query("Does the metal door look open and silver?")
+        else:
+            found_match = False
+            for door_patch in door_patches:
+                is_metal = door_patch.verify_property("door", "metal")
+                is_open = door_patch.verify_property("door", "open")
+                is_silver = door_patch.verify_property("door", "silver")
+                if is_metal and is_open and is_silver:
+                    found_match = True
+            if found_match:
+                result = "yes"
+            else:
+                result = "no"
+    else:
+        found_match = False
+        for md_patch in metal_door_patches:
+            is_open = md_patch.verify_property("metal door", "open")
+            is_silver = md_patch.verify_property("metal door", "silver")
+            if is_open and is_silver:
+                found_match = True
+        if found_match:
+            result = "yes"
+        else:
+            result = "no"
+    return result

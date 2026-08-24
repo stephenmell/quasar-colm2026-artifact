@@ -1,0 +1,39 @@
+# Do the clouds in the sky have blue color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Do the clouds in the sky have blue color?"
+
+    # Try to restrict search to the sky region first
+    sky_patches = image_patch.find("sky")
+    found_clouds_in_sky = False
+    if len(sky_patches) > 0:
+        for sky_patch in sky_patches:
+            cloud_patches = sky_patch.find("clouds")
+            if len(cloud_patches) == 0:
+                cloud_patches = sky_patch.find("cloud")
+            if len(cloud_patches) > 0:
+                found_clouds_in_sky = True
+            for cloud_patch in cloud_patches:
+                if (cloud_patch.verify_property("clouds", "blue") or
+                    cloud_patch.verify_property("cloud", "blue") or
+                    cloud_patch.verify_property("clouds", "blue color") or
+                    cloud_patch.verify_property("cloud", "blue color")):
+                    return "yes"
+        if found_clouds_in_sky:
+            return "no"
+
+    # Fallback: search globally for clouds
+    cloud_patches = image_patch.find("clouds")
+    if len(cloud_patches) == 0:
+        cloud_patches = image_patch.find("cloud")
+    if len(cloud_patches) == 0:
+        # If no clouds found at all, ask the image directly
+        return image_patch.simple_query(question)
+
+    for cloud_patch in cloud_patches:
+        if (cloud_patch.verify_property("clouds", "blue") or
+            cloud_patch.verify_property("cloud", "blue") or
+            cloud_patch.verify_property("clouds", "blue color") or
+            cloud_patch.verify_property("cloud", "blue color")):
+            return "yes"
+    return "no"

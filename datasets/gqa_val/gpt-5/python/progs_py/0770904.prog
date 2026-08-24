@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_pliers = image_patch.exists("pliers")
+    is_umbrella = image_patch.exists("umbrella")
+    return bool_to_yesno(is_pliers or is_umbrella)

@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    bear_patches = image_patch.find("bear")
+    if len(bear_patches) == 0:
+        result = image_patch.simple_query("Is the box to the right of the bear that is holding the heart?")
+    else:
+        box_patches = image_patch.find("box")
+        holding_bear_found = False
+
+        for bear_patch in bear_patches:
+            is_holding_heart = (bear_patch.simple_query("Is the bear holding a heart?") == "yes")
+            if is_holding_heart:
+                holding_bear_found = True
+                for box_patch in box_patches:
+                    if box_patch.horizontal_center > bear_patch.horizontal_center:
+                        result = "yes"
+
+        if not holding_bear_found:
+            result = image_patch.simple_query("Is the box to the right of the bear that is holding the heart?")
+    return result

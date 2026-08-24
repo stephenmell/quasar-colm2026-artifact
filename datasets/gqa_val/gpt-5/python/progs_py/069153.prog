@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    hair_patches = image_patch.find("hair")
+    if len(hair_patches) == 0:
+        # If no hair is found, query the image directly
+        return image_patch.simple_query("What color is that hair?")
+    # If multiple hair patches are found, choose the largest one
+    hair_patch = max(hair_patches, key=lambda p: p.width * p.height)
+    return hair_patch.simple_query("What color is that hair?")

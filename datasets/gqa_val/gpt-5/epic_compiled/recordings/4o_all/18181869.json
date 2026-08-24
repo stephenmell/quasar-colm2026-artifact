@@ -1,0 +1,509 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2381256",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "planter"
+      ],
+      [
+        [
+          36,
+          152,
+          89,
+          188
+        ],
+        [
+          83,
+          174,
+          132,
+          211
+        ],
+        [
+          0,
+          121,
+          39,
+          165
+        ],
+        [
+          128,
+          199,
+          175,
+          233
+        ],
+        [
+          168,
+          218,
+          210,
+          253
+        ],
+        [
+          207,
+          239,
+          248,
+          273
+        ],
+        [
+          276,
+          274,
+          311,
+          303
+        ],
+        [
+          243,
+          257,
+          278,
+          286
+        ],
+        [
+          337,
+          306,
+          371,
+          333
+        ],
+        [
+          308,
+          291,
+          339,
+          319
+        ],
+        [
+          141,
+          202,
+          172,
+          232
+        ],
+        [
+          367,
+          319,
+          397,
+          332
+        ],
+        [
+          0,
+          124,
+          36,
+          162
+        ],
+        [
+          107,
+          178,
+          136,
+          208
+        ],
+        [
+          53,
+          156,
+          83,
+          187
+        ],
+        [
+          36,
+          154,
+          63,
+          181
+        ],
+        [
+          82,
+          174,
+          131,
+          210
+        ],
+        [
+          84,
+          176,
+          114,
+          206
+        ],
+        [
+          127,
+          199,
+          152,
+          226
+        ],
+        [
+          102,
+          178,
+          126,
+          207
+        ],
+        [
+          35,
+          151,
+          88,
+          189
+        ],
+        [
+          349,
+          309,
+          371,
+          332
+        ]
+      ],
+      14365779515
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2381256",
+          [
+            36,
+            152,
+            89,
+            188
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't determine what is in the planter.",
+      994663856
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            83,
+            174,
+            132,
+            211
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't determine what is in the planter.",
+      676272968
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            0,
+            121,
+            39,
+            165
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil or mulch.",
+      801022663
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            128,
+            199,
+            175,
+            233
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't tell what is in the planter.",
+      942025030
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            168,
+            218,
+            210,
+            253
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't tell what is in the planter.",
+      855949720
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            207,
+            239,
+            248,
+            273
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't tell what is in the planter.",
+      1609536786
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            276,
+            274,
+            311,
+            303
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil.",
+      672536269
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            243,
+            257,
+            278,
+            286
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil or dirt.",
+      1316503036
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            337,
+            306,
+            371,
+            333
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't tell what is in the planter.",
+      922924123
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            308,
+            291,
+            339,
+            319
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil.",
+      943958699
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            141,
+            202,
+            172,
+            232
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil.",
+      927209657
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            367,
+            319,
+            397,
+            332
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It appears to be soil or mulch.",
+      1063263349
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            0,
+            124,
+            36,
+            162
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil or mulch.",
+      577842147
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            107,
+            178,
+            136,
+            208
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It appears to be soil or mulch.",
+      1058474033
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            53,
+            156,
+            83,
+            187
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't tell what is in the planter.",
+      924172116
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            36,
+            154,
+            63,
+            181
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It appears to be soil or mulch.",
+      826397408
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            82,
+            174,
+            131,
+            210
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't tell what is in the planter.",
+      950147742
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            84,
+            176,
+            114,
+            206
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil or dirt.",
+      561895637
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            127,
+            199,
+            152,
+            226
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It looks like soil or dirt.",
+      906067581
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            102,
+            178,
+            126,
+            207
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't see the contents of the planter.",
+      898098710
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            35,
+            151,
+            88,
+            189
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "I can't tell what is in the planter.",
+      850954801
+    ],
+    [
+      [
+        [
+          "2381256",
+          [
+            349,
+            309,
+            371,
+            332
+          ]
+        ],
+        "What is in the planter that looks brown?"
+      ],
+      "It appears to be soil or mulch.",
+      838231138
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,12 @@
+# What color are the trousers?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    trousers_patches = image_patch.find("trousers")
+    if len(trousers_patches) == 0:
+        # try common synonym
+        trousers_patches = image_patch.find("pants")
+    if len(trousers_patches) == 0:
+        # If no trousers/pants are found, query the whole image
+        return image_patch.simple_query("What color are the trousers?")
+    # Ask about the color using the crop around the detected trousers
+    return trousers_patches[0].simple_query("What color are the trousers?")

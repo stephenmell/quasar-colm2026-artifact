@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    kettle_patches = image_patch.find("kettle")
+
+    if len(kettle_patches) < 2:
+        result = image_patch.simple_query("Is the kettle that is to the right of the other kettle metallic and green?")
+    else:
+        # Determine the rightmost kettle (the one to the right of the other)
+        rightmost_kettle = kettle_patches[0]
+        for kp in kettle_patches:
+            if kp.horizontal_center > rightmost_kettle.horizontal_center:
+                rightmost_kettle = kp
+
+        is_metallic = rightmost_kettle.verify_property("kettle", "metallic")
+        is_green = rightmost_kettle.verify_property("kettle", "green")
+        result = bool_to_yesno(is_metallic and is_green)
+    return result

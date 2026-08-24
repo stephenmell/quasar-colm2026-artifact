@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # If no man is found, ask directly
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Is the doughnut to the left of the man that is on the left?")
+    # Pick the leftmost man
+    left_man = min(man_patches, key=lambda p: p.horizontal_center)
+    # Find doughnut(s) (handle both spellings)
+    doughnut_patches = image_patch.find("doughnut")
+    if len(doughnut_patches) == 0:
+        doughnut_patches = image_patch.find("donut")
+    if len(doughnut_patches) == 0:
+        return "no"
+    # Check if any doughnut is to the left of the leftmost man
+    for doughnut_patch in doughnut_patches:
+        if doughnut_patch.horizontal_center < left_man.horizontal_center:
+            return "yes"
+    return "no"

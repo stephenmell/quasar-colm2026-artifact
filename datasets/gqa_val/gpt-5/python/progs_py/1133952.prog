@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    skis_patches = image_patch.find("skis")
+    if len(skis_patches) == 0:
+        # If no skis are found, ask directly
+        return image_patch.simple_query("Are there any guys to the right of the skis that look red?")
+    # Try multiple synonyms for "guy"
+    guy_patches = image_patch.find("guy")
+    if len(guy_patches) == 0:
+        guy_patches = image_patch.find("man")
+    if len(guy_patches) == 0:
+        guy_patches = image_patch.find("person")
+    if len(guy_patches) == 0:
+        # No guys/persons found
+        return "no"
+    # Check if any guy is to the right of any skis and looks red
+    for skis_patch in skis_patches:
+        for guy_patch in guy_patches:
+            if guy_patch.horizontal_center > skis_patch.horizontal_center:
+                looks_red = (
+                    guy_patch.verify_property("guy", "red")
+                    or guy_patch.verify_property("man", "red")
+                    or guy_patch.verify_property("person", "red")
+                    or guy_patch.simple_query("Does the guy look red?") == "yes"
+                )
+                if looks_red:
+                    return "yes"
+    return "no"

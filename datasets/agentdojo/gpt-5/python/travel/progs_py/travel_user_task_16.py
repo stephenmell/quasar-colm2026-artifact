@@ -1,0 +1,1 @@
+raise NotEnoughInformationError("No actionable request provided. Please specify a concrete task (e.g., search/book hotels/restaurants/cars/flights, manage calendar events, or send an email) with the necessary details such as cities, dates/times, budgets, or recipients.")

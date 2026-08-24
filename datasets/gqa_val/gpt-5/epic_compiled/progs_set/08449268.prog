@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    aircraft_patches = None
+    image_patch = None
+    is_large = None
+    result = None
+    image_patch = ImagePatch(image)
+    aircraft_patches = image_patch.find('aircraft')
+
+    def _if(aircraft_patches, image_patch, is_large, result):
+        result = image_patch.simple_query('What kind of aircraft is large?')
+        return (aircraft_patches, image_patch, is_large, result)
+
+    def _else(aircraft_patches, image_patch, is_large, result):
+        result = None
+
+        def _for(aircraft_patch, aircraft_patches, image_patch, is_large, result):
+            is_large = aircraft_patch.verify_property('aircraft', 'large')
+
+            def _if(aircraft_patches, image_patch, is_large, result):
+                result = aircraft_patch.simple_query('What kind of aircraft is large?')
+                return (aircraft_patches, image_patch, is_large, result)
+            aircraft_patches, image_patch, is_large, result = if_stmt(_if, None, is_large, (aircraft_patches, image_patch, is_large, result))
+            return (aircraft_patches, image_patch, is_large, result)
+        aircraft_patches, image_patch, is_large, result = for_stmt(_for, aircraft_patches, (aircraft_patches, image_patch, is_large, result))
+
+        def _if(aircraft_patches, image_patch, is_large, result):
+            result = image_patch.simple_query('What kind of aircraft is large?')
+            return (aircraft_patches, image_patch, is_large, result)
+        aircraft_patches, image_patch, is_large, result = if_stmt(_if, None, not_expr(result), (aircraft_patches, image_patch, is_large, result))
+        return (aircraft_patches, image_patch, is_large, result)
+    aircraft_patches, image_patch, is_large, result = if_stmt(_if, _else, len(aircraft_patches) == 0, (aircraft_patches, image_patch, is_large, result))
+    return result

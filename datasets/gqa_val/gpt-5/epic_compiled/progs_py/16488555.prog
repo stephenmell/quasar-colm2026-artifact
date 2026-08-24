@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find("device")
+    if len(device_patches) == 0:
+        result = image_patch.simple_query("Is there a pillow to the right of the device on the left?")
+    else:
+        leftmost_device = None
+        for device_patch in device_patches:
+            if leftmost_device is None:
+                leftmost_device = device_patch
+            else:
+                if device_patch.horizontal_center < leftmost_device.horizontal_center:
+                    leftmost_device = device_patch
+        pillow_patches = image_patch.find("pillow")
+        if len(pillow_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for pillow_patch in pillow_patches:
+                if pillow_patch.horizontal_center > leftmost_device.horizontal_center:
+                    result = "yes"
+    return result

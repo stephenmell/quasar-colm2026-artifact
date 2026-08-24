@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    # Question assumes one table patch
+
+    if len(table_patches) == 0:
+        # If no table is found, ask directly
+        result = image_patch.simple_query("Is there a toothbrush to the right of the table?")
+    else:
+        table_patch = table_patches[0]
+        toothbrush_patches = image_patch.find("toothbrush")
+        if len(toothbrush_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for toothbrush_patch in toothbrush_patches:
+                if toothbrush_patch.horizontal_center > table_patch.horizontal_center:
+                    result = "yes"
+    return result

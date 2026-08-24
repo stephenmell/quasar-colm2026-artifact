@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    best_dx = None
+    best_side = None
+    dx = None
+    image_patch = None
+    man_patch = None
+    man_patches = None
+    mouse_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+    mouse_patches = image_patch.find('computer mouse')
+
+    def _if(image_patch, man_patches, mouse_patches):
+        mouse_patches = image_patch.find('mouse')
+        return (image_patch, man_patches, mouse_patches)
+    image_patch, man_patches, mouse_patches = if_stmt(_if, None, len(mouse_patches) == 0, (image_patch, man_patches, mouse_patches))
+
+    def _if(best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches, result):
+        result = image_patch.simple_query('Is the computer mouse to the right or to the left of the man that is shown in the picture?')
+        return (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches, result)
+
+    def _else(best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches, result):
+        man_patch = man_patches[0]
+        best_dx = None
+        best_side = 'left'
+
+        def _for(mouse_patch, best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches):
+            dx = abs(mouse_patch.horizontal_center - man_patch.horizontal_center)
+
+            def _if(best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches):
+                best_dx = dx
+
+                def _if(best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches):
+                    best_side = 'right'
+                    return (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches)
+
+                def _else(best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches):
+                    best_side = 'left'
+                    return (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches)
+                best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches = if_stmt(_if, _else, mouse_patch.horizontal_center > man_patch.horizontal_center, (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches))
+                return (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches)
+            best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches = if_stmt(_if, None, or_expr(best_dx is None, dx < best_dx), (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches))
+            return (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches)
+        best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches = for_stmt(_for, mouse_patches, (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches))
+        result = best_side
+        return (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches, result)
+    best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches, result = if_stmt(_if, _else, or_expr(len(man_patches) == 0, len(mouse_patches) == 0), (best_dx, best_side, dx, image_patch, man_patch, man_patches, mouse_patches, result))
+    return result

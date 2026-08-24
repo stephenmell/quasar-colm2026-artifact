@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    # Question assumes only one woman patch
+    if len(woman_patches) == 0:
+        # If no woman is found, query the image directly
+        return image_patch.simple_query("Is the woman looking down or talking?")
+    return woman_patches[0].best_text_match(["looking down", "talking"])

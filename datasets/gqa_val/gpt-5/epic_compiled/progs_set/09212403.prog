@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    box_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    box_patches = image_patch.find('box')
+
+    def _if(box_patches, image_patch, result):
+        result = image_patch.simple_query('Does that box have tan color?')
+        return (box_patches, image_patch, result)
+
+    def _else(box_patches, image_patch, result):
+        result = 'no'
+
+        def _for(box_patch, box_patches, image_patch, result):
+
+            def _if(box_patches, image_patch, result):
+                result = 'yes'
+                return (box_patches, image_patch, result)
+            box_patches, image_patch, result = if_stmt(_if, None, box_patch.verify_property('box', 'tan'), (box_patches, image_patch, result))
+            return (box_patches, image_patch, result)
+        box_patches, image_patch, result = for_stmt(_for, box_patches, (box_patches, image_patch, result))
+        return (box_patches, image_patch, result)
+    box_patches, image_patch, result = if_stmt(_if, _else, len(box_patches) == 0, (box_patches, image_patch, result))
+    return result

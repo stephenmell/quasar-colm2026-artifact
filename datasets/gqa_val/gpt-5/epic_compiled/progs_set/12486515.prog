@@ -1,0 +1,76 @@
+def execute_command(image) -> str:
+    boy_exists = None
+    female_found = None
+    gender = None
+    girl_exists = None
+    image_patch = None
+    male_found = None
+    man_exists = None
+    person_patches = None
+    resolved = None
+    result = None
+    woman_exists = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    resolved = False
+    man_exists = image_patch.exists('man')
+    woman_exists = image_patch.exists('woman')
+    boy_exists = image_patch.exists('boy')
+    girl_exists = image_patch.exists('girl')
+
+    def _if(boy_exists, girl_exists, image_patch, man_exists, resolved, result, woman_exists):
+        result = 'yes'
+        resolved = True
+        return (boy_exists, girl_exists, image_patch, man_exists, resolved, result, woman_exists)
+    boy_exists, girl_exists, image_patch, man_exists, resolved, result, woman_exists = if_stmt(_if, None, or_expr(man_exists and woman_exists, or_expr(man_exists and girl_exists, or_expr(boy_exists and woman_exists, boy_exists and girl_exists))), (boy_exists, girl_exists, image_patch, man_exists, resolved, result, woman_exists))
+
+    def _if(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+        person_patches = image_patch.find('person')
+
+        def _if(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+            male_found = False
+            female_found = False
+
+            def _for(person_patch, boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+                gender = person_patch.best_text_match(('male', 'female'))
+
+                def _if(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+                    male_found = True
+                    return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+                boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists = if_stmt(_if, None, gender == 'male', (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists))
+
+                def _if(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+                    female_found = True
+                    return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+                boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists = if_stmt(_if, None, gender == 'female', (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists))
+                return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+            boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists = for_stmt(_for, person_patches, (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists))
+
+            def _if(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+                result = 'yes'
+                return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+
+            def _else(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+                result = 'no'
+                return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+            boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists = if_stmt(_if, _else, and_expr(male_found, female_found), (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists))
+            resolved = True
+            return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+
+        def _else(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+
+            def _if(boy_exists, girl_exists, image_patch, man_exists, person_patches, resolved, result, woman_exists):
+                result = 'no'
+                resolved = True
+                return (boy_exists, girl_exists, image_patch, man_exists, person_patches, resolved, result, woman_exists)
+            boy_exists, girl_exists, image_patch, man_exists, person_patches, resolved, result, woman_exists = if_stmt(_if, None, len(person_patches) == 1, (boy_exists, girl_exists, image_patch, man_exists, person_patches, resolved, result, woman_exists))
+            return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+        boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists = if_stmt(_if, _else, len(person_patches) >= 2, (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists))
+        return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+    boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists = if_stmt(_if, None, not_expr(resolved), (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists))
+
+    def _if(boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists):
+        result = image_patch.simple_query('Are the people in the picture of different genders?')
+        return (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists)
+    boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists = if_stmt(_if, None, not_expr(resolved), (boy_exists, female_found, gender, girl_exists, image_patch, male_found, man_exists, person_patches, resolved, result, woman_exists))
+    return result

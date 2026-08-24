@@ -1,0 +1,79 @@
+({258: 'context', 265: 'llm_query', 272: '.join', 280: 'return_result'},
+ ('def',
+  256,
+  ((),
+   ((('call', (257,), -1, ()),
+     ('def',
+      259,
+      ((267, 260),
+       ((('prim',
+          261,
+          'You are given a single document. Extract any information relevant '
+          'to identifying a specific video game that matches ALL of the '
+          'following clues, if present:\n'
+          '- Released between 2001 and 2007.\n'
+          '- Story premise includes: a woman is found dead; the player '
+          'partners with another character to investigate.\n'
+          '- Gameplay has two distinct phases: one centered on discovery of '
+          'details (e.g., investigation/examination) and another centered on '
+          'confrontation (e.g., '
+          'interrogation/courtroom/prosecution/cross-examination).\n'
+          '- Developed by a company established in 1998, known for producing '
+          'its own award-winning, character-focused content.\n'
+          '- Published by a company that was previously known by a different '
+          'name and served as the parent company for two other game studios.\n'
+          '\n'
+          'From the document, list any potential matches for the game, the '
+          'developer, and the publisher. If any of the parts '
+          '(game/dev/publisher) are mentioned, include them even if the doc '
+          'does not contain all parts. For each candidate, provide:\n'
+          '- Game title and release year if given\n'
+          '- Developer name and founding year if given\n'
+          '- Publisher name and its former name if given, and which studios it '
+          'parented\n'
+          '- Verbatim supporting quotes from the document (short, only the '
+          'needed lines)\n'
+          'If nothing relevant appears, output NONE.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (262,), 80, (261, 260)),
+         ('prim', 263, '\nEND_DOCUMENT'),
+         ('call', (264,), 80, (262, 263)),
+         ('call', (266,), 265, (264,)),
+         ('call', (268,), -1, (266,)),
+         ('call', (269,), 80, (267, 268))),
+        (269,)))),
+     ('call', (271,), 79, (258,)),
+     ('call', (270,), 271, (257, 259)),
+     ('prim', 273, '\n\n----\n\n'),
+     ('call', (274,), 272, (273, 270)),
+     ('prim',
+      275,
+      'We are trying to identify a single video game described by these '
+      'constraints:\n'
+      '- Released between 2001 and 2007.\n'
+      '- A woman is found dead, and the player partners with another character '
+      'to investigate.\n'
+      '- Gameplay features two distinct phases: one focused on discovery of '
+      'details and another on confrontation (e.g., '
+      'interrogation/courtroom/prosecution/cross-examination).\n'
+      '- Developed by a company established in 1998 that is known for '
+      'producing its own award-winning, character-focused content.\n'
+      '- The publisher was previously known by a different name and served as '
+      'the parent company for two other gaming studios.\n'
+      '\n'
+      'Below are extractions from our context documents that may include the '
+      'game, developer, and publisher details:\n'
+      '\n'),
+     ('call', (276,), 80, (275, 274)),
+     ('prim',
+      277,
+      '\n'
+      '\n'
+      'Based on this information only, identify the single best-matching game '
+      'and output ONLY its exact title, with no additional words or '
+      'punctuation.'),
+     ('call', (278,), 80, (276, 277)),
+     ('call', (279,), 265, (278,)),
+     ('call', (281,), 280, (279,))),
+    (281,)))))

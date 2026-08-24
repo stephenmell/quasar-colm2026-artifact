@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fridge_patches = image_patch.find("fridge")
+    microwave_patches = image_patch.find("microwave")
+
+    # If either object isn't detected, ask directly
+    if len(fridge_patches) == 0 or len(microwave_patches) == 0:
+        return image_patch.simple_query("Are the fridge and the microwave the same color?")
+
+    # Estimate colors from a common palette
+    color_options = [
+        "white", "black", "gray", "grey", "silver",
+        "red", "green", "blue", "yellow", "brown",
+        "orange", "purple", "pink", "gold", "beige", "tan"
+    ]
+    fridge_color = fridge_patches[0].best_text_match(color_options)
+    microwave_color = microwave_patches[0].best_text_match(color_options)
+
+    def normalize_color(c: str) -> str:
+        c = (c or "").strip().lower()
+        if c in ["grey", "silver"]:
+            return "gray"
+        return c
+
+    return "yes" if normalize_color(fridge_color) == normalize_color(microwave_color) else "no"

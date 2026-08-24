@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    container_patches = image_patch.find("container")
+    animal_patches = image_patch.find("animal")
+
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("Is the container to the left of the animal that is lying on the chair?")
+    else:
+        if len(container_patches) > 0:
+            for animal_patch in animal_patches:
+                is_target_animal = False
+                if animal_patch.verify_property("animal", "lying on the chair"):
+                    is_target_animal = True
+                else:
+                    if animal_patch.verify_property("animal", "lying"):
+                        if animal_patch.verify_property("animal", "on the chair"):
+                            is_target_animal = True
+                if is_target_animal:
+                    for container_patch in container_patches:
+                        if container_patch.horizontal_center < animal_patch.horizontal_center:
+                            result = "yes"
+    return result

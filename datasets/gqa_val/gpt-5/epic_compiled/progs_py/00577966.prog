@@ -1,0 +1,36 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    computer_patches = image_patch.find("computer")
+    if len(computer_patches) == 0:
+        result = image_patch.simple_query("Is the small device to the right or to the left of the computer in the middle?")
+    else:
+        # Select the computer closest to the horizontal center of the image (the "middle" computer)
+        middle_computer = computer_patches[0]
+        best_center_dist = abs(middle_computer.horizontal_center - image_patch.horizontal_center)
+        for comp_patch in computer_patches:
+            current_dist = abs(comp_patch.horizontal_center - image_patch.horizontal_center)
+            if current_dist < best_center_dist:
+                middle_computer = comp_patch
+                best_center_dist = current_dist
+
+        small_device_patches = image_patch.find("small device")
+        if len(small_device_patches) == 0:
+            result = image_patch.simple_query("Is the small device to the right or to the left of the computer in the middle?")
+        else:
+            # Choose the small device closest to the middle computer
+            closest_device = small_device_patches[0]
+            best_device_dist = abs(closest_device.horizontal_center - middle_computer.horizontal_center)
+            for sd_patch in small_device_patches:
+                device_dist = abs(sd_patch.horizontal_center - middle_computer.horizontal_center)
+                if device_dist < best_device_dist:
+                    closest_device = sd_patch
+                    best_device_dist = device_dist
+
+            if closest_device.horizontal_center > middle_computer.horizontal_center:
+                result = "right"
+            else:
+                result = "left"
+
+    return result

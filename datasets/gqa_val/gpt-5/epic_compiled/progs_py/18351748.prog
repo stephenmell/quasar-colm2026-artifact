@@ -1,0 +1,14 @@
+# Does the blue water look calm?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    water_patches = image_patch.find("water")
+    if len(water_patches) == 0:
+        result = image_patch.simple_query("Does the blue water look calm?")
+    else:
+        result = "no"
+        for water_patch in water_patches:
+            is_blue = water_patch.verify_property("water", "blue")
+            is_calm = water_patch.verify_property("water", "calm")
+            if is_blue and is_calm:
+                result = "yes"
+    return result

@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    handbag_patches = image_patch.find("handbag")
+    man_patches = image_patch.find("man")
+
+    # If either object isn't found, ask the full relational question directly
+    if len(handbag_patches) == 0 or len(man_patches) == 0:
+        return image_patch.simple_query("Is the man that is to the left of the handbag carrying a surfboard?")
+
+    # Check men that are to the left of any handbag
+    candidate_found = False
+    for man_patch in man_patches:
+        for handbag_patch in handbag_patches:
+            if man_patch.horizontal_center < handbag_patch.horizontal_center:
+                candidate_found = True
+                # Ask within the man's crop whether he's carrying a surfboard
+                if man_patch.simple_query("Is the man carrying a surfboard?") == "yes":
+                    return "yes"
+                # Try another handbag/man if this didn't confirm
+                break
+
+    # If no candidate men to the left of any handbag or none are carrying a surfboard
+    if not candidate_found:
+        return "no"
+    return "no"

@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find("vehicle")
+    water_patches = image_patch.find("water")
+
+    if len(vehicle_patches) == 0 or len(water_patches) == 0:
+        result = image_patch.simple_query("Does the vehicle near the water look short and brown?")
+    else:
+        result = "no"
+        threshold = min(image_patch.width, image_patch.height) * 0.25
+        threshold2 = threshold * threshold
+        for vehicle_patch in vehicle_patches:
+            is_near = False
+            for water_patch in water_patches:
+                dx = vehicle_patch.horizontal_center - water_patch.horizontal_center
+                dy = vehicle_patch.vertical_center - water_patch.vertical_center
+                dist2 = dx * dx + dy * dy
+                if dist2 <= threshold2:
+                    is_near = True or is_near
+                else:
+                    is_near = is_near or False
+            if is_near:
+                is_short = vehicle_patch.verify_property("vehicle", "short")
+                is_brown = vehicle_patch.verify_property("vehicle", "brown")
+                if is_short and is_brown:
+                    result = "yes"
+    return result

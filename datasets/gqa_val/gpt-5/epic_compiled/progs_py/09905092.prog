@@ -1,0 +1,21 @@
+# Are there animals to the right of the giraffe that is looking through the door?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find("giraffe")
+    result = "no"
+
+    if len(giraffe_patches) == 0:
+        result = image_patch.simple_query("Are there animals to the right of the giraffe that is looking through the door?")
+    else:
+        found_target_giraffe = False
+        for giraffe_patch in giraffe_patches:
+            is_looking_through_door = (giraffe_patch.simple_query("Is the giraffe looking through the door?") == "yes")
+            if is_looking_through_door:
+                found_target_giraffe = True
+                animal_patches = image_patch.find("animal")
+                for animal_patch in animal_patches:
+                    if animal_patch.horizontal_center > giraffe_patch.horizontal_center:
+                        result = "yes"
+        if not found_target_giraffe:
+            result = image_patch.simple_query("Are there animals to the right of the giraffe that is looking through the door?")
+    return result

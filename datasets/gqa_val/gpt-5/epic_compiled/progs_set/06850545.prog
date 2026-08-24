@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    chosen_patch = None
+    image_patch = None
+    is_little = None
+    result = None
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, chosen_patch, image_patch, is_little, result):
+        result = image_patch.simple_query('Is the animal that is not little bending or standing?')
+        return (animal_patches, chosen_patch, image_patch, is_little, result)
+
+    def _else(animal_patches, chosen_patch, image_patch, is_little, result):
+        chosen_patch = None
+
+        def _for(animal_patch, animal_patches, chosen_patch, image_patch, is_little):
+            is_little = animal_patch.verify_property('animal', 'little')
+
+            def _if(animal_patches, chosen_patch, image_patch, is_little):
+                chosen_patch = animal_patch
+                return (animal_patches, chosen_patch, image_patch, is_little)
+            animal_patches, chosen_patch, image_patch, is_little = if_stmt(_if, None, not_expr(is_little), (animal_patches, chosen_patch, image_patch, is_little))
+            return (animal_patches, chosen_patch, image_patch, is_little)
+        animal_patches, chosen_patch, image_patch, is_little = for_stmt(_for, animal_patches, (animal_patches, chosen_patch, image_patch, is_little))
+
+        def _if(animal_patches, chosen_patch, image_patch, is_little, result):
+            result = image_patch.simple_query('Is the animal that is not little bending or standing?')
+            return (animal_patches, chosen_patch, image_patch, is_little, result)
+
+        def _else(animal_patches, chosen_patch, image_patch, is_little, result):
+            result = chosen_patch.best_text_match(('bending', 'standing'))
+            return (animal_patches, chosen_patch, image_patch, is_little, result)
+        animal_patches, chosen_patch, image_patch, is_little, result = if_stmt(_if, _else, not_expr(chosen_patch), (animal_patches, chosen_patch, image_patch, is_little, result))
+        return (animal_patches, chosen_patch, image_patch, is_little, result)
+    animal_patches, chosen_patch, image_patch, is_little, result = if_stmt(_if, _else, len(animal_patches) == 0, (animal_patches, chosen_patch, image_patch, is_little, result))
+    return result

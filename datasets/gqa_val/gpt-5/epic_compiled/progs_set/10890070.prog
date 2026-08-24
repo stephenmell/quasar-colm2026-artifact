@@ -1,0 +1,8 @@
+def execute_command(image) -> str:
+    bottle_exists = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bottle_exists = image_patch.exists('bottle')
+    result = bool_to_yesno(bottle_exists)
+    return result

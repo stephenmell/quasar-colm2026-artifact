@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    options = ("light brown", "red")
+
+    # Try to find a "hardwood floor" directly
+    hardwood_floor_patches = image_patch.find("hardwood floor")
+    if len(hardwood_floor_patches) == 0:
+        # Find generic floors and filter to those that are hardwood
+        floor_patches = image_patch.find("floor")
+        hardwood_filtered = ()
+        for floor_patch in floor_patches:
+            if floor_patch.verify_property("floor", "hardwood"):
+                hardwood_filtered = hardwood_filtered + (floor_patch,)
+        if len(hardwood_filtered) == 0:
+            result = image_patch.simple_query("How does the floor made of hardwood look, light brown or red?")
+        else:
+            result = hardwood_filtered[0].best_text_match(options)
+    else:
+        result = hardwood_floor_patches[0].best_text_match(options)
+    return result

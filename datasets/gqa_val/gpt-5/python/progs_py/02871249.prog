@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ladder_patches = image_patch.find("ladder")
+    # Question assumes only one ladder patch
+    if len(ladder_patches) == 0:
+        # If no ladder is found, query the image directly
+        return image_patch.simple_query("What is the height of the ladder?")
+    # Choose the most prominent ladder (largest patch)
+    ladder_patch = max(ladder_patches, key=lambda p: p.width * p.height)
+    return ladder_patch.simple_query("What is the height of the ladder?")

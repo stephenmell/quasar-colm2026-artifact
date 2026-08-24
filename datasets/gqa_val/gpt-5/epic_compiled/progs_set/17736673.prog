@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_black = None
+    jeans_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    jeans_patches = image_patch.find('jeans')
+
+    def _if(image_patch, is_black, jeans_patches, result):
+        result = image_patch.simple_query('Do the jeans have black color?')
+        return (image_patch, is_black, jeans_patches, result)
+
+    def _else(image_patch, is_black, jeans_patches, result):
+        is_black = False
+
+        def _for(jeans_patch, image_patch, is_black, jeans_patches):
+
+            def _if(image_patch, is_black, jeans_patches):
+                is_black = True
+                return (image_patch, is_black, jeans_patches)
+            image_patch, is_black, jeans_patches = if_stmt(_if, None, jeans_patch.verify_property('jeans', 'black'), (image_patch, is_black, jeans_patches))
+            return (image_patch, is_black, jeans_patches)
+        image_patch, is_black, jeans_patches = for_stmt(_for, jeans_patches, (image_patch, is_black, jeans_patches))
+        result = bool_to_yesno(is_black)
+        return (image_patch, is_black, jeans_patches, result)
+    image_patch, is_black, jeans_patches, result = if_stmt(_if, _else, len(jeans_patches) == 0, (image_patch, is_black, jeans_patches, result))
+    return result

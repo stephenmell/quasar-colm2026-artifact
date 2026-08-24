@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find("train")
+    # If no train is found, ask directly
+    if len(train_patches) == 0:
+        return image_patch.simple_query("Are there trucks to the right of the train on the road?")
+    train_center = train_patches[0].horizontal_center
+
+    truck_patches = image_patch.find("truck")
+    if len(truck_patches) == 0:
+        return "no"
+
+    for truck_patch in truck_patches:
+        # Check that the truck is on the road
+        on_road = truck_patch.verify_property("truck", "on the road") or truck_patch.verify_property("truck", "on road")
+        if on_road and truck_patch.horizontal_center > train_center:
+            return "yes"
+    return "no"

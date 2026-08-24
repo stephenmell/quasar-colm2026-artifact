@@ -1,0 +1,26 @@
+# Do you see balls in this image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    object_names = (
+        "balls",
+        "ball",
+        "tennis ball",
+        "soccer ball",
+        "basketball",
+        "baseball",
+        "football",
+        "volleyball",
+        "golf ball",
+        "bowling ball",
+        "beach ball",
+        "softball",
+        "rugby ball",
+        "ping pong ball",
+        "billiard ball",
+    )
+    found = False
+    for name in object_names:
+        if image_patch.exists(name):
+            found = True
+    result = bool_to_yesno(found)
+    return result

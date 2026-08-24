@@ -1,0 +1,13 @@
+{16: 'or',
+ 75: 'execute_command',
+ 76: 'image',
+ 77: 'ImagePatch',
+ 78: 'image_patch',
+ 79: '.exists',
+ 80: '#implicit#',
+ 81: 'has_bowl_singular',
+ 82: '#implicit#',
+ 83: 'has_bowl_plural',
+ 84: 'has_any_bowls',
+ 85: 'bool_to_yesno',
+ 86: 'result'}

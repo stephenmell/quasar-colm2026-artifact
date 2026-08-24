@@ -1,0 +1,59 @@
+def execute_command(image) -> str:
+    direct_white_vehicle_patches = None
+    image_patch = None
+    jeep_patches = None
+    result = None
+    vehicle_types = None
+    vtype_patches = None
+    white_vehicle_patches = None
+    image_patch = ImagePatch(image)
+    jeep_patches = image_patch.find('jeep')
+
+    def _if(direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches):
+        result = image_patch.simple_query('Is the jeep to the left of the white vehicle?')
+        return (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches)
+
+    def _else(direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches):
+        white_vehicle_patches = ()
+        direct_white_vehicle_patches = image_patch.find('white vehicle')
+        white_vehicle_patches = white_vehicle_patches + direct_white_vehicle_patches
+        vehicle_types = ('vehicle', 'car', 'truck', 'van', 'bus', 'suv', 'automobile')
+
+        def _for(vtype, direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches):
+            vtype_patches = image_patch.find(vtype)
+
+            def _for(vp, direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches):
+
+                def _if(direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches):
+                    white_vehicle_patches = white_vehicle_patches + (vp,)
+                    return (direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches)
+                direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches = if_stmt(_if, None, vp.verify_property(vtype, 'white'), (direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches))
+                return (direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches)
+            direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches = for_stmt(_for, vtype_patches, (direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches))
+            return (direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches)
+        direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches = for_stmt(_for, vehicle_types, (direct_white_vehicle_patches, image_patch, jeep_patches, vehicle_types, vtype_patches, white_vehicle_patches))
+
+        def _if(direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches):
+            result = 'no'
+            return (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches)
+
+        def _else(direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches):
+            result = 'no'
+
+            def _for(jeep_patch, direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches):
+
+                def _for(white_vehicle_patch, direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches):
+
+                    def _if(direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches):
+                        result = 'yes'
+                        return (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches)
+                    direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches = if_stmt(_if, None, jeep_patch.horizontal_center < white_vehicle_patch.horizontal_center, (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches))
+                    return (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches)
+                direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches = for_stmt(_for, white_vehicle_patches, (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches))
+                return (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches)
+            direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches = for_stmt(_for, jeep_patches, (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches))
+            return (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches)
+        direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches = if_stmt(_if, _else, len(white_vehicle_patches) == 0, (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches))
+        return (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches)
+    direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches = if_stmt(_if, _else, len(jeep_patches) == 0, (direct_white_vehicle_patches, image_patch, jeep_patches, result, vehicle_types, vtype_patches, white_vehicle_patches))
+    return result

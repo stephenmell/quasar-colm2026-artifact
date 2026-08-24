@@ -1,0 +1,66 @@
+def execute_command(image) -> str:
+    answer = None
+    closest_left_person = None
+    dx = None
+    image_patch = None
+    person_patches = None
+    result = None
+    smallest_dx = None
+    woman_patch = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+        result = image_patch.simple_query('Is the person that is to the left of the woman wearing a helmet?')
+        return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+
+    def _else(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+        woman_patch = woman_patches[0]
+        person_patches = image_patch.find('person')
+
+        def _if(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+            result = 'no'
+            return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+
+        def _else(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+            closest_left_person = None
+            smallest_dx = None
+
+            def _for(person_patch, closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches):
+
+                def _if(closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches):
+                    dx = woman_patch.horizontal_center - person_patch.horizontal_center
+
+                    def _if(closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches):
+                        closest_left_person = person_patch
+                        smallest_dx = dx
+                        return (closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches)
+                    closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches = if_stmt(_if, None, or_expr(closest_left_person is None, dx < smallest_dx), (closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches))
+                    return (closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches)
+                closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches = if_stmt(_if, None, person_patch.horizontal_center < woman_patch.horizontal_center, (closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches))
+                return (closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches)
+            closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches = for_stmt(_for, person_patches, (closest_left_person, dx, image_patch, person_patches, smallest_dx, woman_patch, woman_patches))
+
+            def _if(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+                result = 'no'
+                return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+
+            def _else(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+                answer = closest_left_person.simple_query('Is the person wearing a helmet?')
+
+                def _if(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+                    result = 'yes'
+                    return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+
+                def _else(answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches):
+                    result = 'no'
+                    return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+                answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches = if_stmt(_if, _else, answer == 'yes', (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches))
+                return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+            answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches = if_stmt(_if, _else, closest_left_person is None, (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches))
+            return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+        answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches = if_stmt(_if, _else, len(person_patches) == 0, (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches))
+        return (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches)
+    answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (answer, closest_left_person, dx, image_patch, person_patches, result, smallest_dx, woman_patch, woman_patches))
+    return result

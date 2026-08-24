@@ -1,0 +1,82 @@
+({1964: 'context', 1971: 'llm_query', 1992: 'return_result'},
+ ('def',
+  1962,
+  ((),
+   ((('call', (1963,), -1, ()),
+     ('def',
+      1965,
+      ((1973, 1966),
+       ((('prim', 1967, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (1968,), 80, (1967, 1966)),
+         ('prim',
+          1969,
+          '\n'
+          'END_DOCUMENT\n'
+          'Read the document carefully. If it mentions any poet who matches '
+          'any of the following traits, extract all relevant details with '
+          'direct quotations and dates when available:\n'
+          '- Lost two family members during a pandemic that occurred between '
+          '2005 and 2023 inclusive (e.g., COVID-19). Identify the pandemic and '
+          'the family members if possible.\n'
+          '- In an interview dated before 2015, the poet revealed they had '
+          'never been read to as a child and also discussed their mental '
+          'health condition. Provide the interview date, outlet, and the '
+          'mental health condition discussed.\n'
+          '- As of December 2023, the poet is married to an Appalachian '
+          'writer. Provide the spouse’s name and confirm they are an '
+          'Appalachian writer.\n'
+          '- A poem by this poet that has the word “photograph” in its title. '
+          'Provide the exact title and the first two lines of the poem '
+          'verbatim if present in the document; otherwise provide the best '
+          'available paraphrase or any lines quoted.\n'
+          'If the document contains nothing relevant, answer exactly: No '
+          'relevant info.\n'
+          'Format your response as:\n'
+          'Poet: [Name]\n'
+          'Evidence:\n'
+          '[Bullet quotes with citations or contextual cues]\n'
+          'PoemTitle: [Title]\n'
+          'FirstTwoLines: [Two lines verbatim if present; otherwise best '
+          'available]\n'),
+         ('call', (1970,), 80, (1968, 1969)),
+         ('call', (1972,), 1971, (1970,)),
+         ('call', (1974,), -1, (1972,)),
+         ('call', (1975,), 80, (1973, 1974))),
+        (1975,)))),
+     ('call', (1977,), 79, (1964,)),
+     ('call', (1976,), 1977, (1963, 1965)),
+     ('prim', 1978, ''),
+     ('def',
+      1979,
+      ((1981, 1980),
+       ((('prim', 1982, '\n---\n'),
+         ('call', (1983,), 80, (1981, 1982)),
+         ('call', (1984,), 80, (1983, 1980))),
+        (1984,)))),
+     ('call', (1986,), 79, (1976,)),
+     ('call', (1985,), 1986, (1978, 1979)),
+     ('prim', 1987, 'You are given extracted notes from multiple documents:\n'),
+     ('call', (1988,), 80, (1987, 1985)),
+     ('prim',
+      1989,
+      '\n'
+      '\n'
+      'Task:\n'
+      '1) Identify the single poet who satisfies ALL of the following:\n'
+      '- Lost two family members during a 2005–2023 pandemic.\n'
+      '- In an interview dated before 2015 said they had never been read to as '
+      'a child and discussed their mental health condition.\n'
+      '- As of December 2023 is married to an Appalachian writer.\n'
+      '- Wrote a poem with the word “photograph” in the title.\n'
+      '2) From that poem, provide the exact first two lines if available in '
+      'the notes. If they are not present in the notes but you know them, '
+      'provide them accurately.\n'
+      '3) Then answer this question in the fewest words possible, quoting if '
+      'appropriate: In that poem, what does the child ask the speaker for in '
+      'the first two lines of the poem?\n'
+      'Only output the final direct answer to the question, not the '
+      'reasoning.'),
+     ('call', (1990,), 80, (1988, 1989)),
+     ('call', (1991,), 1971, (1990,)),
+     ('call', (1993,), 1992, (1991,))),
+    (1993,)))))

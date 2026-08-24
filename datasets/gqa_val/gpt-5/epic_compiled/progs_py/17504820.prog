@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bread_patches = image_patch.find("bread")
+
+    if len(bread_patches) == 0:
+        result = image_patch.simple_query("Do you see an umbrella to the left of the bag that is on top of the bread?")
+    else:
+        result = "no"
+        bag_patches = image_patch.find("bag")
+        umbrella_patches = image_patch.find("umbrella")
+
+        for bread_patch in bread_patches:
+            for bag_patch in bag_patches:
+                is_bag_on_bread = False
+                if bag_patch.vertical_center < bread_patch.vertical_center:
+                    if bag_patch.horizontal_center >= bread_patch.left and bag_patch.horizontal_center <= bread_patch.right:
+                        is_bag_on_bread = True
+                if is_bag_on_bread:
+                    for umbrella_patch in umbrella_patches:
+                        if umbrella_patch.horizontal_center < bag_patch.horizontal_center:
+                            result = "yes"
+    return result

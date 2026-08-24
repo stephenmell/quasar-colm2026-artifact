@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2354399",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Is the black drink in the plastic cup next to the chocolate?"
+      ],
+      "Yes.",
+      1551482810
+    ]
+  ],
+  "best_text_match": []
+}

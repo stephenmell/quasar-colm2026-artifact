@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # Question assumes at least one person
+    if len(person_patches) == 0:
+        return image_patch.simple_query("What is the color of the jacket the person is wearing?")
+    for person_patch in person_patches:
+        is_wearing_jacket = (person_patch.simple_query("Is the person wearing a jacket?") == "yes")
+        if is_wearing_jacket:
+            return person_patch.simple_query("What is the color of the jacket the person is wearing?")
+    # If no person wearing a jacket is found, try asking about any jacket directly
+    jacket_patches = image_patch.find("jacket")
+    if len(jacket_patches) > 0:
+        return jacket_patches[0].simple_query("What color is the jacket?")
+    # Fallback to asking the whole image
+    return image_patch.simple_query("What is the color of the jacket the person is wearing?")

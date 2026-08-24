@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        # If no woman is found, ask directly
+        return image_patch.simple_query("Is that woman skiing or surfing?")
+    # Try property verification on detected women
+    for woman_patch in woman_patches:
+        if woman_patch.verify_property("woman", "skiing"):
+            return "skiing"
+        if woman_patch.verify_property("woman", "surfing"):
+            return "surfing"
+    # Fallback to best text match on the first woman patch
+    return woman_patches[0].best_text_match(["skiing", "surfing"])

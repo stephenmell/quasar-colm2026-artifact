@@ -1,0 +1,77 @@
+def execute_command(image) -> str:
+    boy_patches = None
+    child_patches = None
+    children_patches = None
+    girl_patches = None
+    image_patch = None
+    kid_patches = None
+    lady_patch = None
+    lady_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    lady_patches = image_patch.find('lady')
+    result = 'no'
+
+    def _if(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+        woman_patches = image_patch.find('woman')
+
+        def _if(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+            result = image_patch.simple_query('Are there any children to the left of the lady?')
+            return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+
+        def _else(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+            lady_patch = woman_patches[0]
+            child_patches = image_patch.find('child')
+            boy_patches = image_patch.find('boy')
+            girl_patches = image_patch.find('girl')
+            kid_patches = image_patch.find('kid')
+            children_patches = child_patches + boy_patches + girl_patches + kid_patches
+
+            def _if(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+                result = 'no'
+                return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+
+            def _else(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+
+                def _for(child_patch, boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+
+                    def _if(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+                        result = 'yes'
+                        return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+                    boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches = if_stmt(_if, None, child_patch.horizontal_center < lady_patch.horizontal_center, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches))
+                    return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+                boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches = for_stmt(_for, children_patches, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches))
+                return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+            boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches = if_stmt(_if, _else, len(children_patches) == 0, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches))
+            return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+        boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches))
+        return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+
+    def _else(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches):
+        lady_patch = lady_patches[0]
+        child_patches = image_patch.find('child')
+        boy_patches = image_patch.find('boy')
+        girl_patches = image_patch.find('girl')
+        kid_patches = image_patch.find('kid')
+        children_patches = child_patches + boy_patches + girl_patches + kid_patches
+
+        def _if(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result):
+            result = 'no'
+            return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result)
+
+        def _else(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result):
+
+            def _for(child_patch, boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result):
+
+                def _if(boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result):
+                    result = 'yes'
+                    return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result)
+                boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result = if_stmt(_if, None, child_patch.horizontal_center < lady_patch.horizontal_center, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result))
+                return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result)
+            boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result = for_stmt(_for, children_patches, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result))
+            return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result)
+        boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result = if_stmt(_if, _else, len(children_patches) == 0, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result))
+        return (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches)
+    boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches = if_stmt(_if, _else, len(lady_patches) == 0, (boy_patches, child_patches, children_patches, girl_patches, image_patch, kid_patches, lady_patch, lady_patches, result, woman_patches))
+    return result

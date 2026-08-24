@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    suv_patches = image_patch.find("suv")
+    # If no SUV is found, query directly
+    if len(suv_patches) == 0:
+        return image_patch.simple_query("Are there people to the right of the animals that are to the right of the SUV?")
+    suv_patch = suv_patches[0]
+
+    # Find animals to the right of the SUV
+    animal_patches = image_patch.find("animal")
+    animals_right_of_suv = [a for a in animal_patches if a.horizontal_center > suv_patch.horizontal_center]
+    if len(animals_right_of_suv) == 0:
+        return "no"
+
+    # Find people
+    people_patches = image_patch.find("person")
+    if len(people_patches) == 0:
+        people_patches = image_patch.find("people")
+    if len(people_patches) == 0:
+        return "no"
+
+    # Check if any person is to the right of any animal that is to the right of the SUV
+    for animal_patch in animals_right_of_suv:
+        for person_patch in people_patches:
+            if person_patch.horizontal_center > animal_patch.horizontal_center:
+                return "yes"
+    return "no"

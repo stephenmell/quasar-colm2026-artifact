@@ -1,0 +1,12 @@
+# Are there round pizzas in the scene?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pizza_patches = image_patch.find("pizza")
+    if len(pizza_patches) == 0:
+        result = image_patch.simple_query("Are there round pizzas in the scene?")
+    else:
+        result = "no"
+        for pizza_patch in pizza_patches:
+            if pizza_patch.verify_property("pizza", "round"):
+                result = "yes"
+    return result

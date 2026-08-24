@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    glove_patches = None
+    image_patch = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(glove_patches, image_patch, result, woman_patches):
+        result = image_patch.simple_query('What color is the glove the woman is wearing?')
+        return (glove_patches, image_patch, result, woman_patches)
+
+    def _else(glove_patches, image_patch, result, woman_patches):
+        result = None
+
+        def _for(woman_patch, glove_patches, image_patch, result, woman_patches):
+            glove_patches = woman_patch.find('glove')
+
+            def _if(glove_patches, image_patch, result, woman_patches):
+                result = glove_patches[0].simple_query('What color is the glove?')
+                return (glove_patches, image_patch, result, woman_patches)
+            glove_patches, image_patch, result, woman_patches = if_stmt(_if, None, and_expr(len(glove_patches) > 0, not result), (glove_patches, image_patch, result, woman_patches))
+            return (glove_patches, image_patch, result, woman_patches)
+        glove_patches, image_patch, result, woman_patches = for_stmt(_for, woman_patches, (glove_patches, image_patch, result, woman_patches))
+
+        def _if(glove_patches, image_patch, result, woman_patches):
+            result = image_patch.simple_query('What color is the glove the woman is wearing?')
+            return (glove_patches, image_patch, result, woman_patches)
+        glove_patches, image_patch, result, woman_patches = if_stmt(_if, None, not_expr(result), (glove_patches, image_patch, result, woman_patches))
+        return (glove_patches, image_patch, result, woman_patches)
+    glove_patches, image_patch, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (glove_patches, image_patch, result, woman_patches))
+    return result

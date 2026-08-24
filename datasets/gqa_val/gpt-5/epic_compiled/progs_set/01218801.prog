@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    candidate = None
+    guess = None
+    image_patch = None
+    result = None
+    snow_patches = None
+    image_patch = ImagePatch(image)
+    snow_patches = image_patch.find('snow')
+
+    def _if(candidate, guess, image_patch, result, snow_patches):
+        result = image_patch.simple_query('What is the color of the snow?')
+        return (candidate, guess, image_patch, result, snow_patches)
+
+    def _else(candidate, guess, image_patch, result, snow_patches):
+        result = None
+
+        def _for(snow_patch, image_patch, result, snow_patches):
+
+            def _if(image_patch, result, snow_patches):
+                result = 'white'
+                return (image_patch, result, snow_patches)
+            image_patch, result, snow_patches = if_stmt(_if, None, snow_patch.verify_property('snow', 'white'), (image_patch, result, snow_patches))
+            return (image_patch, result, snow_patches)
+        image_patch, result, snow_patches = for_stmt(_for, snow_patches, (image_patch, result, snow_patches))
+
+        def _if(candidate, guess, image_patch, result, snow_patches):
+            candidate = None
+
+            def _for(snow_patch, candidate, guess, image_patch, result, snow_patches):
+                guess = snow_patch.best_text_match(('white', 'gray', 'brown', 'black'))
+
+                def _if(candidate, guess, image_patch, result, snow_patches):
+                    candidate = guess
+                    return (candidate, guess, image_patch, result, snow_patches)
+                candidate, guess, image_patch, result, snow_patches = if_stmt(_if, None, candidate is None, (candidate, guess, image_patch, result, snow_patches))
+                return (candidate, guess, image_patch, result, snow_patches)
+            candidate, guess, image_patch, result, snow_patches = for_stmt(_for, snow_patches, (candidate, guess, image_patch, result, snow_patches))
+
+            def _if(candidate, guess, image_patch, result, snow_patches):
+                result = candidate
+                return (candidate, guess, image_patch, result, snow_patches)
+
+            def _else(candidate, guess, image_patch, result, snow_patches):
+                result = snow_patches[0].simple_query('What is the color of the snow?')
+                return (candidate, guess, image_patch, result, snow_patches)
+            candidate, guess, image_patch, result, snow_patches = if_stmt(_if, _else, candidate, (candidate, guess, image_patch, result, snow_patches))
+            return (candidate, guess, image_patch, result, snow_patches)
+        candidate, guess, image_patch, result, snow_patches = if_stmt(_if, None, not_expr(result), (candidate, guess, image_patch, result, snow_patches))
+        return (candidate, guess, image_patch, result, snow_patches)
+    candidate, guess, image_patch, result, snow_patches = if_stmt(_if, _else, len(snow_patches) == 0, (candidate, guess, image_patch, result, snow_patches))
+    return result

@@ -1,0 +1,9 @@
+# Is that bus small?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find("bus")
+    # Question assumes only one bus patch
+    if len(bus_patches) == 0:
+        # If no bus is found, query the image directly
+        return image_patch.simple_query("Is that bus small?")
+    return bool_to_yesno(bus_patches[0].verify_property("bus", "small"))

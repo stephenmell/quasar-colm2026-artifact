@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "no",
+      "Yes",
+      "yes",
+      "No"
+    ]
+  },
+  "time_ns": 7313770962
+}

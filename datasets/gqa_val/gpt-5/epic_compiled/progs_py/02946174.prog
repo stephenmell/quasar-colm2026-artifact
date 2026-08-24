@@ -1,0 +1,37 @@
+# Is the towel to the left or to the right of the man the tent is to the left of?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Is the towel to the left or to the right of the man the tent is to the left of?"
+    tent_patches = image_patch.find("tent")
+    man_patches = image_patch.find("man")
+    towel_patches = image_patch.find("towel")
+
+    result = None
+
+    if len(tent_patches) > 0 and len(man_patches) > 0 and len(towel_patches) > 0:
+        matched_man = None
+        for man_patch in man_patches:
+            has_left_tent = False
+            for tent_patch in tent_patches:
+                if tent_patch.horizontal_center < man_patch.horizontal_center:
+                    has_left_tent = True
+            if has_left_tent and matched_man is None:
+                matched_man = man_patch
+
+        if matched_man is not None:
+            closest_towel = None
+            min_dist = None
+            for towel_patch in towel_patches:
+                dist = abs(towel_patch.horizontal_center - matched_man.horizontal_center)
+                if min_dist is None or dist < min_dist:
+                    min_dist = dist
+                    closest_towel = towel_patch
+            if closest_towel is not None:
+                if closest_towel.horizontal_center < matched_man.horizontal_center:
+                    result = "left"
+                else:
+                    result = "right"
+
+    if not result:
+        result = image_patch.simple_query(question)
+    return result

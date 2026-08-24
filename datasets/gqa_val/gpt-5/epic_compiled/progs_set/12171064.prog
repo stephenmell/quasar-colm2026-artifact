@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    colors = None
+    fc = None
+    fridge_color = None
+    fridge_patches = None
+    image_patch = None
+    mc = None
+    microwave_color = None
+    microwave_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    fridge_patches = image_patch.find('fridge')
+    microwave_patches = image_patch.find('microwave')
+
+    def _if(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result):
+        result = image_patch.simple_query('Are the fridge and the microwave the same color?')
+        return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result)
+
+    def _else(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result):
+        colors = ('white', 'black', 'silver', 'gray', 'grey', 'stainless steel', 'metal', 'metallic', 'red', 'blue', 'green', 'brown', 'yellow', 'orange', 'pink', 'purple', 'beige', 'tan', 'gold')
+        fridge_color = fridge_patches[0].best_text_match(colors)
+        microwave_color = microwave_patches[0].best_text_match(colors)
+        fc = fridge_color.lower()
+        mc = microwave_color.lower()
+
+        def _if(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches):
+            fc = 'gray'
+            return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches)
+        colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches = if_stmt(_if, None, fc == 'grey', (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches))
+
+        def _if(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches):
+            mc = 'gray'
+            return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches)
+        colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches = if_stmt(_if, None, mc == 'grey', (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches))
+
+        def _if(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches):
+            fc = 'silver'
+            return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches)
+        colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches = if_stmt(_if, None, or_expr(fc == 'stainless steel', or_expr(fc == 'metal', fc == 'metallic')), (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches))
+
+        def _if(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches):
+            mc = 'silver'
+            return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches)
+        colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches = if_stmt(_if, None, or_expr(mc == 'stainless steel', or_expr(mc == 'metal', mc == 'metallic')), (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches))
+
+        def _if(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result):
+            result = 'yes'
+            return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result)
+
+        def _else(colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result):
+            result = 'no'
+            return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result)
+        colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result = if_stmt(_if, _else, fc == mc, (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result))
+        return (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result)
+    colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result = if_stmt(_if, _else, or_expr(len(fridge_patches) == 0, len(microwave_patches) == 0), (colors, fc, fridge_color, fridge_patches, image_patch, mc, microwave_color, microwave_patches, result))
+    return result

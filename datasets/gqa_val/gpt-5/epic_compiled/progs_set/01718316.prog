@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    house_patches = None
+    image_patch = None
+    result = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    house_patches = image_patch.find('house')
+
+    def _if(house_patches, image_patch, result, umbrella_patches):
+        result = image_patch.simple_query('Is there an umbrella to the left of the house?')
+        return (house_patches, image_patch, result, umbrella_patches)
+
+    def _else(house_patches, image_patch, result, umbrella_patches):
+        umbrella_patches = image_patch.find('umbrella')
+
+        def _if(house_patches, image_patch, result, umbrella_patches):
+            result = 'no'
+            return (house_patches, image_patch, result, umbrella_patches)
+
+        def _else(house_patches, image_patch, result, umbrella_patches):
+            result = 'no'
+
+            def _for(house_patch, house_patches, image_patch, result, umbrella_patches):
+
+                def _for(umbrella_patch, house_patches, image_patch, result, umbrella_patches):
+
+                    def _if(house_patches, image_patch, result, umbrella_patches):
+                        result = 'yes'
+                        return (house_patches, image_patch, result, umbrella_patches)
+                    house_patches, image_patch, result, umbrella_patches = if_stmt(_if, None, umbrella_patch.horizontal_center < house_patch.horizontal_center, (house_patches, image_patch, result, umbrella_patches))
+                    return (house_patches, image_patch, result, umbrella_patches)
+                house_patches, image_patch, result, umbrella_patches = for_stmt(_for, umbrella_patches, (house_patches, image_patch, result, umbrella_patches))
+                return (house_patches, image_patch, result, umbrella_patches)
+            house_patches, image_patch, result, umbrella_patches = for_stmt(_for, house_patches, (house_patches, image_patch, result, umbrella_patches))
+            return (house_patches, image_patch, result, umbrella_patches)
+        house_patches, image_patch, result, umbrella_patches = if_stmt(_if, _else, len(umbrella_patches) == 0, (house_patches, image_patch, result, umbrella_patches))
+        return (house_patches, image_patch, result, umbrella_patches)
+    house_patches, image_patch, result, umbrella_patches = if_stmt(_if, _else, len(house_patches) == 0, (house_patches, image_patch, result, umbrella_patches))
+    return result

@@ -1,0 +1,48 @@
+def execute_command(image) -> str:
+    car_exists = None
+    car_patches = None
+    image_patch = None
+    result = None
+    scooter_exists = None
+    scooter_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    car_exists = image_patch.exists('car')
+    scooter_exists = image_patch.exists('scooter')
+
+    def _if(car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches):
+        result = image_patch.simple_query('Are there any silver cars or scooters?')
+        return (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches)
+
+    def _else(car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches):
+
+        def _if(car_exists, car_patches, image_patch, result, scooter_exists):
+            car_patches = image_patch.find('car')
+
+            def _for(car_patch, car_exists, car_patches, image_patch, result, scooter_exists):
+
+                def _if(car_exists, car_patches, image_patch, result, scooter_exists):
+                    result = 'yes'
+                    return (car_exists, car_patches, image_patch, result, scooter_exists)
+                car_exists, car_patches, image_patch, result, scooter_exists = if_stmt(_if, None, car_patch.verify_property('car', 'silver'), (car_exists, car_patches, image_patch, result, scooter_exists))
+                return (car_exists, car_patches, image_patch, result, scooter_exists)
+            car_exists, car_patches, image_patch, result, scooter_exists = for_stmt(_for, car_patches, (car_exists, car_patches, image_patch, result, scooter_exists))
+            return (car_exists, car_patches, image_patch, result, scooter_exists)
+        car_exists, car_patches, image_patch, result, scooter_exists = if_stmt(_if, None, car_exists, (car_exists, car_patches, image_patch, result, scooter_exists))
+
+        def _if(car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches):
+            scooter_patches = image_patch.find('scooter')
+
+            def _for(scooter_patch, car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches):
+
+                def _if(car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches):
+                    result = 'yes'
+                    return (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches)
+                car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches = if_stmt(_if, None, scooter_patch.verify_property('scooter', 'silver'), (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches))
+                return (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches)
+            car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches = for_stmt(_for, scooter_patches, (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches))
+            return (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches)
+        car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches = if_stmt(_if, None, scooter_exists, (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches))
+        return (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches)
+    car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches = if_stmt(_if, _else, and_expr(not car_exists, not scooter_exists), (car_exists, car_patches, image_patch, result, scooter_exists, scooter_patches))
+    return result

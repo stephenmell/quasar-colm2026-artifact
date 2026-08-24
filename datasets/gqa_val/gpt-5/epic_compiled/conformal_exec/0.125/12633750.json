@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "No, all coats are dry.",
+      "Yes, there are coats that are not dry.",
+      "no",
+      "yes"
+    ]
+  },
+  "time_ns": 5807827167
+}

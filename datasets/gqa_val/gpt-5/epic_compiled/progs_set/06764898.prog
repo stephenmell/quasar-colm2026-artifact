@@ -1,0 +1,48 @@
+def execute_command(image) -> str:
+    boy_patches = None
+    image_patch = None
+    man_patches = None
+    result = None
+    temp = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+
+    def _if(boy_patches, image_patch, man_patches, result, temp):
+        boy_patches = image_patch.find('boy')
+
+        def _if(boy_patches, image_patch, man_patches, result, temp):
+            result = image_patch.simple_query('Does he wear shorts?')
+            return (boy_patches, image_patch, man_patches, result, temp)
+
+        def _else(boy_patches, image_patch, man_patches, result, temp):
+            temp = 'no'
+
+            def _for(boy_patch, boy_patches, image_patch, man_patches, result, temp):
+
+                def _if(boy_patches, image_patch, man_patches, result, temp):
+                    temp = 'yes'
+                    return (boy_patches, image_patch, man_patches, result, temp)
+                boy_patches, image_patch, man_patches, result, temp = if_stmt(_if, None, boy_patch.simple_query('Is the boy wearing shorts?') == 'yes', (boy_patches, image_patch, man_patches, result, temp))
+                return (boy_patches, image_patch, man_patches, result, temp)
+            boy_patches, image_patch, man_patches, result, temp = for_stmt(_for, boy_patches, (boy_patches, image_patch, man_patches, result, temp))
+            result = temp
+            return (boy_patches, image_patch, man_patches, result, temp)
+        boy_patches, image_patch, man_patches, result, temp = if_stmt(_if, _else, len(boy_patches) == 0, (boy_patches, image_patch, man_patches, result, temp))
+        return (boy_patches, image_patch, man_patches, result, temp)
+
+    def _else(boy_patches, image_patch, man_patches, result, temp):
+        temp = 'no'
+
+        def _for(man_patch, image_patch, man_patches, result, temp):
+
+            def _if(image_patch, man_patches, result, temp):
+                temp = 'yes'
+                return (image_patch, man_patches, result, temp)
+            image_patch, man_patches, result, temp = if_stmt(_if, None, man_patch.simple_query('Is the man wearing shorts?') == 'yes', (image_patch, man_patches, result, temp))
+            return (image_patch, man_patches, result, temp)
+        image_patch, man_patches, result, temp = for_stmt(_for, man_patches, (image_patch, man_patches, result, temp))
+        result = temp
+        return (boy_patches, image_patch, man_patches, result, temp)
+    boy_patches, image_patch, man_patches, result, temp = if_stmt(_if, _else, len(man_patches) == 0, (boy_patches, image_patch, man_patches, result, temp))
+    return result

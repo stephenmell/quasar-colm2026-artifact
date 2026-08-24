@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    shoe_patches = None
+    image_patch = ImagePatch(image)
+    shoe_patches = image_patch.find('shoe')
+
+    def _if(image_patch, result, shoe_patches):
+        result = image_patch.simple_query('Is the shoe white?')
+        return (image_patch, result, shoe_patches)
+
+    def _else(image_patch, result, shoe_patches):
+        result = 'no'
+
+        def _for(shoe_patch, image_patch, result, shoe_patches):
+
+            def _if(image_patch, result, shoe_patches):
+                result = 'yes'
+                return (image_patch, result, shoe_patches)
+            image_patch, result, shoe_patches = if_stmt(_if, None, shoe_patch.verify_property('shoe', 'white'), (image_patch, result, shoe_patches))
+            return (image_patch, result, shoe_patches)
+        image_patch, result, shoe_patches = for_stmt(_for, shoe_patches, (image_patch, result, shoe_patches))
+        return (image_patch, result, shoe_patches)
+    image_patch, result, shoe_patches = if_stmt(_if, _else, len(shoe_patches) == 0, (image_patch, result, shoe_patches))
+    return result

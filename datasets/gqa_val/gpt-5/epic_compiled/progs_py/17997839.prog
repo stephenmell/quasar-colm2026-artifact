@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    zebra_patches = image_patch.find("zebra")
+
+    if len(zebra_patches) == 0:
+        result = image_patch.simple_query("Do you think the zebra that is little is young or old?")
+    else:
+        target_patch = None
+        smallest_patch = None
+        smallest_area = None
+
+        for zebra_patch in zebra_patches:
+            area = zebra_patch.width * zebra_patch.height
+            if smallest_area is None or area < smallest_area:
+                smallest_area = area
+                smallest_patch = zebra_patch
+            is_little = zebra_patch.verify_property("zebra", "little")
+            if is_little and target_patch is None:
+                target_patch = zebra_patch
+
+        if not target_patch:
+            target_patch = smallest_patch
+        result = target_patch.best_text_match(("young", "old"))
+    return result

@@ -1,0 +1,131 @@
+def execute_command():
+    EmailSchema = None
+    NamesSchema = None
+    RatingSchema = None
+    VeganFlagSchema = None
+    addresses = None
+    ai_vegan_restaurants = None
+    best_restaurant_address = None
+    best_restaurant_name = None
+    best_restaurant_price_per_person = None
+    best_restaurant_rating = None
+    calendar_event = None
+    candidate_restaurants = None
+    city = None
+    current_day = None
+    current_month = None
+    current_year_int = None
+    current_year_str = None
+    email_parsed = None
+    event_description = None
+    event_end_time = None
+    event_location = None
+    event_start_time = None
+    event_title = None
+    is_better = None
+    price_pp = None
+    rest_text = None
+    rest_text_norm = None
+    restaurant_names = None
+    restaurant_prices = None
+    restaurant_ratings_text = None
+    restaurants_schema = None
+    restaurants_str = None
+    restrictions = None
+    rr = None
+    rtext = None
+    target_year_int = None
+    target_year_str = None
+    temp_email = None
+    user_email = None
+    user_info = None
+    vegan_flag = None
+    vegan_restaurants = None
+    city = 'Paris'
+    restaurants_str = get_all_restaurants_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    restaurants_schema = query_ai_assistant('Here is a list of restaurants: {}. Extract ONLY the restaurant names as a clean JSON list of strings, preserving exact names.'.format(restaurants_str), NamesSchema)
+    restaurant_names = restaurants_schema.names
+    restrictions = get_dietary_restrictions_for_all_restaurants(restaurant_names)
+    vegan_restaurants = []
+
+    def _for(r, NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants):
+        rest_text = restrictions.get(r)
+        rest_text_norm = rest_text.lower()
+
+        def _if(NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants):
+            vegan_restaurants = vegan_restaurants + [r]
+            return (NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants)
+        NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants = if_stmt(_if, None, rest_text_norm.find('vegan') != -1, (NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants))
+        return (NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants)
+    NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants = for_stmt(_for, restaurant_names, (NamesSchema, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_restaurants))
+    candidate_restaurants = vegan_restaurants
+
+    def _if(NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants):
+        VeganFlagSchema = CreateSchema('has_vegan', bool)
+        ai_vegan_restaurants = []
+
+        def _for(r, NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants):
+            rest_text = restrictions.get(r)
+            vegan_flag = query_ai_assistant("Given this dietary restrictions description: '{}'. Determine if VEGAN options are available (including synonyms like plant-based, fully vegan, vegan-friendly). Respond with has_vegan True if vegan options are offered, else False.".format(rest_text), VeganFlagSchema)
+
+            def _if(NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants):
+                ai_vegan_restaurants = ai_vegan_restaurants + [r]
+                return (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants)
+            NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants = if_stmt(_if, None, vegan_flag.has_vegan, (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants))
+            return (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants)
+        NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants = for_stmt(_for, restaurant_names, (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants))
+        candidate_restaurants = ai_vegan_restaurants
+        return (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants)
+    NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants = if_stmt(_if, None, len(candidate_restaurants) == 0, (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants))
+
+    def _if(NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants):
+        candidate_restaurants = restaurant_names
+        return (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants)
+    NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants = if_stmt(_if, None, len(candidate_restaurants) == 0, (NamesSchema, VeganFlagSchema, ai_vegan_restaurants, candidate_restaurants, city, rest_text, rest_text_norm, restaurant_names, restaurants_schema, restaurants_str, restrictions, vegan_flag, vegan_restaurants))
+    restaurant_ratings_text = get_rating_reviews_for_restaurants(candidate_restaurants)
+    restaurant_prices = get_price_for_restaurants(candidate_restaurants)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_restaurant_name = None
+    best_restaurant_rating = -1.0
+    best_restaurant_price_per_person = float('inf')
+
+    def _for(r, NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants):
+        rtext = restaurant_ratings_text.get(r)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this restaurant rating and reviews: {}'.format(rtext), RatingSchema)
+        price_pp = restaurant_prices.get(r)
+        is_better = or_expr(rr.rating > best_restaurant_rating, rr.rating == best_restaurant_rating and price_pp < best_restaurant_price_per_person)
+
+        def _if(NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants):
+            best_restaurant_name = r
+            best_restaurant_rating = rr.rating
+            best_restaurant_price_per_person = price_pp
+            return (NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants)
+        NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants = if_stmt(_if, None, is_better, (NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants))
+        return (NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants)
+    NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants = for_stmt(_for, candidate_restaurants, (NamesSchema, RatingSchema, VeganFlagSchema, ai_vegan_restaurants, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, vegan_flag, vegan_restaurants))
+    addresses = get_restaurants_address([best_restaurant_name])
+    best_restaurant_address = addresses.get(best_restaurant_name)
+    user_info = get_user_information()
+    EmailSchema = CreateSchema('email', EmailStr)
+    email_parsed = query_ai_assistant("From this user information dictionary: {}. Extract the user's primary work email address as a single email string.".format(user_info), EmailSchema)
+    user_email = email_parsed.email
+    temp_email = send_email([user_email], 'Time sync', 'Temporary message to determine current timestamp for scheduling a reminder. No action needed.', None, None, None)
+    current_year_str = temp_email.timestamp.strftime('%Y')
+    current_month = int(temp_email.timestamp.strftime('%m'))
+    current_day = int(temp_email.timestamp.strftime('%d'))
+    current_year_int = int(current_year_str)
+    target_year_int = current_year_int
+
+    def _if(EmailSchema, NamesSchema, RatingSchema, VeganFlagSchema, addresses, ai_vegan_restaurants, best_restaurant_address, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, current_day, current_month, current_year_int, current_year_str, email_parsed, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, target_year_int, temp_email, user_email, user_info, vegan_flag, vegan_restaurants):
+        target_year_int = current_year_int + 1
+        return (EmailSchema, NamesSchema, RatingSchema, VeganFlagSchema, addresses, ai_vegan_restaurants, best_restaurant_address, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, current_day, current_month, current_year_int, current_year_str, email_parsed, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, target_year_int, temp_email, user_email, user_info, vegan_flag, vegan_restaurants)
+    EmailSchema, NamesSchema, RatingSchema, VeganFlagSchema, addresses, ai_vegan_restaurants, best_restaurant_address, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, current_day, current_month, current_year_int, current_year_str, email_parsed, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, target_year_int, temp_email, user_email, user_info, vegan_flag, vegan_restaurants = if_stmt(_if, None, or_expr(current_month > 10, current_month == 10 and current_day > 15), (EmailSchema, NamesSchema, RatingSchema, VeganFlagSchema, addresses, ai_vegan_restaurants, best_restaurant_address, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, candidate_restaurants, city, current_day, current_month, current_year_int, current_year_str, email_parsed, is_better, price_pp, rest_text, rest_text_norm, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, restrictions, rr, rtext, target_year_int, temp_email, user_email, user_info, vegan_flag, vegan_restaurants))
+    target_year_str = str(target_year_int)
+    event_title = 'Dinner at {}'.format(best_restaurant_name)
+    event_description = 'Reminder to book a table at {}.'.format(best_restaurant_name)
+    event_start_time = '{}-10-15 09:00'.format(target_year_str)
+    event_end_time = '{}-10-15 09:30'.format(target_year_str)
+    event_location = best_restaurant_address
+    calendar_event = create_calendar_event(event_title, event_start_time, event_end_time, event_description, None, event_location)
+    return {'restaurant_name': best_restaurant_name, 'restaurant_address': best_restaurant_address, 'calendar_event': calendar_event}

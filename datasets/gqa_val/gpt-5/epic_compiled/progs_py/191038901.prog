@@ -1,0 +1,30 @@
+# Is the black screen to the left or to the right of the tall lamp?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    screen_patches = image_patch.find("screen")
+    lamp_patches = image_patch.find("lamp")
+
+    black_screen_patches = ()
+    for sp in screen_patches:
+        is_black = sp.verify_property("screen", "black")
+        if is_black:
+            black_screen_patches = black_screen_patches + (sp,)
+
+    tall_lamp_patches = ()
+    for lp in lamp_patches:
+        is_tall = lp.verify_property("lamp", "tall")
+        if is_tall:
+            tall_lamp_patches = tall_lamp_patches + (lp,)
+
+    if len(black_screen_patches) == 0 or len(tall_lamp_patches) == 0:
+        result = image_patch.simple_query("Is the black screen to the left or to the right of the tall lamp?")
+    else:
+        screen_patch = black_screen_patches[0]
+        lamp_patch = tall_lamp_patches[0]
+        if screen_patch.horizontal_center < lamp_patch.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

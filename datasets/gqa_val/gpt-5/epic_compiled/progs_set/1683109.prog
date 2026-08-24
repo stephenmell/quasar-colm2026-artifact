@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    couch_patches = None
+    image_patch = None
+    pillow_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find('pillow')
+    couch_patches = image_patch.find('couch')
+
+    def _if(couch_patches, image_patch, pillow_patches, result):
+        result = image_patch.simple_query('Is the pillow to the right of a couch?')
+        return (couch_patches, image_patch, pillow_patches, result)
+
+    def _else(couch_patches, image_patch, pillow_patches, result):
+        result = 'no'
+
+        def _for(pillow_patch, couch_patches, image_patch, pillow_patches, result):
+
+            def _for(couch_patch, couch_patches, image_patch, pillow_patches, result):
+
+                def _if(couch_patches, image_patch, pillow_patches, result):
+                    result = 'yes'
+                    return (couch_patches, image_patch, pillow_patches, result)
+                couch_patches, image_patch, pillow_patches, result = if_stmt(_if, None, pillow_patch.horizontal_center > couch_patch.horizontal_center, (couch_patches, image_patch, pillow_patches, result))
+                return (couch_patches, image_patch, pillow_patches, result)
+            couch_patches, image_patch, pillow_patches, result = for_stmt(_for, couch_patches, (couch_patches, image_patch, pillow_patches, result))
+            return (couch_patches, image_patch, pillow_patches, result)
+        couch_patches, image_patch, pillow_patches, result = for_stmt(_for, pillow_patches, (couch_patches, image_patch, pillow_patches, result))
+        return (couch_patches, image_patch, pillow_patches, result)
+    couch_patches, image_patch, pillow_patches, result = if_stmt(_if, _else, or_expr(len(pillow_patches) == 0, len(couch_patches) == 0), (couch_patches, image_patch, pillow_patches, result))
+    return result

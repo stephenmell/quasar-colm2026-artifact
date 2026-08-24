@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    terms = ("glasses", "sunglasses", "eyeglasses", "spectacles")
+    found = False
+    for term in terms:
+        if image_patch.exists(term):
+            found = True
+    result = bool_to_yesno(found)
+    return result

@@ -1,0 +1,16 @@
+# Is the batter to the left or to the right of the baseball player?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    batter_patches = image_patch.find("batter")
+    player_patches = image_patch.find("baseball player")
+
+    if len(batter_patches) == 0 or len(player_patches) == 0:
+        result = image_patch.simple_query("Is the batter to the left or to the right of the baseball player?")
+    else:
+        batter_patch = batter_patches[0]
+        player_patch = player_patches[0]
+        if batter_patch.horizontal_center < player_patch.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

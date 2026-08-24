@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_desk = image_patch.exists("desk")
+    is_keyboard = image_patch.exists("keyboard")
+    return bool_to_yesno(is_desk and is_keyboard)

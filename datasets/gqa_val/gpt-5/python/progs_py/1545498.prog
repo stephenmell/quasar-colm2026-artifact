@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Direct existence check
+    if image_patch.exists("fisherman") or image_patch.exists("fishermen"):
+        return "yes"
+    # Infer from people who are fishing
+    person_patches = image_patch.find("person") + image_patch.find("man") + image_patch.find("woman")
+    for person_patch in person_patches:
+        if (person_patch.verify_property("person", "fishing") or
+            person_patch.verify_property("man", "fishing") or
+            person_patch.verify_property("woman", "fishing")):
+            return "yes"
+    # Fallback to a direct question
+    return image_patch.simple_query("Do you see any fishermen?")

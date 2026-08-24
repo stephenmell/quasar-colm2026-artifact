@@ -1,0 +1,89 @@
+({2155: 'context', 2162: 'llm_query', 2169: '.join', 2177: 'return_result'},
+ ('def',
+  2153,
+  ((),
+   ((('call', (2154,), -1, ()),
+     ('def',
+      2156,
+      ((2164, 2157),
+       ((('prim',
+          2158,
+          'You are given a single document. Extract any information relevant '
+          'to the following profile and question.\n'
+          '\n'
+          'Profile clues (the same person):\n'
+          '- In their mid-20s, they began dating their partner, who was a '
+          'teenager at the time.\n'
+          '- They had three children together.\n'
+          '- The individual assaulted their sister and assaulted their '
+          'partner.\n'
+          '- They completed their education up to the 10th grade.\n'
+          '\n'
+          'Question we need to answer: What grade was their oldest child in '
+          'August 2013?\n'
+          '\n'
+          'Instructions:\n'
+          '- From this document, identify any person(s) who match any part of '
+          "the profile (even partially). Include: name(s), partner's name, "
+          'ages/timing at relationship start, number of children (with ages if '
+          'present), any incidents of assault on sister and on partner (with '
+          'dates if present), education level.\n'
+          '- VERY IMPORTANT: Extract explicitly if the document mentions the '
+          'grade level of the oldest child in August 2013. Quote the exact '
+          'wording whenever possible.\n'
+          '- If the document contains relevant info, output a concise '
+          'structured summary with fields: Candidate Name(s), Partner, '
+          'Relationship Start Ages/Timing, Children, Assault Incidents '
+          '(sister), Assault Incidents (partner), Education, Oldest Child '
+          'Grade in August 2013, Quotes.\n'
+          '- If the document does not contain relevant info, output exactly: '
+          'No relevant info.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2159,), 80, (2158, 2157)),
+         ('prim', 2160, '\nEND_DOCUMENT'),
+         ('call', (2161,), 80, (2159, 2160)),
+         ('call', (2163,), 2162, (2161,)),
+         ('call', (2165,), -1, (2163,)),
+         ('call', (2166,), 80, (2164, 2165))),
+        (2166,)))),
+     ('call', (2168,), 79, (2155,)),
+     ('call', (2167,), 2168, (2154, 2156)),
+     ('prim', 2170, '\n\n---\n\n'),
+     ('call', (2171,), 2169, (2170, 2167)),
+     ('prim',
+      2172,
+      'You are given extracted notes from multiple documents about a specific '
+      "individual. Use them to determine the answer to the user's question.\n"
+      '\n'
+      'As of December 31, 2013, the following is true about the individual we '
+      'care about:\n'
+      '- In their mid-20s, they began dating their partner, who was a teenager '
+      'at the time.\n'
+      '- They had three children together.\n'
+      '- The individual assaulted their sister and partner.\n'
+      '- They completed their education up to the 10th grade.\n'
+      '\n'
+      'Question: What grade was their oldest child in August 2013?\n'
+      '\n'
+      'Notes from documents:\n'),
+     ('call', (2173,), 80, (2172, 2171)),
+     ('prim',
+      2174,
+      '\n'
+      '\n'
+      'Instructions:\n'
+      '- Identify the single individual who best matches all the profile '
+      'points across the notes.\n'
+      "- Locate the explicit statement mentioning the oldest child's grade in "
+      "August 2013. Use the wording from the notes if available (e.g., 'Class "
+      "4', 'fourth grade', etc.).\n"
+      '- If multiple phrasings exist, choose the one directly quoted or most '
+      'precise.\n'
+      "- Output only the grade level as a short phrase (e.g., 'fourth grade' "
+      "or 'Class 4'). Do not include any other words, punctuation, or "
+      'explanation.'),
+     ('call', (2175,), 80, (2173, 2174)),
+     ('call', (2176,), 2162, (2175,)),
+     ('call', (2178,), 2177, (2176,))),
+    (2178,)))))

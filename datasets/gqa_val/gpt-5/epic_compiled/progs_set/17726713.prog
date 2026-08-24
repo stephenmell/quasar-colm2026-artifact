@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    bottle_patches = None
+    green_bottle_patches = None
+    image_patch = None
+    is_green = None
+    is_tall = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    green_bottle_patches = image_patch.find('green bottle')
+
+    def _if(bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result):
+        bottle_patches = image_patch.find('bottle')
+
+        def _if(bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result):
+            result = image_patch.simple_query('Does the green bottle look tall?')
+            return (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result)
+
+        def _else(bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result):
+
+            def _for(bottle_patch, bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result):
+                is_green = bottle_patch.verify_property('bottle', 'green')
+                is_tall = bottle_patch.verify_property('bottle', 'tall')
+
+                def _if(bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result):
+                    result = 'yes'
+                    return (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result)
+                bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result = if_stmt(_if, None, and_expr(is_green, is_tall), (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result))
+                return (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result)
+            bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result = for_stmt(_for, bottle_patches, (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result))
+            return (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result)
+        bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result = if_stmt(_if, _else, len(bottle_patches) == 0, (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result))
+        return (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result)
+
+    def _else(bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result):
+
+        def _for(green_bottle_patch, green_bottle_patches, image_patch, result):
+
+            def _if(green_bottle_patches, image_patch, result):
+                result = 'yes'
+                return (green_bottle_patches, image_patch, result)
+            green_bottle_patches, image_patch, result = if_stmt(_if, None, green_bottle_patch.verify_property('bottle', 'tall'), (green_bottle_patches, image_patch, result))
+            return (green_bottle_patches, image_patch, result)
+        green_bottle_patches, image_patch, result = for_stmt(_for, green_bottle_patches, (green_bottle_patches, image_patch, result))
+        return (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result)
+    bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result = if_stmt(_if, _else, len(green_bottle_patches) == 0, (bottle_patches, green_bottle_patches, image_patch, is_green, is_tall, result))
+    return result

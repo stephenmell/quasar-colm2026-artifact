@@ -1,0 +1,124 @@
+({384: 'context', 394: 'llm_query', 398: 'str', 417: 'return_result'},
+ ('def',
+  381,
+  ((),
+   ((('prim', 382, ''),
+     ('prim', 383, 0),
+     ('def',
+      385,
+      ((408, 386),
+       ((('unpack', (396, 387), 408),
+         ('prim', 388, 1),
+         ('call', (389,), 80, (387, 388)),
+         ('prim',
+          390,
+          'You are given a single document to analyze for a riddle-like '
+          'identification of a political figure. Extract any possible matches '
+          'to these clues, quoting the supporting lines and providing your '
+          'reasoning:\n'
+          '\n'
+          'Clues to check (answer Yes/No/Unknown for each, plus quotes and '
+          'reasoning):\n'
+          '1) First year in political office (for the principal role they are '
+          'known for) was the same year as a FIFA World Cup.\n'
+          '2) Last year in office was within three years of the release of an '
+          'iconic film (e.g., Casablanca 1942; Gone with the Wind 1939; '
+          'Citizen Kane 1941; The Godfather 1972; Jaws 1975; Star Wars 1977; '
+          'Titanic 1997; The Matrix 1999; etc.). Identify such a film and the '
+          'Δ years.\n'
+          '3) They were reported to take a nap every day after lunch.\n'
+          '4) They met with a U.S. Secretary of State; in one conversation, a '
+          'phrase referring to a type of informal telegraph (e.g., “bush '
+          'telegraph,” “jungle telegraph,” “grapevine telegraph”) was used.\n'
+          '5) That meeting with the U.S. Secretary of State occurred within '
+          'the last four years of their time in office.\n'
+          '6) They held that office for less than 15 years total.\n'
+          '7) They had three children (exactly three).\n'
+          '8) A professional hunter paid them a compliment (quote/summary and '
+          'source if present).\n'
+          '9) They died on a Saturday (compute day-of-week if a death date is '
+          'given and not stated).\n'
+          '10) Identify any associated person whose first name matches a '
+          'gin-cocktail name (examples: Tom [Tom Collins], Gibson, Gimlet, '
+          'Negroni, Vesper, Aviation, Ramos, French [75], Bee [Bee’s Knees], '
+          'Collins, etc.), and state that person’s relationship to the '
+          'political figure.\n'
+          '\n'
+          'For each potential figure found in this document, provide:\n'
+          '- Name\n'
+          '- Office held and years in office (start–end)\n'
+          '- How each clue matches (with quotes and reasoning)\n'
+          '- Any additional context that connects multiple clues\n'
+          '\n'
+          'Document:\n'
+          '---\n'),
+         ('call', (391,), 80, (390, 386)),
+         ('prim',
+          392,
+          '\n'
+          '---\n'
+          'Provide a compact but thorough extraction for this single document '
+          'only.'),
+         ('call', (393,), 80, (391, 392)),
+         ('call', (395,), 394, (393,)),
+         ('prim', 397, '\n\n[DOC '),
+         ('call', (399,), 80, (396, 397)),
+         ('call', (400,), 398, (389,)),
+         ('call', (401,), 80, (399, 400)),
+         ('prim', 402, ' EXTRACTION]\n'),
+         ('call', (403,), 80, (401, 402)),
+         ('call', (404,), 80, (403, 395)),
+         ('pack', 409, (404, 389))),
+        (409,)))),
+     ('pack', 410, (382, 383)),
+     ('call', (411,), 79, (384,)),
+     ('call', (407,), 411, (410, 385)),
+     ('unpack', (405, 406), 407),
+     ('prim',
+      412,
+      'We have multiple document-level extractions about a political figure '
+      'matching a set of clues. Your task: synthesize across the extractions '
+      'to identify the single best match and answer the final query '
+      'concisely.\n'
+      '\n'
+      'Clues recap:\n'
+      '- First year in office is the same year as a FIFA World Cup.\n'
+      '- Last year in office is within three years of an iconic film’s '
+      'release.\n'
+      '- Reported to take a nap every day after lunch.\n'
+      '- Met with a U.S. Secretary of State; in one conversation a phrase '
+      'referring to an informal telegraph (e.g., “bush telegraph,” “jungle '
+      'telegraph,” “grapevine telegraph”) was used.\n'
+      '- That meeting occurred within the last four years of their time in '
+      'office.\n'
+      '- Held their office for less than 15 years.\n'
+      '- Had three children.\n'
+      '- A professional hunter paid them a compliment.\n'
+      '- Died on a Saturday.\n'
+      '- Request: Provide the name of this political figure, and the '
+      'relationship this figure had with a person whose first name is the same '
+      'as a cocktail typically made with gin (e.g., Tom for Tom Collins; '
+      'Gibson; Gimlet; Negroni; Vesper; etc.). Provide the associated person’s '
+      'full name and the relationship.\n'
+      '\n'
+      'Here are the document-based extractions:\n'),
+     ('call', (413,), 80, (412, 405)),
+     ('prim',
+      414,
+      '\n'
+      '\n'
+      'Now, based on the above, do the following:\n'
+      '1) Identify the political figure who fits all the clues (or best fits '
+      'them if minor discrepancies exist in sources, but only if the overall '
+      'fit is compelling and the document evidence supports it).\n'
+      '2) Identify the person with the gin-cocktail first name, state their '
+      'full name and specify clearly the relationship to the political figure '
+      '(e.g., ‘mentor’, ‘spouse’, ‘parent’, ‘ally’, ‘assassinated by’, '
+      '‘foreign counterpart’, etc.).\n'
+      '3) Keep the final output to one succinct line with this format: Name — '
+      'Relationship to [Full Name of gin-cocktail-first-name person]: '
+      '[relationship].'),
+     ('call', (415,), 80, (413, 414)),
+     ('call', (416,), 394, (415,)),
+     ('call', (418,), 417, (416,))),
+    (418,)))))

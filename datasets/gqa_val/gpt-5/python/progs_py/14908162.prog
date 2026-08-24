@@ -1,0 +1,11 @@
+# Are there any boxes on the table?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    if len(table_patches) == 0:
+        # If no table is found, ask directly (relation involved)
+        return image_patch.simple_query("Are there any boxes on the table?")
+    for table_patch in table_patches:
+        if table_patch.exists("box") or table_patch.exists("boxes"):
+            return "yes"
+    return "no"

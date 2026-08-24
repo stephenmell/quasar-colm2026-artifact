@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    furniture_patches = image_patch.find("furniture")
+    # Question assumes only one furniture patch
+    if len(furniture_patches) == 0:
+        # If no furniture is found, query the image directly
+        return image_patch.simple_query("Which kind of furniture is it?")
+    return furniture_patches[0].simple_query("Which kind of furniture is it?")

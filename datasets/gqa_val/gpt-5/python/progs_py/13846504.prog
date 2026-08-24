@@ -1,0 +1,40 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find tables
+    table_patches = image_patch.find("table")
+    if len(table_patches) == 0:
+        # If no table is found, ask directly
+        return image_patch.simple_query("Do you see any cups to the right of the pepper grinder on the table?")
+
+    # Find pepper grinder and cups in the full image (to keep coordinates consistent)
+    pepper_patches = image_patch.find("pepper grinder")
+    if len(pepper_patches) == 0:
+        # If no pepper grinder is found, ask directly
+        return image_patch.simple_query("Do you see any cups to the right of the pepper grinder on the table?")
+
+    cup_patches = image_patch.find("cup")
+    if len(cup_patches) == 0:
+        return "no"
+
+    # Check for any cup on a table to the right of a pepper grinder on the same table
+    for table_patch in table_patches:
+        # Identify pepper grinders located on this table
+        peppers_on_table = []
+        for pepper_patch in pepper_patches:
+            if (table_patch.left <= pepper_patch.horizontal_center <= table_patch.right and
+                table_patch.lower <= pepper_patch.vertical_center <= table_patch.upper):
+                peppers_on_table.append(pepper_patch)
+
+        if len(peppers_on_table) == 0:
+            continue
+
+        # Check cups on this table that are to the right of any such pepper grinder
+        for pepper_patch in peppers_on_table:
+            for cup_patch in cup_patches:
+                if (table_patch.left <= cup_patch.horizontal_center <= table_patch.right and
+                    table_patch.lower <= cup_patch.vertical_center <= table_patch.upper and
+                    cup_patch.horizontal_center > pepper_patch.horizontal_center):
+                    return "yes"
+
+    return "no"

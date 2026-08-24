@@ -1,0 +1,29 @@
+# Are there any people to the left of the cones that are to the left of the screen?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find cones (try common variants)
+    cone_patches = image_patch.find("cone")
+    if len(cone_patches) == 0:
+        cone_patches = image_patch.find("traffic cone")
+    if len(cone_patches) == 0:
+        # If no cones are found, query directly
+        return image_patch.simple_query("Are there any people to the left of the cones that are to the left of the screen?")
+
+    # Keep only cones that are to the left half of the screen
+    left_screen_cones = [c for c in cone_patches if c.horizontal_center < image_patch.horizontal_center]
+    if len(left_screen_cones) == 0:
+        return "no"
+
+    # Find people
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        person_patches = image_patch.find("people")
+        if len(person_patches) == 0:
+            return "no"
+
+    # Check if any person is to the left of any left-of-screen cone
+    for cone_patch in left_screen_cones:
+        for person_patch in person_patches:
+            if person_patch.horizontal_center < cone_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2407602",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "What is on the notebook?"
+      ],
+      "A calendar or planner.",
+      2054792074
+    ]
+  ],
+  "best_text_match": []
+}

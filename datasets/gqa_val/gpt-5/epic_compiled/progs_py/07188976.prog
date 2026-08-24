@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find("giraffe")
+    if len(giraffe_patches) == 0:
+        result = image_patch.simple_query("Is the giraffe a baby?")
+    else:
+        result = "no"
+        for giraffe_patch in giraffe_patches:
+            is_baby = giraffe_patch.verify_property("giraffe", "baby")
+            if not is_baby:
+                is_baby = giraffe_patch.verify_property("giraffe", "young")
+            if not is_baby:
+                match = giraffe_patch.best_text_match(("baby", "adult"))
+                if match == "baby":
+                    is_baby = True
+            if is_baby:
+                result = "yes"
+    return result

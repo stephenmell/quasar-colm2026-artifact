@@ -1,0 +1,52 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tomato_patches = image_patch.find("tomato")
+    if len(tomato_patches) == 0:
+        # If no tomato is found, ask directly
+        return image_patch.simple_query("Are there any eggs to the right of the sliced tomato on the dish?")
+    # Filter for sliced tomatoes
+    sliced_tomatoes = [t for t in tomato_patches if t.verify_property("tomato", "sliced")]
+    if len(sliced_tomatoes) == 0:
+        return image_patch.simple_query("Are there any eggs to the right of the sliced tomato on the dish?")
+    # Find the dish (or plate as fallback)
+    dish_patches = image_patch.find("dish")
+    if len(dish_patches) == 0:
+        dish_patches = image_patch.find("plate")
+
+    def is_on(container_patch: ImagePatch, obj_patch: ImagePatch) -> bool:
+        return (container_patch.left <= obj_patch.horizontal_center <= container_patch.right and
+                container_patch.lower <= obj_patch.vertical_center <= container_patch.upper)
+
+    # Keep only sliced tomatoes that are on the dish (if dish is detected)
+    tomatoes_on_dish = sliced_tomatoes
+    if len(dish_patches) > 0:
+        tomatoes_on_dish = []
+        for t in sliced_tomatoes:
+            if any(is_on(d, t) for d in dish_patches):
+                tomatoes_on_dish.append(t)
+        if len(tomatoes_on_dish) == 0:
+            return image_patch.simple_query("Are there any eggs to the right of the sliced tomato on the dish?")
+
+    # Find eggs
+    egg_patches = image_patch.find("egg")
+    if len(egg_patches) == 0:
+        egg_patches = image_patch.find("eggs")
+    if len(egg_patches) == 0:
+        return "no"
+
+    # Optionally restrict eggs to those on the dish (if dish is detected)
+    eggs_on_dish = egg_patches
+    if len(dish_patches) > 0:
+        eggs_on_dish = []
+        for e in egg_patches:
+            if any(is_on(d, e) for d in dish_patches):
+                eggs_on_dish.append(e)
+        if len(eggs_on_dish) == 0:
+            return "no"
+
+    # Check if any egg is to the right of any sliced tomato on the dish
+    for t in tomatoes_on_dish:
+        for e in eggs_on_dish:
+            if e.horizontal_center > t.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_faucet = None
+    has_skateboard = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_faucet = image_patch.exists('faucet')
+    has_skateboard = image_patch.exists('skateboard')
+    result = bool_to_yesno(or_expr(has_faucet, has_skateboard))
+    return result

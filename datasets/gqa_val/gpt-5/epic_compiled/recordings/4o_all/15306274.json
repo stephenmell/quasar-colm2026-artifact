@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2407883",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "Is the gray thing in front of the horse made of wood?"
+      ],
+      "Yes.",
+      1042875291
+    ]
+  ],
+  "best_text_match": []
+}

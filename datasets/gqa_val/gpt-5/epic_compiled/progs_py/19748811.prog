@@ -1,0 +1,27 @@
+# Which vehicle is green?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    vehicle_types = ("car", "truck", "bus", "train", "motorcycle", "bike", "bicycle", "motorbike", "scooter", "van", "taxi", "airplane", "plane", "boat", "ship", "tram", "subway", "tractor")
+    
+    for vehicle_name in vehicle_types:
+        patches = image_patch.find(vehicle_name)
+        for patch in patches:
+            is_green = patch.verify_property(vehicle_name, "green")
+            if is_green:
+                answer = patch.simple_query("What vehicle is this?")
+                if answer:
+                    result = answer
+                else:
+                    result = vehicle_name
+
+    if not result:
+        generic_vehicle_patches = image_patch.find("vehicle")
+        for patch in generic_vehicle_patches:
+            if patch.verify_property("vehicle", "green"):
+                result = patch.simple_query("Which vehicle is green?")
+
+    if not result:
+        result = image_patch.simple_query("Which vehicle is green?")
+    return result

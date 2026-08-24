@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    carriage_patches = None
+    horse_patches = None
+    image_patch = None
+    is_black_carriage = None
+    is_brown_horse = None
+    result = None
+    image_patch = ImagePatch(image)
+    carriage_patches = image_patch.find('carriage')
+
+    def _if(carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+        result = image_patch.simple_query('Is the black carriage to the left of the brown horse?')
+        return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+
+    def _else(carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+        horse_patches = image_patch.find('horse')
+
+        def _if(carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+            result = 'no'
+            return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+
+        def _else(carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+            result = 'no'
+
+            def _for(carriage_patch, carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+                is_black_carriage = carriage_patch.verify_property('carriage', 'black')
+
+                def _if(carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+
+                    def _for(horse_patch, carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+                        is_brown_horse = horse_patch.verify_property('horse', 'brown')
+
+                        def _if(carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+
+                            def _if(carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result):
+                                result = 'yes'
+                                return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+                            carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result = if_stmt(_if, None, carriage_patch.horizontal_center < horse_patch.horizontal_center, (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result))
+                            return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+                        carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result = if_stmt(_if, None, is_brown_horse, (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result))
+                        return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+                    carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result = for_stmt(_for, horse_patches, (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result))
+                    return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+                carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result = if_stmt(_if, None, is_black_carriage, (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result))
+                return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+            carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result = for_stmt(_for, carriage_patches, (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result))
+            return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+        carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result = if_stmt(_if, _else, len(horse_patches) == 0, (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result))
+        return (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result)
+    carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result = if_stmt(_if, _else, len(carriage_patches) == 0, (carriage_patches, horse_patches, image_patch, is_black_carriage, is_brown_horse, result))
+    return result

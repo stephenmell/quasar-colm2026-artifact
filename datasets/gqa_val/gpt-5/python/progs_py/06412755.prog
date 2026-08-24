@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find("bus")
+    road_patches = image_patch.find("road")
+    # If we can't find the objects, ask directly
+    if len(bus_patches) == 0 or len(road_patches) == 0:
+        return image_patch.simple_query("Is the bus on top of the road both tall and high?")
+    # Check relation and properties
+    for bus_patch in bus_patches:
+        on_top_of_road = any(bus_patch.vertical_center < road_patch.vertical_center for road_patch in road_patches)
+        if on_top_of_road:
+            is_tall = bus_patch.verify_property("bus", "tall")
+            is_high = bus_patch.verify_property("bus", "high")
+            if is_tall and is_high:
+                return "yes"
+    return "no"

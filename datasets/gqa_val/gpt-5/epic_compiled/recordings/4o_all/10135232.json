@@ -1,0 +1,56 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2399513",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "checkered floor"
+      ],
+      [],
+      6991116974
+    ],
+    [
+      [
+        [
+          "2399513",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "floor"
+      ],
+      [],
+      7532132044
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2399513",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is the checkered floor brown or white?"
+      ],
+      "The checkered floor is black and white.",
+      924546796
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find("pillow")
+    if len(pillow_patches) == 0:
+        result = image_patch.simple_query("Is the pillow brown?")
+    else:
+        result = "no"
+        for pillow_patch in pillow_patches:
+            if pillow_patch.verify_property("pillow", "brown"):
+                result = "yes"
+    return result

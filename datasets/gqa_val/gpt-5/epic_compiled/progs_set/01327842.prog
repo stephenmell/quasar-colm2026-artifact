@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    cabbage_patches = None
+    cup_patches = None
+    image_patch = None
+    is_green = None
+    result = None
+    image_patch = ImagePatch(image)
+    cabbage_patches = image_patch.find('cabbage')
+
+    def _if(cabbage_patches, cup_patches, image_patch, is_green, result):
+        result = image_patch.simple_query('Is the green cabbage to the left of a cup?')
+        return (cabbage_patches, cup_patches, image_patch, is_green, result)
+
+    def _else(cabbage_patches, cup_patches, image_patch, is_green, result):
+        cup_patches = image_patch.find('cup')
+
+        def _if(cabbage_patches, cup_patches, image_patch, is_green, result):
+            result = 'no'
+            return (cabbage_patches, cup_patches, image_patch, is_green, result)
+
+        def _else(cabbage_patches, cup_patches, image_patch, is_green, result):
+            result = 'no'
+
+            def _for(cabbage_patch, cabbage_patches, cup_patches, image_patch, is_green, result):
+                is_green = cabbage_patch.verify_property('cabbage', 'green')
+
+                def _if(cabbage_patches, cup_patches, image_patch, is_green, result):
+
+                    def _for(cup_patch, cabbage_patches, cup_patches, image_patch, is_green, result):
+
+                        def _if(cabbage_patches, cup_patches, image_patch, is_green, result):
+                            result = 'yes'
+                            return (cabbage_patches, cup_patches, image_patch, is_green, result)
+                        cabbage_patches, cup_patches, image_patch, is_green, result = if_stmt(_if, None, cabbage_patch.horizontal_center < cup_patch.horizontal_center, (cabbage_patches, cup_patches, image_patch, is_green, result))
+                        return (cabbage_patches, cup_patches, image_patch, is_green, result)
+                    cabbage_patches, cup_patches, image_patch, is_green, result = for_stmt(_for, cup_patches, (cabbage_patches, cup_patches, image_patch, is_green, result))
+                    return (cabbage_patches, cup_patches, image_patch, is_green, result)
+                cabbage_patches, cup_patches, image_patch, is_green, result = if_stmt(_if, None, is_green, (cabbage_patches, cup_patches, image_patch, is_green, result))
+                return (cabbage_patches, cup_patches, image_patch, is_green, result)
+            cabbage_patches, cup_patches, image_patch, is_green, result = for_stmt(_for, cabbage_patches, (cabbage_patches, cup_patches, image_patch, is_green, result))
+            return (cabbage_patches, cup_patches, image_patch, is_green, result)
+        cabbage_patches, cup_patches, image_patch, is_green, result = if_stmt(_if, _else, len(cup_patches) == 0, (cabbage_patches, cup_patches, image_patch, is_green, result))
+        return (cabbage_patches, cup_patches, image_patch, is_green, result)
+    cabbage_patches, cup_patches, image_patch, is_green, result = if_stmt(_if, _else, len(cabbage_patches) == 0, (cabbage_patches, cup_patches, image_patch, is_green, result))
+    return result

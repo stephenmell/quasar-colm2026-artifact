@@ -1,0 +1,6 @@
+# Are there any cats?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_cat = image_patch.exists("cat")
+    result = bool_to_yesno(has_cat)
+    return result

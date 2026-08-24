@@ -1,0 +1,88 @@
+def execute_command():
+    NamesSchema = None
+    RatingOnlySchema = None
+    SundayOpenSchema = None
+    address = None
+    addresses_map = None
+    best_restaurant_name = None
+    best_restaurant_rating = None
+    c = None
+    candidate_restaurants = None
+    city = None
+    cuisines = None
+    french_restaurants = None
+    hours_text = None
+    opening_hours = None
+    operating_hours = None
+    restaurant_names = None
+    restaurant_ratings_text = None
+    restaurants_schema = None
+    restaurants_str = None
+    result = None
+    rr = None
+    rtext = None
+    sunday_open_restaurants = None
+    sunday_schema = None
+    city = 'Paris'
+    restaurants_str = get_all_restaurants_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    restaurants_schema = query_ai_assistant('Here is a list of restaurants: {}. Extract ONLY the restaurant names as a clean JSON list of strings, preserving exact names.'.format(restaurants_str), NamesSchema)
+    restaurant_names = restaurants_schema.names
+    cuisines = get_cuisine_type_for_restaurants(restaurant_names)
+    french_restaurants = []
+
+    def _for(r, NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str):
+        c = cuisines.get(r)
+
+        def _if(NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str):
+            french_restaurants = french_restaurants + [r]
+            return (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str)
+        NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, and_expr(c, c.find('French') != -1), (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str))
+        return (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str)
+    NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str = for_stmt(_for, restaurant_names, (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str))
+    candidate_restaurants = french_restaurants
+
+    def _if(NamesSchema, c, candidate_restaurants, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str):
+        candidate_restaurants = restaurant_names
+        return (NamesSchema, c, candidate_restaurants, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str)
+    NamesSchema, c, candidate_restaurants, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, len(candidate_restaurants) == 0, (NamesSchema, c, candidate_restaurants, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str))
+    opening_hours = check_restaurant_opening_hours(candidate_restaurants)
+    SundayOpenSchema = CreateSchema('open_on_sunday', bool)
+    sunday_open_restaurants = []
+
+    def _for(r, NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema):
+        hours_text = opening_hours.get(r)
+        sunday_schema = query_ai_assistant('Given this restaurant opening hours string: {}. Determine if the restaurant is OPEN on Sunday during typical lunch hours (around 12:00-15:00). Respond with open_on_sunday True if open during lunch on Sunday, else False.'.format(hours_text), SundayOpenSchema)
+
+        def _if(NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema):
+            sunday_open_restaurants = sunday_open_restaurants + [r]
+            return (NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema)
+        NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema = if_stmt(_if, None, sunday_schema.open_on_sunday, (NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema))
+        return (NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema)
+    NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema = for_stmt(_for, candidate_restaurants, (NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema))
+
+    def _if(NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema):
+        sunday_open_restaurants = candidate_restaurants
+        return (NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema)
+    NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema = if_stmt(_if, None, len(sunday_open_restaurants) == 0, (NamesSchema, SundayOpenSchema, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurants_schema, restaurants_str, sunday_open_restaurants, sunday_schema))
+    restaurant_ratings_text = get_rating_reviews_for_restaurants(sunday_open_restaurants)
+    RatingOnlySchema = CreateSchema('rating', float)
+    best_restaurant_name = None
+    best_restaurant_rating = -1.0
+
+    def _for(r, NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema):
+        rtext = restaurant_ratings_text.get(r)
+        rr = query_ai_assistant('Extract ONLY the numeric average rating as a float from this restaurant rating and reviews text. If multiple ratings are present, use the overall rating. Text: {}'.format(rtext), RatingOnlySchema)
+
+        def _if(NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema):
+            best_restaurant_name = r
+            best_restaurant_rating = rr.rating
+            return (NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema)
+        NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema = if_stmt(_if, None, rr.rating > best_restaurant_rating, (NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema))
+        return (NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema)
+    NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema = for_stmt(_for, sunday_open_restaurants, (NamesSchema, RatingOnlySchema, SundayOpenSchema, best_restaurant_name, best_restaurant_rating, c, candidate_restaurants, city, cuisines, french_restaurants, hours_text, opening_hours, restaurant_names, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, sunday_open_restaurants, sunday_schema))
+    addresses_map = get_restaurants_address([best_restaurant_name])
+    address = addresses_map.get(best_restaurant_name)
+    operating_hours = opening_hours.get(best_restaurant_name)
+    result = {'restaurant_name': best_restaurant_name, 'rating': best_restaurant_rating, 'address': address, 'operating_hours': operating_hours}
+    return result

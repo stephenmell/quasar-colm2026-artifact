@@ -1,0 +1,5 @@
+# Are there any floor lamps?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = bool_to_yesno(image_patch.exists("floor lamp"))
+    return result

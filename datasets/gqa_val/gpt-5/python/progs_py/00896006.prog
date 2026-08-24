@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find("tree")
+    if len(tree_patches) == 0:
+        # If no tree is found, query the image directly
+        return image_patch.simple_query("Are the trees short?")
+    if len(tree_patches) == 1:
+        # Single tree: check its property
+        return bool_to_yesno(tree_patches[0].verify_property("tree", "short"))
+    # Multiple trees: ask directly about the group property
+    return image_patch.simple_query("Are the trees short?")

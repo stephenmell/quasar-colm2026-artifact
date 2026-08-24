@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    appliance_patches = None
+    bedroom_patch = None
+    bedroom_patches = None
+    candidate = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bedroom_patches = image_patch.find('bedroom')
+
+    def _if(appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result):
+        result = image_patch.simple_query('What kind of appliance is in the bedroom?')
+        return (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result)
+
+    def _else(appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result):
+        bedroom_patch = bedroom_patches[0]
+        appliance_patches = bedroom_patch.find('appliance')
+
+        def _if(appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result):
+            result = bedroom_patch.simple_query('What kind of appliance is in the bedroom?')
+            return (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result)
+
+        def _else(appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result):
+            result = ''
+
+            def _for(appliance_patch, appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result):
+                candidate = appliance_patch.simple_query('What kind of appliance is this?')
+
+                def _if(appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result):
+                    result = candidate
+                    return (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result)
+                appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result = if_stmt(_if, None, not_expr(result), (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result))
+                return (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result)
+            appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result = for_stmt(_for, appliance_patches, (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result))
+
+            def _if(appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result):
+                result = bedroom_patch.simple_query('What kind of appliance is in the bedroom?')
+                return (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result)
+            appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result = if_stmt(_if, None, not_expr(result), (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result))
+            return (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result)
+        appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result = if_stmt(_if, _else, len(appliance_patches) == 0, (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result))
+        return (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result)
+    appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result = if_stmt(_if, _else, len(bedroom_patches) == 0, (appliance_patches, bedroom_patch, bedroom_patches, candidate, image_patch, result))
+    return result

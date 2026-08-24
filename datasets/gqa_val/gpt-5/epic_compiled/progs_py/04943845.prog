@@ -1,0 +1,12 @@
+# Is the uniform blue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    uniform_patches = image_patch.find("uniform")
+    if len(uniform_patches) == 0:
+        result = image_patch.simple_query("Is the uniform blue?")
+    else:
+        result = "no"
+        for uniform_patch in uniform_patches:
+            if uniform_patch.verify_property("uniform", "blue"):
+                result = "yes"
+    return result

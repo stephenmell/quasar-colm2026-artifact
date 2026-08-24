@@ -1,0 +1,5 @@
+{
+  "result": "{'cities': {'London': {'hotel': 'London Luxury', 'restaurant': 'House of Sushi', 'car_rental_company': 'New Car Rental'}, 'Paris': {'hotel': 'Luxury Palace', 'restaurant': 'Le Baratin', 'car_rental_company': 'Eiffel Tower Car Rental'}}, 'totals': {'currency': 'EUR', 'hotel_total_eur': 3300.0, 'meals_total_eur': 680.0, 'total_max_expense_eur': 3980.0}}",
+  "time_ns": 89565442,
+  "utility": false
+}

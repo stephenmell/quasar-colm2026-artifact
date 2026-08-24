@@ -1,0 +1,5 @@
+{
+  "result": "{'hotel_name': 'Montmartre Suites', 'hotel_rating': 4.7, 'price_range_min': 110.0, 'price_range_max': 200.0, 'calendar_event': CalendarEvent(id_='2', title='Booking hotel Montmartre Suites', description='Reminder to book the hotel in Paris from May 1st to May 5th.', start_time=datetime.datetime(2024, 4, 25, 9, 0), end_time=datetime.datetime(2024, 4, 25, 9, 30), location='23 Rue Lepic, 75018 Paris, France', participants=['emma.johnson@bluesparrowtech.com'], all_day=False, status=confirmed)}",
+  "time_ns": 16994289,
+  "utility": true
+}

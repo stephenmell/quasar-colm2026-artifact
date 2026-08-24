@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find("bag")
+    # Question assumes only one bag patch
+    if len(bag_patches) == 0:
+        # If no bag is found, query the image directly
+        return image_patch.simple_query("Is the bag on the right side of the image?")
+    for bag_patch in bag_patches:
+        if bag_patch.horizontal_center > image_patch.horizontal_center:
+            return "yes"
+    return "no"

@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_bowl = image_patch.exists("bowl")
+    is_bowls = image_patch.exists("bowls")
+    if is_bowl or is_bowls:
+        result = "yes"
+    else:
+        alt_answer = image_patch.simple_query("Do you see bowls there?")
+        if alt_answer == "yes":
+            result = "yes"
+        else:
+            result = "no"
+    return result

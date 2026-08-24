@@ -1,0 +1,74 @@
+def execute_command(image) -> str:
+    direct_query = None
+    horizontal_overlap = None
+    image_patch = None
+    on_condition = None
+    overlap_left = None
+    overlap_lower = None
+    overlap_right = None
+    overlap_upper = None
+    pole_patches = None
+    result = None
+    sign_patches = None
+    vertical_overlap = None
+    yellow_sign_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    sign_patches = image_patch.find('sign')
+    yellow_sign_patches = ()
+
+    def _for(sign_patch, image_patch, result, sign_patches, yellow_sign_patches):
+
+        def _if(image_patch, result, sign_patches, yellow_sign_patches):
+            yellow_sign_patches = yellow_sign_patches + (sign_patch,)
+            return (image_patch, result, sign_patches, yellow_sign_patches)
+        image_patch, result, sign_patches, yellow_sign_patches = if_stmt(_if, None, sign_patch.verify_property('sign', 'yellow'), (image_patch, result, sign_patches, yellow_sign_patches))
+        return (image_patch, result, sign_patches, yellow_sign_patches)
+    image_patch, result, sign_patches, yellow_sign_patches = for_stmt(_for, sign_patches, (image_patch, result, sign_patches, yellow_sign_patches))
+    pole_patches = image_patch.find('pole')
+    direct_query = False
+
+    def _if(direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches):
+        direct_query = True
+        return (direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches)
+    direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches = if_stmt(_if, None, len(sign_patches) == 0, (direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches))
+
+    def _if(direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches):
+        direct_query = True
+        return (direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches)
+    direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches = if_stmt(_if, None, len(yellow_sign_patches) == 0, (direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches))
+
+    def _if(direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches):
+        direct_query = True
+        return (direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches)
+    direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches = if_stmt(_if, None, len(pole_patches) == 0, (direct_query, image_patch, pole_patches, result, sign_patches, yellow_sign_patches))
+
+    def _if(direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches):
+        result = image_patch.simple_query('Is the yellow sign on the pole?')
+        return (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches)
+
+    def _else(direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches):
+        result = 'no'
+
+        def _for(ys, direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches):
+
+            def _for(pole, direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches):
+                overlap_left = max(ys.left, pole.left)
+                overlap_right = min(ys.right, pole.right)
+                horizontal_overlap = overlap_right - overlap_left
+                overlap_lower = max(ys.lower, pole.lower)
+                overlap_upper = min(ys.upper, pole.upper)
+                vertical_overlap = overlap_upper - overlap_lower
+                on_condition = or_expr(horizontal_overlap > 0 and vertical_overlap > 0, ys.horizontal_center >= pole.left and ys.horizontal_center <= pole.right)
+
+                def _if(direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches):
+                    result = 'yes'
+                    return (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches)
+                direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches = if_stmt(_if, None, on_condition, (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches))
+                return (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches)
+            direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches = for_stmt(_for, pole_patches, (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches))
+            return (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches)
+        direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches = for_stmt(_for, yellow_sign_patches, (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches))
+        return (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches)
+    direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches = if_stmt(_if, _else, direct_query, (direct_query, horizontal_overlap, image_patch, on_condition, overlap_left, overlap_lower, overlap_right, overlap_upper, pole_patches, result, sign_patches, vertical_overlap, yellow_sign_patches))
+    return result

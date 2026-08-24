@@ -1,0 +1,26 @@
+# On which side of the image is the white car?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find the white car directly
+    white_car_patches = image_patch.find("white car")
+    target_patches = white_car_patches
+
+    # If not found, find cars and filter by white color
+    if len(target_patches) == 0:
+        car_patches = image_patch.find("car")
+        white_cars = []
+        for car_patch in car_patches:
+            if car_patch.verify_property("car", "white"):
+                white_cars.append(car_patch)
+        target_patches = white_cars
+
+    # If still not found, ask directly
+    if len(target_patches) == 0:
+        return image_patch.simple_query("On which side of the image is the white car?")
+
+    # Use the first white car found
+    car_patch = target_patches[0]
+    if car_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

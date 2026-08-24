@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    hat_black = None
+    hat_patches = None
+    image_patch = None
+    result = None
+    shirt_black = None
+    shirt_patches = None
+    image_patch = ImagePatch(image)
+    hat_patches = image_patch.find('cowboy hat')
+    shirt_patches = image_patch.find('shirt')
+
+    def _if(hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches):
+        result = image_patch.simple_query('Which type of clothing is black, the cowboy hat or the shirt?')
+        return (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches)
+
+    def _else(hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches):
+        hat_black = False
+
+        def _for(hat_patch, hat_black, hat_patches, image_patch, shirt_patches):
+
+            def _if(hat_black, hat_patches, image_patch, shirt_patches):
+                hat_black = True
+                return (hat_black, hat_patches, image_patch, shirt_patches)
+            hat_black, hat_patches, image_patch, shirt_patches = if_stmt(_if, None, hat_patch.verify_property('cowboy hat', 'black'), (hat_black, hat_patches, image_patch, shirt_patches))
+            return (hat_black, hat_patches, image_patch, shirt_patches)
+        hat_black, hat_patches, image_patch, shirt_patches = for_stmt(_for, hat_patches, (hat_black, hat_patches, image_patch, shirt_patches))
+        shirt_black = False
+
+        def _for(shirt_patch, hat_black, hat_patches, image_patch, shirt_black, shirt_patches):
+
+            def _if(hat_black, hat_patches, image_patch, shirt_black, shirt_patches):
+                shirt_black = True
+                return (hat_black, hat_patches, image_patch, shirt_black, shirt_patches)
+            hat_black, hat_patches, image_patch, shirt_black, shirt_patches = if_stmt(_if, None, shirt_patch.verify_property('shirt', 'black'), (hat_black, hat_patches, image_patch, shirt_black, shirt_patches))
+            return (hat_black, hat_patches, image_patch, shirt_black, shirt_patches)
+        hat_black, hat_patches, image_patch, shirt_black, shirt_patches = for_stmt(_for, shirt_patches, (hat_black, hat_patches, image_patch, shirt_black, shirt_patches))
+
+        def _if(hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches):
+            result = 'cowboy hat'
+            return (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches)
+
+        def _else(hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches):
+
+            def _if(hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches):
+                result = 'shirt'
+                return (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches)
+
+            def _else(hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches):
+                result = image_patch.simple_query('Which type of clothing is black, the cowboy hat or the shirt?')
+                return (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches)
+            hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches = if_stmt(_if, _else, and_expr(shirt_black, not hat_black), (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches))
+            return (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches)
+        hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches = if_stmt(_if, _else, and_expr(hat_black, not shirt_black), (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches))
+        return (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches)
+    hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches = if_stmt(_if, _else, or_expr(len(hat_patches) == 0, len(shirt_patches) == 0), (hat_black, hat_patches, image_patch, result, shirt_black, shirt_patches))
+    return result

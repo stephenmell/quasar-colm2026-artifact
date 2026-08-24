@@ -1,0 +1,5 @@
+# What do both the cap and the ceiling have in common?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("What do both the cap and the ceiling have in common?")
+    return result

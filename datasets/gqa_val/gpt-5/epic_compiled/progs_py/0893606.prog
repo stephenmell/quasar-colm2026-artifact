@@ -1,0 +1,10 @@
+# Does the street look unpaved or paved?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    street_patches = image_patch.find("street")
+    
+    if len(street_patches) == 0:
+        result = image_patch.simple_query("Does the street look unpaved or paved?")
+    else:
+        result = street_patches[0].best_text_match(("unpaved", "paved"))
+    return result

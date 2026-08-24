@@ -1,0 +1,5 @@
+# Do you see any screens to the left of the cans on the counter?
+def execute_command(image)->str:
+    # Contains relations ("to the left of", "on the counter"), so ask directly
+    image_patch = ImagePatch(image)
+    return image_patch.simple_query("Do you see any screens to the left of the cans on the counter?")

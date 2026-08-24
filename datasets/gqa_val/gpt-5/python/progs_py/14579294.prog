@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    coffee_patches = image_patch.find("coffee")
+    # Question assumes only one coffee patch
+    if len(coffee_patches) == 0:
+        # If no coffee is found, query the image directly
+        return image_patch.simple_query("Is the coffee on the right side?")
+    # Check if any detected coffee is on the right half of the image
+    for coffee_patch in coffee_patches:
+        if coffee_patch.horizontal_center > image_patch.horizontal_center:
+            return "yes"
+    return "no"

@@ -1,0 +1,58 @@
+def execute_command(image) -> str:
+    found_any_inside = None
+    image_patch = None
+    man_patch = None
+    man_patches = None
+    man_rel_center = None
+    people_patches = None
+    result = None
+    station_patches = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+        result = image_patch.simple_query('Is the man to the left of the people inside the station?')
+        return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+
+    def _else(found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+        station_patches = image_patch.find('station')
+
+        def _if(found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+            result = image_patch.simple_query('Is the man to the left of the people inside the station?')
+            return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+
+        def _else(found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+            result = 'no'
+            man_patch = man_patches[0]
+            found_any_inside = False
+
+            def _for(station_patch, found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+                people_patches = station_patch.find('people')
+
+                def _if(found_any_inside, image_patch, man_patch, man_patches, people_patches, result, station_patches):
+                    people_patches = station_patch.find('person')
+                    return (found_any_inside, image_patch, man_patch, man_patches, people_patches, result, station_patches)
+                found_any_inside, image_patch, man_patch, man_patches, people_patches, result, station_patches = if_stmt(_if, None, len(people_patches) == 0, (found_any_inside, image_patch, man_patch, man_patches, people_patches, result, station_patches))
+
+                def _for(people_patch, found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+                    found_any_inside = True
+                    man_rel_center = man_patch.horizontal_center - station_patch.left
+
+                    def _if(found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+                        result = 'yes'
+                        return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+                    found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches = if_stmt(_if, None, man_rel_center < people_patch.horizontal_center, (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches))
+                    return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+                found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches = for_stmt(_for, people_patches, (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches))
+                return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+            found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches = for_stmt(_for, station_patches, (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches))
+
+            def _if(found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches):
+                result = image_patch.simple_query('Is the man to the left of the people inside the station?')
+                return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+            found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches = if_stmt(_if, None, and_expr(not found_any_inside, result != 'yes'), (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches))
+            return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+        found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches = if_stmt(_if, _else, len(station_patches) == 0, (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches))
+        return (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches)
+    found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches = if_stmt(_if, _else, len(man_patches) == 0, (found_any_inside, image_patch, man_patch, man_patches, man_rel_center, people_patches, result, station_patches))
+    return result

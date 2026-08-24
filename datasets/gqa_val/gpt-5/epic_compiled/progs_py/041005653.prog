@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    clock_patches = image_patch.find("clock")
+    book_patches = image_patch.find("book")
+
+    if len(clock_patches) == 0 or len(book_patches) == 0:
+        result = image_patch.simple_query("Is the clock to the left of a book?")
+    else:
+        result = "no"
+        for clock_patch in clock_patches:
+            for book_patch in book_patches:
+                if clock_patch.horizontal_center < book_patch.horizontal_center:
+                    result = "yes"
+    return result

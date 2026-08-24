@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_cell_phone = image_patch.exists("cell phone")
+    has_laptop = image_patch.exists("laptop")
+    return bool_to_yesno(has_cell_phone and has_laptop)

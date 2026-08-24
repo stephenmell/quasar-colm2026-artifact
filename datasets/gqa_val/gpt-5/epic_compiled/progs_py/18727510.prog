@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bench_patches = image_patch.find("bench")
+    if len(bench_patches) == 0:
+        result = image_patch.simple_query("Are there white benches in this photo?")
+    else:
+        has_white_bench = False
+        for bench_patch in bench_patches:
+            if bench_patch.verify_property("bench", "white"):
+                has_white_bench = True
+        if has_white_bench:
+            result = "yes"
+        else:
+            result = "no"
+    return result

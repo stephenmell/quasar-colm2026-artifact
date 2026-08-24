@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sauce_patches = image_patch.find("sauce")
+    # Question assumes only one sauce patch
+    if len(sauce_patches) == 0:
+        # If no sauce is found, query the image directly
+        return image_patch.simple_query("Does the sauce look yellow?")
+    for sauce_patch in sauce_patches:
+        if sauce_patch.verify_property("sauce", "yellow"):
+            return "yes"
+    return "no"

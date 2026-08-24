@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    grass_exists = None
+    grass_patches = None
+    image_patch = None
+    result = None
+    snow_exists = None
+    snow_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    snow_exists = image_patch.exists('snow')
+
+    def _if(image_patch, result, snow_exists, snow_patches):
+        snow_patches = image_patch.find('snow')
+
+        def _for(snow_patch, image_patch, result, snow_exists, snow_patches):
+
+            def _if(image_patch, result, snow_exists, snow_patches):
+                result = 'yes'
+                return (image_patch, result, snow_exists, snow_patches)
+            image_patch, result, snow_exists, snow_patches = if_stmt(_if, None, snow_patch.verify_property('snow', 'tall'), (image_patch, result, snow_exists, snow_patches))
+            return (image_patch, result, snow_exists, snow_patches)
+        image_patch, result, snow_exists, snow_patches = for_stmt(_for, snow_patches, (image_patch, result, snow_exists, snow_patches))
+        return (image_patch, result, snow_exists, snow_patches)
+    image_patch, result, snow_exists, snow_patches = if_stmt(_if, None, snow_exists, (image_patch, result, snow_exists, snow_patches))
+    grass_exists = image_patch.exists('grass')
+
+    def _if(grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches):
+        grass_patches = image_patch.find('grass')
+
+        def _for(grass_patch, grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches):
+
+            def _if(grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches):
+                result = 'yes'
+                return (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches)
+            grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches = if_stmt(_if, None, grass_patch.verify_property('grass', 'tall'), (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches))
+            return (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches)
+        grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches = for_stmt(_for, grass_patches, (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches))
+        return (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches)
+    grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches = if_stmt(_if, None, grass_exists, (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches))
+
+    def _if(grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches):
+        result = image_patch.simple_query('Do you see any tall snow or grass in the picture?')
+        return (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches)
+    grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches = if_stmt(_if, None, and_expr(result == 'no', and_expr(not snow_exists, not grass_exists)), (grass_exists, grass_patches, image_patch, result, snow_exists, snow_patches))
+    return result

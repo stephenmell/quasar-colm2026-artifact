@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    book_patches = None
+    image_patch = None
+    lamp_patches = None
+    leftmost_lamp = None
+    result = None
+    image_patch = ImagePatch(image)
+    lamp_patches = image_patch.find('lamp')
+
+    def _if(book_patches, image_patch, lamp_patches, leftmost_lamp, result):
+        result = image_patch.simple_query('Are there any books to the right of the lamp that is on the left?')
+        return (book_patches, image_patch, lamp_patches, leftmost_lamp, result)
+
+    def _else(book_patches, image_patch, lamp_patches, leftmost_lamp, result):
+        leftmost_lamp = lamp_patches[0]
+
+        def _for(lamp_patch, image_patch, lamp_patches, leftmost_lamp):
+
+            def _if(image_patch, lamp_patches, leftmost_lamp):
+                leftmost_lamp = lamp_patch
+                return (image_patch, lamp_patches, leftmost_lamp)
+            image_patch, lamp_patches, leftmost_lamp = if_stmt(_if, None, lamp_patch.horizontal_center < leftmost_lamp.horizontal_center, (image_patch, lamp_patches, leftmost_lamp))
+            return (image_patch, lamp_patches, leftmost_lamp)
+        image_patch, lamp_patches, leftmost_lamp = for_stmt(_for, lamp_patches, (image_patch, lamp_patches, leftmost_lamp))
+        book_patches = image_patch.find('book')
+
+        def _if(book_patches, image_patch, lamp_patches, leftmost_lamp, result):
+            result = 'no'
+            return (book_patches, image_patch, lamp_patches, leftmost_lamp, result)
+
+        def _else(book_patches, image_patch, lamp_patches, leftmost_lamp, result):
+            result = 'no'
+
+            def _for(book_patch, book_patches, image_patch, lamp_patches, leftmost_lamp, result):
+
+                def _if(book_patches, image_patch, lamp_patches, leftmost_lamp, result):
+                    result = 'yes'
+                    return (book_patches, image_patch, lamp_patches, leftmost_lamp, result)
+                book_patches, image_patch, lamp_patches, leftmost_lamp, result = if_stmt(_if, None, book_patch.horizontal_center > leftmost_lamp.horizontal_center, (book_patches, image_patch, lamp_patches, leftmost_lamp, result))
+                return (book_patches, image_patch, lamp_patches, leftmost_lamp, result)
+            book_patches, image_patch, lamp_patches, leftmost_lamp, result = for_stmt(_for, book_patches, (book_patches, image_patch, lamp_patches, leftmost_lamp, result))
+            return (book_patches, image_patch, lamp_patches, leftmost_lamp, result)
+        book_patches, image_patch, lamp_patches, leftmost_lamp, result = if_stmt(_if, _else, len(book_patches) == 0, (book_patches, image_patch, lamp_patches, leftmost_lamp, result))
+        return (book_patches, image_patch, lamp_patches, leftmost_lamp, result)
+    book_patches, image_patch, lamp_patches, leftmost_lamp, result = if_stmt(_if, _else, len(lamp_patches) == 0, (book_patches, image_patch, lamp_patches, leftmost_lamp, result))
+    return result

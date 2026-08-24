@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2404536",
+          [
+            0,
+            0,
+            500,
+            425
+          ]
+        ],
+        "What bag is the logo on?"
+      ],
+      "The bag has a logo for \"Puma.\"",
+      1315849642
+    ]
+  ],
+  "best_text_match": []
+}

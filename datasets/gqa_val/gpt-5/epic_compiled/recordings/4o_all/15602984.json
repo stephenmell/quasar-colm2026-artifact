@@ -1,0 +1,56 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2365166",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "container"
+      ],
+      [],
+      12657319978
+    ],
+    [
+      [
+        [
+          "2365166",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "animal"
+      ],
+      [],
+      11815534123
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2365166",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Is the container to the left of the animal that is lying on the chair?"
+      ],
+      "Yes.",
+      1722213023
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    officer_patches = image_patch.find("officer")
+    # Question assumes only one officer patch
+    if len(officer_patches) == 0:
+        # If no officer is found, query the image directly
+        return image_patch.simple_query("Is the officer on the left?")
+    officer_patch = officer_patches[0]
+    return "yes" if officer_patch.horizontal_center < image_patch.horizontal_center else "no"

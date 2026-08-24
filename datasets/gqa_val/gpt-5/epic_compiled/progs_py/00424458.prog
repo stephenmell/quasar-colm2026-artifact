@@ -1,0 +1,20 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    curly_hair_patches = image_patch.find("curly hair")
+    if len(curly_hair_patches) == 0:
+        hair_patches = image_patch.find("hair")
+        if len(hair_patches) == 0:
+            result = image_patch.simple_query("Which color is the curly hair?")
+        else:
+            for hair_patch in hair_patches:
+                is_curly = hair_patch.verify_property("hair", "curly")
+                if is_curly and not result:
+                    result = hair_patch.simple_query("Which color is the curly hair?")
+            if not result:
+                result = image_patch.simple_query("Which color is the curly hair?")
+    else:
+        result = curly_hair_patches[0].simple_query("Which color is the curly hair?")
+    return result

@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pizza_patches = image_patch.find("pizza")
+    onion_patches = image_patch.find("onion")
+
+    pizza_cooked = False
+    onion_cooked = False
+
+    for pizza_patch in pizza_patches:
+        if pizza_patch.verify_property("pizza", "cooked") or pizza_patch.verify_property("pizza", "baked"):
+            pizza_cooked = True
+
+    for onion_patch in onion_patches:
+        if onion_patch.verify_property("onion", "cooked") or onion_patch.verify_property("onion", "roasted"):
+            onion_cooked = True
+
+    if pizza_cooked and not onion_cooked:
+        result = "pizza"
+    elif onion_cooked and not pizza_cooked:
+        result = "onion"
+    else:
+        result = image_patch.simple_query("What kind of food is cooked, the pizza or the onion?")
+    return result

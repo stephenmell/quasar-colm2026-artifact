@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Check for a white giraffe
+    giraffe_patches = image_patch.find("giraffe")
+    is_white_giraffe = False
+    if len(giraffe_patches) > 0:
+        for giraffe_patch in giraffe_patches:
+            if giraffe_patch.verify_property("giraffe", "white"):
+                is_white_giraffe = True
+                break
+    else:
+        # If no giraffe is detected, query directly about a white giraffe
+        is_white_giraffe = (image_patch.simple_query("Is there a white giraffe?") == "yes")
+    # Check for a lamb
+    is_lamb = image_patch.exists("lamb")
+    return bool_to_yesno(is_white_giraffe or is_lamb)

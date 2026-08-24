@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2404591",
+          [
+            0,
+            0,
+            500,
+            281
+          ]
+        ],
+        "Who in this photograph is surfing?"
+      ],
+      "I don't know who is surfing in the photograph.",
+      1640932730
+    ]
+  ],
+  "best_text_match": []
+}

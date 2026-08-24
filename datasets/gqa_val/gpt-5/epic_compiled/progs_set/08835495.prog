@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    answer = None
+    counter_aliases = None
+    counter_patches = None
+    found_patches = None
+    image_patch = None
+    marble_found = None
+    result = None
+    image_patch = ImagePatch(image)
+    counter_aliases = ('kitchen counter', 'counter', 'countertop')
+    counter_patches = ()
+
+    def _for(name, counter_aliases, counter_patches, found_patches, image_patch):
+        found_patches = image_patch.find(name)
+        counter_patches = counter_patches + found_patches
+        return (counter_aliases, counter_patches, found_patches, image_patch)
+    counter_aliases, counter_patches, found_patches, image_patch = for_stmt(_for, counter_aliases, (counter_aliases, counter_patches, found_patches, image_patch))
+
+    def _if(answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found, result):
+        result = image_patch.simple_query('Is the kitchen counter made of marble?')
+        return (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found, result)
+
+    def _else(answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found, result):
+        marble_found = False
+
+        def _for(counter_patch, answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found):
+
+            def _for(alias, counter_aliases, counter_patches, found_patches, image_patch, marble_found):
+
+                def _if(counter_aliases, counter_patches, found_patches, image_patch, marble_found):
+                    marble_found = True
+                    return (counter_aliases, counter_patches, found_patches, image_patch, marble_found)
+                counter_aliases, counter_patches, found_patches, image_patch, marble_found = if_stmt(_if, None, counter_patch.verify_property(alias, 'marble'), (counter_aliases, counter_patches, found_patches, image_patch, marble_found))
+                return (counter_aliases, counter_patches, found_patches, image_patch, marble_found)
+            counter_aliases, counter_patches, found_patches, image_patch, marble_found = for_stmt(_for, counter_aliases, (counter_aliases, counter_patches, found_patches, image_patch, marble_found))
+
+            def _if(answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found):
+                answer = counter_patch.simple_query('Is the counter made of marble?')
+
+                def _if(answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found):
+                    marble_found = True
+                    return (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found)
+                answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found = if_stmt(_if, None, answer == 'yes', (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found))
+                return (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found)
+            answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found = if_stmt(_if, None, not_expr(marble_found), (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found))
+            return (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found)
+        answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found = for_stmt(_for, counter_patches, (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found))
+        result = bool_to_yesno(marble_found)
+        return (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found, result)
+    answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found, result = if_stmt(_if, _else, len(counter_patches) == 0, (answer, counter_aliases, counter_patches, found_patches, image_patch, marble_found, result))
+    return result

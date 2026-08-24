@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_umbrella = image_patch.exists("umbrella") or image_patch.exists("umbrellas")
+    has_racket = (
+        image_patch.exists("racket")
+        or image_patch.exists("rackets")
+        or image_patch.exists("tennis racket")
+        or image_patch.exists("tennis rackets")
+    )
+    return bool_to_yesno(has_umbrella and has_racket)

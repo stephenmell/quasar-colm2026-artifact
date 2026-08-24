@@ -1,0 +1,89 @@
+({225: 'context', 228: 'llm_query', 246: '.join', 254: 'return_result'},
+ ('def',
+  223,
+  ((),
+   ((('call', (224,), -1, ()),
+     ('def',
+      226,
+      ((241, 227),
+       ((('prim',
+          229,
+          'You are given a single document. Extract any person(s) in the '
+          'document possibly matching the following query. Do not use any '
+          'outside knowledge; rely strictly on the document.\n'
+          '\n'
+          'QUERY ATTRIBUTES:\n'
+          '- Born in the 1930s in a country in Africa.\n'
+          '- Divorced from their spouse in the 1960s.\n'
+          '- Their mother was a stage actress.\n'
+          '- Studied drama in a city where they later died between 2016 and '
+          '2023.\n'
+          '- Starred in a 1950s movie that was directed by a director who '
+          'received an NSFC (National Society of Film Critics) Award between '
+          '1974 and 1982.\n'
+          '\n'
+          'For each candidate person mentioned in the document, provide:\n'
+          'Candidate:\n'
+          '- Full name:\n'
+          '- Born: (year or decade; city/country)\n'
+          '- Mother is a stage actress: (yes/no/unknown)\n'
+          '- Spouse and divorce: (name and year if any)\n'
+          '- Studied drama: (city and institution if given)\n'
+          '- Death: (year and city)\n'
+          '- 1950s film(s) they starred in: (title(s))\n'
+          '- Director(s) of those 1950s film(s):\n'
+          '- Any explicit mention in the document that the director received '
+          "an NSFC Award between 1974 and 1982: (quote or 'none')\n"
+          'Supporting Quotes:\n'
+          '- Include the exact sentences/lines from the document that support '
+          'each filled attribute above.\n'
+          "If the document contains no relevant person, output: 'No candidates "
+          "in this document.'\n"
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (230,), 118, (227,)),
+         ('prim', 231, '\nEND_DOCUMENT'),
+         ('def',
+          237,
+          ((232, 233),
+           ((('call', (234,), 233, (232, 229)),
+             ('call', (235,), 233, (234, 230)),
+             ('call', (236,), 233, (235, 231))),
+            (236,)))),
+         ('prim', 238, ''),
+         ('call', (239,), 237, (238, 80)),
+         ('call', (240,), 228, (239,)),
+         ('call', (242,), -1, (240,)),
+         ('call', (243,), 80, (241, 242))),
+        (243,)))),
+     ('call', (245,), 79, (225,)),
+     ('call', (244,), 245, (224, 226)),
+     ('prim',
+      248,
+      'You will be given extractions from multiple documents (each produced '
+      "from the user's context) regarding potential candidates. Using ONLY "
+      'these extractions (no outside knowledge), identify the single person '
+      'who matches ALL the following constraints:\n'
+      '- Born in the 1930s in a country in Africa.\n'
+      '- Divorced from their spouse in the 1960s.\n'
+      '- Their mother was a stage actress.\n'
+      '- Studied drama in a city where they later died between 2016 and 2023.\n'
+      '- Starred in a 1950s movie that was directed by a director who received '
+      'an NSFC (National Society of Film Critics) Award between 1974 and '
+      '1982.\n'
+      '\n'
+      'Here are the per-document extractions:\n'),
+     ('prim', 247, '\n\n-----\n\n'),
+     ('call', (249,), 246, (247, 244)),
+     ('call', (250,), 80, (248, 249)),
+     ('prim',
+      251,
+      '\n'
+      '\n'
+      'Answer with ONLY the full name of the person that meets all criteria. '
+      'If uncertain, choose the best-supported candidate and still answer with '
+      'ONLY the full name.'),
+     ('call', (252,), 80, (250, 251)),
+     ('call', (253,), 228, (252,)),
+     ('call', (255,), 254, (253,))),
+    (255,)))))

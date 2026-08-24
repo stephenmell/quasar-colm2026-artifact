@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Does the open door appear to be large?"
+    door_patches = image_patch.find("door")
+    result = "no"
+    if len(door_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        open_found = False
+        large_open_found = False
+        for door_patch in door_patches:
+            is_open = door_patch.verify_property("door", "open")
+            if is_open:
+                open_found = True
+                is_large = door_patch.verify_property("door", "large")
+                if is_large:
+                    large_open_found = True
+        if large_open_found:
+            result = "yes"
+        else:
+            if open_found:
+                result = "no"
+            else:
+                result = "no"
+    return result

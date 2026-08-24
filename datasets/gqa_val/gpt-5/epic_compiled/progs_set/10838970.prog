@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    image_patch = None
+    keyboard_patches = None
+    leftmost_keyboard = None
+    result = None
+    right_area_patch = None
+    image_patch = ImagePatch(image)
+    keyboard_patches = image_patch.find('keyboard')
+
+    def _if(image_patch, keyboard_patches, leftmost_keyboard, result, right_area_patch):
+        result = image_patch.simple_query('What kind of device is to the right of the keyboard on the left?')
+        return (image_patch, keyboard_patches, leftmost_keyboard, result, right_area_patch)
+
+    def _else(image_patch, keyboard_patches, leftmost_keyboard, result, right_area_patch):
+        leftmost_keyboard = keyboard_patches[0]
+
+        def _for(kb, image_patch, keyboard_patches, leftmost_keyboard):
+
+            def _if(image_patch, keyboard_patches, leftmost_keyboard):
+                leftmost_keyboard = kb
+                return (image_patch, keyboard_patches, leftmost_keyboard)
+            image_patch, keyboard_patches, leftmost_keyboard = if_stmt(_if, None, kb.horizontal_center < leftmost_keyboard.horizontal_center, (image_patch, keyboard_patches, leftmost_keyboard))
+            return (image_patch, keyboard_patches, leftmost_keyboard)
+        image_patch, keyboard_patches, leftmost_keyboard = for_stmt(_for, keyboard_patches, (image_patch, keyboard_patches, leftmost_keyboard))
+        right_area_patch = image_patch.crop(leftmost_keyboard.right, leftmost_keyboard.lower, image_patch.right, leftmost_keyboard.upper)
+        result = right_area_patch.simple_query('What kind of device is to the right of the keyboard on the left?')
+        return (image_patch, keyboard_patches, leftmost_keyboard, result, right_area_patch)
+    image_patch, keyboard_patches, leftmost_keyboard, result, right_area_patch = if_stmt(_if, _else, len(keyboard_patches) == 0, (image_patch, keyboard_patches, leftmost_keyboard, result, right_area_patch))
+    return result

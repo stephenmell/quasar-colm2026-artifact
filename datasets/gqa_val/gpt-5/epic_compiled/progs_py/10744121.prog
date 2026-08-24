@@ -1,0 +1,36 @@
+# Are there any tables or chairs that are made of wood?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check tables
+    table_patches = image_patch.find("table")
+    for table_patch in table_patches:
+        is_wood = (
+            table_patch.verify_property("table", "wood")
+            or table_patch.verify_property("table", "wooden")
+            or table_patch.verify_property("table", "made of wood")
+        )
+        if not is_wood:
+            answer = table_patch.simple_query("Is the table made of wood?")
+            if answer == "yes":
+                is_wood = True
+        if is_wood:
+            result = "yes"
+
+    # Check chairs
+    chair_patches = image_patch.find("chair")
+    for chair_patch in chair_patches:
+        is_wood = (
+            chair_patch.verify_property("chair", "wood")
+            or chair_patch.verify_property("chair", "wooden")
+            or chair_patch.verify_property("chair", "made of wood")
+        )
+        if not is_wood:
+            answer = chair_patch.simple_query("Is the chair made of wood?")
+            if answer == "yes":
+                is_wood = True
+        if is_wood:
+            result = "yes"
+
+    return result

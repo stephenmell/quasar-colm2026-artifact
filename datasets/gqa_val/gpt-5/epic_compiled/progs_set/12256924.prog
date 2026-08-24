@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    crosswalk_exists = None
+    image_patch = None
+    intersection_exists = None
+    result = None
+    road_exists = None
+    sidewalk_exists = None
+    street_exists = None
+    image_patch = ImagePatch(image)
+    crosswalk_exists = image_patch.exists('crosswalk')
+
+    def _if(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+        result = image_patch.simple_query('Where is the crosswalk?')
+        return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+
+    def _else(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+        street_exists = image_patch.exists('street')
+        road_exists = image_patch.exists('road')
+        intersection_exists = image_patch.exists('intersection')
+        sidewalk_exists = image_patch.exists('sidewalk')
+
+        def _if(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+            result = 'on the street'
+            return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+
+        def _else(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+
+            def _if(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+                result = 'on the road'
+                return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+
+            def _else(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+
+                def _if(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+                    result = 'at the intersection'
+                    return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+
+                def _else(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+
+                    def _if(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+                        result = 'near the sidewalk'
+                        return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+
+                    def _else(crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists):
+                        result = image_patch.simple_query('Where is the crosswalk?')
+                        return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+                    crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists = if_stmt(_if, _else, sidewalk_exists, (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists))
+                    return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+                crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists = if_stmt(_if, _else, intersection_exists, (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists))
+                return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+            crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists = if_stmt(_if, _else, road_exists, (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists))
+            return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+        crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists = if_stmt(_if, _else, street_exists, (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists))
+        return (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists)
+    crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists = if_stmt(_if, _else, not_expr(crosswalk_exists), (crosswalk_exists, image_patch, intersection_exists, result, road_exists, sidewalk_exists, street_exists))
+    return result

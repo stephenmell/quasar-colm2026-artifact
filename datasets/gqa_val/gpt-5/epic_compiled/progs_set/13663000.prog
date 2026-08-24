@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    direct_answer = None
+    image_patch = None
+    result = None
+    search_terms = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    search_terms = ('collar', 'dog collar', 'shirt collar', 'cat collar')
+
+    def _for(term, image_patch, result, search_terms):
+
+        def _if(image_patch, result, search_terms):
+            result = 'yes'
+            return (image_patch, result, search_terms)
+        image_patch, result, search_terms = if_stmt(_if, None, image_patch.exists(term), (image_patch, result, search_terms))
+        return (image_patch, result, search_terms)
+    image_patch, result, search_terms = for_stmt(_for, search_terms, (image_patch, result, search_terms))
+
+    def _if(direct_answer, image_patch, result, search_terms):
+        direct_answer = image_patch.simple_query('Are there any collars?')
+
+        def _if(direct_answer, image_patch, result, search_terms):
+            result = 'yes'
+            return (direct_answer, image_patch, result, search_terms)
+
+        def _else(direct_answer, image_patch, result, search_terms):
+            result = 'no'
+            return (direct_answer, image_patch, result, search_terms)
+        direct_answer, image_patch, result, search_terms = if_stmt(_if, _else, direct_answer == 'yes', (direct_answer, image_patch, result, search_terms))
+        return (direct_answer, image_patch, result, search_terms)
+    direct_answer, image_patch, result, search_terms = if_stmt(_if, None, result == 'no', (direct_answer, image_patch, result, search_terms))
+    return result

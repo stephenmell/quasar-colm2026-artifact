@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_flatbread = image_patch.exists("flatbread")
+    is_plate = image_patch.exists("plate")
+    result = bool_to_yesno(is_flatbread or is_plate)
+    return result

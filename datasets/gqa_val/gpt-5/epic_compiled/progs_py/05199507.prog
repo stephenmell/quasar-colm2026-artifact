@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Directly check for "round table" objects
+    if image_patch.exists("round table"):
+        result = "yes"
+    else:
+        # Look for tables and verify if any are round
+        table_patches = image_patch.find("table")
+        if len(table_patches) == 0:
+            # If no tables detected, ask directly
+            result = image_patch.simple_query("Are there round tables in the image?")
+        else:
+            for table_patch in table_patches:
+                if table_patch.verify_property("table", "round"):
+                    result = "yes"
+    return result

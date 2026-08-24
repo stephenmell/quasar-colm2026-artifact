@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    backpack_patches = image_patch.find("backpack")
+    if len(backpack_patches) == 0:
+        result = image_patch.simple_query("Do you see any black backpacks?")
+    else:
+        result = "no"
+        for backpack_patch in backpack_patches:
+            if backpack_patch.verify_property("backpack", "black"):
+                result = "yes"
+    return result

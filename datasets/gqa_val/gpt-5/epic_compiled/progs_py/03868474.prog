@@ -1,0 +1,18 @@
+# Is the color of the chandelier the same as the carpet?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chandelier_patches = image_patch.find("chandelier")
+    carpet_patches = image_patch.find("carpet")
+    result = "no"
+
+    if len(chandelier_patches) == 0 or len(carpet_patches) == 0:
+        result = image_patch.simple_query("Is the color of the chandelier the same as the carpet?")
+    else:
+        colors = ("white", "black", "gray", "red", "orange", "yellow", "green", "blue", "purple", "pink", "brown", "beige", "gold", "silver", "tan")
+        for chandelier_patch in chandelier_patches:
+            chandelier_color = chandelier_patch.best_text_match(colors)
+            for carpet_patch in carpet_patches:
+                carpet_color = carpet_patch.best_text_match(colors)
+                if chandelier_color == carpet_color:
+                    result = "yes"
+    return result

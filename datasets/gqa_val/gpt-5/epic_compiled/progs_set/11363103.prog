@@ -1,0 +1,28 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_yellow = None
+    result = None
+    train_patches = None
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find('train')
+    result = 'no'
+
+    def _if(image_patch, is_yellow, result, train_patches):
+        result = image_patch.simple_query('Does this train look yellow?')
+        return (image_patch, is_yellow, result, train_patches)
+
+    def _else(image_patch, is_yellow, result, train_patches):
+        is_yellow = False
+
+        def _for(train_patch, image_patch, is_yellow, result, train_patches):
+
+            def _if(image_patch, is_yellow, result, train_patches):
+                is_yellow = True
+                return (image_patch, is_yellow, result, train_patches)
+            image_patch, is_yellow, result, train_patches = if_stmt(_if, None, train_patch.verify_property('train', 'yellow'), (image_patch, is_yellow, result, train_patches))
+            return (image_patch, is_yellow, result, train_patches)
+        image_patch, is_yellow, result, train_patches = for_stmt(_for, train_patches, (image_patch, is_yellow, result, train_patches))
+        result = bool_to_yesno(is_yellow)
+        return (image_patch, is_yellow, result, train_patches)
+    image_patch, is_yellow, result, train_patches = if_stmt(_if, _else, len(train_patches) == 0, (image_patch, is_yellow, result, train_patches))
+    return result

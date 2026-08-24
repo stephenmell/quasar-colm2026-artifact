@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    woman_patches = image_patch.find("woman")
+
+    if len(man_patches) == 0 or len(woman_patches) == 0:
+        result = image_patch.simple_query("Does the man to the left of the woman appear to be crouching?")
+    else:
+        result = "no"
+        for woman_patch in woman_patches:
+            for man_patch in man_patches:
+                if man_patch.horizontal_center < woman_patch.horizontal_center:
+                    is_crouching = man_patch.verify_property("man", "crouching")
+                    if not is_crouching:
+                        is_crouching = (man_patch.simple_query("Is the man crouching?") == "yes")
+                    if is_crouching:
+                        result = "yes"
+    return result

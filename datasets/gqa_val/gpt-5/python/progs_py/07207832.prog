@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    scooter_patches = image_patch.find("scooter")
+    # If no scooter is found, query the image directly
+    if len(scooter_patches) == 0:
+        return image_patch.simple_query("Is the scooter to the left of the bicycle that is to the left of the pot?")
+    bicycle_patches = image_patch.find("bicycle")
+    pot_patches = image_patch.find("pot")
+    if len(bicycle_patches) == 0 or len(pot_patches) == 0:
+        return "no"
+    for scooter_patch in scooter_patches:
+        for bicycle_patch in bicycle_patches:
+            if scooter_patch.horizontal_center < bicycle_patch.horizontal_center:
+                for pot_patch in pot_patches:
+                    if bicycle_patch.horizontal_center < pot_patch.horizontal_center:
+                        return "yes"
+    return "no"

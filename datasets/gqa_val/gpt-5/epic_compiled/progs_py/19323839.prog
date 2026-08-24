@@ -1,0 +1,28 @@
+# Are these animals of different types?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) < 2:
+        result = image_patch.simple_query("Are these animals of different types?")
+    else:
+        types = ()
+        for animal_patch in animal_patches:
+            answer = animal_patch.simple_query("What kind of animal is this?")
+            if answer:
+                text = f"{answer}"
+            else:
+                text = ""
+            types = types + (text,)
+        unique_types = ()
+        for t in types:
+            seen = False
+            for u in unique_types:
+                if t == u:
+                    seen = True
+            if not seen:
+                unique_types = unique_types + (t,)
+        if len(unique_types) >= 2:
+            result = "yes"
+        else:
+            result = "no"
+    return result

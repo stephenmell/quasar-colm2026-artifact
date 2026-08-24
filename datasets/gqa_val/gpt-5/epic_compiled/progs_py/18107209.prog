@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find draperies (try several synonyms)
+    draperies_1 = image_patch.find("draperies")
+    draperies_2 = image_patch.find("drapery")
+    draperies_3 = image_patch.find("curtains")
+    draperies_4 = image_patch.find("curtain")
+    draperies_5 = image_patch.find("drapes")
+    draperies_6 = image_patch.find("drape")
+    draperies_patches = draperies_1 + draperies_2 + draperies_3 + draperies_4 + draperies_5 + draperies_6
+
+    if len(draperies_patches) == 0:
+        result = image_patch.simple_query("Do you see cabinets to the right of the draperies?")
+    else:
+        # Find cabinets (try several synonyms)
+        cabinets_1 = image_patch.find("cabinet")
+        cabinets_2 = image_patch.find("cabinets")
+        cabinets_3 = image_patch.find("cupboard")
+        cabinets_4 = image_patch.find("cupboards")
+        cabinet_patches = cabinets_1 + cabinets_2 + cabinets_3 + cabinets_4
+
+        if len(cabinet_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for cabinet_patch in cabinet_patches:
+                for drapery_patch in draperies_patches:
+                    if cabinet_patch.horizontal_center > drapery_patch.horizontal_center:
+                        result = "yes"
+    return result

@@ -1,0 +1,29 @@
+Stage: other execution error
+Error: best_text_match not implemented
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "05847756.prog", line 56, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 191, in abstract_if_stmt
+    lvars_f = else_body(*lvars) if else_body is not None else lvars
+              ^^^^^^^^^^^^^^^^^
+  File "05847756.prog", line 54, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 188, in abstract_if_stmt
+    lvars = else_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "05847756.prog", line 52, in _else
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch.py", line 76, in best_text_match
+    return self.CONTEXT.METHODS.best_text_match(self, option_list, prefix)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/eval/run_utils.py", line 42, in wrapper
+    return asyncio.get_event_loop().run_until_complete(function(*args, **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch_conformal.py", line 187, in best_text_match
+    assert False, "best_text_match not implemented"
+           ^^^^^
+AssertionError: best_text_match not implemented

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_dark_brown = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find('table')
+
+    def _if(image_patch, is_dark_brown, result, table_patches):
+        result = image_patch.simple_query('Does the table look dark brown?')
+        return (image_patch, is_dark_brown, result, table_patches)
+
+    def _else(image_patch, is_dark_brown, result, table_patches):
+        is_dark_brown = False
+
+        def _for(table_patch, image_patch, is_dark_brown, table_patches):
+
+            def _if(image_patch, is_dark_brown, table_patches):
+                is_dark_brown = True
+                return (image_patch, is_dark_brown, table_patches)
+            image_patch, is_dark_brown, table_patches = if_stmt(_if, None, table_patch.verify_property('table', 'dark brown'), (image_patch, is_dark_brown, table_patches))
+            return (image_patch, is_dark_brown, table_patches)
+        image_patch, is_dark_brown, table_patches = for_stmt(_for, table_patches, (image_patch, is_dark_brown, table_patches))
+        result = bool_to_yesno(is_dark_brown)
+        return (image_patch, is_dark_brown, result, table_patches)
+    image_patch, is_dark_brown, result, table_patches = if_stmt(_if, _else, len(table_patches) == 0, (image_patch, is_dark_brown, result, table_patches))
+    return result

@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_blueberry = None
+    is_plate = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_blueberry = or_expr(image_patch.exists('blueberry'), image_patch.exists('blueberries'))
+    is_plate = or_expr(image_patch.exists('plate'), image_patch.exists('plates'))
+    result = bool_to_yesno(or_expr(is_blueberry, is_plate))
+    return result

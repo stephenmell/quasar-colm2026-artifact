@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    any_rectangular = None
+    basket_patches = None
+    fallback_answer = None
+    image_patch = None
+    is_rectangular = None
+    is_white = None
+    result = None
+    image_patch = ImagePatch(image)
+    basket_patches = image_patch.find('basket')
+
+    def _if(any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result):
+        result = image_patch.simple_query('Does the rectangular basket look white?')
+        return (any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result)
+
+    def _else(any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result):
+        result = 'no'
+        any_rectangular = False
+
+        def _for(basket_patch, any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result):
+            is_rectangular = basket_patch.verify_property('basket', 'rectangular')
+
+            def _if(any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result):
+                any_rectangular = True
+                is_white = basket_patch.verify_property('basket', 'white')
+
+                def _if(any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result):
+                    result = 'yes'
+                    return (any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result)
+                any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result = if_stmt(_if, None, is_white, (any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result))
+                return (any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result)
+            any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result = if_stmt(_if, None, is_rectangular, (any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result))
+            return (any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result)
+        any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result = for_stmt(_for, basket_patches, (any_rectangular, basket_patches, image_patch, is_rectangular, is_white, result))
+
+        def _if(any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result):
+            fallback_answer = image_patch.simple_query('Does the rectangular basket look white?')
+            result = fallback_answer
+            return (any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result)
+        any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result = if_stmt(_if, None, not_expr(any_rectangular), (any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result))
+        return (any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result)
+    any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result = if_stmt(_if, _else, len(basket_patches) == 0, (any_rectangular, basket_patches, fallback_answer, image_patch, is_rectangular, is_white, result))
+    return result

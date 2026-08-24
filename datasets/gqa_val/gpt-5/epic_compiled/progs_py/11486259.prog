@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_cookbook = image_patch.exists("cookbook")
+    has_cook_book = False
+    if not has_cookbook:
+        has_cook_book = image_patch.exists("cook book")
+    if has_cookbook or has_cook_book:
+        result = "yes"
+    else:
+        result = image_patch.simple_query("Do you see any cookbooks?")
+    return result

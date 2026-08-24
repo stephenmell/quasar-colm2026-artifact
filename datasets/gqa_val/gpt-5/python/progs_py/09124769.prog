@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    skateboard_patches = image_patch.find("skateboard")
+    fence_patches = image_patch.find("fence")
+
+    # If either object isn't detected, ask the question directly
+    if len(skateboard_patches) == 0 or len(fence_patches) == 0:
+        return image_patch.simple_query("Do the skateboard and the fence have different colors?")
+
+    color_options = [
+        "red", "blue", "green", "yellow", "white", "black",
+        "brown", "gray", "orange", "pink", "purple", "tan",
+        "silver", "gold"
+    ]
+
+    skateboard_color = skateboard_patches[0].best_text_match(color_options)
+    fence_color = fence_patches[0].best_text_match(color_options)
+
+    return bool_to_yesno(skateboard_color != fence_color)

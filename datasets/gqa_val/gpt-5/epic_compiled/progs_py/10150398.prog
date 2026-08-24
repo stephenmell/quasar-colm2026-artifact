@@ -1,0 +1,37 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find("curtain")
+    if len(curtain_patches) == 0:
+        result = image_patch.simple_query("Do you see cabinets to the left of the curtain on the right side?")
+    else:
+        result = "no"
+        # Count curtains on the right half
+        right_curtain_count = 0
+        for c in curtain_patches:
+            if c.horizontal_center >= image_patch.horizontal_center:
+                right_curtain_count = right_curtain_count + 1
+
+        # Find the rightmost curtain
+        rightmost_curtain = curtain_patches[0]
+        rightmost_x = curtain_patches[0].horizontal_center
+        for c in curtain_patches:
+            if c.horizontal_center > rightmost_x:
+                rightmost_curtain = c
+                rightmost_x = c.horizontal_center
+
+        # Build tuple of curtains to check (right-half curtains, or the rightmost if none on right half)
+        curtains_to_check = ()
+        if right_curtain_count == 0:
+            curtains_to_check = (rightmost_curtain,)
+        else:
+            for c in curtain_patches:
+                if c.horizontal_center >= image_patch.horizontal_center:
+                    curtains_to_check = curtains_to_check + (c,)
+
+        cabinet_patches = image_patch.find("cabinet")
+        if len(cabinet_patches) > 0:
+            for cur in curtains_to_check:
+                for cab in cabinet_patches:
+                    if cab.horizontal_center < cur.horizontal_center:
+                        result = "yes"
+    return result

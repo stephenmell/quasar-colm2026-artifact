@@ -1,0 +1,64 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Direct check for safety jacket
+    if image_patch.exists("safety jacket"):
+        result = "yes"
+
+    # Check common synonyms
+    if result == "no":
+        synonym_tuple = (
+            "safety vest",
+            "life jacket",
+            "life vest",
+            "reflective vest",
+            "hi-vis vest",
+            "high visibility vest",
+            "life preserver",
+            "personal flotation device",
+            "pfd"
+        )
+        found_any = False
+        for synonym in synonym_tuple:
+            if image_patch.exists(synonym):
+                found_any = True
+        if found_any:
+            result = "yes"
+
+    # Heuristic: look for vests with safety-like properties
+    if result == "no":
+        if image_patch.exists("vest"):
+            vest_patches = image_patch.find("vest")
+            detected = False
+            for vest_patch in vest_patches:
+                prop_tuple = (
+                    "reflective",
+                    "high visibility",
+                    "hi-vis",
+                    "neon",
+                    "fluorescent",
+                    "safety",
+                    "orange",
+                    "yellow"
+                )
+                prop_hit = False
+                for prop in prop_tuple:
+                    if vest_patch.verify_property("vest", prop):
+                        prop_hit = True
+                if prop_hit:
+                    detected = True
+            if detected:
+                result = "yes"
+
+    # Fallback: directly ask
+    if result == "no":
+        answer = image_patch.simple_query("Are there any safety jackets in the image?")
+        if answer == "yes":
+            result = "yes"
+        elif answer == "no":
+            result = "no"
+        else:
+            # Choose the most likely answer if the response is not a clean yes/no
+            result = image_patch.best_text_match(("yes", "no"))
+    return result

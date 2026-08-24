@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plane_terms = ("plane", "airplane")
+    car_terms = ("car",)
+
+    plane_found = False
+    for term in plane_terms:
+        if image_patch.exists(term):
+            plane_found = True
+
+    car_found = False
+    for term in car_terms:
+        if image_patch.exists(term):
+            car_found = True
+
+    result = bool_to_yesno(plane_found or car_found)
+    return result

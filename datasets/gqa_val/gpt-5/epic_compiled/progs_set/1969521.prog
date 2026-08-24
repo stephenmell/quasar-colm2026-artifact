@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    answer = None
+    female_found = None
+    image_patch = None
+    result = None
+    subject_patches = None
+    subjects = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    female_found = False
+    subjects = ('woman', 'girl')
+
+    def _for(subject, answer, female_found, image_patch, result, subject_patches, subjects):
+        subject_patches = image_patch.find(subject)
+
+        def _if(female_found, image_patch, result, subject_patches, subjects):
+            female_found = True
+            return (female_found, image_patch, result, subject_patches, subjects)
+        female_found, image_patch, result, subject_patches, subjects = if_stmt(_if, None, len(subject_patches) > 0, (female_found, image_patch, result, subject_patches, subjects))
+
+        def _for(subject_patch, answer, female_found, image_patch, result, subject_patches, subjects):
+            answer = subject_patch.simple_query('Is the ' + subject + ' snowboarding?')
+
+            def _if(answer, female_found, image_patch, result, subject_patches, subjects):
+                result = 'yes'
+                return (answer, female_found, image_patch, result, subject_patches, subjects)
+            answer, female_found, image_patch, result, subject_patches, subjects = if_stmt(_if, None, answer == 'yes', (answer, female_found, image_patch, result, subject_patches, subjects))
+            return (answer, female_found, image_patch, result, subject_patches, subjects)
+        answer, female_found, image_patch, result, subject_patches, subjects = for_stmt(_for, subject_patches, (answer, female_found, image_patch, result, subject_patches, subjects))
+        return (answer, female_found, image_patch, result, subject_patches, subjects)
+    answer, female_found, image_patch, result, subject_patches, subjects = for_stmt(_for, subjects, (answer, female_found, image_patch, result, subject_patches, subjects))
+
+    def _if(answer, female_found, image_patch, result, subject_patches, subjects):
+        result = image_patch.simple_query('Is she snowboarding?')
+        return (answer, female_found, image_patch, result, subject_patches, subjects)
+    answer, female_found, image_patch, result, subject_patches, subjects = if_stmt(_if, None, not_expr(female_found), (answer, female_found, image_patch, result, subject_patches, subjects))
+    return result

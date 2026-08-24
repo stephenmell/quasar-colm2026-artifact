@@ -1,0 +1,18 @@
+# Is there a coffee table to the left of the floor lamp that is on the right?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    floor_lamp_patches = image_patch.find("floor lamp")
+
+    if len(floor_lamp_patches) == 0:
+        result = image_patch.simple_query("Is there a coffee table to the left of the floor lamp that is on the right?")
+    else:
+        result = "no"
+        coffee_table_patches = image_patch.find("coffee table")
+        if len(coffee_table_patches) > 0:
+            for lamp_patch in floor_lamp_patches:
+                is_right_lamp = lamp_patch.horizontal_center > image_patch.horizontal_center
+                if is_right_lamp:
+                    for table_patch in coffee_table_patches:
+                        if table_patch.horizontal_center < lamp_patch.horizontal_center:
+                            result = "yes"
+    return result

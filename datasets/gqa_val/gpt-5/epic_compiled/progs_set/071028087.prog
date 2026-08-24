@@ -1,0 +1,62 @@
+def execute_command(image) -> str:
+    candidate_red_flags = None
+    clock_patches = None
+    flag_patches = None
+    image_patch = None
+    placeholder = None
+    red_flag_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    red_flag_patches = image_patch.find('red flag')
+
+    def _if(candidate_red_flags, flag_patches, image_patch, red_flag_patches, result):
+        flag_patches = image_patch.find('flag')
+        candidate_red_flags = ()
+
+        def _for(flag_patch, candidate_red_flags, flag_patches, image_patch, red_flag_patches, result):
+
+            def _if(candidate_red_flags, flag_patches, image_patch, red_flag_patches, result):
+                candidate_red_flags = candidate_red_flags + (flag_patch,)
+                return (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result)
+            candidate_red_flags, flag_patches, image_patch, red_flag_patches, result = if_stmt(_if, None, flag_patch.verify_property('flag', 'red'), (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result))
+            return (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result)
+        candidate_red_flags, flag_patches, image_patch, red_flag_patches, result = for_stmt(_for, flag_patches, (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result))
+
+        def _if(candidate_red_flags, flag_patches, image_patch, red_flag_patches, result):
+            result = image_patch.simple_query('Do you see any clocks to the right of the red flag?')
+            return (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result)
+
+        def _else(candidate_red_flags, flag_patches, image_patch, red_flag_patches, result):
+            red_flag_patches = candidate_red_flags
+            return (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result)
+        candidate_red_flags, flag_patches, image_patch, red_flag_patches, result = if_stmt(_if, _else, len(candidate_red_flags) == 0, (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result))
+        return (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result)
+    candidate_red_flags, flag_patches, image_patch, red_flag_patches, result = if_stmt(_if, None, len(red_flag_patches) == 0, (candidate_red_flags, flag_patches, image_patch, red_flag_patches, result))
+
+    def _if(candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result):
+        clock_patches = image_patch.find('clock')
+
+        def _if(candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result):
+            placeholder = 0
+            return (candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result)
+
+        def _else(candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result):
+
+            def _for(red_flag_patch, candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result):
+
+                def _for(clock_patch, candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result):
+
+                    def _if(candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result):
+                        result = 'yes'
+                        return (candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result)
+                    candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result = if_stmt(_if, None, clock_patch.horizontal_center > red_flag_patch.horizontal_center, (candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result))
+                    return (candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result)
+                candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result = for_stmt(_for, clock_patches, (candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result))
+                return (candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result)
+            candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result = for_stmt(_for, red_flag_patches, (candidate_red_flags, clock_patches, flag_patches, image_patch, red_flag_patches, result))
+            return (candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result)
+        candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result = if_stmt(_if, _else, len(clock_patches) == 0, (candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result))
+        return (candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result)
+    candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result = if_stmt(_if, None, len(red_flag_patches) > 0, (candidate_red_flags, clock_patches, flag_patches, image_patch, placeholder, red_flag_patches, result))
+    return result

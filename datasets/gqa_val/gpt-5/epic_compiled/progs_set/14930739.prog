@@ -1,0 +1,65 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    image_patch = None
+    man_patches = None
+    man_with_shirt_patch = None
+    plastic_chair_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    man_patches = image_patch.find('man')
+    man_with_shirt_patch = None
+
+    def _if(image_patch, man_patches, man_with_shirt_patch, result):
+
+        def _for(man_patch, image_patch, man_patches, man_with_shirt_patch, result):
+
+            def _if(image_patch, man_patches, man_with_shirt_patch, result):
+
+                def _if(image_patch, man_patches, man_with_shirt_patch, result):
+                    man_with_shirt_patch = man_patch
+                    return (image_patch, man_patches, man_with_shirt_patch, result)
+                image_patch, man_patches, man_with_shirt_patch, result = if_stmt(_if, None, man_with_shirt_patch is None, (image_patch, man_patches, man_with_shirt_patch, result))
+                return (image_patch, man_patches, man_with_shirt_patch, result)
+            image_patch, man_patches, man_with_shirt_patch, result = if_stmt(_if, None, man_patch.simple_query('Is the man wearing a shirt?') == 'yes', (image_patch, man_patches, man_with_shirt_patch, result))
+            return (image_patch, man_patches, man_with_shirt_patch, result)
+        image_patch, man_patches, man_with_shirt_patch, result = for_stmt(_for, man_patches, (image_patch, man_patches, man_with_shirt_patch, result))
+        return (image_patch, man_patches, man_with_shirt_patch, result)
+    image_patch, man_patches, man_with_shirt_patch, result = if_stmt(_if, None, len(man_patches) > 0, (image_patch, man_patches, man_with_shirt_patch, result))
+    chair_patches = image_patch.find('chair')
+    plastic_chair_patch = None
+
+    def _if(chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+
+        def _for(chair_patch, chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+
+            def _if(chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+
+                def _if(chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+                    plastic_chair_patch = chair_patch
+                    return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+                chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result = if_stmt(_if, None, plastic_chair_patch is None, (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result))
+                return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+            chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result = if_stmt(_if, None, chair_patch.verify_property('chair', 'plastic'), (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result))
+            return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+        chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result = for_stmt(_for, chair_patches, (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result))
+        return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+    chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result = if_stmt(_if, None, len(chair_patches) > 0, (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result))
+
+    def _if(chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+        result = image_patch.simple_query('Is the plastic chair to the right or to the left of the man that is wearing a shirt?')
+        return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+
+    def _else(chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+
+        def _if(chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+            result = 'right'
+            return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+
+        def _else(chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result):
+            result = 'left'
+            return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+        chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result = if_stmt(_if, _else, plastic_chair_patch.horizontal_center > man_with_shirt_patch.horizontal_center, (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result))
+        return (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result)
+    chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result = if_stmt(_if, _else, or_expr(man_with_shirt_patch is None, plastic_chair_patch is None), (chair_patches, image_patch, man_patches, man_with_shirt_patch, plastic_chair_patch, result))
+    return result

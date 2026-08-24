@@ -1,0 +1,8 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_backpack = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_backpack = image_patch.exists('backpack')
+    result = bool_to_yesno(is_backpack)
+    return result

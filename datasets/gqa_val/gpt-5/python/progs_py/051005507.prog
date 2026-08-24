@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_lock = image_patch.exists("lock") or image_patch.exists("padlock")
+    is_safety_jacket = (
+        image_patch.exists("safety jacket")
+        or image_patch.exists("life jacket")
+        or image_patch.exists("safety vest")
+        or image_patch.exists("life vest")
+    )
+    return bool_to_yesno(is_lock or is_safety_jacket)

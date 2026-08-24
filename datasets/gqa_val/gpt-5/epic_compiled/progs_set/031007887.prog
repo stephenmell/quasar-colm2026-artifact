@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    bowl_exists = None
+    bowl_patches = None
+    image_patch = None
+    is_on_table = None
+    result = None
+    table_exists = None
+    image_patch = ImagePatch(image)
+    bowl_exists = image_patch.exists('bowl')
+    table_exists = image_patch.exists('table')
+
+    def _if(bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists):
+        result = image_patch.simple_query('Are there bowls on the table?')
+        return (bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists)
+
+    def _else(bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists):
+        bowl_patches = image_patch.find('bowl')
+        result = 'no'
+
+        def _for(bowl_patch, bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists):
+            is_on_table = bowl_patch.simple_query('Is the bowl on the table?') == 'yes'
+
+            def _if(bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists):
+                result = 'yes'
+                return (bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists)
+            bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists = if_stmt(_if, None, is_on_table, (bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists))
+            return (bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists)
+        bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists = for_stmt(_for, bowl_patches, (bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists))
+        return (bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists)
+    bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists = if_stmt(_if, _else, or_expr(not bowl_exists, not table_exists), (bowl_exists, bowl_patches, image_patch, is_on_table, result, table_exists))
+    return result

@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+
+  File "/home/bzhang16/conformal_viper/GQA/pipeline_gen_gqa.py", line 219, in main
+    _epics_expr, _var_names = epics_syntax.from_python_str(program, "dummy.py")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/bzhang16/conformal_viper/GQA/../epic/epics_syntax.py", line 127, in from_python_str
+    func_ast = ast.parse(code, filename=filename, mode='exec', type_comments=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/ast.py", line 52, in parse
+    return compile(source, filename, mode, flags,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "dummy.py", line 2
+
+    result = image_patch.simple_query("Is it outdoors?")
+
+IndentationError: unexpected indent

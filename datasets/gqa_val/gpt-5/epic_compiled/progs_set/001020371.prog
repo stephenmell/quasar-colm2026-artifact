@@ -1,0 +1,42 @@
+def execute_command(image) -> str:
+    bench_patches = None
+    image_patch = None
+    is_left_of_any_bench = None
+    result = None
+    zebra_patches = None
+    image_patch = ImagePatch(image)
+    zebra_patches = image_patch.find('zebra')
+    bench_patches = image_patch.find('bench')
+
+    def _if(bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches):
+        result = image_patch.simple_query('Does the zebra to the left of the bench look black?')
+        return (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches)
+
+    def _else(bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches):
+        result = 'no'
+
+        def _for(zebra_patch, bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches):
+            is_left_of_any_bench = False
+
+            def _for(bench_patch, bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches):
+
+                def _if(bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches):
+                    is_left_of_any_bench = True
+                    return (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches)
+                bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches = if_stmt(_if, None, zebra_patch.horizontal_center < bench_patch.horizontal_center, (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches))
+                return (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches)
+            bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches = for_stmt(_for, bench_patches, (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches))
+
+            def _if(bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches):
+
+                def _if(bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches):
+                    result = 'yes'
+                    return (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches)
+                bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches = if_stmt(_if, None, zebra_patch.verify_property('zebra', 'black'), (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches))
+                return (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches)
+            bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches = if_stmt(_if, None, is_left_of_any_bench, (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches))
+            return (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches)
+        bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches = for_stmt(_for, zebra_patches, (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches))
+        return (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches)
+    bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches = if_stmt(_if, _else, or_expr(len(zebra_patches) == 0, len(bench_patches) == 0), (bench_patches, image_patch, is_left_of_any_bench, result, zebra_patches))
+    return result

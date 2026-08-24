@@ -1,0 +1,63 @@
+Stage: agentdojo_eval.exec_with_return
+Error: 1 validation error for OnboardingInfo
+colleague_email
+  value is not a valid email address: The part after the @-sign is not valid. It should have a period. [type=value_error, input_value='NotEnoughInformationErro...achmentsForDora@unknown', input_type=str]
+Traceback: 
+Traceback (most recent call last):
+  File "/home/bzhang16/conformal_viper/AgentDojo/pipeline_run_agentdojo.py", line 287, in main
+    exec_result = agentdojo_eval.exec_with_return(code, exec_globals, exec_locals)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bzhang16/conformal_viper/AgentDojo/agentdojo_utils/eval.py", line 22, in exec_with_return
+    exec(ast.unparse(a), globals, locals)
+  File "<string>", line 7, in <module>
+  File "/home/bzhang16/conformal_viper/AgentDojo/agentdojo_utils/camel_assistant.py", line 69, in query_ai_assistant_sync
+    return asyncio.run(query_ai_assistant_async(query, output_schema))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/bzhang16/conformal_viper/AgentDojo/agentdojo_utils/camel_assistant.py", line 38, in query_ai_assistant_async
+    response = await client.beta.chat.completions.parse(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/resources/chat/completions/completions.py", line 1619, in parse
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/_base_client.py", line 1794, in post
+    return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/_base_client.py", line 1599, in request
+    return await self._process_response(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/_base_client.py", line 1688, in _process_response
+    return await api_response.parse()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/_response.py", line 432, in parse
+    parsed = self._options.post_parser(parsed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/resources/chat/completions/completions.py", line 1613, in parser
+    return _parse_chat_completion(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/lib/_parsing/_completions.py", line 146, in parse_chat_completion
+    "parsed": maybe_parse_content(
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/lib/_parsing/_completions.py", line 199, in maybe_parse_content
+    return _parse_content(response_format, message.content)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/lib/_parsing/_completions.py", line 262, in _parse_content
+    return cast(ResponseFormatT, model_parse_json(response_format, content))
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/openai/_compat.py", line 169, in model_parse_json
+    return model.model_validate_json(data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data1/bzhang16/anaconda3/envs/conformal_viper/lib/python3.12/site-packages/pydantic/main.py", line 746, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for OnboardingInfo
+colleague_email
+  value is not a valid email address: The part after the @-sign is not valid. It should have a period. [type=value_error, input_value='NotEnoughInformationErro...achmentsForDora@unknown', input_type=str]

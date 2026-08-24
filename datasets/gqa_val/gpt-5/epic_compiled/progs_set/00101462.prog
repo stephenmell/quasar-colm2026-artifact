@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_ice = None
+    is_snow = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_ice = image_patch.exists('ice')
+    is_snow = image_patch.exists('snow')
+    result = bool_to_yesno(or_expr(is_ice, is_snow))
+    return result

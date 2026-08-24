@@ -1,0 +1,89 @@
+({1891: 'context', 1894: 'llm_query', 1912: '.join', 1922: 'return_result'},
+ ('def',
+  1889,
+  ((),
+   ((('call', (1890,), -1, ()),
+     ('def',
+      1892,
+      ((1907, 1893),
+       ((('prim', 1895, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (1896,), 118, (1893,)),
+         ('prim',
+          1897,
+          '\n'
+          'END_DOCUMENT\n'
+          '\n'
+          'Task: From this document alone, extract any evidence about a '
+          'streaming drama series from the early 2020s whose central theme is '
+          'music. If the document contains such information, provide a concise '
+          'structured note with:\n'
+          '- Series title(s)\n'
+          '- Evidence quotes (exact lines) from the document that indicate '
+          'music as a central theme, streaming release in early 2020s, and '
+          'number of seasons (especially whether only one season was available '
+          'by end of 2023)\n'
+          '- Mapped actors and clues, only if the document explicitly supports '
+          'them:\n'
+          '  * A lead actor who has received several awards and has published '
+          'a memoir (name the actor and memoir if stated)\n'
+          '  * An actor (from the cast) who was the head of an education-based '
+          'trust for several years (name the actor and the trust if stated)\n'
+          '  * The actor who played his half-brother in the series published a '
+          'book of poetry (name the actor and poetry book if stated; clarify '
+          'whose half-brother)\n'
+          '  * A female lead who previously starred in a movie with '
+          'meaningless (gibberish/nonsense) language (name the actress and the '
+          'movie if stated)\n'
+          '\n'
+          'Important:\n'
+          '- Use only information present in the document; if a detail is not '
+          'in the document, skip it.\n'
+          '- If the document does not mention any relevant series, output '
+          'nothing.'),
+         ('def',
+          1903,
+          ((1898, 1899),
+           ((('call', (1900,), 1899, (1898, 1895)),
+             ('call', (1901,), 1899, (1900, 1896)),
+             ('call', (1902,), 1899, (1901, 1897))),
+            (1902,)))),
+         ('prim', 1904, ''),
+         ('call', (1905,), 1903, (1904, 80)),
+         ('call', (1906,), 1894, (1905,)),
+         ('call', (1908,), -1, (1906,)),
+         ('call', (1909,), 80, (1907, 1908))),
+        (1909,)))),
+     ('call', (1911,), 79, (1891,)),
+     ('call', (1910,), 1911, (1890, 1892)),
+     ('prim', 1913, '\n\n---\n\n'),
+     ('call', (1914,), 1912, (1913, 1910)),
+     ('prim',
+      1915,
+      'You are given extracted notes from multiple documents about a streaming '
+      'drama series with a central theme of music, streamed in the early '
+      '2020s. The series we want must match these clues together:\n'
+      '- One of the lead actors is a recipient of several awards and has '
+      'published a memoir.\n'
+      '- In real life, one actor was the head of an education-based trust for '
+      'several years.\n'
+      '- The actor who played his half-brother (in the series) published a '
+      'book of poetry.\n'
+      '- A female lead previously starred in a movie featuring meaningless '
+      '(gibberish/nonsense) language.\n'
+      '- As of the end of 2023, only one season of the series was available.\n'
+      '\n'
+      'From the notes, determine the single series title that best matches all '
+      'clues. Use only the provided notes. If multiple candidates appear, '
+      'choose the one that satisfies all bullets. If none satisfy all, choose '
+      'the one that satisfies the most and is explicitly a music-themed '
+      'early-2020s streaming drama with one season by end of 2023.\n'
+      '\n'
+      'Output only the exact series title, with no additional text.'),
+     ('prim', 1916, 'Here are the extracted notes:\n\n'),
+     ('call', (1917,), 80, (1916, 1914)),
+     ('prim', 1918, '\n\n'),
+     ('call', (1919,), 80, (1917, 1918)),
+     ('call', (1920,), 80, (1919, 1915)),
+     ('call', (1921,), 1894, (1920,)),
+     ('call', (1923,), 1922, (1921,))),
+    (1923,)))))

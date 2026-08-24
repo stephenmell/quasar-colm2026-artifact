@@ -1,0 +1,50 @@
+# Do the shrub and the cloud have a different colors?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shrub_patches = image_patch.find("shrub")
+    cloud_patches = image_patch.find("cloud")
+    result = "no"
+
+    if len(shrub_patches) == 0 or len(cloud_patches) == 0:
+        result = image_patch.simple_query("Do the shrub and the cloud have a different colors?")
+    else:
+        shrub_patch = shrub_patches[0]
+        cloud_patch = cloud_patches[0]
+
+        base_colors = (
+            "white", "black", "gray", "green", "blue",
+            "red", "yellow", "brown", "orange", "pink",
+            "purple", "tan", "gold", "silver"
+        )
+
+        shrub_color = shrub_patch.best_text_match(base_colors)
+        cloud_color = cloud_patch.best_text_match(base_colors)
+
+        if shrub_color != "" and cloud_color != "" and shrub_color != cloud_color:
+            result = "yes"
+        else:
+            shrub_recognized = "no"
+            cloud_recognized = "no"
+            for col in base_colors:
+                if shrub_patch.verify_property("shrub", col):
+                    shrub_recognized = "yes"
+                if cloud_patch.verify_property("cloud", col):
+                    cloud_recognized = "yes"
+
+            if shrub_recognized == "yes" and cloud_recognized == "yes":
+                shrub_first = ""
+                cloud_first = ""
+                for col in base_colors:
+                    if shrub_first == "":
+                        if shrub_patch.verify_property("shrub", col):
+                            shrub_first = col
+                    if cloud_first == "":
+                        if cloud_patch.verify_property("cloud", col):
+                            cloud_first = col
+                if shrub_first != "" and cloud_first != "" and shrub_first != cloud_first:
+                    result = "yes"
+                else:
+                    result = "no"
+            else:
+                result = image_patch.simple_query("Do the shrub and the cloud have a different colors?")
+    return result

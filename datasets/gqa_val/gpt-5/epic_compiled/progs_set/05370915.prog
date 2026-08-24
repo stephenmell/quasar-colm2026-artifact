@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    bike_patches = None
+    image_patch = None
+    is_black = None
+    is_black_as_bicycle = None
+    is_black_as_bike = None
+    result = None
+    temp_result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    bike_patches = ()
+
+    def _if(bike_patches, image_patch, result):
+        bike_patches = bike_patches + image_patch.find('bike')
+        return (bike_patches, image_patch, result)
+    bike_patches, image_patch, result = if_stmt(_if, None, image_patch.exists('bike'), (bike_patches, image_patch, result))
+
+    def _if(bike_patches, image_patch, result):
+        bike_patches = bike_patches + image_patch.find('bicycle')
+        return (bike_patches, image_patch, result)
+    bike_patches, image_patch, result = if_stmt(_if, None, image_patch.exists('bicycle'), (bike_patches, image_patch, result))
+
+    def _if(bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result):
+        result = image_patch.simple_query('Is there a bike in the photograph that is not black?')
+        return (bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result)
+
+    def _else(bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result):
+        temp_result = 'no'
+
+        def _for(bike_patch, bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result):
+            is_black_as_bike = bike_patch.verify_property('bike', 'black')
+            is_black_as_bicycle = bike_patch.verify_property('bicycle', 'black')
+            is_black = or_expr(is_black_as_bike, is_black_as_bicycle)
+
+            def _if(bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result):
+                temp_result = 'yes'
+                return (bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result)
+            bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result = if_stmt(_if, None, not_expr(is_black), (bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result))
+            return (bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result)
+        bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result = for_stmt(_for, bike_patches, (bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result))
+        result = temp_result
+        return (bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result)
+    bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result = if_stmt(_if, _else, len(bike_patches) == 0, (bike_patches, image_patch, is_black, is_black_as_bicycle, is_black_as_bike, result, temp_result))
+    return result

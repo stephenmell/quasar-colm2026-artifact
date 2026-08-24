@@ -1,0 +1,26 @@
+def execute_command(image) -> str:
+    blind_options = None
+    exists_blind = None
+    exists_screen = None
+    image_patch = None
+    result = None
+    result_bool = None
+    screen_options = None
+    image_patch = ImagePatch(image)
+    result_bool = False
+    blind_options = ('blind', 'blinds', 'window blind', 'window blinds')
+    screen_options = ('screen', 'screens', 'window screen', 'window screens', 'screen door')
+
+    def _for(name, blind_options, exists_blind, image_patch, result_bool, screen_options):
+        exists_blind = image_patch.exists(name)
+        result_bool = or_expr(result_bool, exists_blind)
+        return (blind_options, exists_blind, image_patch, result_bool, screen_options)
+    blind_options, exists_blind, image_patch, result_bool, screen_options = for_stmt(_for, blind_options, (blind_options, exists_blind, image_patch, result_bool, screen_options))
+
+    def _for(name, blind_options, exists_blind, exists_screen, image_patch, result_bool, screen_options):
+        exists_screen = image_patch.exists(name)
+        result_bool = or_expr(result_bool, exists_screen)
+        return (blind_options, exists_blind, exists_screen, image_patch, result_bool, screen_options)
+    blind_options, exists_blind, exists_screen, image_patch, result_bool, screen_options = for_stmt(_for, screen_options, (blind_options, exists_blind, exists_screen, image_patch, result_bool, screen_options))
+    result = bool_to_yesno(result_bool)
+    return result

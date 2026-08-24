@@ -1,0 +1,10 @@
+Stage: utility
+Error: 
+Traceback: Utility for function calls not implemented.
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper_artifact/run_agentdojo.py", line 379, in main
+    utility = user_task.utility(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/.venv/lib/python3.12/site-packages/agentdojo/default_suites/v1_2/slack/user_tasks.py", line 94, in utility
+    raise NotImplementedError("")
+NotImplementedError

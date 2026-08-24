@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2341840",
+          [
+            0,
+            0,
+            500,
+            332
+          ]
+        ],
+        "What is located on top of the water?"
+      ],
+      "A boat with umbrellas.",
+      773825367
+    ]
+  ],
+  "best_text_match": []
+}

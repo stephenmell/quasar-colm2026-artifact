@@ -1,0 +1,38 @@
+Stage: semantics.reduce_graph_opportunistic
+Error: 
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 264, in main
+    epic_exec_result = tuple(semantics.reduce_graph_opportunistic(epic_final))[-1]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 152, in reduce_graph_opportunistic
+    g = reduce_term(f, "bfs", False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 145, in reduce_term
+    return asyncio.get_event_loop().run_until_complete(reduce_term_async(e, tree_policy, blocking_async))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 103, in reduce_term_async
+    g, init_ops = graph_from_initial_term(e)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_syntax_utils.py", line 49, in graph_from_initial_term
+    ident = add_statement_to_graph(g, vm, stmt)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_syntax_utils.py", line 9, in add_statement_to_graph
+    freevars_function(func, fvs)
+  File "/home/sm1/projects/conformal_viper/epic/syntax.py", line 184, in freevars_function
+    freevars_body(func[1], out, bound_vars)
+  File "/home/sm1/projects/conformal_viper/epic/syntax.py", line 190, in freevars_body
+    freevars_statement(stmt, out, bound_vars)
+  File "/home/sm1/projects/conformal_viper/epic/syntax.py", line 204, in freevars_statement
+    freevars_function(func, out, set(bound_vars))
+  File "/home/sm1/projects/conformal_viper/epic/syntax.py", line 184, in freevars_function
+    freevars_body(func[1], out, bound_vars)
+  File "/home/sm1/projects/conformal_viper/epic/syntax.py", line 190, in freevars_body
+    freevars_statement(stmt, out, bound_vars)
+  File "/home/sm1/projects/conformal_viper/epic/syntax.py", line 226, in freevars_statement
+    assert v not in out
+           ^^^^^^^^^^^^
+AssertionError

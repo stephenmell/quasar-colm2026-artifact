@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2373103",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "What are the fans on?"
+      ],
+      "The fans are watching a tennis match.",
+      1347142098
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,27 @@
+# Are there either buses or trains that are colorful?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result_bool = False
+
+    # Check buses
+    bus_exists = image_patch.exists("bus")
+    if bus_exists:
+        bus_patches = image_patch.find("bus")
+        for bus_patch in bus_patches:
+            if bus_patch.verify_property("bus", "colorful"):
+                result_bool = True
+
+    # Check trains
+    train_exists = image_patch.exists("train")
+    if train_exists:
+        train_patches = image_patch.find("train")
+        for train_patch in train_patches:
+            if train_patch.verify_property("train", "colorful"):
+                result_bool = True
+
+    # Fallback: if neither buses nor trains are detected, ask directly
+    if (not result_bool) and (not bus_exists) and (not train_exists):
+        direct_answer = image_patch.simple_query("Are there either buses or trains that are colorful?")
+        result_bool = (direct_answer == "yes")
+
+    return bool_to_yesno(result_bool)

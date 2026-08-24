@@ -1,0 +1,10 @@
+# Do you see a hat that is not short?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    hat_patches = image_patch.find("hat")
+    if len(hat_patches) == 0:
+        return image_patch.simple_query("Do you see a hat that is not short?")
+    for hat_patch in hat_patches:
+        if not hat_patch.verify_property("hat", "short"):
+            return "yes"
+    return "no"

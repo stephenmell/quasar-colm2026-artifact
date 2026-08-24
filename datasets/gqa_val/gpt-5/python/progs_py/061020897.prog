@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find("sky")
+    # Question assumes only one sky patch
+    if len(sky_patches) == 0:
+        # If no sky is found, query the image directly
+        return image_patch.simple_query("Does the sky look foggy?")
+    for sky_patch in sky_patches:
+        if sky_patch.verify_property("sky", "foggy"):
+            return "yes"
+    return "no"

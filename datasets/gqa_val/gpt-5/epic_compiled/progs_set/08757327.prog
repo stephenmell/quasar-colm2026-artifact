@@ -1,0 +1,18 @@
+def execute_command(image) -> str:
+    image_patch = None
+    notepad_exists = None
+    result = None
+    image_patch = ImagePatch(image)
+    notepad_exists = image_patch.exists('notepad')
+
+    def _if(image_patch, notepad_exists):
+        notepad_exists = image_patch.exists('note pad')
+        return (image_patch, notepad_exists)
+    image_patch, notepad_exists = if_stmt(_if, None, not_expr(notepad_exists), (image_patch, notepad_exists))
+
+    def _if(image_patch, notepad_exists):
+        notepad_exists = image_patch.exists('notepads')
+        return (image_patch, notepad_exists)
+    image_patch, notepad_exists = if_stmt(_if, None, not_expr(notepad_exists), (image_patch, notepad_exists))
+    result = bool_to_yesno(notepad_exists)
+    return result

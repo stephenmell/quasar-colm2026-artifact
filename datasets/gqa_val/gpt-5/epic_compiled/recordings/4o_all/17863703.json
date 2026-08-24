@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2399389",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is there a bottle on the table?"
+      ],
+      "Yes.",
+      1491421038
+    ]
+  ],
+  "best_text_match": []
+}

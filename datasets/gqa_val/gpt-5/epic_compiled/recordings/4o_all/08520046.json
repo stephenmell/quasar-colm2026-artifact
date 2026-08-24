@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2410696",
+          [
+            0,
+            0,
+            500,
+            374
+          ]
+        ],
+        "The sauce is in what?"
+      ],
+      "The sauce is in a sandwich.",
+      1277593047
+    ]
+  ],
+  "best_text_match": []
+}

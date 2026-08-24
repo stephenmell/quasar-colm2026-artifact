@@ -1,0 +1,5 @@
+# Is it outdoors or indoors?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.best_text_match(("outdoors", "indoors"))
+    return result

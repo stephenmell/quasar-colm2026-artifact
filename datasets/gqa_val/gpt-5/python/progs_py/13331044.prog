@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    desk_patches = image_patch.find("desk")
+    if len(desk_patches) == 0:
+        # If no desk is found, ask directly
+        return image_patch.simple_query("Is the laptop to the right of the computer mouse on the desk?")
+    desk_patch = desk_patches[0]
+
+    laptop_patches = desk_patch.find("laptop")
+    if len(laptop_patches) == 0:
+        # If no laptop is found within the desk region, ask directly on the desk crop
+        return desk_patch.simple_query("Is the laptop to the right of the computer mouse on the desk?")
+
+    mouse_patches = desk_patch.find("computer mouse")
+    if len(mouse_patches) == 0:
+        mouse_patches = desk_patch.find("mouse")
+    if len(mouse_patches) == 0:
+        # If no mouse is found within the desk region, ask directly on the desk crop
+        return desk_patch.simple_query("Is the laptop to the right of the computer mouse on the desk?")
+
+    for laptop_patch in laptop_patches:
+        for mouse_patch in mouse_patches:
+            if laptop_patch.horizontal_center > mouse_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    found_target_giraffe = None
+    giraffe_patches = None
+    image_patch = None
+    is_looking_through_door = None
+    result = None
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find('giraffe')
+    result = 'no'
+
+    def _if(animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result):
+        result = image_patch.simple_query('Are there animals to the right of the giraffe that is looking through the door?')
+        return (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result)
+
+    def _else(animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result):
+        found_target_giraffe = False
+
+        def _for(giraffe_patch, animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result):
+            is_looking_through_door = giraffe_patch.simple_query('Is the giraffe looking through the door?') == 'yes'
+
+            def _if(animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result):
+                found_target_giraffe = True
+                animal_patches = image_patch.find('animal')
+
+                def _for(animal_patch, animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result):
+
+                    def _if(animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result):
+                        result = 'yes'
+                        return (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result)
+                    animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result = if_stmt(_if, None, animal_patch.horizontal_center > giraffe_patch.horizontal_center, (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result))
+                    return (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result)
+                animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result = for_stmt(_for, animal_patches, (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result))
+                return (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result)
+            animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result = if_stmt(_if, None, is_looking_through_door, (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result))
+            return (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result)
+        animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result = for_stmt(_for, giraffe_patches, (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result))
+
+        def _if(animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result):
+            result = image_patch.simple_query('Are there animals to the right of the giraffe that is looking through the door?')
+            return (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result)
+        animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result = if_stmt(_if, None, not_expr(found_target_giraffe), (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result))
+        return (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result)
+    animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result = if_stmt(_if, _else, len(giraffe_patches) == 0, (animal_patches, found_target_giraffe, giraffe_patches, image_patch, is_looking_through_door, result))
+    return result

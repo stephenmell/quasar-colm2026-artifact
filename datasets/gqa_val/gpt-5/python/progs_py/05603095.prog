@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find("shirt")
+    if len(shirt_patches) == 0:
+        return image_patch.simple_query("Is the shirt brown or white?")
+    return shirt_patches[0].best_text_match(["brown", "white"])

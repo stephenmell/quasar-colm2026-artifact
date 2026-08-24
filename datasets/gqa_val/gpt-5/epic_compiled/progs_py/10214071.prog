@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cart_patches = image_patch.find("cart")
+    fence_patches = image_patch.find("fence")
+    if len(cart_patches) == 0 or len(fence_patches) == 0:
+        result = image_patch.simple_query("Is the fence to the left of the cart made of wood?")
+    else:
+        result = "no"
+        for cart_patch in cart_patches:
+            for fence_patch in fence_patches:
+                is_left = fence_patch.horizontal_center < cart_patch.horizontal_center
+                if is_left:
+                    is_wood = fence_patch.verify_property("fence", "wood")
+                    if is_wood:
+                        result = "yes"
+    return result

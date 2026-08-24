@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find onions
+    onion_patches = image_patch.find("onion")
+    if len(onion_patches) == 0:
+        onion_patches = image_patch.find("onions")
+    if len(onion_patches) == 0:
+        # If no onions are found, ask directly
+        return image_patch.simple_query("Do the veggies to the left of the onions look white or green?")
+    # Find veggies
+    veg_patches = []
+    for name in ["veggies", "veggie", "vegetable", "vegetables"]:
+        candidates = image_patch.find(name)
+        if len(candidates) > 0:
+            veg_patches = candidates
+            break
+    if len(veg_patches) == 0:
+        return image_patch.simple_query("Do the veggies to the left of the onions look white or green?")
+    # Select veggies to the left of the onions
+    onion_leftmost_center = min(p.horizontal_center for p in onion_patches)
+    left_veg_candidates = [vp for vp in veg_patches if vp.horizontal_center < onion_leftmost_center]
+    if len(left_veg_candidates) == 0:
+        return image_patch.simple_query("Do the veggies to the left of the onions look white or green?")
+    # Choose the veggie patch closest to the onions (rightmost among those left of onions)
+    target_patch = max(left_veg_candidates, key=lambda p: p.horizontal_center)
+    return target_patch.best_text_match(["white", "green"])

@@ -1,0 +1,70 @@
+def execute_command(image) -> str:
+    cup_patches = None
+    found = None
+    image_patch = None
+    in_table = None
+    is_right = None
+    pepper_names = None
+    pepper_patches = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    pepper_names = ('pepper grinder', 'pepper mill', 'peppermill')
+    pepper_patches = ()
+
+    def _for(pepper_name, found, image_patch, pepper_names, pepper_patches, result):
+        found = image_patch.find(pepper_name)
+
+        def _if(found, image_patch, pepper_names, pepper_patches, result):
+            pepper_patches = pepper_patches + found
+            return (found, image_patch, pepper_names, pepper_patches, result)
+        found, image_patch, pepper_names, pepper_patches, result = if_stmt(_if, None, len(found) > 0, (found, image_patch, pepper_names, pepper_patches, result))
+        return (found, image_patch, pepper_names, pepper_patches, result)
+    found, image_patch, pepper_names, pepper_patches, result = for_stmt(_for, pepper_names, (found, image_patch, pepper_names, pepper_patches, result))
+
+    def _if(cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+        result = image_patch.simple_query('Do you see any cups to the right of the pepper grinder on the table?')
+        return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+
+    def _else(cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+        table_patches = image_patch.find('table')
+
+        def _if(cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+            result = image_patch.simple_query('Do you see any cups to the right of the pepper grinder on the table?')
+            return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+
+        def _else(cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+            cup_patches = image_patch.find('cup')
+
+            def _if(cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+                pass
+                return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+
+            def _else(cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+
+                def _for(pepper_patch, cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+
+                    def _for(table_patch, cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+
+                        def _for(cup_patch, cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+                            is_right = cup_patch.horizontal_center > pepper_patch.horizontal_center
+                            in_table = and_expr(cup_patch.horizontal_center >= table_patch.left, and_expr(cup_patch.horizontal_center <= table_patch.right, and_expr(cup_patch.vertical_center >= table_patch.lower, cup_patch.vertical_center <= table_patch.upper)))
+
+                            def _if(cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches):
+                                result = 'yes'
+                                return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+                            cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches = if_stmt(_if, None, and_expr(is_right, in_table), (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches))
+                            return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+                        cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches = for_stmt(_for, cup_patches, (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches))
+                        return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+                    cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches = for_stmt(_for, table_patches, (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches))
+                    return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+                cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches = for_stmt(_for, pepper_patches, (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches))
+                return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+            cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches = if_stmt(_if, _else, len(cup_patches) == 0, (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches))
+            return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+        cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches = if_stmt(_if, _else, len(table_patches) == 0, (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches))
+        return (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches)
+    cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches = if_stmt(_if, _else, len(pepper_patches) == 0, (cup_patches, found, image_patch, in_table, is_right, pepper_names, pepper_patches, result, table_patches))
+    return result

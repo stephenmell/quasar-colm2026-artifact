@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find("chair")
+    # If no chair is found, ask directly due to relational query
+    if len(chair_patches) == 0:
+        return image_patch.simple_query("Is there a bag to the right of the chair on the table?")
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return "no"
+    # Look for any chair that is on the table, and a bag to its right
+    for chair_patch in chair_patches:
+        if chair_patch.verify_property("chair", "on the table"):
+            for bag_patch in bag_patches:
+                if bag_patch.horizontal_center > chair_patch.horizontal_center:
+                    return "yes"
+    return "no"

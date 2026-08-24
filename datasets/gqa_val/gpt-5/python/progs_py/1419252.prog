@@ -1,0 +1,32 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find the child(ren)
+    child_patches = image_patch.find("child")
+    if len(child_patches) == 0:
+        # If no child is found, ask directly
+        return image_patch.simple_query("Do you see girls to the left of the child that is walking?")
+
+    # Filter to children that are walking
+    walking_children = []
+    for child_patch in child_patches:
+        is_walking = child_patch.verify_property("child", "walking")
+        if not is_walking:
+            # Fallback in case verify_property is uncertain
+            is_walking = (child_patch.simple_query("Is the child walking?") == "yes")
+        if is_walking:
+            walking_children.append(child_patch)
+
+    if len(walking_children) == 0:
+        # If no walking child is found, ask directly
+        return image_patch.simple_query("Do you see girls to the left of the child that is walking?")
+
+    # Find girls and check if any are to the left of a walking child
+    girl_patches = image_patch.find("girl")
+    if len(girl_patches) == 0:
+        return "no"
+
+    for child_patch in walking_children:
+        for girl_patch in girl_patches:
+            if girl_patch.horizontal_center < child_patch.horizontal_center:
+                return "yes"
+    return "no"

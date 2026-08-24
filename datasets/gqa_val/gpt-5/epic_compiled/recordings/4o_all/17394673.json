@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2384847",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "woman"
+      ],
+      [],
+      7245205836
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2384847",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "How is the device to the right of the woman on the left called?"
+      ],
+      "It's a smartphone.",
+      874761439
+    ]
+  ],
+  "best_text_match": []
+}

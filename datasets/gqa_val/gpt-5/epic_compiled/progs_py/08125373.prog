@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_exists = image_patch.exists("vehicle")
+    if not vehicle_exists:
+        result = image_patch.simple_query("Does the white vehicle look large?")
+    else:
+        vehicle_patches = image_patch.find("vehicle")
+        found_white = False
+        large_white = False
+        for vehicle_patch in vehicle_patches:
+            is_white = vehicle_patch.verify_property("vehicle", "white")
+            found_white = found_white or is_white
+            is_large = vehicle_patch.verify_property("vehicle", "large")
+            if is_white and is_large:
+                large_white = True or large_white
+        if found_white:
+            result = bool_to_yesno(large_white)
+        else:
+            result = image_patch.simple_query("Does the white vehicle look large?")
+    return result

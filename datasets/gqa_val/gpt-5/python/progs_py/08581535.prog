@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    laptop_patches = image_patch.find("laptop")
+    camera_patches = image_patch.find("camera")
+
+    # If neither laptops nor cameras are found, ask directly
+    if len(laptop_patches) == 0 and len(camera_patches) == 0:
+        return image_patch.simple_query("Are there laptops or cameras that are not small?")
+
+    # Check laptops that are not small
+    for laptop_patch in laptop_patches:
+        if not laptop_patch.verify_property("laptop", "small"):
+            return "yes"
+
+    # Check cameras that are not small
+    for camera_patch in camera_patches:
+        if not camera_patch.verify_property("camera", "small"):
+            return "yes"
+
+    return "no"

@@ -1,0 +1,110 @@
+({1574: 'context',
+  1581: 'llm_query',
+  1584: 'str',
+  1603: '.join',
+  1611: 'return_result'},
+ ('def',
+  1571,
+  ((),
+   ((('call', (1572,), -1, ()),
+     ('prim', 1573, 0),
+     ('def',
+      1575,
+      ((1599, 1576),
+       ((('unpack', (1583, 1585), 1599),
+         ('prim',
+          1577,
+          'You are helping to answer a very specific question using the single '
+          'document shown below.\n'
+          '\n'
+          'DOCUMENT BEGIN\n'),
+         ('call', (1578,), 80, (1577, 1576)),
+         ('prim',
+          1579,
+          '\n'
+          'DOCUMENT END\n'
+          '\n'
+          'Task:\n'
+          'Determine whether this document contains information relevant to '
+          'identifying a museum that satisfies ALL of the following '
+          'constraints:\n'
+          '- The museum is along a river.\n'
+          '- It was added to the U.S. National Register of Historic Places '
+          '(NRHP) in 1988.\n'
+          '- The museum is named after the last name (surname) of an '
+          'individual who paid a little over $500 to buy the rights to the '
+          'land on which the museum now sits.\n'
+          "- That individual's first child was born in the first week of May.\n"
+          "- That individual's third child was born on November 22.\n"
+          '\n'
+          'If the document matches ALL constraints, provide:\n'
+          '- Museum name\n'
+          '- River name\n'
+          '- NRHP listing year (and exact date if given)\n'
+          "- Individual's full name (whose surname the museum bears)\n"
+          '- The stated amount paid (a little over $500) and the phrasing '
+          'used\n'
+          "- The children's names with birthdates, including specifically the "
+          'first child (in first week of May) and the third child (Nov 22)\n'
+          '- Exact quotes (short) from the document supporting each of the '
+          'above\n'
+          '- A final one-line verdict: MATCH: <Museum Name>\n'
+          '\n'
+          'If the document matches SOME but not all constraints, provide what '
+          'it matches (with short quotes) and end with: PARTIAL: <best-guess '
+          'museum name if inferable, else UNKNOWN>\n'
+          '\n'
+          'If the document is not relevant, respond with: NO MATCH\n'),
+         ('call', (1580,), 80, (1578, 1579)),
+         ('call', (1582,), 1581, (1580,)),
+         ('prim', 1586, 'Document '),
+         ('call', (1587,), 1584, (1585,)),
+         ('call', (1588,), 80, (1586, 1587)),
+         ('prim', 1589, ' analysis:\n'),
+         ('call', (1590,), 80, (1588, 1589)),
+         ('call', (1591,), 80, (1590, 1582)),
+         ('call', (1592,), -1, (1591,)),
+         ('call', (1593,), 80, (1583, 1592)),
+         ('prim', 1594, 1),
+         ('call', (1595,), 80, (1585, 1594)),
+         ('pack', 1600, (1593, 1595))),
+        (1600,)))),
+     ('pack', 1601, (1572, 1573)),
+     ('call', (1602,), 79, (1574,)),
+     ('call', (1598,), 1602, (1601, 1575)),
+     ('unpack', (1596, 1597), 1598),
+     ('prim', 1604, '\n\n'),
+     ('call', (1605,), 1603, (1604, 1596)),
+     ('prim',
+      1606,
+      'You are given analyses of multiple documents. Your goal is to identify '
+      'a single museum that fits ALL of the following constraints:\n'
+      '- It is along a river.\n'
+      '- It was added to the National Register of Historic Places (NRHP) in '
+      '1988.\n'
+      '- It is named after the last name of an individual who paid a little '
+      'over $500 to buy the rights to the land on which the museum is '
+      'located.\n'
+      "- That individual's first child was born in the first week of May.\n"
+      "- That individual's third child was born on November 22.\n"
+      '\n'
+      'As of December 2022, the question asks only for the NAME of this '
+      'museum.\n'
+      '\n'
+      'Here are the per-document analyses:\n'
+      '\n'),
+     ('call', (1607,), 80, (1606, 1605)),
+     ('prim',
+      1608,
+      '\n'
+      '\n'
+      'Task:\n'
+      '- From the information above, pick the single best museum that matches '
+      'ALL constraints. If multiple appear, choose the one with the strongest '
+      'direct documentary support (exact quotes) for all constraints.\n'
+      "- Output ONLY the museum's name, with no extra words, lines, or "
+      'punctuation.\n'),
+     ('call', (1609,), 80, (1607, 1608)),
+     ('call', (1610,), 1581, (1609,)),
+     ('call', (1612,), 1611, (1610,))),
+    (1612,)))))

@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    count_right = None
+    image_patch = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find('plate')
+
+    def _if(count_right, image_patch, plate_patches, result):
+        result = image_patch.simple_query('Are the plates on the right side of the picture?')
+        return (count_right, image_patch, plate_patches, result)
+
+    def _else(count_right, image_patch, plate_patches, result):
+        count_right = 0
+
+        def _for(plate_patch, count_right, image_patch, plate_patches):
+
+            def _if(count_right, image_patch, plate_patches):
+                count_right = count_right + 1
+                return (count_right, image_patch, plate_patches)
+            count_right, image_patch, plate_patches = if_stmt(_if, None, plate_patch.horizontal_center > image_patch.horizontal_center, (count_right, image_patch, plate_patches))
+            return (count_right, image_patch, plate_patches)
+        count_right, image_patch, plate_patches = for_stmt(_for, plate_patches, (count_right, image_patch, plate_patches))
+
+        def _if(count_right, image_patch, plate_patches, result):
+            result = 'yes'
+            return (count_right, image_patch, plate_patches, result)
+
+        def _else(count_right, image_patch, plate_patches, result):
+            result = 'no'
+            return (count_right, image_patch, plate_patches, result)
+        count_right, image_patch, plate_patches, result = if_stmt(_if, _else, count_right == len(plate_patches), (count_right, image_patch, plate_patches, result))
+        return (count_right, image_patch, plate_patches, result)
+    count_right, image_patch, plate_patches, result = if_stmt(_if, _else, len(plate_patches) == 0, (count_right, image_patch, plate_patches, result))
+    return result

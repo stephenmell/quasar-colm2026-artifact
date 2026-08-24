@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    phone_patches = image_patch.find("phone")
+    woman_patches = image_patch.find("woman")
+
+    if len(phone_patches) == 0 or len(woman_patches) == 0:
+        result = image_patch.simple_query("Is the woman that is to the right of the phone sitting on a bench?")
+    else:
+        result = "no"
+        for phone_patch in phone_patches:
+            for woman_patch in woman_patches:
+                if woman_patch.horizontal_center > phone_patch.horizontal_center:
+                    answer = woman_patch.simple_query("Is the woman sitting on a bench?")
+                    if answer == "yes":
+                        result = "yes"
+    return result

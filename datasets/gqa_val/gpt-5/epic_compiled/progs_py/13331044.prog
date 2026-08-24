@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    desk_patches = image_patch.find("desk")
+
+    if len(desk_patches) == 0:
+        result = image_patch.simple_query("Is the laptop to the right of the computer mouse on the desk?")
+    else:
+        desk_patch = desk_patches[0]
+        laptop_patches = desk_patch.find("laptop")
+
+        # Try to find a computer mouse using multiple possible names
+        mouse_patches = ()
+        mouse_names = ("computer mouse", "mouse")
+        for name in mouse_names:
+            candidate = desk_patch.find(name)
+            if len(mouse_patches) == 0 and len(candidate) > 0:
+                mouse_patches = candidate
+
+        if len(laptop_patches) == 0 or len(mouse_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for laptop_patch in laptop_patches:
+                for mouse_patch in mouse_patches:
+                    if laptop_patch.horizontal_center > mouse_patch.horizontal_center:
+                        result = "yes"
+    return result

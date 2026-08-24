@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    horse_patches = image_patch.find("horse")
+    # If no horse is found, query the image directly
+    if len(horse_patches) == 0:
+        return image_patch.simple_query("Is there a horse that is brown in the photo?")
+    for horse_patch in horse_patches:
+        if horse_patch.verify_property("horse", "brown"):
+            return "yes"
+    return "no"

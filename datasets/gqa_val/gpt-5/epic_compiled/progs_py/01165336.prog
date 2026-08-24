@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find("book")
+    floor_patches = image_patch.find("floor")
+
+    if len(book_patches) == 0 or len(floor_patches) == 0:
+        result = image_patch.simple_query("Is the floor the same color as the book?")
+    else:
+        colors = ("white", "black", "brown", "red", "blue", "green", "yellow", "orange", "pink", "purple", "gray", "tan", "beige", "gold", "silver")
+        result = "no"
+        for floor_patch in floor_patches:
+            floor_color = floor_patch.best_text_match(colors)
+            for book_patch in book_patches:
+                book_color = book_patch.best_text_match(colors)
+                if floor_color == book_color:
+                    result = "yes"
+    return result

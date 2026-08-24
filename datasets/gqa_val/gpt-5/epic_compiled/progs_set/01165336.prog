@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    book_color = None
+    book_patches = None
+    colors = None
+    floor_color = None
+    floor_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find('book')
+    floor_patches = image_patch.find('floor')
+
+    def _if(book_color, book_patches, colors, floor_color, floor_patches, image_patch, result):
+        result = image_patch.simple_query('Is the floor the same color as the book?')
+        return (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result)
+
+    def _else(book_color, book_patches, colors, floor_color, floor_patches, image_patch, result):
+        colors = ('white', 'black', 'brown', 'red', 'blue', 'green', 'yellow', 'orange', 'pink', 'purple', 'gray', 'tan', 'beige', 'gold', 'silver')
+        result = 'no'
+
+        def _for(floor_patch, book_color, book_patches, colors, floor_color, floor_patches, image_patch, result):
+            floor_color = floor_patch.best_text_match(colors)
+
+            def _for(book_patch, book_color, book_patches, colors, floor_color, floor_patches, image_patch, result):
+                book_color = book_patch.best_text_match(colors)
+
+                def _if(book_color, book_patches, colors, floor_color, floor_patches, image_patch, result):
+                    result = 'yes'
+                    return (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result)
+                book_color, book_patches, colors, floor_color, floor_patches, image_patch, result = if_stmt(_if, None, floor_color == book_color, (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result))
+                return (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result)
+            book_color, book_patches, colors, floor_color, floor_patches, image_patch, result = for_stmt(_for, book_patches, (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result))
+            return (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result)
+        book_color, book_patches, colors, floor_color, floor_patches, image_patch, result = for_stmt(_for, floor_patches, (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result))
+        return (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result)
+    book_color, book_patches, colors, floor_color, floor_patches, image_patch, result = if_stmt(_if, _else, or_expr(len(book_patches) == 0, len(floor_patches) == 0), (book_color, book_patches, colors, floor_color, floor_patches, image_patch, result))
+    return result

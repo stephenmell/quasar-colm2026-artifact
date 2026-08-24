@@ -1,0 +1,32 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    toilet_patches = image_patch.find("toilet")
+    # If no toilet is found, ask directly
+    if len(toilet_patches) == 0:
+        return image_patch.simple_query("Do you see any bags to the left of the toilet made of porcelain?")
+    # Filter toilets that are made of porcelain
+    porcelain_toilets = []
+    for toilet_patch in toilet_patches:
+        is_porcelain = False
+        # Try verifying via property
+        try:
+            is_porcelain = toilet_patch.verify_property("toilet", "porcelain")
+        except Exception:
+            pass
+        # Fallback: ask directly about the material for this crop
+        if not is_porcelain:
+            is_porcelain = (toilet_patch.simple_query("Is the toilet made of porcelain?") == "yes")
+        if is_porcelain:
+            porcelain_toilets.append(toilet_patch)
+    # If we can't verify any porcelain toilet, ask directly
+    if len(porcelain_toilets) == 0:
+        return image_patch.simple_query("Do you see any bags to the left of the toilet made of porcelain?")
+    # Look for bags to the left of any porcelain toilet
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return "no"
+    for toilet_patch in porcelain_toilets:
+        for bag_patch in bag_patches:
+            if bag_patch.horizontal_center < toilet_patch.horizontal_center:
+                return "yes"
+    return "no"

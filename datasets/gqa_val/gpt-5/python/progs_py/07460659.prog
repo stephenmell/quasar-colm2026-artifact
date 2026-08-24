@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # Question assumes only one person patch
+    if len(person_patches) == 0:
+        # If no person is found, query the image directly
+        return image_patch.simple_query("Does the train to the right of the person have blue color and long length?")
+    person_patch = person_patches[0]
+
+    train_patches = image_patch.find("train")
+    if len(train_patches) == 0:
+        return "no"
+
+    for train_patch in train_patches:
+        # Check if the train is to the right of the person
+        if train_patch.horizontal_center > person_patch.horizontal_center:
+            # Check both color and length properties (handle phrasing variants)
+            is_blue = train_patch.verify_property("train", "blue") or train_patch.verify_property("train", "blue color")
+            is_long = train_patch.verify_property("train", "long") or train_patch.verify_property("train", "long length")
+            if is_blue and is_long:
+                return "yes"
+    return "no"

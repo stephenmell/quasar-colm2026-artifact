@@ -1,0 +1,89 @@
+def execute_command(image) -> str:
+    best_book = None
+    best_dist = None
+    book_patches = None
+    count = None
+    dist = None
+    image_patch = None
+    people_center_x = None
+    people_right = None
+    person_patches = None
+    question = None
+    result = None
+    total_x = None
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find('book')
+    person_patches = image_patch.find('person')
+    question = 'Is the book to the left or to the right of the people on the right side?'
+    result = None
+
+    def _if(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+        result = image_patch.simple_query(question)
+        return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+
+    def _else(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+        people_right = ()
+
+        def _for(person_patch, book_patches, image_patch, people_right, person_patches, question, result):
+
+            def _if(book_patches, image_patch, people_right, person_patches, question, result):
+                people_right = people_right + (person_patch,)
+                return (book_patches, image_patch, people_right, person_patches, question, result)
+            book_patches, image_patch, people_right, person_patches, question, result = if_stmt(_if, None, person_patch.horizontal_center > image_patch.horizontal_center, (book_patches, image_patch, people_right, person_patches, question, result))
+            return (book_patches, image_patch, people_right, person_patches, question, result)
+        book_patches, image_patch, people_right, person_patches, question, result = for_stmt(_for, person_patches, (book_patches, image_patch, people_right, person_patches, question, result))
+
+        def _if(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+            result = image_patch.simple_query(question)
+            return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+
+        def _else(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+            total_x = 0.0
+            count = 0
+
+            def _for(p, book_patches, count, image_patch, people_right, person_patches, question, result, total_x):
+                total_x = total_x + p.horizontal_center
+                count = count + 1
+                return (book_patches, count, image_patch, people_right, person_patches, question, result, total_x)
+            book_patches, count, image_patch, people_right, person_patches, question, result, total_x = for_stmt(_for, people_right, (book_patches, count, image_patch, people_right, person_patches, question, result, total_x))
+            people_center_x = total_x / count if count > 0 else image_patch.horizontal_center
+            best_book = None
+            best_dist = None
+
+            def _for(book_patch, best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+                dist = abs(book_patch.horizontal_center - people_center_x)
+
+                def _if(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+                    best_dist = dist
+                    best_book = book_patch
+                    return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+                best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x = if_stmt(_if, None, or_expr(best_dist is None, dist < best_dist), (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x))
+                return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+            best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x = for_stmt(_for, book_patches, (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x))
+
+            def _if(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+                result = image_patch.simple_query(question)
+                return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+
+            def _else(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+
+                def _if(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+                    result = 'left'
+                    return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+
+                def _else(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+                    result = 'right'
+                    return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+                best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x = if_stmt(_if, _else, best_book.horizontal_center < people_center_x, (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x))
+                return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+            best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x = if_stmt(_if, _else, best_book is None, (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x))
+            return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+        best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x = if_stmt(_if, _else, len(people_right) == 0, (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x))
+        return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+    best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x = if_stmt(_if, _else, or_expr(len(book_patches) == 0, len(person_patches) == 0), (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x))
+
+    def _if(best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x):
+        result = image_patch.simple_query(question)
+        return (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x)
+    best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x = if_stmt(_if, None, not_expr(result), (best_book, best_dist, book_patches, count, dist, image_patch, people_center_x, people_right, person_patches, question, result, total_x))
+    return result

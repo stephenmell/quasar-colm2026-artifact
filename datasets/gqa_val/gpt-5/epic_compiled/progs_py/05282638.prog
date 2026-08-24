@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pot_patches = image_patch.find("pot")
+    if len(pot_patches) == 0:
+        result = image_patch.simple_query("Do you see a pancake to the right of the pot?")
+    else:
+        pancake_patches = image_patch.find("pancake")
+        if len(pancake_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for pot_patch in pot_patches:
+                for pancake_patch in pancake_patches:
+                    if pancake_patch.horizontal_center > pot_patch.horizontal_center:
+                        result = "yes"
+    return result

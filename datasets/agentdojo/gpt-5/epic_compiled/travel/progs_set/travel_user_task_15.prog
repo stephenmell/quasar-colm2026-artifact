@@ -1,0 +1,95 @@
+def execute_command():
+    AvailSchema = None
+    NamesSchema = None
+    RatingSchema = None
+    availability = None
+    best_ev_name = None
+    best_ev_price_per_day = None
+    best_ev_rating = None
+    best_suv_name = None
+    best_suv_price_per_day = None
+    best_suv_rating = None
+    car_types = None
+    city = None
+    companies_schema = None
+    companies_str = None
+    company_names = None
+    ev_candidates = None
+    ev_companies = None
+    ev_cost_3_days = None
+    parsed = None
+    price = None
+    prices_per_day = None
+    ratings_text = None
+    rtext = None
+    suv_candidates = None
+    suv_companies = None
+    suv_cost_3_days = None
+    types_list = None
+    city = 'Los Angeles'
+    companies_str = get_all_car_rental_companies_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    companies_schema = query_ai_assistant('Here is a list of car rental companies in {}: {}. Extract ONLY the company names as a clean JSON list of strings, preserving exact names.'.format(city, companies_str), NamesSchema)
+    company_names = companies_schema.names
+    car_types = get_car_types_available(company_names)
+    AvailSchema = CreateSchema('has_electric', bool, 'has_suv', bool)
+    ev_companies = []
+    suv_companies = []
+
+    def _for(c, AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list):
+        types_list = car_types.get(c)
+        availability = query_ai_assistant("You are given a list of car categories/types offered by a car rental company: {}. Determine two booleans: has_electric is True if there are any electric vehicle options (examples of indicative terms: 'Electric', 'EV', 'Battery Electric', or specific electric models like Tesla, Nissan Leaf, etc.). has_suv is True if there are any SUV options (including subcompact, compact, midsize, and full-size SUVs).".format(types_list), AvailSchema)
+
+        def _if(AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list):
+            ev_companies = ev_companies + [c]
+            return (AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list)
+        AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list = if_stmt(_if, None, availability.has_electric, (AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list))
+
+        def _if(AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list):
+            suv_companies = suv_companies + [c]
+            return (AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list)
+        AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list = if_stmt(_if, None, availability.has_suv, (AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list))
+        return (AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list)
+    AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list = for_stmt(_for, company_names, (AvailSchema, NamesSchema, availability, car_types, city, companies_schema, companies_str, company_names, ev_companies, suv_companies, types_list))
+    ev_candidates = ev_companies if len(ev_companies) != 0 else company_names
+    suv_candidates = suv_companies if len(suv_companies) != 0 else company_names
+    ratings_text = get_rating_reviews_for_car_rental(company_names)
+    prices_per_day = get_car_price_per_day(company_names)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_ev_name = None
+    best_ev_rating = -1.0
+    best_ev_price_per_day = float('inf')
+
+    def _for(c, AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list):
+        rtext = ratings_text.get(c)
+        parsed = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this car rental company rating and reviews: {}. If no explicit rating is present, set rating to 0.0.'.format(rtext), RatingSchema)
+        price = prices_per_day.get(c)
+
+        def _if(AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list):
+            best_ev_name = c
+            best_ev_rating = parsed.rating
+            best_ev_price_per_day = price
+            return (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list)
+        AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list = if_stmt(_if, None, or_expr(parsed.rating > best_ev_rating, parsed.rating == best_ev_rating and price < best_ev_price_per_day), (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list))
+        return (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list)
+    AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list = for_stmt(_for, ev_candidates, (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list))
+    best_suv_name = None
+    best_suv_rating = -1.0
+    best_suv_price_per_day = float('inf')
+
+    def _for(c, AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list):
+        rtext = ratings_text.get(c)
+        parsed = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this car rental company rating and reviews: {}. If no explicit rating is present, set rating to 0.0.'.format(rtext), RatingSchema)
+        price = prices_per_day.get(c)
+
+        def _if(AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list):
+            best_suv_name = c
+            best_suv_rating = parsed.rating
+            best_suv_price_per_day = price
+            return (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list)
+        AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list = if_stmt(_if, None, or_expr(parsed.rating > best_suv_rating, parsed.rating == best_suv_rating and price < best_suv_price_per_day), (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list))
+        return (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list)
+    AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list = for_stmt(_for, suv_candidates, (AvailSchema, NamesSchema, RatingSchema, availability, best_ev_name, best_ev_price_per_day, best_ev_rating, best_suv_name, best_suv_price_per_day, best_suv_rating, car_types, city, companies_schema, companies_str, company_names, ev_candidates, ev_companies, parsed, price, prices_per_day, ratings_text, rtext, suv_candidates, suv_companies, types_list))
+    ev_cost_3_days = best_ev_price_per_day * 3.0
+    suv_cost_3_days = best_suv_price_per_day * 3.0
+    return {'electric_company': {'name': best_ev_name, 'rating': best_ev_rating, 'cost_3_days': ev_cost_3_days}, 'suv_company': {'name': best_suv_name, 'rating': best_suv_rating, 'cost_3_days': suv_cost_3_days}}

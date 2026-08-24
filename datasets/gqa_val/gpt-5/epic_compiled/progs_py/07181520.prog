@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_bat = image_patch.exists("bat")
+    has_umpire = image_patch.exists("umpire")
+    result = bool_to_yesno(has_bat and has_umpire)
+    return result

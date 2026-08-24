@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2349507",
+          [
+            0,
+            0,
+            374,
+            500
+          ]
+        ],
+        "Is the man behind a woman?"
+      ],
+      "Yes.",
+      735241242
+    ]
+  ],
+  "best_text_match": []
+}

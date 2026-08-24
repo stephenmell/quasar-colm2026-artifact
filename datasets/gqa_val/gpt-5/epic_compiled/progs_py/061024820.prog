@@ -1,0 +1,14 @@
+# Is the gray van on the right of the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    van_patches = image_patch.find("van")
+    if len(van_patches) == 0:
+        result = image_patch.simple_query("Is the gray van on the right of the image?")
+    else:
+        result = "no"
+        for van_patch in van_patches:
+            is_gray = van_patch.verify_property("van", "gray")
+            is_right = van_patch.horizontal_center > image_patch.horizontal_center
+            if is_gray and is_right:
+                result = "yes"
+    return result

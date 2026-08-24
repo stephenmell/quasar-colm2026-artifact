@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find("shirt")
+    hydrant_patches = image_patch.find("hydrant")
+
+    # If either object is not detected, ask directly
+    if len(shirt_patches) == 0 or len(hydrant_patches) == 0:
+        return image_patch.simple_query("Does the shirt have the same color as the hydrant?")
+
+    # Determine colors using best text match among common colors
+    colors = ["red", "blue", "green", "yellow", "black", "white", "brown", "orange", "gray", "pink", "purple"]
+    shirt_color = shirt_patches[0].best_text_match(colors)
+    hydrant_color = hydrant_patches[0].best_text_match(colors)
+
+    return "yes" if shirt_color == hydrant_color else "no"

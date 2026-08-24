@@ -1,0 +1,45 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find stuffed animals (try several common labels)
+    stuffed_terms = ["stuffed animal", "stuffed animals", "stuffed toy", "plush toy", "teddy bear", "bear"]
+    stuffed_patches = []
+    for term in stuffed_terms:
+        stuffed_patches = image_patch.find(term)
+        if len(stuffed_patches) > 0:
+            break
+
+    # Find speakers
+    speaker_patches = image_patch.find("speaker")
+
+    # If we can't find stuffed animals or a speaker, ask directly
+    if len(stuffed_patches) == 0 or len(speaker_patches) == 0:
+        return image_patch.simple_query("Do you see shelves to the right of the speaker the stuffed animals are around of?")
+
+    # Compute the cluster center of the stuffed animals
+    mean_x = sum(p.horizontal_center for p in stuffed_patches) / len(stuffed_patches)
+    mean_y = sum(p.vertical_center for p in stuffed_patches) / len(stuffed_patches)
+
+    # Pick the speaker closest to the stuffed animals cluster center
+    def dist2(patch):
+        dx = patch.horizontal_center - mean_x
+        dy = patch.vertical_center - mean_y
+        return dx*dx + dy*dy
+
+    target_speaker = min(speaker_patches, key=dist2)
+
+    # Find shelves (try both singular and plural)
+    shelf_patches = image_patch.find("shelf")
+    if len(shelf_patches) == 0:
+        shelf_patches = image_patch.find("shelves")
+
+    # If no shelves detected at all, answer no (following earlier patterns)
+    if len(shelf_patches) == 0:
+        return "no"
+
+    # Check if any shelf is to the right of the target speaker
+    for shelf in shelf_patches:
+        if shelf.horizontal_center > target_speaker.horizontal_center:
+            return "yes"
+
+    return "no"

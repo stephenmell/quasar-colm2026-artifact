@@ -1,0 +1,12 @@
+# Is there any wine that is red?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    wine_patches = image_patch.find("wine")
+    if len(wine_patches) == 0:
+        result = image_patch.simple_query("Is there any wine that is red?")
+    else:
+        result = "no"
+        for wine_patch in wine_patches:
+            if wine_patch.verify_property("wine", "red"):
+                result = "yes"
+    return result

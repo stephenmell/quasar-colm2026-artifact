@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_flag = image_patch.exists("flag")
+    has_dumpster = image_patch.exists("dumpster")
+    return bool_to_yesno(has_flag or has_dumpster)

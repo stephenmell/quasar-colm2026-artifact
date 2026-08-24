@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for fences
+    if image_patch.exists("fence"):
+        result = "yes"
+
+    # Check for metal trash cans
+    trash_can_exists = image_patch.exists("trash can")
+    if trash_can_exists:
+        trash_can_patches = image_patch.find("trash can")
+        for trash_can_patch in trash_can_patches:
+            if trash_can_patch.verify_property("trash can", "metal"):
+                result = "yes"
+
+    # Fallback to direct question if uncertain
+    if result == "no":
+        direct_answer = image_patch.simple_query("Are there metal trash cans or fences?")
+        if direct_answer == "yes":
+            result = "yes"
+        else:
+            result = "no"
+    return result

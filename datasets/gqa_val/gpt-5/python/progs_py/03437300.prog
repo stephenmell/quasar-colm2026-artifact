@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cabinet_patches = image_patch.find("cabinet")
+    if len(cabinet_patches) == 0:
+        return image_patch.simple_query("Are there any brown cabinets?")
+    for cabinet_patch in cabinet_patches:
+        if cabinet_patch.verify_property("cabinet", "brown"):
+            return "yes"
+    return "no"

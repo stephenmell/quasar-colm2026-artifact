@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try to find "calm water" directly
+    calm_water_patches = image_patch.find("calm water")
+
+    # If not found, find "water" and verify it's calm
+    if len(calm_water_patches) == 0:
+        water_patches = image_patch.find("water")
+        for water_patch in water_patches:
+            if water_patch.verify_property("water", "calm"):
+                calm_water_patches.append(water_patch)
+
+    # If we have a calm water patch, choose between black or green
+    if len(calm_water_patches) > 0:
+        return calm_water_patches[0].best_text_match(["black", "green"])
+
+    # Fallback: ask directly
+    return image_patch.simple_query("Is the calm water black or green?")

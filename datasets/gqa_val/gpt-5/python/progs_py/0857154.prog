@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        # If no person is found, ask directly
+        return image_patch.simple_query("Is the happy person riding on a skateboard?")
+    found_happy = False
+    for person_patch in person_patches:
+        is_happy = (person_patch.simple_query("Is the person happy?") == "yes")
+        if is_happy:
+            found_happy = True
+            is_riding_skateboard = (person_patch.simple_query("Is the person riding on a skateboard?") == "yes")
+            if is_riding_skateboard:
+                return "yes"
+    # If we found at least one happy person but none riding a skateboard, answer no
+    if found_happy:
+        return "no"
+    # If no happy person identified from patches, ask directly
+    return image_patch.simple_query("Is the happy person riding on a skateboard?")

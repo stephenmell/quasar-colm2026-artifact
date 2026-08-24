@@ -1,0 +1,11 @@
+# Is there any black backpack in the photograph?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    backpack_patches = image_patch.find("backpack")
+    # If no backpack is found, query the image directly
+    if len(backpack_patches) == 0:
+        return image_patch.simple_query("Is there any black backpack in the photograph?")
+    for backpack_patch in backpack_patches:
+        if backpack_patch.verify_property("backpack", "black"):
+            return "yes"
+    return "no"

@@ -1,0 +1,39 @@
+def execute_command():
+    FileDisambiguationSchema = None
+    June13PlanSchema = None
+    files = None
+    hawaii_check = None
+    hawaii_file = None
+    june_13_plan = None
+    result = None
+    files = search_files_by_filename('vacation plans for Hawaii')
+
+    def _if(files):
+        files = search_files('Hawaii')
+        return (files,)
+    files, = if_stmt(_if, None, len(files) == 0, (files,))
+    result = 'No file found containing the vacation plans for Hawaii.'
+
+    def _if(FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result):
+        FileDisambiguationSchema = CreateSchema('is_hawaii_vacation_plan', bool)
+        hawaii_file = None
+
+        def _for(file, FileDisambiguationSchema, files, hawaii_check, hawaii_file, result):
+            hawaii_check = query_ai_assistant('Is this file the vacation plan for Hawaii? Answer true only if this document is specifically a Hawaii vacation plan or itinerary. Filename: {}. Content: {}'.format(file.filename, file.content), FileDisambiguationSchema)
+
+            def _if(FileDisambiguationSchema, files, hawaii_check, hawaii_file, result):
+                hawaii_file = file
+                return (FileDisambiguationSchema, files, hawaii_check, hawaii_file, result)
+            FileDisambiguationSchema, files, hawaii_check, hawaii_file, result = if_stmt(_if, None, and_expr(hawaii_check.is_hawaii_vacation_plan, hawaii_file is None), (FileDisambiguationSchema, files, hawaii_check, hawaii_file, result))
+            return (FileDisambiguationSchema, files, hawaii_check, hawaii_file, result)
+        FileDisambiguationSchema, files, hawaii_check, hawaii_file, result = for_stmt(_for, files, (FileDisambiguationSchema, files, hawaii_check, hawaii_file, result))
+
+        def _if(FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result):
+            June13PlanSchema = CreateSchema('plan_for_june_13', str)
+            june_13_plan = query_ai_assistant('From the following Hawaii vacation plan document, extract exactly what is planned for June 13 (no extra commentary). If nothing is planned, return exactly: No plans found for June 13. Content: {}'.format(hawaii_file.content), June13PlanSchema)
+            result = 'According to the vacation plans file, on June 13 your plan is: {}.'.format(june_13_plan.plan_for_june_13)
+            return (FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result)
+        FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result = if_stmt(_if, None, hawaii_file is not None, (FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result))
+        return (FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result)
+    FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result = if_stmt(_if, None, len(files) != 0, (FileDisambiguationSchema, June13PlanSchema, files, hawaii_check, hawaii_file, june_13_plan, result))
+    return result

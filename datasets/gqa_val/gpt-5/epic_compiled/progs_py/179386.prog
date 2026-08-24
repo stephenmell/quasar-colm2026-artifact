@@ -1,0 +1,16 @@
+# Are there any girls to the left of the dog that wears a collar?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find("dog")
+    if len(dog_patches) == 0:
+        result = image_patch.simple_query("Are there any girls to the left of the dog that wears a collar?")
+    else:
+        result = "no"
+        for dog_patch in dog_patches:
+            wears_collar = (dog_patch.simple_query("Is the dog wearing a collar?") == "yes")
+            if wears_collar:
+                girl_patches = image_patch.find("girl")
+                for girl_patch in girl_patches:
+                    if girl_patch.horizontal_center < dog_patch.horizontal_center:
+                        result = "yes"
+    return result

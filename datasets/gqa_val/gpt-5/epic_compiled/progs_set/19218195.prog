@@ -1,0 +1,61 @@
+def execute_command(image) -> str:
+    found = None
+    image_patch = None
+    is_right = None
+    result = None
+    rightmost_tomato_center = None
+    tomato_patches = None
+    veggie_names = None
+    veggie_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    tomato_patches = image_patch.find('tomato')
+
+    def _if(found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+        result = image_patch.simple_query('Do the veggies to the right of the tomatoes have green color?')
+        return (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+
+    def _else(found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+        rightmost_tomato_center = tomato_patches[0].horizontal_center
+
+        def _for(tomato_patch, image_patch, result, rightmost_tomato_center, tomato_patches):
+
+            def _if(image_patch, result, rightmost_tomato_center, tomato_patches):
+                rightmost_tomato_center = tomato_patch.horizontal_center
+                return (image_patch, result, rightmost_tomato_center, tomato_patches)
+            image_patch, result, rightmost_tomato_center, tomato_patches = if_stmt(_if, None, tomato_patch.horizontal_center > rightmost_tomato_center, (image_patch, result, rightmost_tomato_center, tomato_patches))
+            return (image_patch, result, rightmost_tomato_center, tomato_patches)
+        image_patch, result, rightmost_tomato_center, tomato_patches = for_stmt(_for, tomato_patches, (image_patch, result, rightmost_tomato_center, tomato_patches))
+        veggie_names = ('vegetable', 'veggie', 'vegetables', 'veggies')
+        veggie_patches = ()
+
+        def _for(name, found, image_patch, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+            found = image_patch.find(name)
+            veggie_patches = veggie_patches + found
+            return (found, image_patch, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+        found, image_patch, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches = for_stmt(_for, veggie_names, (found, image_patch, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches))
+
+        def _if(found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+            result = image_patch.simple_query('Do the veggies to the right of the tomatoes have green color?')
+            return (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+
+        def _else(found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+
+            def _for(veggie_patch, found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+                is_right = veggie_patch.horizontal_center > rightmost_tomato_center
+
+                def _if(found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+
+                    def _if(found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches):
+                        result = 'yes'
+                        return (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+                    found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches = if_stmt(_if, None, veggie_patch.verify_property('vegetable', 'green'), (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches))
+                    return (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+                found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches = if_stmt(_if, None, is_right, (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches))
+                return (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+            found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches = for_stmt(_for, veggie_patches, (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches))
+            return (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+        found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches = if_stmt(_if, _else, len(veggie_patches) == 0, (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches))
+        return (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches)
+    found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches = if_stmt(_if, _else, len(tomato_patches) == 0, (found, image_patch, is_right, result, rightmost_tomato_center, tomato_patches, veggie_names, veggie_patches))
+    return result

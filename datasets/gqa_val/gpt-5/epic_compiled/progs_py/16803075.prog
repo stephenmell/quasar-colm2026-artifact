@@ -1,0 +1,9 @@
+# The plant is where?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plant_patches = image_patch.find("plant")
+    if len(plant_patches) == 0:
+        result = image_patch.simple_query("The plant is where?")
+    else:
+        result = image_patch.simple_query("Where is the plant?")
+    return result

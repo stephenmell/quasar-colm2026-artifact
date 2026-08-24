@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    found = None
+    image_patch = None
+    names = None
+    result = None
+    image_patch = ImagePatch(image)
+    names = ('paint brush', 'paintbrush', 'paint brushes', 'paintbrushes')
+    found = False
+
+    def _for(name, found, image_patch, names):
+
+        def _if(found, image_patch, names):
+            found = True
+            return (found, image_patch, names)
+        found, image_patch, names = if_stmt(_if, None, image_patch.exists(name), (found, image_patch, names))
+        return (found, image_patch, names)
+    found, image_patch, names = for_stmt(_for, names, (found, image_patch, names))
+    result = bool_to_yesno(found)
+    return result

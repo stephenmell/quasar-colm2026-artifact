@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2376974",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "plate"
+      ],
+      [],
+      16600898551
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2376974",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Are the plates on the right side of the picture?"
+      ],
+      "No.",
+      1260680987
+    ]
+  ],
+  "best_text_match": []
+}

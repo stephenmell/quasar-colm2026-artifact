@@ -1,0 +1,16 @@
+# What is the height of the ladder?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ladder_patches = image_patch.find("ladder")
+    if len(ladder_patches) == 0:
+        result = image_patch.simple_query("What is the height of the ladder?")
+    else:
+        tallest_patch = ladder_patches[0]
+        max_height = -1
+        for ladder_patch in ladder_patches:
+            current_height = ladder_patch.height
+            if current_height > max_height:
+                max_height = current_height
+                tallest_patch = ladder_patch
+        result = tallest_patch.simple_query("What is the height of the ladder?")
+    return result

@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    dog_patches = None
+    girl_patches = None
+    image_patch = None
+    result = None
+    wears_collar = None
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find('dog')
+
+    def _if(dog_patches, girl_patches, image_patch, result, wears_collar):
+        result = image_patch.simple_query('Are there any girls to the left of the dog that wears a collar?')
+        return (dog_patches, girl_patches, image_patch, result, wears_collar)
+
+    def _else(dog_patches, girl_patches, image_patch, result, wears_collar):
+        result = 'no'
+
+        def _for(dog_patch, dog_patches, girl_patches, image_patch, result, wears_collar):
+            wears_collar = dog_patch.simple_query('Is the dog wearing a collar?') == 'yes'
+
+            def _if(dog_patches, girl_patches, image_patch, result, wears_collar):
+                girl_patches = image_patch.find('girl')
+
+                def _for(girl_patch, dog_patches, girl_patches, image_patch, result, wears_collar):
+
+                    def _if(dog_patches, girl_patches, image_patch, result, wears_collar):
+                        result = 'yes'
+                        return (dog_patches, girl_patches, image_patch, result, wears_collar)
+                    dog_patches, girl_patches, image_patch, result, wears_collar = if_stmt(_if, None, girl_patch.horizontal_center < dog_patch.horizontal_center, (dog_patches, girl_patches, image_patch, result, wears_collar))
+                    return (dog_patches, girl_patches, image_patch, result, wears_collar)
+                dog_patches, girl_patches, image_patch, result, wears_collar = for_stmt(_for, girl_patches, (dog_patches, girl_patches, image_patch, result, wears_collar))
+                return (dog_patches, girl_patches, image_patch, result, wears_collar)
+            dog_patches, girl_patches, image_patch, result, wears_collar = if_stmt(_if, None, wears_collar, (dog_patches, girl_patches, image_patch, result, wears_collar))
+            return (dog_patches, girl_patches, image_patch, result, wears_collar)
+        dog_patches, girl_patches, image_patch, result, wears_collar = for_stmt(_for, dog_patches, (dog_patches, girl_patches, image_patch, result, wears_collar))
+        return (dog_patches, girl_patches, image_patch, result, wears_collar)
+    dog_patches, girl_patches, image_patch, result, wears_collar = if_stmt(_if, _else, len(dog_patches) == 0, (dog_patches, girl_patches, image_patch, result, wears_collar))
+    return result

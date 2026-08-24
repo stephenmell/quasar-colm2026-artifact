@@ -1,0 +1,5 @@
+# Is there a bottle on the table?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("Is there a bottle on the table?")
+    return result

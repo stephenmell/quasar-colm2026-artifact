@@ -1,0 +1,22 @@
+# Is the train above the tracks?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find("train")
+
+    # Aggregate possible track detections from multiple synonyms
+    track_patches = ()
+    track_names = ("track", "tracks", "railroad track", "train track", "train tracks", "railway", "railway track", "rail")
+    for name in track_names:
+        found = image_patch.find(name)
+        if len(found) > 0:
+            track_patches = track_patches + found
+
+    if len(train_patches) == 0 or len(track_patches) == 0:
+        result = image_patch.simple_query("Is the train above the tracks?")
+    else:
+        result = "no"
+        for train_patch in train_patches:
+            for track_patch in track_patches:
+                if train_patch.vertical_center > track_patch.vertical_center:
+                    result = "yes"
+    return result

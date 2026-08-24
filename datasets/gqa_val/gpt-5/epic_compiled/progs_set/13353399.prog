@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_bus = None
+    is_car = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_bus = image_patch.exists('bus')
+    is_car = image_patch.exists('car')
+    result = bool_to_yesno(or_expr(is_bus, is_car))
+    return result

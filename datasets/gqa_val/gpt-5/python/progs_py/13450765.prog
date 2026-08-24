@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lamp_patches = image_patch.find("lamp")
+    # Question assumes there may be multiple lamps
+    if len(lamp_patches) == 0:
+        # If no lamp is found, query the image directly
+        return image_patch.simple_query("Is there a lamp in this picture that is black?")
+    for lamp_patch in lamp_patches:
+        if lamp_patch.verify_property("lamp", "black"):
+            return "yes"
+    return "no"

@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    fence_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find('fence')
+
+    def _if(fence_patches, image_patch, result):
+        result = image_patch.simple_query('Is the fence in the bottom?')
+        return (fence_patches, image_patch, result)
+
+    def _else(fence_patches, image_patch, result):
+        result = 'no'
+
+        def _for(fence_patch, fence_patches, image_patch, result):
+
+            def _if(fence_patches, image_patch, result):
+                result = 'yes'
+                return (fence_patches, image_patch, result)
+            fence_patches, image_patch, result = if_stmt(_if, None, fence_patch.vertical_center < image_patch.vertical_center, (fence_patches, image_patch, result))
+            return (fence_patches, image_patch, result)
+        fence_patches, image_patch, result = for_stmt(_for, fence_patches, (fence_patches, image_patch, result))
+        return (fence_patches, image_patch, result)
+    fence_patches, image_patch, result = if_stmt(_if, _else, len(fence_patches) == 0, (fence_patches, image_patch, result))
+    return result

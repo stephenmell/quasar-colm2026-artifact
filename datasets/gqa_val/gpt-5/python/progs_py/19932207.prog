@@ -1,0 +1,9 @@
+# Does that umbrella look white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find("umbrella")
+    # Question assumes only one umbrella patch
+    if len(umbrella_patches) == 0:
+        # If no umbrella is found, query the image directly
+        return image_patch.simple_query("Does that umbrella look white?")
+    return bool_to_yesno(umbrella_patches[0].verify_property("umbrella", "white"))

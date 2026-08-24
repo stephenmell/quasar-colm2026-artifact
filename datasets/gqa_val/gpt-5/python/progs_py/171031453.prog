@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    for plate_patch in plate_patches:
+        if plate_patch.verify_property("plate", "plastic"):
+            return "yes"
+    bottle_patches = image_patch.find("bottle")
+    for bottle_patch in bottle_patches:
+        if bottle_patch.verify_property("bottle", "plastic"):
+            return "yes"
+    if len(plate_patches) == 0 and len(bottle_patches) == 0:
+        return image_patch.simple_query("Are there any plastic plates or bottles?")
+    return "no"

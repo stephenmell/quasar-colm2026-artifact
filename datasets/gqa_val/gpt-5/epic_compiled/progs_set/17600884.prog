@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_left_side_onion = None
+    onion_patches = None
+    result = None
+    spoon_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    onion_patches = image_patch.find('onion')
+
+    def _if(image_patch, onion_patches, result):
+        onion_patches = image_patch.find('onions')
+        return (image_patch, onion_patches, result)
+    image_patch, onion_patches, result = if_stmt(_if, None, len(onion_patches) == 0, (image_patch, onion_patches, result))
+
+    def _if(image_patch, is_left_side_onion, onion_patches, result, spoon_patches):
+        result = image_patch.simple_query('Do you see any spoon to the right of the onions on the left side?')
+        return (image_patch, is_left_side_onion, onion_patches, result, spoon_patches)
+
+    def _else(image_patch, is_left_side_onion, onion_patches, result, spoon_patches):
+        spoon_patches = image_patch.find('spoon')
+
+        def _if(image_patch, onion_patches, result, spoon_patches):
+            spoon_patches = image_patch.find('spoons')
+            return (image_patch, onion_patches, result, spoon_patches)
+        image_patch, onion_patches, result, spoon_patches = if_stmt(_if, None, len(spoon_patches) == 0, (image_patch, onion_patches, result, spoon_patches))
+
+        def _for(onion_patch, image_patch, is_left_side_onion, onion_patches, result, spoon_patches):
+            is_left_side_onion = onion_patch.horizontal_center < image_patch.horizontal_center
+
+            def _if(image_patch, is_left_side_onion, onion_patches, result, spoon_patches):
+
+                def _for(spoon_patch, image_patch, is_left_side_onion, onion_patches, result, spoon_patches):
+
+                    def _if(image_patch, is_left_side_onion, onion_patches, result, spoon_patches):
+                        result = 'yes'
+                        return (image_patch, is_left_side_onion, onion_patches, result, spoon_patches)
+                    image_patch, is_left_side_onion, onion_patches, result, spoon_patches = if_stmt(_if, None, spoon_patch.horizontal_center > onion_patch.horizontal_center, (image_patch, is_left_side_onion, onion_patches, result, spoon_patches))
+                    return (image_patch, is_left_side_onion, onion_patches, result, spoon_patches)
+                image_patch, is_left_side_onion, onion_patches, result, spoon_patches = for_stmt(_for, spoon_patches, (image_patch, is_left_side_onion, onion_patches, result, spoon_patches))
+                return (image_patch, is_left_side_onion, onion_patches, result, spoon_patches)
+            image_patch, is_left_side_onion, onion_patches, result, spoon_patches = if_stmt(_if, None, is_left_side_onion, (image_patch, is_left_side_onion, onion_patches, result, spoon_patches))
+            return (image_patch, is_left_side_onion, onion_patches, result, spoon_patches)
+        image_patch, is_left_side_onion, onion_patches, result, spoon_patches = for_stmt(_for, onion_patches, (image_patch, is_left_side_onion, onion_patches, result, spoon_patches))
+        return (image_patch, is_left_side_onion, onion_patches, result, spoon_patches)
+    image_patch, is_left_side_onion, onion_patches, result, spoon_patches = if_stmt(_if, _else, len(onion_patches) == 0, (image_patch, is_left_side_onion, onion_patches, result, spoon_patches))
+    return result

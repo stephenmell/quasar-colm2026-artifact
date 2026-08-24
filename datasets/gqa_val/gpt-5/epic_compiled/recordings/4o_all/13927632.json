@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2382847",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "What is covered by the grass near the water?"
+      ],
+      "The grass near the water is covered by airport lighting and navigation equipment.",
+      1053063843
+    ]
+  ],
+  "best_text_match": []
+}

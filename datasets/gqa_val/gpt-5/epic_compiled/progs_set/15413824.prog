@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    chain_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    chain_patches = image_patch.find('chain')
+
+    def _if(chain_patches, image_patch, result):
+        result = image_patch.simple_query('Does the chain look red or silver?')
+        return (chain_patches, image_patch, result)
+
+    def _else(chain_patches, image_patch, result):
+        result = chain_patches[0].best_text_match(('red', 'silver'))
+        return (chain_patches, image_patch, result)
+    chain_patches, image_patch, result = if_stmt(_if, _else, len(chain_patches) == 0, (chain_patches, image_patch, result))
+    return result

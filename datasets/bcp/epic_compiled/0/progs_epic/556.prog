@@ -1,0 +1,82 @@
+({2417: 'context', 2420: 'llm_query', 2438: '.join', 2444: 'return_result'},
+ ('def',
+  2415,
+  ((),
+   ((('call', (2416,), -1, ()),
+     ('def',
+      2418,
+      ((2433, 2419),
+       ((('prim',
+          2421,
+          'Read the document below and answer the following. Structure the '
+          "output as Q/A blocks, each with lines starting 'Question:', "
+          "'Quotes:', 'Answer:'.\n"
+          '\n'
+          'DOCUMENT:\n'),
+         ('call', (2422,), 118, (2419,)),
+         ('prim',
+          2423,
+          '\n'
+          '\n'
+          'Questions:\n'
+          '1) Does the document mention a jazz bassist, composer, and arranger '
+          'from the Southern Hemisphere born in the 1940s who died in the '
+          "early 2010s? If yes, provide the person's name, birth and death "
+          'years, the name of his first official group, and whether he '
+          "performed a 'Royal Command Performance' with that group in the "
+          '1970s. Include exact supporting quotes.\n'
+          '\n'
+          '2) If the document mentions where he grew up, give the '
+          'neighborhood/township name and, if stated, the year the '
+          'neighborhood was established. Include exact supporting quotes.\n'
+          '\n'
+          '3) Does the document contain or reference a Master of Arts thesis '
+          'written in the 1990s about the history of that neighborhood? If '
+          "yes, extract the thesis' acknowledgements section and state exactly "
+          'who the author thanks as "a friend in the Department of '
+          'Oceanography". Provide the exact quoted line and give the person\'s '
+          'full name.\n'
+          '\n'
+          "If the document is not relevant to any of these, simply write: 'No "
+          "relevant info.'"),
+         ('def',
+          2429,
+          ((2424, 2425),
+           ((('call', (2426,), 2425, (2424, 2421)),
+             ('call', (2427,), 2425, (2426, 2422)),
+             ('call', (2428,), 2425, (2427, 2423))),
+            (2428,)))),
+         ('prim', 2430, ''),
+         ('call', (2431,), 2429, (2430, 80)),
+         ('call', (2432,), 2420, (2431,)),
+         ('call', (2434,), -1, (2432,)),
+         ('call', (2435,), 80, (2433, 2434))),
+        (2435,)))),
+     ('call', (2437,), 79, (2417,)),
+     ('call', (2436,), 2437, (2416, 2418)),
+     ('prim',
+      2440,
+      'You will be given per-document analyses. Determine the answer to the '
+      "user's question:\n"
+      "'According to the thesis, who did the author mention in the "
+      'acknowledgements section as a friend in the Department of '
+      "Oceanography?'\n"
+      '\n'
+      'Instructions:\n'
+      '- Identify the relevant jazz bassist (Southern Hemisphere; born 1940s; '
+      'died early 2010s; performed a Royal Command Performance with his first '
+      'official group in the 1970s) and the neighborhood he grew up in '
+      '(established in the late 1920s).\n'
+      '- From the analyses, find the 1990s Master of Arts thesis about that '
+      'neighborhood’s history.\n'
+      "- From that thesis' acknowledgements, extract the person named as 'a "
+      "friend in the Department of Oceanography.'\n"
+      '- Output ONLY the person’s name, with no extra words.\n'
+      '\n'
+      'Per-document analyses:\n'),
+     ('prim', 2439, '\n\n'),
+     ('call', (2441,), 2438, (2439, 2436)),
+     ('call', (2442,), 80, (2440, 2441)),
+     ('call', (2443,), 2420, (2442,)),
+     ('call', (2445,), 2444, (2443,))),
+    (2445,)))))

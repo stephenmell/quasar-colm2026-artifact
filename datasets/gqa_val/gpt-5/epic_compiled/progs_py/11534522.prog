@@ -1,0 +1,28 @@
+# Is the blue water behind the dog on the blanket?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    dog_patches = image_patch.find("dog")
+    if len(dog_patches) == 0:
+        result = image_patch.simple_query("Is the blue water behind the dog on the blanket?")
+    else:
+        water_patches = image_patch.find("water")
+        if len(water_patches) == 0:
+            result = image_patch.simple_query("Is the blue water behind the dog on the blanket?")
+        else:
+            result = "no"
+            for dog_patch in dog_patches:
+                on_blanket_answer = dog_patch.simple_query("Is the dog on the blanket?")
+                is_dog_on_blanket = (on_blanket_answer == "yes")
+                if is_dog_on_blanket:
+                    for water_patch in water_patches:
+                        is_blue = water_patch.verify_property("water", "blue")
+                        if is_blue:
+                            behind_answer = image_patch.simple_query("Is the blue water behind the dog?")
+                            if behind_answer == "yes":
+                                result = "yes"
+
+    if not result:
+        result = image_patch.simple_query("Is the blue water behind the dog on the blanket?")
+    return result

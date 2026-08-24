@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    crate_patches = None
+    image_patch = None
+    is_left_of_any_man = None
+    man_patches = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+    man_patches = image_patch.find('man')
+
+    def _if(crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+        result = image_patch.simple_query('Are there any crates to the right of the person that is to the left of the man?')
+        return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+
+    def _else(crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+        crate_patches = image_patch.find('crate')
+
+        def _if(crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+            result = 'no'
+            return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+
+        def _else(crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+            result = 'no'
+
+            def _for(person_patch, crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+                is_left_of_any_man = False
+
+                def _for(man_patch, crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+
+                    def _if(crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+                        is_left_of_any_man = True
+                        return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+                    crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = if_stmt(_if, None, person_patch.horizontal_center < man_patch.horizontal_center, (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+                    return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+                crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = for_stmt(_for, man_patches, (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+
+                def _if(crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+
+                    def _for(crate_patch, crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+
+                        def _if(crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result):
+                            result = 'yes'
+                            return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+                        crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = if_stmt(_if, None, crate_patch.horizontal_center > person_patch.horizontal_center, (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+                        return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+                    crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = for_stmt(_for, crate_patches, (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+                    return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+                crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = if_stmt(_if, None, is_left_of_any_man, (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+                return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+            crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = for_stmt(_for, person_patches, (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+            return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+        crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = if_stmt(_if, _else, len(crate_patches) == 0, (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+        return (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result)
+    crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result = if_stmt(_if, _else, or_expr(len(person_patches) == 0, len(man_patches) == 0), (crate_patches, image_patch, is_left_of_any_man, man_patches, person_patches, result))
+    return result

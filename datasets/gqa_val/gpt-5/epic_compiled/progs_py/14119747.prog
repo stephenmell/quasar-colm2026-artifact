@@ -1,0 +1,17 @@
+# Is there any monkey to the right of the lamb?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lamb_patches = image_patch.find("lamb")
+    if len(lamb_patches) == 0:
+        result = image_patch.simple_query("Is there any monkey to the right of the lamb?")
+    else:
+        monkey_patches = image_patch.find("monkey")
+        if len(monkey_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for lamb_patch in lamb_patches:
+                for monkey_patch in monkey_patches:
+                    if monkey_patch.horizontal_center > lamb_patch.horizontal_center:
+                        result = "yes"
+    return result

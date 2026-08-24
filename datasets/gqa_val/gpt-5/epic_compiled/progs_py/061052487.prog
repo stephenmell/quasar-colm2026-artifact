@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    bus_exists = image_patch.exists("bus")
+    if not bus_exists:
+        result = image_patch.simple_query("Is the white bus in the top of the image?")
+    else:
+        top_boundary = int(image_patch.vertical_center)
+        top_patch = image_patch.crop(0, 0, image_patch.right, top_boundary)
+        top_bus_patches = top_patch.find("bus")
+        if len(top_bus_patches) > 0:
+            for bus_patch in top_bus_patches:
+                if bus_patch.verify_property("bus", "white"):
+                    result = "yes"
+    return result

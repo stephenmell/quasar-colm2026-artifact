@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question_text = "Do you see any trucks to the left of the vehicle on the left?"
+    vehicle_patches = image_patch.find("vehicle")
+
+    if len(vehicle_patches) == 0:
+        result = image_patch.simple_query(question_text)
+    else:
+        # Find the leftmost vehicle
+        leftmost_vehicle = vehicle_patches[0]
+        for vp in vehicle_patches:
+            if vp.left < leftmost_vehicle.left:
+                leftmost_vehicle = vp
+
+        # Define the area strictly to the left of the leftmost vehicle
+        left_area_patch = image_patch.crop(image_patch.left, image_patch.lower, leftmost_vehicle.left, image_patch.upper)
+        has_truck_left = left_area_patch.exists("truck")
+        result = bool_to_yesno(has_truck_left)
+    return result

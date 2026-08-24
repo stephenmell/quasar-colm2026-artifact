@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find red spear(s)
+    spear_patches = image_patch.find("spear")
+    red_spear_patches = ()
+    for spear_patch in spear_patches:
+        if spear_patch.verify_property("spear", "red"):
+            red_spear_patches = red_spear_patches + (spear_patch,)
+
+    # Gather possible children candidates
+    child_candidates = ()
+    child_candidates = child_candidates + image_patch.find("children")
+    child_candidates = child_candidates + image_patch.find("child")
+    child_candidates = child_candidates + image_patch.find("kid")
+    child_candidates = child_candidates + image_patch.find("boy")
+    child_candidates = child_candidates + image_patch.find("girl")
+
+    # If we can't detect necessary objects, ask directly
+    if len(red_spear_patches) == 0 or len(child_candidates) == 0:
+        result = image_patch.simple_query("Are there any children to the left of the red spear?")
+    else:
+        # Check if any child is to the left of any red spear
+        for child_patch in child_candidates:
+            for red_spear_patch in red_spear_patches:
+                if child_patch.horizontal_center < red_spear_patch.horizontal_center:
+                    result = "yes"
+    return result

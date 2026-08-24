@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    image_patch = None
+    leftmost_chair = None
+    result = None
+    sheet_patches = None
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find('chair')
+
+    def _if(chair_patches, image_patch, leftmost_chair, result, sheet_patches):
+        result = image_patch.simple_query('Is the sheet to the left of the chair on the left?')
+        return (chair_patches, image_patch, leftmost_chair, result, sheet_patches)
+
+    def _else(chair_patches, image_patch, leftmost_chair, result, sheet_patches):
+        leftmost_chair = chair_patches[0]
+
+        def _for(chair_patch, chair_patches, image_patch, leftmost_chair):
+
+            def _if(chair_patches, image_patch, leftmost_chair):
+                leftmost_chair = chair_patch
+                return (chair_patches, image_patch, leftmost_chair)
+            chair_patches, image_patch, leftmost_chair = if_stmt(_if, None, chair_patch.horizontal_center < leftmost_chair.horizontal_center, (chair_patches, image_patch, leftmost_chair))
+            return (chair_patches, image_patch, leftmost_chair)
+        chair_patches, image_patch, leftmost_chair = for_stmt(_for, chair_patches, (chair_patches, image_patch, leftmost_chair))
+        sheet_patches = image_patch.find('sheet')
+
+        def _if(chair_patches, image_patch, leftmost_chair, result, sheet_patches):
+            result = 'no'
+            return (chair_patches, image_patch, leftmost_chair, result, sheet_patches)
+
+        def _else(chair_patches, image_patch, leftmost_chair, result, sheet_patches):
+            result = 'no'
+
+            def _for(sheet_patch, chair_patches, image_patch, leftmost_chair, result, sheet_patches):
+
+                def _if(chair_patches, image_patch, leftmost_chair, result, sheet_patches):
+                    result = 'yes'
+                    return (chair_patches, image_patch, leftmost_chair, result, sheet_patches)
+                chair_patches, image_patch, leftmost_chair, result, sheet_patches = if_stmt(_if, None, sheet_patch.horizontal_center < leftmost_chair.horizontal_center, (chair_patches, image_patch, leftmost_chair, result, sheet_patches))
+                return (chair_patches, image_patch, leftmost_chair, result, sheet_patches)
+            chair_patches, image_patch, leftmost_chair, result, sheet_patches = for_stmt(_for, sheet_patches, (chair_patches, image_patch, leftmost_chair, result, sheet_patches))
+            return (chair_patches, image_patch, leftmost_chair, result, sheet_patches)
+        chair_patches, image_patch, leftmost_chair, result, sheet_patches = if_stmt(_if, _else, len(sheet_patches) == 0, (chair_patches, image_patch, leftmost_chair, result, sheet_patches))
+        return (chair_patches, image_patch, leftmost_chair, result, sheet_patches)
+    chair_patches, image_patch, leftmost_chair, result, sheet_patches = if_stmt(_if, _else, len(chair_patches) == 0, (chair_patches, image_patch, leftmost_chair, result, sheet_patches))
+    return result

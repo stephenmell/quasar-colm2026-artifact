@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    horse_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    horse_patches = image_patch.find('horse')
+
+    def _if(horse_patches, image_patch, result):
+        result = image_patch.simple_query('Is there a horse that is brown in the photo?')
+        return (horse_patches, image_patch, result)
+
+    def _else(horse_patches, image_patch, result):
+
+        def _for(horse_patch, horse_patches, image_patch, result):
+
+            def _if(horse_patches, image_patch, result):
+                result = 'yes'
+                return (horse_patches, image_patch, result)
+            horse_patches, image_patch, result = if_stmt(_if, None, horse_patch.verify_property('horse', 'brown'), (horse_patches, image_patch, result))
+            return (horse_patches, image_patch, result)
+        horse_patches, image_patch, result = for_stmt(_for, horse_patches, (horse_patches, image_patch, result))
+        return (horse_patches, image_patch, result)
+    horse_patches, image_patch, result = if_stmt(_if, _else, len(horse_patches) == 0, (horse_patches, image_patch, result))
+    return result

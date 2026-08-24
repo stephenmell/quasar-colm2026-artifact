@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pepper_patches = image_patch.find("pepper")
+    # If no pepper is found, query the image directly
+    if len(pepper_patches) == 0:
+        return image_patch.simple_query("Is there a pepper in the image that is not red?")
+    # Check if any detected pepper is not red
+    for pepper_patch in pepper_patches:
+        if not pepper_patch.verify_property("pepper", "red"):
+            return "yes"
+    return "no"

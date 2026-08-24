@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    parachute_patches = image_patch.find("parachute")
+
+    if len(parachute_patches) == 0:
+        result = image_patch.simple_query("Do you see airplanes to the right of the parachute?")
+    else:
+        airplane_patches = image_patch.find("airplane")
+        if len(airplane_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for airplane_patch in airplane_patches:
+                for parachute_patch in parachute_patches:
+                    if airplane_patch.horizontal_center > parachute_patch.horizontal_center:
+                        result = "yes"
+    return result

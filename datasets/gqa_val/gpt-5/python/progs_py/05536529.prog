@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_rug = image_patch.exists("rug")
+    is_wheelchair = image_patch.exists("wheelchair")
+    return bool_to_yesno(is_rug or is_wheelchair)

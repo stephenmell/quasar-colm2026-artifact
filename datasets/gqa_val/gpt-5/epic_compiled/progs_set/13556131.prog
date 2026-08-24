@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    image_patch = None
+    is_brown = None
+    result = None
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, image_patch, is_brown, result):
+        result = image_patch.simple_query('What is the brown animal doing?')
+        return (animal_patches, image_patch, is_brown, result)
+
+    def _else(animal_patches, image_patch, is_brown, result):
+        result = None
+
+        def _for(animal_patch, animal_patches, image_patch, is_brown, result):
+            is_brown = animal_patch.verify_property('animal', 'brown')
+
+            def _if(animal_patches, image_patch, is_brown, result):
+                result = animal_patch.simple_query('What is the brown animal doing?')
+                return (animal_patches, image_patch, is_brown, result)
+            animal_patches, image_patch, is_brown, result = if_stmt(_if, None, is_brown, (animal_patches, image_patch, is_brown, result))
+            return (animal_patches, image_patch, is_brown, result)
+        animal_patches, image_patch, is_brown, result = for_stmt(_for, animal_patches, (animal_patches, image_patch, is_brown, result))
+
+        def _if(animal_patches, image_patch, is_brown, result):
+            result = image_patch.simple_query('What is the brown animal doing?')
+            return (animal_patches, image_patch, is_brown, result)
+        animal_patches, image_patch, is_brown, result = if_stmt(_if, None, not_expr(result), (animal_patches, image_patch, is_brown, result))
+        return (animal_patches, image_patch, is_brown, result)
+    animal_patches, image_patch, is_brown, result = if_stmt(_if, _else, len(animal_patches) == 0, (animal_patches, image_patch, is_brown, result))
+    return result

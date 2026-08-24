@@ -1,0 +1,39 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find("device")
+    # If we can't detect devices explicitly, ask directly
+    if len(device_patches) == 0:
+        return image_patch.simple_query("What device is to the right of the white device?")
+    # Find white device(s)
+    white_device_patches = []
+    for dp in device_patches:
+        is_white = False
+        try:
+            is_white = dp.verify_property("device", "white")
+        except Exception:
+            pass
+        if not is_white:
+            try:
+                is_white = (dp.simple_query("Is the device white?") == "yes")
+            except Exception:
+                is_white = False
+        if is_white:
+            white_device_patches.append(dp)
+    if len(white_device_patches) == 0:
+        return image_patch.simple_query("What device is to the right of the white device?")
+    # Choose the nearest device to the right of any white device
+    best_right_device = None
+    best_delta = None
+    for wd in white_device_patches:
+        for dp in device_patches:
+            if dp is wd:
+                continue
+            delta = dp.horizontal_center - wd.horizontal_center
+            if delta > 0:  # strictly to the right
+                if best_delta is None or delta < best_delta:
+                    best_delta = delta
+                    best_right_device = dp
+    if best_right_device is not None:
+        return best_right_device.simple_query("What device is this?")
+    # Fallback: ask the whole image
+    return image_patch.simple_query("What device is to the right of the white device?")

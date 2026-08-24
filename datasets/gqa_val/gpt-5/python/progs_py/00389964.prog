@@ -1,0 +1,23 @@
+# Does the napkin on the table look square?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    napkin_patches = image_patch.find("napkin")
+    if len(napkin_patches) == 0:
+        return image_patch.simple_query("Does the napkin on the table look square?")
+
+    # Try to identify the napkin on the table using geometry
+    table_patches = image_patch.find("table")
+    if len(table_patches) > 0:
+        for napkin_patch in napkin_patches:
+            for table_patch in table_patches:
+                if (table_patch.left <= napkin_patch.horizontal_center <= table_patch.right and
+                    table_patch.lower <= napkin_patch.vertical_center <= table_patch.upper):
+                    return bool_to_yesno(napkin_patch.verify_property("napkin", "square"))
+
+    # Fallback: ask within each napkin crop if it's on the table
+    for napkin_patch in napkin_patches:
+        if napkin_patch.simple_query("Is the napkin on the table?") == "yes":
+            return bool_to_yesno(napkin_patch.verify_property("napkin", "square"))
+
+    # If no napkin on a table is identified, ask the image directly
+    return image_patch.simple_query("Does the napkin on the table look square?")

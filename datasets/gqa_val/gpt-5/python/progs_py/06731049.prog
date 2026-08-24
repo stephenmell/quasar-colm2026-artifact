@@ -1,0 +1,34 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    table_patches = image_patch.find("table")
+
+    # If we can't detect animals or a table, ask directly
+    if len(animal_patches) == 0 or len(table_patches) == 0:
+        return image_patch.simple_query("What is the animal that is on top of the table?")
+
+    # Heuristic to find the animal on top of a table:
+    # - horizontally overlapping with the table
+    # - vertically above the table
+    # - the animal's bottom is close to the table's top
+    best_animal = None
+    best_dist = None
+    proximity_thresh = 0.1 * image_patch.height  # tolerance for "on top of"
+
+    for animal in animal_patches:
+        for table in table_patches:
+            horizontal_overlap = (animal.right > table.left) and (animal.left < table.right)
+            above = animal.vertical_center < table.vertical_center
+            near = animal.lower <= (table.upper + proximity_thresh)
+            if horizontal_overlap and above and near:
+                dist = abs(animal.lower - table.upper)
+                if best_animal is None or dist < best_dist:
+                    best_animal = animal
+                    best_dist = dist
+
+    if best_animal is not None:
+        # Ask for the specific kind of animal
+        return best_animal.simple_query("What animal is this?")
+
+    # Fallback if heuristic fails
+    return image_patch.simple_query("What is the animal that is on top of the table?")

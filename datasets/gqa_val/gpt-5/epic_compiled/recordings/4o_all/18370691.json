@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2317542",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "What is the food that is on the wood table?"
+      ],
+      "Cupcakes and donuts.",
+      1529677374
+    ]
+  ],
+  "best_text_match": []
+}

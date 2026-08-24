@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    girl_patches = None
+    image_patch = None
+    is_brunette = None
+    result = None
+    image_patch = ImagePatch(image)
+    girl_patches = image_patch.find('girl')
+
+    def _if(chair_patches, girl_patches, image_patch, is_brunette, result):
+        result = image_patch.simple_query('Is there a chair to the left of the girl that is brunette?')
+        return (chair_patches, girl_patches, image_patch, is_brunette, result)
+
+    def _else(chair_patches, girl_patches, image_patch, is_brunette, result):
+        result = 'no'
+
+        def _for(girl_patch, chair_patches, girl_patches, image_patch, is_brunette, result):
+            is_brunette = girl_patch.verify_property('girl', 'brunette')
+
+            def _if(chair_patches, girl_patches, image_patch, is_brunette, result):
+                chair_patches = image_patch.find('chair')
+
+                def _for(chair_patch, chair_patches, girl_patches, image_patch, is_brunette, result):
+
+                    def _if(chair_patches, girl_patches, image_patch, is_brunette, result):
+                        result = 'yes'
+                        return (chair_patches, girl_patches, image_patch, is_brunette, result)
+                    chair_patches, girl_patches, image_patch, is_brunette, result = if_stmt(_if, None, chair_patch.horizontal_center < girl_patch.horizontal_center, (chair_patches, girl_patches, image_patch, is_brunette, result))
+                    return (chair_patches, girl_patches, image_patch, is_brunette, result)
+                chair_patches, girl_patches, image_patch, is_brunette, result = for_stmt(_for, chair_patches, (chair_patches, girl_patches, image_patch, is_brunette, result))
+                return (chair_patches, girl_patches, image_patch, is_brunette, result)
+            chair_patches, girl_patches, image_patch, is_brunette, result = if_stmt(_if, None, is_brunette, (chair_patches, girl_patches, image_patch, is_brunette, result))
+            return (chair_patches, girl_patches, image_patch, is_brunette, result)
+        chair_patches, girl_patches, image_patch, is_brunette, result = for_stmt(_for, girl_patches, (chair_patches, girl_patches, image_patch, is_brunette, result))
+        return (chair_patches, girl_patches, image_patch, is_brunette, result)
+    chair_patches, girl_patches, image_patch, is_brunette, result = if_stmt(_if, _else, len(girl_patches) == 0, (chair_patches, girl_patches, image_patch, is_brunette, result))
+    return result

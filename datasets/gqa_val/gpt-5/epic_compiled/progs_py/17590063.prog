@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    field_terms = (
+        "field",
+        "baseball field",
+        "soccer field",
+        "football field",
+        "grass field",
+        "corn field",
+        "wheat field",
+        "meadow",
+        "pasture",
+        "playing field",
+    )
+
+    is_field_detected = False
+    for term in field_terms:
+        if image_patch.exists(term):
+            is_field_detected = True
+
+    if is_field_detected:
+        result = "yes"
+    else:
+        result = image_patch.simple_query("Is this a field?")
+    return result

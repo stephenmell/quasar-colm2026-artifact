@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_napkin = None
+    has_napkins = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_napkin = image_patch.exists('napkin')
+    has_napkins = image_patch.exists('napkins')
+    result = bool_to_yesno(or_expr(has_napkin, has_napkins))
+    return result

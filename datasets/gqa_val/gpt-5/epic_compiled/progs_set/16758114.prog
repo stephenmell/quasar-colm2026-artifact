@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    bird_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find('bird')
+
+    def _if(bird_patches, image_patch, result):
+        result = image_patch.simple_query('Is there any bird that is black?')
+        return (bird_patches, image_patch, result)
+
+    def _else(bird_patches, image_patch, result):
+        result = 'no'
+
+        def _for(bird_patch, bird_patches, image_patch, result):
+
+            def _if(bird_patches, image_patch, result):
+                result = 'yes'
+                return (bird_patches, image_patch, result)
+            bird_patches, image_patch, result = if_stmt(_if, None, bird_patch.verify_property('bird', 'black'), (bird_patches, image_patch, result))
+            return (bird_patches, image_patch, result)
+        bird_patches, image_patch, result = for_stmt(_for, bird_patches, (bird_patches, image_patch, result))
+        return (bird_patches, image_patch, result)
+    bird_patches, image_patch, result = if_stmt(_if, _else, len(bird_patches) == 0, (bird_patches, image_patch, result))
+    return result

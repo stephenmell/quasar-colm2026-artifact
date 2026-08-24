@@ -1,0 +1,12 @@
+# Do the shoes look white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shoe_patches = image_patch.find("shoe")
+    if len(shoe_patches) == 0:
+        result = image_patch.simple_query("Do the shoes look white?")
+    else:
+        result = "no"
+        for shoe_patch in shoe_patches:
+            if shoe_patch.verify_property("shoe", "white"):
+                result = "yes"
+    return result

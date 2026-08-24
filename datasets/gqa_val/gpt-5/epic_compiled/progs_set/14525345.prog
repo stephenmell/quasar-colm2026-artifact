@@ -1,0 +1,63 @@
+def execute_command(image) -> str:
+    car_patches = None
+    crossing_car_found = None
+    image_patch = None
+    is_crossing = None
+    man_patches = None
+    men_right_of_crossing_car = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    car_patches = image_patch.find('car')
+
+    def _if(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+        result = image_patch.simple_query('Are there men to the right of the car that is crossing the road?')
+        return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+
+    def _else(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+        crossing_car_found = False
+        men_right_of_crossing_car = False
+        man_patches = image_patch.find('man')
+
+        def _for(car_patch, car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+            is_crossing = car_patch.verify_property('car', 'crossing the road')
+
+            def _if(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+                crossing_car_found = True
+                return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+            car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = if_stmt(_if, None, is_crossing, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+
+            def _if(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+
+                def _for(man_patch, car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+
+                    def _if(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+                        men_right_of_crossing_car = True
+                        return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+                    car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = if_stmt(_if, None, man_patch.horizontal_center > car_patch.horizontal_center, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+                    return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+                car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = for_stmt(_for, man_patches, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+                return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+            car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = if_stmt(_if, None, is_crossing, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+            return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+        car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = for_stmt(_for, car_patches, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+
+        def _if(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+
+            def _if(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+                result = 'yes'
+                return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+
+            def _else(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+                result = 'no'
+                return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+            car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = if_stmt(_if, _else, men_right_of_crossing_car, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+            return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+
+        def _else(car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result):
+            result = image_patch.simple_query('Are there men to the right of the car that is crossing the road?')
+            return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+        car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = if_stmt(_if, _else, crossing_car_found, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+        return (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result)
+    car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result = if_stmt(_if, _else, len(car_patches) == 0, (car_patches, crossing_car_found, image_patch, is_crossing, man_patches, men_right_of_crossing_car, result))
+    return result

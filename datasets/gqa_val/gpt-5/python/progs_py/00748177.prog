@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    girl_patches = image_patch.find("girl")
+    # If no girl is found, ask directly
+    if len(girl_patches) == 0:
+        return image_patch.simple_query("Do you see any men to the left of the girl?")
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return "no"
+    for man_patch in man_patches:
+        for girl_patch in girl_patches:
+            if man_patch.horizontal_center < girl_patch.horizontal_center:
+                return "yes"
+    return "no"

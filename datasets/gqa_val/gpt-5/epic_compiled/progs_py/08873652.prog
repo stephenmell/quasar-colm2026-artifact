@@ -1,0 +1,14 @@
+# Do you see grass in this photograph that is not green?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    grass_patches = image_patch.find("grass")
+
+    if len(grass_patches) == 0:
+        result = image_patch.simple_query("Do you see grass in this photograph that is not green?")
+    else:
+        result = "no"
+        for grass_patch in grass_patches:
+            is_green = grass_patch.verify_property("grass", "green")
+            if not is_green:
+                result = "yes"
+    return result

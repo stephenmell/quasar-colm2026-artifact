@@ -1,0 +1,145 @@
+({1758: 'context', 1764: 'llm_query', 1772: 'str', 1791: 'return_result'},
+ ('def',
+  1754,
+  ((),
+   ((('prim',
+      1755,
+      '1) Iterate over each document in context. 2) For each, ask a sub-LLM to '
+      'extract whether it mentions a scientist matching the given biographical '
+      'and research clues, plus any 2016 paper abstract details about an '
+      'excavation and a radiocarbon age. Also extract any acknowledgments '
+      '(2011–2013) where the scientist was thanked in a seven-author paper '
+      'about silencing a gene from a newly discovered class of molecule. 3) '
+      'Aggregate these extractions. 4) Ask a sub-LLM to decide the best match '
+      'and return the radiocarbon age (in years) from the 2016 paper’s '
+      'abstract and the full name of the scientist, formatted concisely.'),
+     ('prim', 1756, ''),
+     ('prim', 1757, 0),
+     ('def',
+      1759,
+      ((1782, 1760),
+       ((('unpack', (1770, 1761), 1782),
+         ('prim', 1762, 1),
+         ('call', (1763,), 80, (1761, 1762)),
+         ('prim',
+          1765,
+          'You will be given one document. Extract if it contains information '
+          'about a specific scientist matching the following clues. If it '
+          "does, provide a structured extraction; otherwise say 'No relevant "
+          "info'.\n"
+          '\n'
+          'Clues to match (any/all that apply; be explicit about which are '
+          'supported by quotes from the document):\n'
+          '- The person is a scientist who obtained two degrees between 1971 '
+          'and 1982, both at the same university located in the Americas '
+          '(American continent).\n'
+          '- Since around 1984, they were associated with another South '
+          'American university, working as a researcher, and since 1984 also '
+          'as a professor.\n'
+          '- They have a daughter named Julieta.\n'
+          '- Their research lines include: (a) a molecule induced by '
+          'developmental processes and abiotic stresses (not induced by '
+          'pathogens) — e.g., late embryogenesis abundant (LEA) proteins; (b) '
+          "planned removal of organisms' components — e.g., abscission; (c) "
+          'the description of a group of organisms that can live in an '
+          'uncommon place for its kind.\n'
+          '- They were thanked for technical assistance in the acknowledgments '
+          'section of a paper published between 2011 and 2013 by seven '
+          'authors, discussing the effects of silencing a gene belonging to a '
+          'newly discovered class of molecule (e.g., noncoding RNAs, etc.).\n'
+          '- They published a paper in 2016 whose abstract mentions an '
+          'excavation and reports a radiocarbon age (in years) for objects '
+          'found.\n'
+          '\n'
+          'For this document, do the following:\n'
+          '1) Identify any scientist(s) and provide their full name(s).\n'
+          '2) Provide evidence quotes from the document for each relevant clue '
+          'above (degrees with years and university; association since 1984; '
+          'daughter Julieta; research lines; acknowledgments detail; 2016 '
+          'paper with excavation and radiocarbon age in years). Include exact '
+          'numbers and names as quoted.\n'
+          '3) If the 2016 paper abstract is present or referenced, extract the '
+          'radiocarbon age in years of the objects found in the excavation and '
+          "restate it plainly as: 'Radiocarbon age (years): <number and unit "
+          "as given>'.\n"
+          '4) If the acknowledgments (2011–2013, seven authors, gene '
+          'silencing, newly discovered class of molecule) are present, list '
+          'the paper title, year, author list count, and the acknowledgment '
+          'line mentioning the scientist.\n'
+          '\n'
+          'Document begins:\n'
+          '-----\n'),
+         ('call', (1766,), 80, (1765, 1760)),
+         ('prim',
+          1767,
+          '\n'
+          '-----\n'
+          'Please output in this template:\n'
+          '[Scientist]\n'
+          'Name: <full name>\n'
+          'Degrees: <details>\n'
+          'Affiliations: <details>\n'
+          'Family: <details>\n'
+          'Research lines: <details>\n'
+          'Acknowledgments (2011–2013 gene-silencing paper): <details>\n'
+          '2016 paper (excavation): <details>\n'
+          "Radiocarbon age (years): <value or 'not found'>\n"
+          'Quotes: <verbatim supporting quotes>\n'
+          '\n'
+          'If no relevant info, output: No relevant info.'),
+         ('call', (1768,), 80, (1766, 1767)),
+         ('call', (1769,), 1764, (1768,)),
+         ('prim', 1771, '\n\n=== Document '),
+         ('call', (1773,), 80, (1770, 1771)),
+         ('call', (1774,), 1772, (1763,)),
+         ('call', (1775,), 80, (1773, 1774)),
+         ('prim', 1776, ' Extraction ===\n'),
+         ('call', (1777,), 80, (1775, 1776)),
+         ('call', (1778,), 80, (1777, 1769)),
+         ('pack', 1783, (1778, 1763))),
+        (1783,)))),
+     ('pack', 1784, (1756, 1757)),
+     ('call', (1785,), 79, (1758,)),
+     ('call', (1781,), 1785, (1784, 1759)),
+     ('unpack', (1779, 1780), 1781),
+     ('prim',
+      1786,
+      'We need to answer the following question concisely:\n'
+      '- A scientist got two degrees between 1971 and 1982 at the same '
+      'university in the Americas. Since 1984, they were associated with '
+      'another South American university as a researcher and since 1984 also '
+      'as a professor. They have a daughter Julieta. Their research lines '
+      'include: a molecule induced by developmental processes and stresses not '
+      'induced by pathogens (e.g., LEA proteins), planned removal of '
+      "organisms' components (e.g., abscission), and the description of a "
+      'group of organisms that can live in an uncommon place for its kind. '
+      'They were thanked for technical assistance in a paper published between '
+      '2011 and 2013 by seven authors discussing effects of silencing a gene '
+      'from a newly discovered class of molecule. What is the age in years '
+      '(radiocarbon) of the objects found in an excavation mentioned in the '
+      'abstract of a paper they published in 2016, and what is the full name '
+      'of the scientist?\n'
+      '\n'
+      'Here are extractions from the context documents:\n'),
+     ('call', (1787,), 80, (1786, 1779)),
+     ('prim',
+      1788,
+      '\n'
+      '\n'
+      'Instructions:\n'
+      '1) Identify the single scientist that best matches all the biographical '
+      'and research clues (degrees 1971–1982 at same university; associated '
+      'since 1984 with a South American university as researcher and '
+      'professor; daughter Julieta; research on LEA proteins, abscission, and '
+      'description of organisms living in an uncommon place; acknowledged '
+      '2011–2013 seven-author gene-silencing paper).\n'
+      '2) From that scientist’s 2016 paper, extract the radiocarbon age in '
+      'years of the objects found in an excavation as stated in the abstract.\n'
+      '3) Output ONLY one line in the format: <AGE IN YEARS> ; <FULL NAME>\n'
+      "- Use the age exactly as given (e.g., '4100 years BP', '1200 years', "
+      'etc.).\n'
+      '- Do not add any extra words or punctuation.'),
+     ('call', (1789,), 80, (1787, 1788)),
+     ('call', (1790,), 1764, (1789,)),
+     ('call', (1792,), 1791, (1790,))),
+    (1792,)))))

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    has_large = None
+    image_patch = None
+    result = None
+    water_patches = None
+    image_patch = ImagePatch(image)
+    water_patches = image_patch.find('water')
+
+    def _if(has_large, image_patch, result, water_patches):
+        result = image_patch.simple_query('Does the water have large size?')
+        return (has_large, image_patch, result, water_patches)
+
+    def _else(has_large, image_patch, result, water_patches):
+        result = 'no'
+
+        def _for(water_patch, has_large, image_patch, result, water_patches):
+            has_large = or_expr(water_patch.verify_property('water', 'large'), water_patch.verify_property('water', 'large size'))
+
+            def _if(has_large, image_patch, result, water_patches):
+                result = 'yes'
+                return (has_large, image_patch, result, water_patches)
+            has_large, image_patch, result, water_patches = if_stmt(_if, None, has_large, (has_large, image_patch, result, water_patches))
+            return (has_large, image_patch, result, water_patches)
+        has_large, image_patch, result, water_patches = for_stmt(_for, water_patches, (has_large, image_patch, result, water_patches))
+        return (has_large, image_patch, result, water_patches)
+    has_large, image_patch, result, water_patches = if_stmt(_if, _else, len(water_patches) == 0, (has_large, image_patch, result, water_patches))
+    return result

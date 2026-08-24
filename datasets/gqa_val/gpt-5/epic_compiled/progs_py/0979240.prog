@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find("dog")
+    chair_patches = image_patch.find("chair")
+    tea_patches = image_patch.find("tea")
+
+    if len(dog_patches) == 0 or len(chair_patches) == 0 or len(tea_patches) == 0:
+        result = image_patch.simple_query("Is the tea to the right of the chairs that are to the right of the dog?")
+    else:
+        result = "no"
+        for dog_patch in dog_patches:
+            found_chair_for_dog = False
+            rightmost_chair_center = 0.0
+            for chair_patch in chair_patches:
+                if chair_patch.horizontal_center > dog_patch.horizontal_center:
+                    if not found_chair_for_dog:
+                        rightmost_chair_center = chair_patch.horizontal_center
+                        found_chair_for_dog = True
+                    else:
+                        if chair_patch.horizontal_center > rightmost_chair_center:
+                            rightmost_chair_center = chair_patch.horizontal_center
+            if found_chair_for_dog:
+                for tea_patch in tea_patches:
+                    if tea_patch.horizontal_center > rightmost_chair_center:
+                        result = "yes"
+    return result

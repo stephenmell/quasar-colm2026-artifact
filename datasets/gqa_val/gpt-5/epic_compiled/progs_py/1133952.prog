@@ -1,0 +1,34 @@
+# Are there any guys to the right of the skis that look red?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find skis (try both plural and singular)
+    ski_patches = image_patch.find("skis")
+    if len(ski_patches) == 0:
+        ski_patches = image_patch.find("ski")
+
+    # Find potential "guys" (use multiple synonyms)
+    man_patches = image_patch.find("man")
+    guy_patches = image_patch.find("guy")
+    person_patches = image_patch.find("person")
+    potential_guys = man_patches + guy_patches + person_patches
+
+    if len(ski_patches) == 0 or len(potential_guys) == 0:
+        result = image_patch.simple_query("Are there any guys to the right of the skis that look red?")
+    else:
+        found_red_right = False
+        for guy_patch in potential_guys:
+            is_right_of_any_ski = False
+            for ski_patch in ski_patches:
+                if guy_patch.horizontal_center > ski_patch.horizontal_center:
+                    is_right_of_any_ski = True
+            if is_right_of_any_ski:
+                is_red = False
+                for name in ("man", "person", "guy"):
+                    if guy_patch.verify_property(name, "red"):
+                        is_red = True
+                if is_red:
+                    found_red_right = True
+        result = bool_to_yesno(found_red_right)
+    return result

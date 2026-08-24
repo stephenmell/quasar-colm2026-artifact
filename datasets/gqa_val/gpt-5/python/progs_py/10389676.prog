@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        return image_patch.simple_query("What the red animal is called?")
+    for animal_patch in animal_patches:
+        if animal_patch.verify_property("animal", "red"):
+            return animal_patch.simple_query("What the red animal is called?")
+    return image_patch.simple_query("What the red animal is called?")

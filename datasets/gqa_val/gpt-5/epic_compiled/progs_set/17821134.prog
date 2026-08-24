@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    direct_answer = None
+    image_patch = None
+    picture_like_objects = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    picture_like_objects = ('picture', 'painting', 'photo', 'photograph', 'poster')
+
+    def _for(obj_name, image_patch, picture_like_objects, result):
+
+        def _if(image_patch, picture_like_objects, result):
+            result = 'yes'
+            return (image_patch, picture_like_objects, result)
+        image_patch, picture_like_objects, result = if_stmt(_if, None, image_patch.exists(obj_name), (image_patch, picture_like_objects, result))
+        return (image_patch, picture_like_objects, result)
+    image_patch, picture_like_objects, result = for_stmt(_for, picture_like_objects, (image_patch, picture_like_objects, result))
+
+    def _if(direct_answer, image_patch, picture_like_objects, result):
+        direct_answer = image_patch.simple_query('Are there any pictures?')
+
+        def _if(direct_answer, image_patch, picture_like_objects, result):
+            result = 'yes'
+            return (direct_answer, image_patch, picture_like_objects, result)
+
+        def _else(direct_answer, image_patch, picture_like_objects, result):
+            result = 'no'
+            return (direct_answer, image_patch, picture_like_objects, result)
+        direct_answer, image_patch, picture_like_objects, result = if_stmt(_if, _else, direct_answer == 'yes', (direct_answer, image_patch, picture_like_objects, result))
+        return (direct_answer, image_patch, picture_like_objects, result)
+    direct_answer, image_patch, picture_like_objects, result = if_stmt(_if, None, result == 'no', (direct_answer, image_patch, picture_like_objects, result))
+    return result

@@ -1,0 +1,17 @@
+# Does the woman's hair look dark?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("Does the woman's hair look dark?")
+    else:
+        result = "no"
+        for woman_patch in woman_patches:
+            has_dark_hair_via_hair = woman_patch.verify_property("hair", "dark")
+            has_dark_hair_via_woman = woman_patch.verify_property("woman", "dark hair")
+            if has_dark_hair_via_hair or has_dark_hair_via_woman:
+                result = "yes"
+        if result == "no":
+            result = woman_patches[0].simple_query("Does the woman's hair look dark?")
+    return result

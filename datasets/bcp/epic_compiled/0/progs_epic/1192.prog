@@ -1,0 +1,105 @@
+({2608: 'context', 2615: 'llm_query', 2626: 'return_result'},
+ ('def',
+  2606,
+  ((),
+   ((('prim', 2607, ''),
+     ('def',
+      2609,
+      ((2617, 2610),
+       ((('prim',
+          2611,
+          'You are given a document. It may describe one or more cricket '
+          'matches. Your task: Identify any match(es) that satisfy ALL of '
+          'these constraints:\n'
+          '\n'
+          'C1: The team that batted first won the match by a margin between 20 '
+          'and 30 runs inclusive.\n'
+          'C2: Both teams batted their full allocation of overs (e.g., 20 '
+          'overs in T20, 50 overs in ODI).\n'
+          'C3: The two opening batsmen of the winning team combined scored '
+          'between 50 and 60 runs inclusive.\n'
+          'C4: The two opening batsmen of the losing team combined scored '
+          'between 60 and 70 runs inclusive.\n'
+          'C5: The highest and second-highest run-scorers for the winning team '
+          'hit an equal number of fours (4s) in the match.\n'
+          'C6: The second-highest run-scorer for the winning team was awarded '
+          'Player of the Match.\n'
+          'C7: The losing team scored more than 10 runs in the final over of '
+          'their innings.\n'
+          "C8: One of the losing team's openers was dismissed by the Player of "
+          'the Match.\n'
+          '\n'
+          'From the document, extract, for any match that meets ALL '
+          'constraints C1–C8:\n'
+          '- tournament name\n'
+          '- year of tournament\n'
+          '- match number within the tournament (e.g., "Match 23")\n'
+          '- teams and which one batted first\n'
+          '- winning team and margin\n'
+          '- the two openers and runs for each team (clearly identify who '
+          'opened and their runs)\n'
+          '- top two run-scorers for the winning team with their runs and '
+          'number of fours (4s)\n'
+          '- Player of the Match and his bowling figures and wickets; '
+          'explicitly state if he dismissed any opener of the losing team and '
+          'who\n'
+          '- confirm both teams faced all overs\n'
+          "- runs scored in the final over of the losing team's chase\n"
+          'Provide direct quotes (exact sentences/lines) from the document '
+          'backing each extracted item.\n'
+          '\n'
+          'Important:\n'
+          '- Only output matches where ALL constraints C1–C8 can be confirmed '
+          'True from the document.\n'
+          '- If the document does not contain a match that satisfies all '
+          'constraints, output nothing.\n'
+          '\n'
+          'Output format for each matching match:\n'
+          'BEGIN_MATCH\n'
+          'Match number: <match number as written in the document>\n'
+          'Tournament: <tournament name as written>\n'
+          'Year: <year>\n'
+          'Verification:\n'
+          '- C1: True — <quote(s)>\n'
+          '- C2: True — <quote(s)>\n'
+          '- C3: True — <quote(s)>\n'
+          '- C4: True — <quote(s)>\n'
+          '- C5: True — <quote(s)>\n'
+          '- C6: True — <quote(s)>\n'
+          '- C7: True — <quote(s)>\n'
+          '- C8: True — <quote(s)>\n'
+          'END_MATCH\n'
+          '\n'
+          'Document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2612,), 80, (2611, 2610)),
+         ('prim', 2613, '\nEND_DOCUMENT'),
+         ('call', (2614,), 80, (2612, 2613)),
+         ('call', (2616,), 2615, (2614,)),
+         ('call', (2618,), 80, (2617, 2616)),
+         ('prim', 2619, '\n\n'),
+         ('call', (2620,), 80, (2618, 2619))),
+        (2620,)))),
+     ('call', (2622,), 79, (2608,)),
+     ('call', (2621,), 2622, (2607, 2609)),
+     ('prim',
+      2623,
+      'You are given zero or more extracted matches below. Each '
+      'BEGIN_MATCH..END_MATCH block already satisfies all constraints. Your '
+      'task: extract the match number, tournament name, and the year.\n'
+      '\n'
+      'If exactly one matching match is present, return exactly one line in '
+      'the format:\n'
+      'Match <number>, <Tournament>, <Year>\n'
+      '\n'
+      'If multiple matching matches are present, choose the one with the '
+      'clearest verification quotes; if still tied, choose the first. Return '
+      'exactly one line in the same format.\n'
+      'If no matching match is present, return:\n'
+      'Not found\n'
+      '\n'
+      'Extracted matches:\n'),
+     ('call', (2624,), 80, (2623, 2621)),
+     ('call', (2625,), 2615, (2624,)),
+     ('call', (2627,), 2626, (2625,))),
+    (2627,)))))

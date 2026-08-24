@@ -1,0 +1,38 @@
+# Do the bathtub and the box have the same color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bathtub_patches = image_patch.find("bathtub")
+    box_patches = image_patch.find("box")
+
+    # If either object not found, ask directly
+    if len(bathtub_patches) == 0 or len(box_patches) == 0:
+        return image_patch.simple_query("Do the bathtub and the box have the same color?")
+
+    tub_patch = bathtub_patches[0]
+    box_patch = box_patches[0]
+
+    tub_color = tub_patch.simple_query("What color is the bathtub?")
+    box_color = box_patch.simple_query("What color is the box?")
+
+    def normalize(color: str) -> str:
+        if not isinstance(color, str):
+            return ""
+        c = color.strip().lower()
+        # simple normalization
+        c = c.replace("colour", "color")
+        mapping = {
+            "grey": "gray",
+            "blonde": "yellow",
+            "blond": "yellow",
+        }
+        return mapping.get(c, c)
+
+    tub_c = normalize(tub_color)
+    box_c = normalize(box_color)
+
+    if not tub_c or not box_c:
+        # Fallback to asking directly if colors are unclear
+        return image_patch.simple_query("Do the bathtub and the box have the same color?")
+
+    same = (tub_c == box_c) or (tub_c in box_c) or (box_c in tub_c)
+    return bool_to_yesno(same)

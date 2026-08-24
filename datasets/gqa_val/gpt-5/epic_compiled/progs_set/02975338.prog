@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    tire_patches = None
+    wheel_patches = None
+    image_patch = ImagePatch(image)
+    tire_patches = image_patch.find('tire')
+    wheel_patches = image_patch.find('wheel')
+
+    def _if(image_patch, result, tire_patches, wheel_patches):
+        result = image_patch.simple_query('Do the tires look black?')
+        return (image_patch, result, tire_patches, wheel_patches)
+
+    def _else(image_patch, result, tire_patches, wheel_patches):
+        result = 'no'
+
+        def _for(tire_patch, image_patch, result, tire_patches, wheel_patches):
+
+            def _if(image_patch, result, tire_patches, wheel_patches):
+                result = 'yes'
+                return (image_patch, result, tire_patches, wheel_patches)
+            image_patch, result, tire_patches, wheel_patches = if_stmt(_if, None, tire_patch.verify_property('tire', 'black'), (image_patch, result, tire_patches, wheel_patches))
+            return (image_patch, result, tire_patches, wheel_patches)
+        image_patch, result, tire_patches, wheel_patches = for_stmt(_for, tire_patches, (image_patch, result, tire_patches, wheel_patches))
+
+        def _for(wheel_patch, image_patch, result, tire_patches, wheel_patches):
+
+            def _if(image_patch, result, tire_patches, wheel_patches):
+                result = 'yes'
+                return (image_patch, result, tire_patches, wheel_patches)
+            image_patch, result, tire_patches, wheel_patches = if_stmt(_if, None, wheel_patch.verify_property('wheel', 'black'), (image_patch, result, tire_patches, wheel_patches))
+            return (image_patch, result, tire_patches, wheel_patches)
+        image_patch, result, tire_patches, wheel_patches = for_stmt(_for, wheel_patches, (image_patch, result, tire_patches, wheel_patches))
+        return (image_patch, result, tire_patches, wheel_patches)
+    image_patch, result, tire_patches, wheel_patches = if_stmt(_if, _else, and_expr(len(tire_patches) == 0, len(wheel_patches) == 0), (image_patch, result, tire_patches, wheel_patches))
+    return result

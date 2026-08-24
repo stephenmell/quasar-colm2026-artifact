@@ -1,0 +1,71 @@
+def execute_command(image) -> str:
+    direct_answer = None
+    image_patch = None
+    person_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    woman_patches = image_patch.find('woman')
+
+    def _if(image_patch, result, woman_patches):
+
+        def _for(woman_patch, image_patch, result, woman_patches):
+
+            def _if(image_patch, result, woman_patches):
+                result = 'yes'
+                return (image_patch, result, woman_patches)
+            image_patch, result, woman_patches = if_stmt(_if, None, woman_patch.verify_property('woman', 'walking'), (image_patch, result, woman_patches))
+            return (image_patch, result, woman_patches)
+        image_patch, result, woman_patches = for_stmt(_for, woman_patches, (image_patch, result, woman_patches))
+        return (image_patch, result, woman_patches)
+    image_patch, result, woman_patches = if_stmt(_if, None, len(woman_patches) > 0, (image_patch, result, woman_patches))
+
+    def _if(image_patch, person_patches, result, woman_patches):
+        person_patches = image_patch.find('person')
+
+        def _if(image_patch, person_patches, result, woman_patches):
+
+            def _for(person_patch, image_patch, person_patches, result, woman_patches):
+
+                def _if(image_patch, person_patches, result, woman_patches):
+                    result = 'yes'
+                    return (image_patch, person_patches, result, woman_patches)
+                image_patch, person_patches, result, woman_patches = if_stmt(_if, None, person_patch.verify_property('person', 'walking'), (image_patch, person_patches, result, woman_patches))
+                return (image_patch, person_patches, result, woman_patches)
+            image_patch, person_patches, result, woman_patches = for_stmt(_for, person_patches, (image_patch, person_patches, result, woman_patches))
+            return (image_patch, person_patches, result, woman_patches)
+        image_patch, person_patches, result, woman_patches = if_stmt(_if, None, len(person_patches) > 0, (image_patch, person_patches, result, woman_patches))
+        return (image_patch, person_patches, result, woman_patches)
+    image_patch, person_patches, result, woman_patches = if_stmt(_if, None, result != 'yes', (image_patch, person_patches, result, woman_patches))
+
+    def _if(direct_answer, image_patch, person_patches, result, woman_patches):
+        direct_answer = image_patch.simple_query('Are there any women or people that are walking?')
+
+        def _if(direct_answer, image_patch, person_patches, result, woman_patches):
+            result = 'yes'
+            return (direct_answer, image_patch, person_patches, result, woman_patches)
+
+        def _else(direct_answer, image_patch, person_patches, result, woman_patches):
+
+            def _if(direct_answer, image_patch, person_patches, result, woman_patches):
+                result = 'no'
+                return (direct_answer, image_patch, person_patches, result, woman_patches)
+
+            def _else(direct_answer, image_patch, person_patches, result, woman_patches):
+
+                def _if(direct_answer, image_patch, person_patches, result, woman_patches):
+                    result = 'yes'
+                    return (direct_answer, image_patch, person_patches, result, woman_patches)
+
+                def _else(direct_answer, image_patch, person_patches, result, woman_patches):
+                    result = 'no'
+                    return (direct_answer, image_patch, person_patches, result, woman_patches)
+                direct_answer, image_patch, person_patches, result, woman_patches = if_stmt(_if, _else, or_expr(image_patch.verify_property('woman', 'walking'), image_patch.verify_property('person', 'walking')), (direct_answer, image_patch, person_patches, result, woman_patches))
+                return (direct_answer, image_patch, person_patches, result, woman_patches)
+            direct_answer, image_patch, person_patches, result, woman_patches = if_stmt(_if, _else, direct_answer == 'no', (direct_answer, image_patch, person_patches, result, woman_patches))
+            return (direct_answer, image_patch, person_patches, result, woman_patches)
+        direct_answer, image_patch, person_patches, result, woman_patches = if_stmt(_if, _else, direct_answer == 'yes', (direct_answer, image_patch, person_patches, result, woman_patches))
+        return (direct_answer, image_patch, person_patches, result, woman_patches)
+    direct_answer, image_patch, person_patches, result, woman_patches = if_stmt(_if, None, result != 'yes', (direct_answer, image_patch, person_patches, result, woman_patches))
+    return result

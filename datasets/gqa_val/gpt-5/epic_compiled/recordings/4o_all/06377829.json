@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "286043",
+          [
+            0,
+            0,
+            640,
+            480
+          ]
+        ],
+        "garbage"
+      ],
+      [],
+      9904323119
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "286043",
+          [
+            0,
+            0,
+            640,
+            480
+          ]
+        ],
+        "What color is the garbage on the table?"
+      ],
+      "I can't see any garbage on the table.",
+      1237409319
+    ]
+  ],
+  "best_text_match": []
+}

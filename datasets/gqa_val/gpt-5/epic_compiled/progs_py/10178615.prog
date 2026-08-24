@@ -1,0 +1,50 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find("tree")
+
+    color_options = ("green", "brown", "yellow", "orange", "red", "white", "black", "gray", "blue", "purple", "pink", "gold", "silver", "beige", "tan")
+
+    counts = ()
+    i = 0
+    while i < len(color_options):
+        counts = counts + (0,)
+        i = i + 1
+
+    if len(tree_patches) == 0:
+        result = image_patch.simple_query("Which color are the trees?")
+    else:
+        for tree_patch in tree_patches:
+            chosen_color = tree_patch.best_text_match(color_options)
+
+            index = -1
+            j = 0
+            while j < len(color_options):
+                if color_options[j] == chosen_color:
+                    index = j
+                j = j + 1
+
+            if index >= 0:
+                new_counts = ()
+                k = 0
+                while k < len(counts):
+                    if k == index:
+                        new_counts = new_counts + (counts[k] + 1,)
+                    else:
+                        new_counts = new_counts + (counts[k],)
+                    k = k + 1
+                counts = new_counts
+
+        max_idx = -1
+        max_count = -1
+        m = 0
+        while m < len(counts):
+            if counts[m] > max_count:
+                max_count = counts[m]
+                max_idx = m
+            m = m + 1
+
+        if max_idx == -1 or max_count == 0:
+            result = image_patch.simple_query("Which color are the trees?")
+        else:
+            result = color_options[max_idx]
+    return result

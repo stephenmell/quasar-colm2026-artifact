@@ -1,0 +1,40 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Find a blue bowl
+    bowl_patches = image_patch.find("bowl")
+    blue_bowl_patch = None
+    for bowl_patch in bowl_patches:
+        is_blue = bowl_patch.verify_property("bowl", "blue")
+        if is_blue and blue_bowl_patch is None:
+            blue_bowl_patch = bowl_patch
+
+    if blue_bowl_patch is None:
+        # If no blue bowl is found, ask directly
+        result = image_patch.simple_query("What is the name of the appliance to the right of the blue bowl?")
+    else:
+        # Crop the area to the right of the blue bowl
+        right_area_patch = image_patch.crop(blue_bowl_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+        appliance_patches = right_area_patch.find("appliance")
+
+        if len(appliance_patches) == 0:
+            # If no appliance patches are detected, ask about the right area directly
+            result = right_area_patch.simple_query("What is the name of the appliance?")
+        else:
+            # Choose the leftmost appliance in the right area (closest to the bowl)
+            target_appliance_patch = None
+            leftmost_x = None
+            for appliance_patch in appliance_patches:
+                if target_appliance_patch is None:
+                    target_appliance_patch = appliance_patch
+                    leftmost_x = appliance_patch.horizontal_center
+                else:
+                    if appliance_patch.horizontal_center < leftmost_x:
+                        target_appliance_patch = appliance_patch
+                        leftmost_x = appliance_patch.horizontal_center
+            result = target_appliance_patch.simple_query("What is the name of the appliance?")
+
+    if not result:
+        result = image_patch.simple_query("What is the name of the appliance to the right of the blue bowl?")
+    return result

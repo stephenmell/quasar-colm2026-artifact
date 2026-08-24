@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_racket = (
+        image_patch.exists("racket") or
+        image_patch.exists("tennis racket") or
+        image_patch.exists("badminton racket") or
+        image_patch.exists("squash racket")
+    )
+    return bool_to_yesno(is_racket)

@@ -1,0 +1,20 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find("dog")
+    if len(dog_patches) == 0:
+        result = image_patch.simple_query("Is the skateboard to the right of the dog on the left?")
+    else:
+        leftmost_dog = dog_patches[0]
+        for dog_patch in dog_patches:
+            if dog_patch.horizontal_center < leftmost_dog.horizontal_center:
+                leftmost_dog = dog_patch
+        skateboard_patches = image_patch.find("skateboard")
+        if len(skateboard_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for skateboard_patch in skateboard_patches:
+                if skateboard_patch.horizontal_center > leftmost_dog.horizontal_center:
+                    result = "yes"
+    return result

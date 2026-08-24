@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    box_patches = image_patch.find("box")
+    animal_patches = image_patch.find("animal")
+
+    # If missing either object, ask directly
+    if len(box_patches) == 0 or len(animal_patches) == 0:
+        return image_patch.simple_query("What color is the animal above the box?")
+
+    # Find the animal that is above a box (prefer the closest one vertically)
+    chosen_animal = None
+    min_vertical_gap = float("inf")
+    for box_patch in box_patches:
+        for animal_patch in animal_patches:
+            # Check the animal is above the box
+            if animal_patch.vertical_center < box_patch.vertical_center:
+                # Require some horizontal alignment/overlap
+                if (animal_patch.right > box_patch.left) and (animal_patch.left < box_patch.right):
+                    gap = box_patch.vertical_center - animal_patch.vertical_center
+                    if gap < min_vertical_gap:
+                        min_vertical_gap = gap
+                        chosen_animal = animal_patch
+
+    if chosen_animal is not None:
+        return chosen_animal.simple_query("What color is the animal?")
+
+    # Fallback to asking directly if no matching pair found
+    return image_patch.simple_query("What color is the animal above the box?")

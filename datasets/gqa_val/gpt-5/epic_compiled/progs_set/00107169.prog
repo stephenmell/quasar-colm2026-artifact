@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    bag_types = None
+    image_patch = None
+    result = None
+    scarf_patches = None
+    scarf_types = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    scarf_types = ('scarf', 'shawl')
+
+    def _for(scarf_name, image_patch, result, scarf_patches, scarf_types):
+        scarf_patches = image_patch.find(scarf_name)
+
+        def _for(scarf_patch, image_patch, result, scarf_patches, scarf_types):
+
+            def _if(image_patch, result, scarf_patches, scarf_types):
+                result = 'yes'
+                return (image_patch, result, scarf_patches, scarf_types)
+            image_patch, result, scarf_patches, scarf_types = if_stmt(_if, None, scarf_patch.verify_property(scarf_name, 'orange'), (image_patch, result, scarf_patches, scarf_types))
+            return (image_patch, result, scarf_patches, scarf_types)
+        image_patch, result, scarf_patches, scarf_types = for_stmt(_for, scarf_patches, (image_patch, result, scarf_patches, scarf_types))
+        return (image_patch, result, scarf_patches, scarf_types)
+    image_patch, result, scarf_patches, scarf_types = for_stmt(_for, scarf_types, (image_patch, result, scarf_patches, scarf_types))
+    bag_types = ('bag', 'handbag', 'purse', 'backpack', 'shopping bag', 'tote bag')
+
+    def _for(bag_name, bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types):
+        bag_patches = image_patch.find(bag_name)
+
+        def _for(bag_patch, bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types):
+
+            def _if(bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types):
+                result = 'yes'
+                return (bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types)
+            bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types = if_stmt(_if, None, bag_patch.verify_property(bag_name, 'orange'), (bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types))
+            return (bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types)
+        bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types = for_stmt(_for, bag_patches, (bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types))
+        return (bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types)
+    bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types = for_stmt(_for, bag_types, (bag_patches, bag_types, image_patch, result, scarf_patches, scarf_types))
+    return result

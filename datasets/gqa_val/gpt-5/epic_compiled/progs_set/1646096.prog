@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    area = None
+    bowl_patches = None
+    image_patch = None
+    max_area = None
+    result = None
+    selected_bowl = None
+    image_patch = ImagePatch(image)
+    bowl_patches = image_patch.find('bowl')
+
+    def _if(area, bowl_patches, image_patch, max_area, result, selected_bowl):
+        result = image_patch.simple_query('What is the food in the bowl?')
+        return (area, bowl_patches, image_patch, max_area, result, selected_bowl)
+
+    def _else(area, bowl_patches, image_patch, max_area, result, selected_bowl):
+        max_area = -1
+        selected_bowl = None
+
+        def _for(bowl_patch, area, bowl_patches, image_patch, max_area, selected_bowl):
+            area = bowl_patch.width * bowl_patch.height
+
+            def _if(area, bowl_patches, image_patch, max_area, selected_bowl):
+                max_area = area
+                selected_bowl = bowl_patch
+                return (area, bowl_patches, image_patch, max_area, selected_bowl)
+            area, bowl_patches, image_patch, max_area, selected_bowl = if_stmt(_if, None, area > max_area, (area, bowl_patches, image_patch, max_area, selected_bowl))
+            return (area, bowl_patches, image_patch, max_area, selected_bowl)
+        area, bowl_patches, image_patch, max_area, selected_bowl = for_stmt(_for, bowl_patches, (area, bowl_patches, image_patch, max_area, selected_bowl))
+
+        def _if(area, bowl_patches, image_patch, max_area, result, selected_bowl):
+            result = selected_bowl.simple_query('What is the food in the bowl?')
+
+            def _if(area, bowl_patches, image_patch, max_area, result, selected_bowl):
+                result = selected_bowl.simple_query('What is in the bowl?')
+                return (area, bowl_patches, image_patch, max_area, result, selected_bowl)
+            area, bowl_patches, image_patch, max_area, result, selected_bowl = if_stmt(_if, None, not_expr(result), (area, bowl_patches, image_patch, max_area, result, selected_bowl))
+            return (area, bowl_patches, image_patch, max_area, result, selected_bowl)
+
+        def _else(area, bowl_patches, image_patch, max_area, result, selected_bowl):
+            result = image_patch.simple_query('What is the food in the bowl?')
+            return (area, bowl_patches, image_patch, max_area, result, selected_bowl)
+        area, bowl_patches, image_patch, max_area, result, selected_bowl = if_stmt(_if, _else, selected_bowl, (area, bowl_patches, image_patch, max_area, result, selected_bowl))
+        return (area, bowl_patches, image_patch, max_area, result, selected_bowl)
+    area, bowl_patches, image_patch, max_area, result, selected_bowl = if_stmt(_if, _else, len(bowl_patches) == 0, (area, bowl_patches, image_patch, max_area, result, selected_bowl))
+    return result

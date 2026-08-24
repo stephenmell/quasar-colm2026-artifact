@@ -1,0 +1,54 @@
+def execute_command(image) -> str:
+    image_patch = None
+    person_patches = None
+    plate_patches = None
+    result = None
+    uses_cell = None
+    uses_mobile = None
+    using_phone_centers = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers):
+        result = image_patch.simple_query('Are there plates to the right of the people that are using a mobile phone?')
+        return (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers)
+
+    def _else(image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers):
+        using_phone_centers = ()
+
+        def _for(person_patch, image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers):
+            uses_mobile = person_patch.simple_query('Is the person using a mobile phone?') == 'yes'
+            uses_cell = person_patch.simple_query('Is the person using a cell phone?') == 'yes'
+
+            def _if(image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers):
+                using_phone_centers = using_phone_centers + (person_patch.horizontal_center,)
+                return (image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers)
+            image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers = if_stmt(_if, None, or_expr(uses_mobile, uses_cell), (image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers))
+            return (image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers)
+        image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers = for_stmt(_for, person_patches, (image_patch, person_patches, uses_cell, uses_mobile, using_phone_centers))
+        result = 'no'
+
+        def _if(image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers):
+            plate_patches = image_patch.find('plate')
+
+            def _if(image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers):
+
+                def _for(center, image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers):
+
+                    def _for(plate_patch, image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers):
+
+                        def _if(image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers):
+                            result = 'yes'
+                            return (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers)
+                        image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers = if_stmt(_if, None, plate_patch.horizontal_center > center, (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers))
+                        return (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers)
+                    image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers = for_stmt(_for, plate_patches, (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers))
+                    return (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers)
+                image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers = for_stmt(_for, using_phone_centers, (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers))
+                return (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers)
+            image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers = if_stmt(_if, None, len(plate_patches) > 0, (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers))
+            return (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers)
+        image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers = if_stmt(_if, None, len(using_phone_centers) > 0, (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers))
+        return (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers)
+    image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers = if_stmt(_if, _else, len(person_patches) == 0, (image_patch, person_patches, plate_patches, result, uses_cell, uses_mobile, using_phone_centers))
+    return result

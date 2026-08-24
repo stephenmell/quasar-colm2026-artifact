@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find("umbrella")
+    if len(umbrella_patches) == 0:
+        result = image_patch.simple_query("Are there umbrellas in the scene that are not orange?")
+    else:
+        any_non_orange = False
+        for umbrella_patch in umbrella_patches:
+            is_orange = umbrella_patch.verify_property("umbrella", "orange")
+            if not is_orange:
+                any_non_orange = True
+        result = bool_to_yesno(any_non_orange)
+    return result

@@ -1,0 +1,22 @@
+# Which kind of food is to the right of the lettuce?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lettuce_patches = image_patch.find("lettuce")
+    if len(lettuce_patches) == 0:
+        result = image_patch.simple_query("Which kind of food is to the right of the lettuce?")
+    else:
+        lettuce_patch = lettuce_patches[0]
+        food_patches = image_patch.find("food")
+        if len(food_patches) == 0:
+            right_area_patch = image_patch.crop(lettuce_patch.right, lettuce_patch.lower, image_patch.right, lettuce_patch.upper)
+            result = right_area_patch.simple_query("What kind of food is this?")
+        else:
+            result = None
+            for food_patch in food_patches:
+                if food_patch.horizontal_center > lettuce_patch.horizontal_center:
+                    if not result:
+                        result = food_patch.simple_query("What kind of food is this?")
+            if not result:
+                right_area_patch = image_patch.crop(lettuce_patch.right, lettuce_patch.lower, image_patch.right, lettuce_patch.upper)
+                result = right_area_patch.simple_query("Which kind of food is to the right of the lettuce?")
+    return result

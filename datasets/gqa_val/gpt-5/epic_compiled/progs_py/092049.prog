@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    stove_patches = image_patch.find("stove")
+    if len(stove_patches) == 0:
+        result = image_patch.simple_query("Is the stove to the left of a cabinet?")
+    else:
+        result = "no"
+        cabinet_patches = image_patch.find("cabinet")
+        if len(cabinet_patches) == 0:
+            pass
+        else:
+            for stove_patch in stove_patches:
+                for cabinet_patch in cabinet_patches:
+                    if stove_patch.horizontal_center < cabinet_patch.horizontal_center:
+                        result = "yes"
+    return result

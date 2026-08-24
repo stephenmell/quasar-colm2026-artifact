@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Focus on the bottom part of the photo
+    mid_vertical = int(image_patch.vertical_center)
+    bottom_patch = image_patch.crop(image_patch.left, image_patch.lower, image_patch.right, mid_vertical)
+
+    cucumber_patches = bottom_patch.find("cucumber")
+    if len(cucumber_patches) == 0:
+        # If no cucumber is found in the bottom part, ask directly about that region
+        result = bottom_patch.simple_query("Is there a plate to the right of the cucumber?")
+    else:
+        plate_patches = bottom_patch.find("plate")
+        if len(plate_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for cucumber_patch in cucumber_patches:
+                for plate_patch in plate_patches:
+                    if plate_patch.horizontal_center > cucumber_patch.horizontal_center:
+                        result = "yes"
+    return result

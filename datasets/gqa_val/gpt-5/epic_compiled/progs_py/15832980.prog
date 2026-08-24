@@ -1,0 +1,28 @@
+# Are there any American flags?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Directly check for "American flag"
+    if image_patch.exists("American flag"):
+        result = "yes"
+    else:
+        # If generic flags exist, verify if any are American
+        if image_patch.exists("flag"):
+            flag_patches = image_patch.find("flag")
+            is_american = False
+            for flag_patch in flag_patches:
+                if flag_patch.verify_property("flag", "American"):
+                    is_american = True
+            if is_american:
+                result = "yes"
+            else:
+                result = "no"
+        else:
+            # Fallback: ask directly
+            direct_answer = image_patch.simple_query("Are there any American flags?")
+            if direct_answer == "yes":
+                result = "yes"
+            else:
+                result = "no"
+    return result

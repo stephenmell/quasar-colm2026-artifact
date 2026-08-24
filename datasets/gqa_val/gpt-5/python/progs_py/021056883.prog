@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find("shirt")
+    # Question assumes only one shirt patch
+    if len(shirt_patches) == 0:
+        # If no shirt is found, query the image directly
+        return image_patch.simple_query("Does the shirt look long?")
+    # If multiple shirts, return yes if any looks long
+    is_long = any(shirt_patch.verify_property("shirt", "long") for shirt_patch in shirt_patches)
+    return bool_to_yesno(is_long)

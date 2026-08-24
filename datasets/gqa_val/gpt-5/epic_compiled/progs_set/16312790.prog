@@ -1,0 +1,28 @@
+def execute_command(image) -> str:
+    alt_answer = None
+    image_patch = None
+    is_bowl = None
+    is_bowls = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_bowl = image_patch.exists('bowl')
+    is_bowls = image_patch.exists('bowls')
+
+    def _if(alt_answer, image_patch, is_bowl, is_bowls, result):
+        result = 'yes'
+        return (alt_answer, image_patch, is_bowl, is_bowls, result)
+
+    def _else(alt_answer, image_patch, is_bowl, is_bowls, result):
+        alt_answer = image_patch.simple_query('Do you see bowls there?')
+
+        def _if(alt_answer, image_patch, is_bowl, is_bowls, result):
+            result = 'yes'
+            return (alt_answer, image_patch, is_bowl, is_bowls, result)
+
+        def _else(alt_answer, image_patch, is_bowl, is_bowls, result):
+            result = 'no'
+            return (alt_answer, image_patch, is_bowl, is_bowls, result)
+        alt_answer, image_patch, is_bowl, is_bowls, result = if_stmt(_if, _else, alt_answer == 'yes', (alt_answer, image_patch, is_bowl, is_bowls, result))
+        return (alt_answer, image_patch, is_bowl, is_bowls, result)
+    alt_answer, image_patch, is_bowl, is_bowls, result = if_stmt(_if, _else, or_expr(is_bowl, is_bowls), (alt_answer, image_patch, is_bowl, is_bowls, result))
+    return result

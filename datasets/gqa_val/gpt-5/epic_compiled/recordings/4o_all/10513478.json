@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2325295",
+          [
+            0,
+            0,
+            500,
+            336
+          ]
+        ],
+        "statue"
+      ],
+      [],
+      14258905690
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2325295",
+          [
+            0,
+            0,
+            500,
+            336
+          ]
+        ],
+        "Do you see an elephant to the right of the statue?"
+      ],
+      "No.",
+      2410580764
+    ]
+  ],
+  "best_text_match": []
+}

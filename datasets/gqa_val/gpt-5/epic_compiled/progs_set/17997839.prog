@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    area = None
+    image_patch = None
+    is_little = None
+    result = None
+    smallest_area = None
+    smallest_patch = None
+    target_patch = None
+    zebra_patches = None
+    image_patch = ImagePatch(image)
+    zebra_patches = image_patch.find('zebra')
+
+    def _if(area, image_patch, is_little, result, smallest_area, smallest_patch, target_patch, zebra_patches):
+        result = image_patch.simple_query('Do you think the zebra that is little is young or old?')
+        return (area, image_patch, is_little, result, smallest_area, smallest_patch, target_patch, zebra_patches)
+
+    def _else(area, image_patch, is_little, result, smallest_area, smallest_patch, target_patch, zebra_patches):
+        target_patch = None
+        smallest_patch = None
+        smallest_area = None
+
+        def _for(zebra_patch, area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches):
+            area = zebra_patch.width * zebra_patch.height
+
+            def _if(area, image_patch, smallest_area, smallest_patch, target_patch, zebra_patches):
+                smallest_area = area
+                smallest_patch = zebra_patch
+                return (area, image_patch, smallest_area, smallest_patch, target_patch, zebra_patches)
+            area, image_patch, smallest_area, smallest_patch, target_patch, zebra_patches = if_stmt(_if, None, or_expr(smallest_area is None, area < smallest_area), (area, image_patch, smallest_area, smallest_patch, target_patch, zebra_patches))
+            is_little = zebra_patch.verify_property('zebra', 'little')
+
+            def _if(area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches):
+                target_patch = zebra_patch
+                return (area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches)
+            area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches = if_stmt(_if, None, and_expr(is_little, target_patch is None), (area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches))
+            return (area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches)
+        area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches = for_stmt(_for, zebra_patches, (area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches))
+
+        def _if(area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches):
+            target_patch = smallest_patch
+            return (area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches)
+        area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches = if_stmt(_if, None, not_expr(target_patch), (area, image_patch, is_little, smallest_area, smallest_patch, target_patch, zebra_patches))
+        result = target_patch.best_text_match(('young', 'old'))
+        return (area, image_patch, is_little, result, smallest_area, smallest_patch, target_patch, zebra_patches)
+    area, image_patch, is_little, result, smallest_area, smallest_patch, target_patch, zebra_patches = if_stmt(_if, _else, len(zebra_patches) == 0, (area, image_patch, is_little, result, smallest_area, smallest_patch, target_patch, zebra_patches))
+    return result

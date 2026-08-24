@@ -1,0 +1,22 @@
+Stage: agentdojo_eval.exec_with_return
+Error: object of type 'AbstractOther' has no len()
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/AgentDojo/pipeline_run_agentdojo.py", line 295, in main
+    exec_result = exec_locals.get("execute_command")()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_29.prog", line 53, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 185, in abstract_if_stmt
+    lvars = then_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_29.prog", line 50, in _if
+  File "/home/sm1/projects/conformal_viper/AgentDojo/tools/suite_common.py", line 40, in wrapper
+    return f(**kwargs_with_deps, **named_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/cloud_drive_client.py", line 144, in append_to_file
+    return cloud_drive.append_to_file(CloudDriveFileID(file_id), content)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/cloud_drive_client.py", line 61, in append_to_file
+    file.size = len(file.content)
+                ^^^^^^^^^^^^^^^^^
+TypeError: object of type 'AbstractOther' has no len()

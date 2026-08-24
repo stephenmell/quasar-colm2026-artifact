@@ -1,0 +1,17 @@
+# Is the animal that is not little bending or standing?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("Is the animal that is not little bending or standing?")
+    else:
+        chosen_patch = None
+        for animal_patch in animal_patches:
+            is_little = animal_patch.verify_property("animal", "little")
+            if not is_little:
+                chosen_patch = animal_patch
+        if not chosen_patch:
+            result = image_patch.simple_query("Is the animal that is not little bending or standing?")
+        else:
+            result = chosen_patch.best_text_match(("bending", "standing"))
+    return result

@@ -1,0 +1,48 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Try to localize the man's tee shirt and ask its color
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Which color is the tee shirt the man is wearing?")
+    else:
+        for man_patch in man_patches:
+            if not result:
+                label_options = ("tee shirt", "t shirt", "t-shirt", "shirt")
+                chosen_patch = None
+                chosen_label = None
+                for label in label_options:
+                    candidate_patches = man_patch.find(label)
+                    if len(candidate_patches) > 0 and chosen_patch is None:
+                        chosen_patch = candidate_patches[0]
+                        chosen_label = label
+                if chosen_patch is not None and not result:
+                    if chosen_label in ("tee shirt", "t shirt", "t-shirt"):
+                        question = "What color is the tee shirt?"
+                    else:
+                        question = "What color is the shirt?"
+                    result = chosen_patch.simple_query(question)
+
+        # If not found within the man, try the whole image
+        if not result:
+            global_label_options = ("tee shirt", "t shirt", "t-shirt", "shirt")
+            chosen_patch = None
+            chosen_label = None
+            for label in global_label_options:
+                candidate_patches = image_patch.find(label)
+                if len(candidate_patches) > 0 and chosen_patch is None:
+                    chosen_patch = candidate_patches[0]
+                    chosen_label = label
+            if chosen_patch is not None and not result:
+                if chosen_label in ("tee shirt", "t shirt", "t-shirt"):
+                    question = "What color is the tee shirt?"
+                else:
+                    question = "What color is the shirt?"
+                result = chosen_patch.simple_query(question)
+
+        # Final fallback: ask the image directly
+        if not result:
+            result = image_patch.simple_query("Which color is the tee shirt the man is wearing?")
+
+    return result

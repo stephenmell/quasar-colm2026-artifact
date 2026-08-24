@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    cart_patches = None
+    fence_patches = None
+    image_patch = None
+    is_left = None
+    is_wood = None
+    result = None
+    image_patch = ImagePatch(image)
+    cart_patches = image_patch.find('cart')
+    fence_patches = image_patch.find('fence')
+
+    def _if(cart_patches, fence_patches, image_patch, is_left, is_wood, result):
+        result = image_patch.simple_query('Is the fence to the left of the cart made of wood?')
+        return (cart_patches, fence_patches, image_patch, is_left, is_wood, result)
+
+    def _else(cart_patches, fence_patches, image_patch, is_left, is_wood, result):
+        result = 'no'
+
+        def _for(cart_patch, cart_patches, fence_patches, image_patch, is_left, is_wood, result):
+
+            def _for(fence_patch, cart_patches, fence_patches, image_patch, is_left, is_wood, result):
+                is_left = fence_patch.horizontal_center < cart_patch.horizontal_center
+
+                def _if(cart_patches, fence_patches, image_patch, is_left, is_wood, result):
+                    is_wood = fence_patch.verify_property('fence', 'wood')
+
+                    def _if(cart_patches, fence_patches, image_patch, is_left, is_wood, result):
+                        result = 'yes'
+                        return (cart_patches, fence_patches, image_patch, is_left, is_wood, result)
+                    cart_patches, fence_patches, image_patch, is_left, is_wood, result = if_stmt(_if, None, is_wood, (cart_patches, fence_patches, image_patch, is_left, is_wood, result))
+                    return (cart_patches, fence_patches, image_patch, is_left, is_wood, result)
+                cart_patches, fence_patches, image_patch, is_left, is_wood, result = if_stmt(_if, None, is_left, (cart_patches, fence_patches, image_patch, is_left, is_wood, result))
+                return (cart_patches, fence_patches, image_patch, is_left, is_wood, result)
+            cart_patches, fence_patches, image_patch, is_left, is_wood, result = for_stmt(_for, fence_patches, (cart_patches, fence_patches, image_patch, is_left, is_wood, result))
+            return (cart_patches, fence_patches, image_patch, is_left, is_wood, result)
+        cart_patches, fence_patches, image_patch, is_left, is_wood, result = for_stmt(_for, cart_patches, (cart_patches, fence_patches, image_patch, is_left, is_wood, result))
+        return (cart_patches, fence_patches, image_patch, is_left, is_wood, result)
+    cart_patches, fence_patches, image_patch, is_left, is_wood, result = if_stmt(_if, _else, or_expr(len(cart_patches) == 0, len(fence_patches) == 0), (cart_patches, fence_patches, image_patch, is_left, is_wood, result))
+    return result

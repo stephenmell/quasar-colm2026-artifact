@@ -1,0 +1,36 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    pepper_names = ("pepper grinder", "pepper mill", "peppermill")
+    pepper_patches = ()
+    for pepper_name in pepper_names:
+        found = image_patch.find(pepper_name)
+        if len(found) > 0:
+            pepper_patches = pepper_patches + found
+
+    if len(pepper_patches) == 0:
+        result = image_patch.simple_query("Do you see any cups to the right of the pepper grinder on the table?")
+    else:
+        table_patches = image_patch.find("table")
+        if len(table_patches) == 0:
+            result = image_patch.simple_query("Do you see any cups to the right of the pepper grinder on the table?")
+        else:
+            cup_patches = image_patch.find("cup")
+            if len(cup_patches) == 0:
+                pass
+            else:
+                for pepper_patch in pepper_patches:
+                    for table_patch in table_patches:
+                        for cup_patch in cup_patches:
+                            is_right = cup_patch.horizontal_center > pepper_patch.horizontal_center
+                            in_table = (
+                                cup_patch.horizontal_center >= table_patch.left and
+                                cup_patch.horizontal_center <= table_patch.right and
+                                cup_patch.vertical_center >= table_patch.lower and
+                                cup_patch.vertical_center <= table_patch.upper
+                            )
+                            if is_right and in_table:
+                                result = "yes"
+    return result

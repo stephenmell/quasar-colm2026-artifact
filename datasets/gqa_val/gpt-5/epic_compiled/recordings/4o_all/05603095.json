@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2328644",
+          [
+            0,
+            0,
+            500,
+            500
+          ]
+        ],
+        "shirt"
+      ],
+      [],
+      15413492860
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2328644",
+          [
+            0,
+            0,
+            500,
+            500
+          ]
+        ],
+        "Is the shirt brown or white?"
+      ],
+      "The shirt is brown.",
+      1400505496
+    ]
+  ],
+  "best_text_match": []
+}

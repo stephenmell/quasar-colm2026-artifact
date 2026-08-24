@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    drapery_patches = image_patch.find("draperies")
+    if len(drapery_patches) == 0:
+        return image_patch.simple_query("Do you see cabinets to the right of the draperies?")
+    cabinet_patches = image_patch.find("cabinet")
+    if len(cabinet_patches) == 0:
+        return "no"
+    for drapery_patch in drapery_patches:
+        for cabinet_patch in cabinet_patches:
+            if cabinet_patch.horizontal_center > drapery_patch.horizontal_center:
+                return "yes"
+    return "no"

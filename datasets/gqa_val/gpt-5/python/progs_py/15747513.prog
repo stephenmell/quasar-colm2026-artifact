@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    onion_patches = image_patch.find("onion")
+    # Question assumes only one onion patch
+    if len(onion_patches) == 0:
+        # If no onion is found, query the image directly
+        return image_patch.simple_query("Which side is the onion on, the left or the right?")
+    onion_patch = onion_patches[0]
+    if onion_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

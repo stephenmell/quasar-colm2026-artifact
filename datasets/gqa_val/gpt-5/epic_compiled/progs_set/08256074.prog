@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    curtain_patches = None
+    image_patch = None
+    is_white_curtain = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find('curtain')
+
+    def _if(curtain_patches, image_patch, is_white_curtain, plate_patches, result):
+        result = image_patch.simple_query('Do you see a plate to the right of the white curtain?')
+        return (curtain_patches, image_patch, is_white_curtain, plate_patches, result)
+
+    def _else(curtain_patches, image_patch, is_white_curtain, plate_patches, result):
+        result = 'no'
+
+        def _for(curtain_patch, curtain_patches, image_patch, is_white_curtain, plate_patches, result):
+            is_white_curtain = curtain_patch.verify_property('curtain', 'white')
+
+            def _if(curtain_patches, image_patch, is_white_curtain, plate_patches, result):
+                plate_patches = image_patch.find('plate')
+
+                def _for(plate_patch, curtain_patches, image_patch, is_white_curtain, plate_patches, result):
+
+                    def _if(curtain_patches, image_patch, is_white_curtain, plate_patches, result):
+                        result = 'yes'
+                        return (curtain_patches, image_patch, is_white_curtain, plate_patches, result)
+                    curtain_patches, image_patch, is_white_curtain, plate_patches, result = if_stmt(_if, None, plate_patch.horizontal_center > curtain_patch.horizontal_center, (curtain_patches, image_patch, is_white_curtain, plate_patches, result))
+                    return (curtain_patches, image_patch, is_white_curtain, plate_patches, result)
+                curtain_patches, image_patch, is_white_curtain, plate_patches, result = for_stmt(_for, plate_patches, (curtain_patches, image_patch, is_white_curtain, plate_patches, result))
+                return (curtain_patches, image_patch, is_white_curtain, plate_patches, result)
+            curtain_patches, image_patch, is_white_curtain, plate_patches, result = if_stmt(_if, None, is_white_curtain, (curtain_patches, image_patch, is_white_curtain, plate_patches, result))
+            return (curtain_patches, image_patch, is_white_curtain, plate_patches, result)
+        curtain_patches, image_patch, is_white_curtain, plate_patches, result = for_stmt(_for, curtain_patches, (curtain_patches, image_patch, is_white_curtain, plate_patches, result))
+        return (curtain_patches, image_patch, is_white_curtain, plate_patches, result)
+    curtain_patches, image_patch, is_white_curtain, plate_patches, result = if_stmt(_if, _else, len(curtain_patches) == 0, (curtain_patches, image_patch, is_white_curtain, plate_patches, result))
+    return result

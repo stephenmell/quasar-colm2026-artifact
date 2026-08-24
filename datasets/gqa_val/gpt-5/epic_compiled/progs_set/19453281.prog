@@ -1,0 +1,91 @@
+def execute_command(image) -> str:
+    c1 = None
+    c2 = None
+    cloud_color = None
+    cloud_patches_plural = None
+    cloud_patches_singular = None
+    color_options = None
+    has_cloud = None
+    has_trouser = None
+    image_patch = None
+    result = None
+    trouser_color = None
+    trouser_patches_pants = None
+    trouser_patches_plural = None
+    trouser_patches_singular = None
+    image_patch = ImagePatch(image)
+    result = None
+    cloud_patches_singular = image_patch.find('cloud')
+    cloud_patches_plural = image_patch.find('clouds')
+    has_cloud = or_expr(len(cloud_patches_singular) > 0, len(cloud_patches_plural) > 0)
+    trouser_patches_plural = image_patch.find('trousers')
+    trouser_patches_singular = image_patch.find('trouser')
+    trouser_patches_pants = image_patch.find('pants')
+    has_trouser = or_expr(len(trouser_patches_plural) > 0, or_expr(len(trouser_patches_singular) > 0, len(trouser_patches_pants) > 0))
+    cloud_color = None
+    trouser_color = None
+    color_options = ('white', 'gray', 'grey', 'black', 'blue', 'brown', 'red', 'green', 'yellow', 'orange', 'pink', 'purple', 'beige', 'tan', 'khaki')
+
+    def _if(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+
+        def _if(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+            cloud_color = cloud_patches_singular[0].best_text_match(color_options)
+            return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+
+        def _else(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+            cloud_color = cloud_patches_plural[0].best_text_match(color_options)
+            return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+        cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, _else, len(cloud_patches_singular) > 0, (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+        return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+    cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, None, has_cloud, (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+
+    def _if(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+
+        def _if(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+            trouser_color = trouser_patches_plural[0].best_text_match(color_options)
+            return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+
+        def _else(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+
+            def _if(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+                trouser_color = trouser_patches_singular[0].best_text_match(color_options)
+                return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+
+            def _else(cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+                trouser_color = trouser_patches_pants[0].best_text_match(color_options)
+                return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+            cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, _else, len(trouser_patches_singular) > 0, (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+            return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+        cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, _else, len(trouser_patches_plural) > 0, (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+        return (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+    cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, None, has_trouser, (cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+
+    def _if(c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+        c1 = cloud_color.lower()
+        c2 = trouser_color.lower()
+
+        def _if(c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+            c1 = 'gray'
+            return (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+        c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, None, c1 == 'grey', (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+
+        def _if(c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+            c2 = 'gray'
+            return (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+        c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, None, c2 == 'grey', (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+
+        def _if(c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+            result = 'yes'
+            return (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+
+        def _else(c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+            result = 'no'
+            return (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+        c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, _else, c1 == c2, (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+        return (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+
+    def _else(c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular):
+        result = image_patch.simple_query('Are both the clouds and the trousers the same color?')
+        return (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular)
+    c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular = if_stmt(_if, _else, and_expr(cloud_color, trouser_color), (c1, c2, cloud_color, cloud_patches_plural, cloud_patches_singular, color_options, has_cloud, has_trouser, image_patch, result, trouser_color, trouser_patches_pants, trouser_patches_plural, trouser_patches_singular))
+    return result

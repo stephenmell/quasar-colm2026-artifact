@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    remote_patches = image_patch.find("remote")
+    laptop_patches = image_patch.find("laptop")
+
+    # If either object isn't found, ask directly
+    if len(remote_patches) == 0 or len(laptop_patches) == 0:
+        return image_patch.simple_query("Are the remote and the laptop the same color?")
+
+    # Try to infer colors and compare
+    colors = ["black", "white", "gray", "silver", "red", "blue", "green", "brown", "yellow", "gold", "pink", "orange", "purple"]
+    remote_colors = [r.best_text_match(colors) for r in remote_patches]
+    laptop_colors = [l.best_text_match(colors) for l in laptop_patches]
+
+    for rc in remote_colors:
+        for lc in laptop_colors:
+            if rc == lc:
+                return "yes"
+    return "no"

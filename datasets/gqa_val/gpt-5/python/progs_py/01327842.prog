@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cabbage_patches = image_patch.find("cabbage")
+    # If no cabbage is found, ask directly
+    if len(cabbage_patches) == 0:
+        return image_patch.simple_query("Is the green cabbage to the left of a cup?")
+    # Keep only green cabbages
+    green_cabbages = []
+    for cab in cabbage_patches:
+        is_green = cab.verify_property("cabbage", "green")
+        if not is_green:
+            is_green = (cab.simple_query("Is the cabbage green?") == "yes")
+        if is_green:
+            green_cabbages.append(cab)
+    if len(green_cabbages) == 0:
+        # If we can't confirm any green cabbage, ask directly
+        return image_patch.simple_query("Is the green cabbage to the left of a cup?")
+    cup_patches = image_patch.find("cup")
+    if len(cup_patches) == 0:
+        return "no"
+    for cab in green_cabbages:
+        for cup in cup_patches:
+            if cab.horizontal_center < cup.horizontal_center:
+                return "yes"
+    return "no"

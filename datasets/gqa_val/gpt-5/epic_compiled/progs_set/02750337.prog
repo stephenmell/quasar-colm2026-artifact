@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    cone_patches = None
+    image_patch = None
+    result = None
+    skateboard_patches = None
+    image_patch = ImagePatch(image)
+    skateboard_patches = image_patch.find('skateboard')
+
+    def _if(cone_patches, image_patch, result, skateboard_patches):
+        result = image_patch.simple_query('Is the skateboard to the right of a cone?')
+        return (cone_patches, image_patch, result, skateboard_patches)
+
+    def _else(cone_patches, image_patch, result, skateboard_patches):
+        cone_patches = image_patch.find('cone')
+
+        def _if(cone_patches, image_patch, skateboard_patches):
+            cone_patches = image_patch.find('traffic cone')
+            return (cone_patches, image_patch, skateboard_patches)
+        cone_patches, image_patch, skateboard_patches = if_stmt(_if, None, len(cone_patches) == 0, (cone_patches, image_patch, skateboard_patches))
+
+        def _if(cone_patches, image_patch, result, skateboard_patches):
+            result = 'no'
+            return (cone_patches, image_patch, result, skateboard_patches)
+
+        def _else(cone_patches, image_patch, result, skateboard_patches):
+            result = 'no'
+
+            def _for(skateboard_patch, cone_patches, image_patch, result, skateboard_patches):
+
+                def _for(cone_patch, cone_patches, image_patch, result, skateboard_patches):
+
+                    def _if(cone_patches, image_patch, result, skateboard_patches):
+                        result = 'yes'
+                        return (cone_patches, image_patch, result, skateboard_patches)
+                    cone_patches, image_patch, result, skateboard_patches = if_stmt(_if, None, skateboard_patch.horizontal_center > cone_patch.horizontal_center, (cone_patches, image_patch, result, skateboard_patches))
+                    return (cone_patches, image_patch, result, skateboard_patches)
+                cone_patches, image_patch, result, skateboard_patches = for_stmt(_for, cone_patches, (cone_patches, image_patch, result, skateboard_patches))
+                return (cone_patches, image_patch, result, skateboard_patches)
+            cone_patches, image_patch, result, skateboard_patches = for_stmt(_for, skateboard_patches, (cone_patches, image_patch, result, skateboard_patches))
+            return (cone_patches, image_patch, result, skateboard_patches)
+        cone_patches, image_patch, result, skateboard_patches = if_stmt(_if, _else, len(cone_patches) == 0, (cone_patches, image_patch, result, skateboard_patches))
+        return (cone_patches, image_patch, result, skateboard_patches)
+    cone_patches, image_patch, result, skateboard_patches = if_stmt(_if, _else, len(skateboard_patches) == 0, (cone_patches, image_patch, result, skateboard_patches))
+    return result

@@ -1,0 +1,102 @@
+({1249: 'context', 1259: 'llm_query', 1277: 'return_result', 1278: '.strip'},
+ ('def',
+  1246,
+  ((),
+   ((('prim', 1247, ''),
+     ('prim', 1248, 0),
+     ('def',
+      1250,
+      ((1268, 1251),
+       ((('unpack', (1261, 1252), 1268),
+         ('prim', 1253, 1),
+         ('call', (1254,), 80, (1252, 1253)),
+         ('prim',
+          1255,
+          'You are given a single document. Extract only information relevant '
+          'to this query and keep it concise.\n'
+          '\n'
+          'QUERY:\n'
+          'We need a movie (released before Dec 31, 2023) that matches ALL of '
+          'the following:\n'
+          '- It stars a Ugandan-born actor who made their screen debut in the '
+          'late 1970s (circa 1975-1979) and is noted for having mastered '
+          'several accents for roles across their career.\n'
+          "- The film's director moved to Hollywood in the late 1980s and, as "
+          'of Dec 31, 2023, had been nominated for the Oscars exactly twice.\n'
+          '\n'
+          'From the document, extract any of the following if present:\n'
+          'A) Ugandan-born actor candidates: name; birth details; screen debut '
+          'year/era; explicit mention of mastering several accents; notable '
+          'films they starred in (title, year).\n'
+          'B) Director candidates: name; evidence they moved to Hollywood in '
+          'the late 1980s; count of Oscar nominations (ensure it is exactly '
+          'two as of Dec 31, 2023); notable films they directed (title, '
+          'year).\n'
+          'C) Any explicit linkage of a candidate actor and a candidate '
+          'director via a specific film (title, year).\n'
+          '\n'
+          'Format your output as:\n'
+          '- Document #: <number>\n'
+          '- Actor candidates:\n'
+          '  * <Name>: debut=<year/era>; accents=<evidence/quote>; '
+          'films=[<title (year)>...]\n'
+          '  Quotes: <short supporting excerpts>\n'
+          '- Director candidates:\n'
+          '  * <Name>: moved_to_Hollywood=<evidence>; oscar_noms=<number>; '
+          'films=[<title (year)>...]\n'
+          '  Quotes: <short supporting excerpts>\n'
+          '- Possible matching films (actor + director both match):\n'
+          '  * <title (year)>; actor=<name>; director=<name>\n'
+          '\n'
+          'If the document contains none of the above, output:\n'
+          '- Document #: <number>\n'
+          '- No relevant information.\n'
+          '\n'
+          'DOCUMENT START\n'),
+         ('call', (1256,), 80, (1255, 1251)),
+         ('prim', 1257, '\nDOCUMENT END'),
+         ('call', (1258,), 80, (1256, 1257)),
+         ('call', (1260,), 1259, (1258,)),
+         ('prim', 1262, '\n----\n'),
+         ('call', (1263,), 80, (1261, 1262)),
+         ('call', (1264,), 80, (1263, 1260)),
+         ('pack', 1269, (1264, 1254))),
+        (1269,)))),
+     ('pack', 1270, (1247, 1248)),
+     ('call', (1271,), 79, (1249,)),
+     ('call', (1267,), 1271, (1270, 1250)),
+     ('unpack', (1265, 1266), 1267),
+     ('prim',
+      1272,
+      'You are given extractions from multiple documents related to this '
+      'query.\n'
+      '\n'
+      'QUERY:\n'
+      'Identify the movie (released before Dec 31, 2023) that satisfies ALL of '
+      'the following:\n'
+      '1) It stars a Ugandan-born actor who made their screen debut in the '
+      'late 1970s and is noted for mastering several accents throughout their '
+      'career.\n'
+      '2) It was directed by someone who moved to Hollywood in the late 1980s '
+      'and had exactly two Oscar nominations as of Dec 31, 2023.\n'
+      '\n'
+      'EXTRACTIONS:\n'),
+     ('call', (1273,), 80, (1272, 1265)),
+     ('prim',
+      1274,
+      '\n'
+      '\n'
+      'TASK:\n'
+      '- From the extractions, determine the single best-matching movie. '
+      'Ensure BOTH constraints (actor and director) are simultaneously '
+      'satisfied for that film.\n'
+      '- If multiple candidates appear, choose the one with the strongest '
+      'explicit evidence (quotes) for BOTH the actor’s attributes and the '
+      'director’s attributes.\n'
+      '- Output ONLY the exact movie title (no quotes, no extra words, no '
+      'year).'),
+     ('call', (1275,), 80, (1273, 1274)),
+     ('call', (1276,), 1259, (1275,)),
+     ('call', (1279,), 1278, (1276,)),
+     ('call', (1280,), 1277, (1279,))),
+    (1280,)))))

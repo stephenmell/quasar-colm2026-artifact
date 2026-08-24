@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    water_patches = None
+    image_patch = ImagePatch(image)
+    water_patches = image_patch.find('water')
+
+    def _if(image_patch, result, water_patches):
+        result = image_patch.simple_query('Is that water calm?')
+        return (image_patch, result, water_patches)
+
+    def _else(image_patch, result, water_patches):
+        result = 'no'
+
+        def _for(water_patch, image_patch, result, water_patches):
+
+            def _if(image_patch, result, water_patches):
+                result = 'yes'
+                return (image_patch, result, water_patches)
+            image_patch, result, water_patches = if_stmt(_if, None, water_patch.verify_property('water', 'calm'), (image_patch, result, water_patches))
+            return (image_patch, result, water_patches)
+        image_patch, result, water_patches = for_stmt(_for, water_patches, (image_patch, result, water_patches))
+        return (image_patch, result, water_patches)
+    image_patch, result, water_patches = if_stmt(_if, _else, len(water_patches) == 0, (image_patch, result, water_patches))
+    return result

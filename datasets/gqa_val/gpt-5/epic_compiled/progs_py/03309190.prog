@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bathtub_patches = image_patch.find("bathtub")
+    box_patches = image_patch.find("box")
+
+    if len(bathtub_patches) == 0 or len(box_patches) == 0:
+        result = image_patch.simple_query("Do the bathtub and the box have the same color?")
+    else:
+        bathtub_patch = bathtub_patches[0]
+        box_patch = box_patches[0]
+
+        bathtub_color = bathtub_patch.simple_query("What color is the bathtub?")
+        if not bathtub_color:
+            bathtub_color = bathtub_patch.simple_query("What color is this?")
+        box_color = box_patch.simple_query("What color is the box?")
+        if not box_color:
+            box_color = box_patch.simple_query("What color is this?")
+
+        if bathtub_color and box_color and bathtub_color.strip().lower() == box_color.strip().lower():
+            result = "yes"
+        else:
+            result = "no"
+    return result

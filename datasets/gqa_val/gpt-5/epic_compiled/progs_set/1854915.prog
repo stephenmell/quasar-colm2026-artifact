@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    bottle_patches = None
+    device_patches = None
+    image_patch = None
+    is_black_device = None
+    result = None
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find('device')
+
+    def _if(bottle_patches, device_patches, image_patch, is_black_device, result):
+        result = image_patch.simple_query('Are there any bottles to the right of the black device?')
+        return (bottle_patches, device_patches, image_patch, is_black_device, result)
+
+    def _else(bottle_patches, device_patches, image_patch, is_black_device, result):
+        bottle_patches = image_patch.find('bottle')
+
+        def _if(bottle_patches, device_patches, image_patch, is_black_device, result):
+            result = 'no'
+            return (bottle_patches, device_patches, image_patch, is_black_device, result)
+
+        def _else(bottle_patches, device_patches, image_patch, is_black_device, result):
+            result = 'no'
+
+            def _for(device_patch, bottle_patches, device_patches, image_patch, is_black_device, result):
+                is_black_device = device_patch.verify_property('device', 'black')
+
+                def _if(bottle_patches, device_patches, image_patch, is_black_device, result):
+
+                    def _for(bottle_patch, bottle_patches, device_patches, image_patch, is_black_device, result):
+
+                        def _if(bottle_patches, device_patches, image_patch, is_black_device, result):
+                            result = 'yes'
+                            return (bottle_patches, device_patches, image_patch, is_black_device, result)
+                        bottle_patches, device_patches, image_patch, is_black_device, result = if_stmt(_if, None, bottle_patch.horizontal_center > device_patch.horizontal_center, (bottle_patches, device_patches, image_patch, is_black_device, result))
+                        return (bottle_patches, device_patches, image_patch, is_black_device, result)
+                    bottle_patches, device_patches, image_patch, is_black_device, result = for_stmt(_for, bottle_patches, (bottle_patches, device_patches, image_patch, is_black_device, result))
+                    return (bottle_patches, device_patches, image_patch, is_black_device, result)
+                bottle_patches, device_patches, image_patch, is_black_device, result = if_stmt(_if, None, is_black_device, (bottle_patches, device_patches, image_patch, is_black_device, result))
+                return (bottle_patches, device_patches, image_patch, is_black_device, result)
+            bottle_patches, device_patches, image_patch, is_black_device, result = for_stmt(_for, device_patches, (bottle_patches, device_patches, image_patch, is_black_device, result))
+            return (bottle_patches, device_patches, image_patch, is_black_device, result)
+        bottle_patches, device_patches, image_patch, is_black_device, result = if_stmt(_if, _else, len(bottle_patches) == 0, (bottle_patches, device_patches, image_patch, is_black_device, result))
+        return (bottle_patches, device_patches, image_patch, is_black_device, result)
+    bottle_patches, device_patches, image_patch, is_black_device, result = if_stmt(_if, _else, len(device_patches) == 0, (bottle_patches, device_patches, image_patch, is_black_device, result))
+    return result

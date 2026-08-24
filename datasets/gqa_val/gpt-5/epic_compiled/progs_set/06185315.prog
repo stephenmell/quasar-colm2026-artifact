@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    broccoli_patches = None
+    food_patches = None
+    image_patch = None
+    is_brown_food = None
+    result = None
+    image_patch = ImagePatch(image)
+    broccoli_patches = image_patch.find('broccoli')
+
+    def _if(broccoli_patches, food_patches, image_patch, is_brown_food, result):
+        result = image_patch.simple_query('Is the broccoli to the left of the brown food?')
+        return (broccoli_patches, food_patches, image_patch, is_brown_food, result)
+
+    def _else(broccoli_patches, food_patches, image_patch, is_brown_food, result):
+        result = 'no'
+        food_patches = image_patch.find('food')
+
+        def _if(broccoli_patches, food_patches, image_patch, is_brown_food, result):
+
+            def _for(food_patch, broccoli_patches, food_patches, image_patch, is_brown_food, result):
+                is_brown_food = food_patch.verify_property('food', 'brown')
+
+                def _if(broccoli_patches, food_patches, image_patch, is_brown_food, result):
+
+                    def _for(broccoli_patch, broccoli_patches, food_patches, image_patch, is_brown_food, result):
+
+                        def _if(broccoli_patches, food_patches, image_patch, is_brown_food, result):
+                            result = 'yes'
+                            return (broccoli_patches, food_patches, image_patch, is_brown_food, result)
+                        broccoli_patches, food_patches, image_patch, is_brown_food, result = if_stmt(_if, None, broccoli_patch.horizontal_center < food_patch.horizontal_center, (broccoli_patches, food_patches, image_patch, is_brown_food, result))
+                        return (broccoli_patches, food_patches, image_patch, is_brown_food, result)
+                    broccoli_patches, food_patches, image_patch, is_brown_food, result = for_stmt(_for, broccoli_patches, (broccoli_patches, food_patches, image_patch, is_brown_food, result))
+                    return (broccoli_patches, food_patches, image_patch, is_brown_food, result)
+                broccoli_patches, food_patches, image_patch, is_brown_food, result = if_stmt(_if, None, is_brown_food, (broccoli_patches, food_patches, image_patch, is_brown_food, result))
+                return (broccoli_patches, food_patches, image_patch, is_brown_food, result)
+            broccoli_patches, food_patches, image_patch, is_brown_food, result = for_stmt(_for, food_patches, (broccoli_patches, food_patches, image_patch, is_brown_food, result))
+            return (broccoli_patches, food_patches, image_patch, is_brown_food, result)
+        broccoli_patches, food_patches, image_patch, is_brown_food, result = if_stmt(_if, None, len(food_patches) > 0, (broccoli_patches, food_patches, image_patch, is_brown_food, result))
+        return (broccoli_patches, food_patches, image_patch, is_brown_food, result)
+    broccoli_patches, food_patches, image_patch, is_brown_food, result = if_stmt(_if, _else, len(broccoli_patches) == 0, (broccoli_patches, food_patches, image_patch, is_brown_food, result))
+    return result

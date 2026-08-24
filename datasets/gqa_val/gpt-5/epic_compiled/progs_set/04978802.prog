@@ -1,0 +1,42 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_left_of_any_mouse = None
+    keyboard_patches = None
+    mouse_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    keyboard_patches = image_patch.find('keyboard')
+    mouse_patches = image_patch.find('mouse')
+
+    def _if(image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result):
+        result = image_patch.simple_query('Does the keyboard to the left of the mouse have small size?')
+        return (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result)
+
+    def _else(image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result):
+        result = 'no'
+
+        def _for(keyboard_patch, image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result):
+            is_left_of_any_mouse = False
+
+            def _for(mouse_patch, image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result):
+
+                def _if(image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result):
+                    is_left_of_any_mouse = True
+                    return (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result)
+                image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result = if_stmt(_if, None, keyboard_patch.horizontal_center < mouse_patch.horizontal_center, (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result))
+                return (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result)
+            image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result = for_stmt(_for, mouse_patches, (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result))
+
+            def _if(image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result):
+
+                def _if(image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result):
+                    result = 'yes'
+                    return (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result)
+                image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result = if_stmt(_if, None, keyboard_patch.verify_property('keyboard', 'small'), (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result))
+                return (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result)
+            image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result = if_stmt(_if, None, is_left_of_any_mouse, (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result))
+            return (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result)
+        image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result = for_stmt(_for, keyboard_patches, (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result))
+        return (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result)
+    image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result = if_stmt(_if, _else, or_expr(len(keyboard_patches) == 0, len(mouse_patches) == 0), (image_patch, is_left_of_any_mouse, keyboard_patches, mouse_patches, result))
+    return result

@@ -1,0 +1,12 @@
+# Is the tent in the top part of the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tent_patches = image_patch.find("tent")
+    if len(tent_patches) == 0:
+        result = image_patch.simple_query("Is the tent in the top part of the image?")
+    else:
+        result = "no"
+        for tent_patch in tent_patches:
+            if tent_patch.vertical_center >= image_patch.vertical_center:
+                result = "yes"
+    return result

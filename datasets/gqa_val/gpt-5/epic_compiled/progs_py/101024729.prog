@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    plate_patches = image_patch.find("plate")
+    lettuce_patches = image_patch.find("lettuce")
+    carrot_patches_singular = image_patch.find("carrot")
+    carrot_patches_plural = image_patch.find("carrots")
+    carrot_patches = carrot_patches_singular + carrot_patches_plural
+
+    if len(plate_patches) == 0 or len(lettuce_patches) == 0 or len(carrot_patches) == 0:
+        result = image_patch.simple_query("Are there carrots on the lettuce that is on the plate?")
+    else:
+        for lettuce_patch in lettuce_patches:
+            on_plate = False
+            for plate_patch in plate_patches:
+                if (
+                    lettuce_patch.horizontal_center >= plate_patch.left
+                    and lettuce_patch.horizontal_center <= plate_patch.right
+                    and lettuce_patch.vertical_center >= plate_patch.lower
+                    and lettuce_patch.vertical_center <= plate_patch.upper
+                ):
+                    on_plate = True
+            if on_plate:
+                for carrot_patch in carrot_patches:
+                    if (
+                        carrot_patch.horizontal_center >= lettuce_patch.left
+                        and carrot_patch.horizontal_center <= lettuce_patch.right
+                        and carrot_patch.vertical_center >= lettuce_patch.lower
+                        and carrot_patch.vertical_center <= lettuce_patch.upper
+                    ):
+                        result = "yes"
+    return result

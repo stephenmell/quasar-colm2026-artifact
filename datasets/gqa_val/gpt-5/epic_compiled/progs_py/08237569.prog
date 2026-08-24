@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find("fence")
+
+    if len(fence_patches) == 0:
+        result = image_patch.simple_query("Is there any fence in the picture that is not brown?")
+    else:
+        result = "no"
+        for fence_patch in fence_patches:
+            is_brown = fence_patch.verify_property("fence", "brown")
+            if not is_brown:
+                result = "yes"
+    return result

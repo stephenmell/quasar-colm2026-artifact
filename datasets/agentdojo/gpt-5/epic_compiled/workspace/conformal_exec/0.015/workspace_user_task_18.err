@@ -1,0 +1,14 @@
+Stage: agentdojo_eval.exec_with_return
+Error: No emails found. Try with a different query.
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/AgentDojo/pipeline_run_agentdojo.py", line 295, in main
+    exec_result = exec_locals.get("execute_command")()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_18.prog", line 22, in execute_command
+  File "/home/sm1/projects/conformal_viper/AgentDojo/tools/suite_common.py", line 40, in wrapper
+    return f(**kwargs_with_deps, **named_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 210, in search_emails
+    raise ValueError("No emails found. Try with a different query.")
+ValueError: No emails found. Try with a different query.

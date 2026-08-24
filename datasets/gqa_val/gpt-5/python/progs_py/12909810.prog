@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    candidate_labels = ["man", "woman", "boy", "girl", "person", "surfer"]
+    for label in candidate_labels:
+        patches = image_patch.find(label)
+        for p in patches:
+            if p.verify_property(label, "surfing"):
+                return p.simple_query("Who in this photograph is surfing?")
+    return image_patch.simple_query("Who in this photograph is surfing?")

@@ -1,0 +1,78 @@
+({153: 'context', 156: 'llm_query', 181: 'return_result'},
+ ('def',
+  151,
+  ((),
+   ((('call', (152,), -1, ()),
+     ('def',
+      154,
+      ((162, 155),
+       ((('prim', 157, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (158,), 80, (157, 155)),
+         ('prim',
+          159,
+          '\n'
+          'END_DOCUMENT\n'
+          'According to the document, extract any information relevant to the '
+          'following clues. If the document does not answer a specific clue, '
+          'omit it. For each relevant person mentioned, structure the output '
+          "as blocks that begin with 'Person:' followed by their name, and "
+          "then include bullet points with 'Quotes:' and 'Answer:' entries for "
+          'any clues found.\n'
+          'Clues to look for:\n'
+          '- Published a monograph with Manchester University Press between '
+          '2020 and 2025. Provide the monograph title and year.\n'
+          '- In a 2019 interview, said that if their book were adapted into a '
+          'film, they would want the director whose second and third shorts '
+          'were named after animals to be in the chair. Identify the director '
+          'and the animal-titled shorts.\n'
+          '- Won an award for their work in 2016. Name the award and the work '
+          '(if provided).\n'
+          '- Attended a literary festival before 2022. Provide the festival '
+          'and year.\n'
+          '- Retold the story of a supernatural being for a podcast project in '
+          '2019. Provide the being, project, and date.\n'
+          '- Provide the title (and year) of their first novel, if the '
+          'document states it.\n'
+          'Be precise, quote exact lines where relevant, and keep each '
+          "'Person' block self-contained."),
+         ('call', (160,), 80, (158, 159)),
+         ('call', (161,), 156, (160,)),
+         ('call', (163,), -1, (161,)),
+         ('call', (164,), 80, (162, 163))),
+        (164,)))),
+     ('call', (166,), 79, (153,)),
+     ('call', (165,), 166, (152, 154)),
+     ('prim', 167, ''),
+     ('def',
+      168,
+      ((170, 169),
+       ((('prim', 171, '\n---\n'),
+         ('call', (172,), 80, (170, 171)),
+         ('call', (173,), 80, (172, 169))),
+        (173,)))),
+     ('call', (175,), 79, (165,)),
+     ('call', (174,), 175, (167, 168)),
+     ('prim',
+      176,
+      'Identify the single individual who satisfies ALL of the following: (1) '
+      'published a monograph with Manchester University Press between 2020 and '
+      '2025, (2) in a 2019 interview said that if their book were adapted to '
+      'film they would want the director whose second and third shorts were '
+      'named after animals to be in the chair (this refers to Andrea Arnold, '
+      'whose shorts were Dog [2001] and Wasp [2003]), (3) won an award in '
+      '2016, (4) attended a literary festival before 2022, and (5) retold the '
+      'story of a supernatural being for a podcast project in 2019. Once you '
+      'identify the individual, provide ONLY the title of their first novel, '
+      'and nothing else.\n'
+      '\n'
+      'Here are contextual extracts to use:\n'),
+     ('call', (177,), 80, (176, 174)),
+     ('prim',
+      178,
+      '\n'
+      'Important: Output only the title of the first novel, with no extra '
+      'words, no quotes, no punctuation around it.'),
+     ('call', (179,), 80, (177, 178)),
+     ('call', (180,), 156, (179,)),
+     ('call', (182,), 181, (180,))),
+    (182,)))))

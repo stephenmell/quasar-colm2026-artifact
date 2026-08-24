@@ -1,0 +1,28 @@
+def execute_command(image) -> str:
+    found = None
+    image_patch = None
+    pot_names = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found = False
+    pot_names = ('pot', 'pots', 'flower pot', 'flowerpot', 'plant pot', 'cooking pot', 'teapot')
+
+    def _for(name, found, image_patch, pot_names, result):
+
+        def _if(found, image_patch, pot_names, result):
+            found = True
+            return (found, image_patch, pot_names, result)
+        found, image_patch, pot_names, result = if_stmt(_if, None, image_patch.exists(name), (found, image_patch, pot_names, result))
+        return (found, image_patch, pot_names, result)
+    found, image_patch, pot_names, result = for_stmt(_for, pot_names, (found, image_patch, pot_names, result))
+
+    def _if(found, image_patch, pot_names, result):
+        result = 'yes'
+        return (found, image_patch, pot_names, result)
+
+    def _else(found, image_patch, pot_names, result):
+        result = image_patch.simple_query('Are there any pots?')
+        return (found, image_patch, pot_names, result)
+    found, image_patch, pot_names, result = if_stmt(_if, _else, found, (found, image_patch, pot_names, result))
+    return result

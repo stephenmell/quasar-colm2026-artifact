@@ -1,0 +1,25 @@
+# Is the doughnut to the left of the man that is on the left?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Is the doughnut to the left of the man that is on the left?")
+    else:
+        leftmost_man = man_patches[0]
+        for man_patch in man_patches:
+            if man_patch.horizontal_center < leftmost_man.horizontal_center:
+                leftmost_man = man_patch
+
+        doughnut_patches = image_patch.find("doughnut")
+        if len(doughnut_patches) == 0:
+            doughnut_patches = image_patch.find("donut")
+
+        if len(doughnut_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for doughnut_patch in doughnut_patches:
+                if doughnut_patch.horizontal_center < leftmost_man.horizontal_center:
+                    result = "yes"
+    return result

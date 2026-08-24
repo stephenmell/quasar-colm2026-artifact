@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    clock_patches = image_patch.find("clock")
+    is_white_clock = any(clock_patch.verify_property("clock", "white") for clock_patch in clock_patches)
+    is_bowl = image_patch.exists("bowl")
+    return bool_to_yesno(is_white_clock or is_bowl)

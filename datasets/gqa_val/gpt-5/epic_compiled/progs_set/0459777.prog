@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    guy_patches = None
+    image_patch = None
+    result = None
+    trash_can_patches = None
+    image_patch = ImagePatch(image)
+    trash_can_patches = image_patch.find('trash can') + image_patch.find('garbage can') + image_patch.find('trashcan') + image_patch.find('trash bin') + image_patch.find('bin')
+    guy_patches = image_patch.find('guy') + image_patch.find('man') + image_patch.find('person') + image_patch.find('boy')
+
+    def _if(guy_patches, image_patch, result, trash_can_patches):
+        result = image_patch.simple_query('Do you see any guys to the left of the trash can?')
+        return (guy_patches, image_patch, result, trash_can_patches)
+
+    def _else(guy_patches, image_patch, result, trash_can_patches):
+
+        def _if(guy_patches, image_patch, result, trash_can_patches):
+            result = 'no'
+            return (guy_patches, image_patch, result, trash_can_patches)
+
+        def _else(guy_patches, image_patch, result, trash_can_patches):
+            result = 'no'
+
+            def _for(trash_patch, guy_patches, image_patch, result, trash_can_patches):
+
+                def _for(guy_patch, guy_patches, image_patch, result, trash_can_patches):
+
+                    def _if(guy_patches, image_patch, result, trash_can_patches):
+                        result = 'yes'
+                        return (guy_patches, image_patch, result, trash_can_patches)
+                    guy_patches, image_patch, result, trash_can_patches = if_stmt(_if, None, guy_patch.horizontal_center < trash_patch.horizontal_center, (guy_patches, image_patch, result, trash_can_patches))
+                    return (guy_patches, image_patch, result, trash_can_patches)
+                guy_patches, image_patch, result, trash_can_patches = for_stmt(_for, guy_patches, (guy_patches, image_patch, result, trash_can_patches))
+                return (guy_patches, image_patch, result, trash_can_patches)
+            guy_patches, image_patch, result, trash_can_patches = for_stmt(_for, trash_can_patches, (guy_patches, image_patch, result, trash_can_patches))
+            return (guy_patches, image_patch, result, trash_can_patches)
+        guy_patches, image_patch, result, trash_can_patches = if_stmt(_if, _else, len(guy_patches) == 0, (guy_patches, image_patch, result, trash_can_patches))
+        return (guy_patches, image_patch, result, trash_can_patches)
+    guy_patches, image_patch, result, trash_can_patches = if_stmt(_if, _else, len(trash_can_patches) == 0, (guy_patches, image_patch, result, trash_can_patches))
+    return result

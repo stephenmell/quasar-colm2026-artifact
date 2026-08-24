@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    clothing_categories = (
+        "shirt", "t-shirt", "tee shirt", "top", "blouse",
+        "jacket", "coat", "sweater", "hoodie",
+        "dress", "skirt",
+        "shorts", "pants", "jeans", "trousers",
+        "scarf", "belt", "tie", "bow tie",
+        "sock", "socks",
+        "shoe", "shoes", "sneaker", "sneakers",
+        "hat", "cap",
+        "suit",
+        "clothes", "clothing"
+    )
+
+    for category in clothing_categories:
+        patches = image_patch.find(category)
+        if len(patches) > 0:
+            for p in patches:
+                if p.verify_property(category, "blue"):
+                    if not result:
+                        result = p.simple_query("What is the blue clothing item?")
+    if not result:
+        result = image_patch.simple_query("What is the blue clothing item?")
+    return result

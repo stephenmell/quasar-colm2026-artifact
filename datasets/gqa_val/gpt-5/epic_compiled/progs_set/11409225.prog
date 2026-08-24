@@ -1,0 +1,80 @@
+def execute_command(image) -> str:
+    bag_left_of_tv = None
+    bag_patches = None
+    image_patch = None
+    man_patches = None
+    men_alt = None
+    person_alt = None
+    result = None
+    tv_alt = None
+    tv_patches = None
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find('bag')
+    tv_patches = image_patch.find('tv stand')
+
+    def _if(bag_patches, image_patch, tv_alt, tv_patches):
+        tv_alt = image_patch.find('TV stand')
+
+        def _if(bag_patches, image_patch, tv_alt, tv_patches):
+            tv_patches = tv_alt
+            return (bag_patches, image_patch, tv_alt, tv_patches)
+        bag_patches, image_patch, tv_alt, tv_patches = if_stmt(_if, None, len(tv_alt) > 0, (bag_patches, image_patch, tv_alt, tv_patches))
+        return (bag_patches, image_patch, tv_alt, tv_patches)
+    bag_patches, image_patch, tv_alt, tv_patches = if_stmt(_if, None, len(tv_patches) == 0, (bag_patches, image_patch, tv_alt, tv_patches))
+    man_patches = image_patch.find('man')
+
+    def _if(bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches):
+        men_alt = image_patch.find('men')
+
+        def _if(bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches):
+            man_patches = men_alt
+            return (bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches)
+
+        def _else(bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches):
+            person_alt = image_patch.find('person')
+
+            def _if(bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches):
+                man_patches = person_alt
+                return (bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches)
+            bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches = if_stmt(_if, None, len(person_alt) > 0, (bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches))
+            return (bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches)
+        bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches = if_stmt(_if, _else, len(men_alt) > 0, (bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches))
+        return (bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches)
+    bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches = if_stmt(_if, None, len(man_patches) == 0, (bag_patches, image_patch, man_patches, men_alt, person_alt, tv_alt, tv_patches))
+
+    def _if(bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+        result = image_patch.simple_query('Are there men to the right of the bag that is to the left of the TV stand?')
+        return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+
+    def _else(bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+        result = 'no'
+
+        def _for(bag_patch, bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+            bag_left_of_tv = False
+
+            def _for(tv_patch, bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+
+                def _if(bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+                    bag_left_of_tv = True
+                    return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+                bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches = if_stmt(_if, None, bag_patch.horizontal_center < tv_patch.horizontal_center, (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches))
+                return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+            bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches = for_stmt(_for, tv_patches, (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches))
+
+            def _if(bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+
+                def _for(man_patch, bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+
+                    def _if(bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches):
+                        result = 'yes'
+                        return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+                    bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches = if_stmt(_if, None, man_patch.horizontal_center > bag_patch.horizontal_center, (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches))
+                    return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+                bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches = for_stmt(_for, man_patches, (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches))
+                return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+            bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches = if_stmt(_if, None, bag_left_of_tv, (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches))
+            return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+        bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches = for_stmt(_for, bag_patches, (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches))
+        return (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches)
+    bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches = if_stmt(_if, _else, or_expr(len(bag_patches) == 0, or_expr(len(tv_patches) == 0, len(man_patches) == 0)), (bag_left_of_tv, bag_patches, image_patch, man_patches, men_alt, person_alt, result, tv_alt, tv_patches))
+    return result

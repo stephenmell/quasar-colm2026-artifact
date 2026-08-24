@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    colors = None
+    house_color = None
+    house_patches = None
+    image_patch = None
+    result = None
+    zebra_color = None
+    zebra_patches = None
+    image_patch = ImagePatch(image)
+    house_patches = image_patch.find('house')
+    zebra_patches = image_patch.find('zebra')
+
+    def _if(colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches):
+        result = image_patch.simple_query('Is the house different in color than the zebra?')
+        return (colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches)
+
+    def _else(colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches):
+        colors = ('white', 'black', 'gray', 'brown', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'tan', 'beige', 'silver', 'gold')
+        house_color = house_patches[0].best_text_match(colors)
+        zebra_color = zebra_patches[0].best_text_match(colors)
+
+        def _if(colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches):
+            result = 'yes'
+            return (colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches)
+
+        def _else(colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches):
+            result = 'no'
+            return (colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches)
+        colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches = if_stmt(_if, _else, house_color != zebra_color, (colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches))
+        return (colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches)
+    colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches = if_stmt(_if, _else, or_expr(len(house_patches) == 0, len(zebra_patches) == 0), (colors, house_color, house_patches, image_patch, result, zebra_color, zebra_patches))
+    return result

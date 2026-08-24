@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    doughnut_patches = image_patch.find("doughnut")
+    if len(doughnut_patches) == 0:
+        # Try common synonym
+        doughnut_patches = image_patch.find("donut")
+    # If no doughnut is found, ask directly
+    if len(doughnut_patches) == 0:
+        return image_patch.simple_query("Is the doughnut in the bottom of the photo?")
+    # Consider it in the bottom if any detected doughnut is in the bottom half
+    for doughnut_patch in doughnut_patches:
+        if doughnut_patch.vertical_center < image_patch.vertical_center:
+            return "yes"
+    return "no"

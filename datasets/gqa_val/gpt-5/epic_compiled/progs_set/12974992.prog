@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    hot_dog_patches = None
+    image_patch = None
+    result = None
+    tomato_patches = None
+    image_patch = ImagePatch(image)
+    hot_dog_patches = image_patch.find('hot dog')
+
+    def _if(hot_dog_patches, image_patch, result, tomato_patches):
+        result = image_patch.simple_query('Is there a tomato to the left of the food that is of the hot dog?')
+        return (hot_dog_patches, image_patch, result, tomato_patches)
+
+    def _else(hot_dog_patches, image_patch, result, tomato_patches):
+        tomato_patches = image_patch.find('tomato')
+
+        def _if(hot_dog_patches, image_patch, result, tomato_patches):
+            result = 'no'
+            return (hot_dog_patches, image_patch, result, tomato_patches)
+
+        def _else(hot_dog_patches, image_patch, result, tomato_patches):
+            result = 'no'
+
+            def _for(tomato_patch, hot_dog_patches, image_patch, result, tomato_patches):
+
+                def _for(hot_dog_patch, hot_dog_patches, image_patch, result, tomato_patches):
+
+                    def _if(hot_dog_patches, image_patch, result, tomato_patches):
+                        result = 'yes'
+                        return (hot_dog_patches, image_patch, result, tomato_patches)
+                    hot_dog_patches, image_patch, result, tomato_patches = if_stmt(_if, None, tomato_patch.horizontal_center < hot_dog_patch.horizontal_center, (hot_dog_patches, image_patch, result, tomato_patches))
+                    return (hot_dog_patches, image_patch, result, tomato_patches)
+                hot_dog_patches, image_patch, result, tomato_patches = for_stmt(_for, hot_dog_patches, (hot_dog_patches, image_patch, result, tomato_patches))
+                return (hot_dog_patches, image_patch, result, tomato_patches)
+            hot_dog_patches, image_patch, result, tomato_patches = for_stmt(_for, tomato_patches, (hot_dog_patches, image_patch, result, tomato_patches))
+            return (hot_dog_patches, image_patch, result, tomato_patches)
+        hot_dog_patches, image_patch, result, tomato_patches = if_stmt(_if, _else, len(tomato_patches) == 0, (hot_dog_patches, image_patch, result, tomato_patches))
+        return (hot_dog_patches, image_patch, result, tomato_patches)
+    hot_dog_patches, image_patch, result, tomato_patches = if_stmt(_if, _else, len(hot_dog_patches) == 0, (hot_dog_patches, image_patch, result, tomato_patches))
+    return result

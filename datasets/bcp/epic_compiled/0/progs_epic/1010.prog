@@ -1,0 +1,82 @@
+({874: 'context', 877: 'llm_query', 888: '.join', 900: 'return_result'},
+ ('def',
+  872,
+  ((),
+   ((('call', (873,), -1, ()),
+     ('def',
+      875,
+      ((883, 876),
+       ((('prim',
+          878,
+          'You are given a single document. If it contains information '
+          'relevant to the following puzzle, extract candidate film(s) and '
+          'evidence.\n'
+          '\n'
+          'Puzzle constraints:\n'
+          '- A family drama movie produced between 1999 and 2009 (inclusive).\n'
+          '- The lead couple’s 5 children are of the same gender.\n'
+          '- The actor who plays an adopted child in the movie has an adopted '
+          'sibling in real life.\n'
+          '- Two lead actors are recipients of honorary doctorates.\n'
+          '- One of the actors published a memoir in the late 2010s.\n'
+          '- Another actor is a survivor of breast cancer in real life.\n'
+          '\n'
+          'Instructions:\n'
+          '- Only use information present in the document to propose '
+          'candidates. If the document contains partial matches (e.g., '
+          'mentions of the film, cast details, awards, personal life facts), '
+          'include them.\n'
+          '- For each candidate, give a compact structured output with these '
+          'fields:\n'
+          '  Title: <film title>\n'
+          '  Year: <year>\n'
+          '  Lead actors: <names>\n'
+          '  Children detail: <does the doc indicate 5 children of same '
+          'gender? summarize/quote>\n'
+          '  Adopted-child actor: <name, role>; Adopted sibling IRL: <name, '
+          'relation>\n'
+          '  Honorary doctorates: <which lead actors and from where/when>\n'
+          '  Late-2010s memoir: <actor name, title, year>\n'
+          '  Breast cancer survivor: <actor name>\n'
+          '  Quotes: <short quotes from the doc supporting the above>\n'
+          '- If the document is irrelevant or gives no useful clues, output '
+          'only: NO_MATCH\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (879,), 80, (878, 876)),
+         ('prim', 880, '\nEND_DOCUMENT'),
+         ('call', (881,), 80, (879, 880)),
+         ('call', (882,), 877, (881,)),
+         ('call', (884,), -1, (882,)),
+         ('call', (885,), 80, (883, 884))),
+        (885,)))),
+     ('call', (887,), 79, (874,)),
+     ('call', (886,), 887, (873, 875)),
+     ('prim', 890, '\n\n--- DOCUMENT FINDINGS ---\n'),
+     ('prim', 889, '\n\n'),
+     ('call', (891,), 888, (889, 886)),
+     ('call', (892,), 80, (890, 891)),
+     ('prim',
+      893,
+      'Identify the single movie that satisfies ALL of the following: a family '
+      'drama from 1999–2009 inclusive; the lead couple has 5 children all of '
+      'the same gender; an actor playing an adopted child in the movie has an '
+      'adopted sibling in real life; two lead actors are recipients of '
+      'honorary doctorates; one actor published a memoir in the late 2010s; '
+      'another actor is a real-life breast cancer survivor. Output only the '
+      'movie title, nothing else.'),
+     ('prim',
+      894,
+      'Use the document-derived findings below to answer the puzzle. Prefer '
+      'answers that are explicitly supported across multiple pieces of '
+      'evidence. If multiple candidates appear, choose the one that satisfies '
+      'all constraints. Output only the exact movie title string, no extra '
+      'words.\n'
+      '\n'),
+     ('call', (895,), 80, (894, 892)),
+     ('prim', 896, '\n\nQuestion: '),
+     ('call', (897,), 80, (895, 896)),
+     ('call', (898,), 80, (897, 893)),
+     ('call', (899,), 877, (898,)),
+     ('call', (901,), 900, (899,))),
+    (901,)))))

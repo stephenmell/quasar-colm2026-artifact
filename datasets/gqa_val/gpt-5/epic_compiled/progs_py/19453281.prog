@@ -1,0 +1,51 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Try to find clouds (both singular and plural)
+    cloud_patches_singular = image_patch.find("cloud")
+    cloud_patches_plural = image_patch.find("clouds")
+    has_cloud = len(cloud_patches_singular) > 0 or len(cloud_patches_plural) > 0
+
+    # Try to find trousers (check common variants)
+    trouser_patches_plural = image_patch.find("trousers")
+    trouser_patches_singular = image_patch.find("trouser")
+    trouser_patches_pants = image_patch.find("pants")
+    has_trouser = (len(trouser_patches_plural) > 0 or 
+                   len(trouser_patches_singular) > 0 or 
+                   len(trouser_patches_pants) > 0)
+
+    cloud_color = None
+    trouser_color = None
+    color_options = ("white", "gray", "grey", "black", "blue", "brown", "red", "green", "yellow", "orange", "pink", "purple", "beige", "tan", "khaki")
+
+    if has_cloud:
+        if len(cloud_patches_singular) > 0:
+            cloud_color = cloud_patches_singular[0].best_text_match(color_options)
+        else:
+            cloud_color = cloud_patches_plural[0].best_text_match(color_options)
+
+    if has_trouser:
+        if len(trouser_patches_plural) > 0:
+            trouser_color = trouser_patches_plural[0].best_text_match(color_options)
+        else:
+            if len(trouser_patches_singular) > 0:
+                trouser_color = trouser_patches_singular[0].best_text_match(color_options)
+            else:
+                trouser_color = trouser_patches_pants[0].best_text_match(color_options)
+
+    if cloud_color and trouser_color:
+        c1 = cloud_color.lower()
+        c2 = trouser_color.lower()
+        if c1 == "grey":
+            c1 = "gray"
+        if c2 == "grey":
+            c2 = "gray"
+        if c1 == c2:
+            result = "yes"
+        else:
+            result = "no"
+    else:
+        result = image_patch.simple_query("Are both the clouds and the trousers the same color?")
+
+    return result

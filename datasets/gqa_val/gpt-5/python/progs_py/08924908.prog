@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shelf_patches = image_patch.find("shelf")
+    # Question assumes at least one shelf
+    if len(shelf_patches) == 0:
+        # If no shelf is found, query the image directly
+        return image_patch.simple_query("Is there a chair to the left of the shelf?")
+    chair_patches = image_patch.find("chair")
+    if len(chair_patches) == 0:
+        return "no"
+    for shelf_patch in shelf_patches:
+        for chair_patch in chair_patches:
+            if chair_patch.horizontal_center < shelf_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,13 @@
+# Is it cloudy?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find("sky")
+    if len(sky_patches) == 0:
+        result = image_patch.simple_query("Is it cloudy?")
+    else:
+        result = "no"
+        for sky_patch in sky_patches:
+            is_cloudy = sky_patch.verify_property("sky", "cloudy") or sky_patch.exists("cloud")
+            if is_cloudy:
+                result = "yes"
+    return result

@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    exists_any = None
+    image_patch = None
+    object_names = None
+    result = None
+    image_patch = ImagePatch(image)
+    object_names = ('cone', 'traffic cone', 'ice cream cone')
+    exists_any = False
+
+    def _for(name, exists_any, image_patch, object_names):
+
+        def _if(exists_any, image_patch, object_names):
+            exists_any = True
+            return (exists_any, image_patch, object_names)
+        exists_any, image_patch, object_names = if_stmt(_if, None, image_patch.exists(name), (exists_any, image_patch, object_names))
+        return (exists_any, image_patch, object_names)
+    exists_any, image_patch, object_names = for_stmt(_for, object_names, (exists_any, image_patch, object_names))
+    result = bool_to_yesno(exists_any)
+    return result

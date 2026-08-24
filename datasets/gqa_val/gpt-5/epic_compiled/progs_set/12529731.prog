@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    candies_patches = None
+    image_patch = None
+    result = None
+    scissors_patches = None
+    image_patch = ImagePatch(image)
+    scissors_patches = image_patch.find('scissors')
+
+    def _if(image_patch, scissors_patches):
+        scissors_patches = image_patch.find('scissor')
+        return (image_patch, scissors_patches)
+    image_patch, scissors_patches = if_stmt(_if, None, len(scissors_patches) == 0, (image_patch, scissors_patches))
+    candies_patches = image_patch.find('candy')
+
+    def _if(candies_patches, image_patch, scissors_patches):
+        candies_patches = image_patch.find('candies')
+        return (candies_patches, image_patch, scissors_patches)
+    candies_patches, image_patch, scissors_patches = if_stmt(_if, None, len(candies_patches) == 0, (candies_patches, image_patch, scissors_patches))
+
+    def _if(candies_patches, image_patch, result, scissors_patches):
+        result = image_patch.simple_query('Are the candies to the right of the scissors?')
+        return (candies_patches, image_patch, result, scissors_patches)
+
+    def _else(candies_patches, image_patch, result, scissors_patches):
+
+        def _if(candies_patches, image_patch, result, scissors_patches):
+            result = 'no'
+            return (candies_patches, image_patch, result, scissors_patches)
+
+        def _else(candies_patches, image_patch, result, scissors_patches):
+            result = 'no'
+
+            def _for(scissors_patch, candies_patches, image_patch, result, scissors_patches):
+
+                def _for(candy_patch, candies_patches, image_patch, result, scissors_patches):
+
+                    def _if(candies_patches, image_patch, result, scissors_patches):
+                        result = 'yes'
+                        return (candies_patches, image_patch, result, scissors_patches)
+                    candies_patches, image_patch, result, scissors_patches = if_stmt(_if, None, candy_patch.horizontal_center > scissors_patch.horizontal_center, (candies_patches, image_patch, result, scissors_patches))
+                    return (candies_patches, image_patch, result, scissors_patches)
+                candies_patches, image_patch, result, scissors_patches = for_stmt(_for, candies_patches, (candies_patches, image_patch, result, scissors_patches))
+                return (candies_patches, image_patch, result, scissors_patches)
+            candies_patches, image_patch, result, scissors_patches = for_stmt(_for, scissors_patches, (candies_patches, image_patch, result, scissors_patches))
+            return (candies_patches, image_patch, result, scissors_patches)
+        candies_patches, image_patch, result, scissors_patches = if_stmt(_if, _else, len(candies_patches) == 0, (candies_patches, image_patch, result, scissors_patches))
+        return (candies_patches, image_patch, result, scissors_patches)
+    candies_patches, image_patch, result, scissors_patches = if_stmt(_if, _else, len(scissors_patches) == 0, (candies_patches, image_patch, result, scissors_patches))
+    return result

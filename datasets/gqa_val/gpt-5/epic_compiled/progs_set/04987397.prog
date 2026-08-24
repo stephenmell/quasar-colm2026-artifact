@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    cloud_patches = None
+    image_patch = None
+    is_thin = None
+    is_white = None
+    result = None
+    image_patch = ImagePatch(image)
+    cloud_patches = image_patch.find('cloud')
+
+    def _if(cloud_patches, image_patch, is_thin, is_white, result):
+        result = image_patch.simple_query('Are the clouds thin and white?')
+        return (cloud_patches, image_patch, is_thin, is_white, result)
+
+    def _else(cloud_patches, image_patch, is_thin, is_white, result):
+        result = 'no'
+
+        def _for(cloud_patch, cloud_patches, image_patch, is_thin, is_white, result):
+            is_thin = cloud_patch.verify_property('cloud', 'thin')
+            is_white = cloud_patch.verify_property('cloud', 'white')
+
+            def _if(cloud_patches, image_patch, is_thin, is_white, result):
+                result = 'yes'
+                return (cloud_patches, image_patch, is_thin, is_white, result)
+            cloud_patches, image_patch, is_thin, is_white, result = if_stmt(_if, None, and_expr(is_thin, is_white), (cloud_patches, image_patch, is_thin, is_white, result))
+            return (cloud_patches, image_patch, is_thin, is_white, result)
+        cloud_patches, image_patch, is_thin, is_white, result = for_stmt(_for, cloud_patches, (cloud_patches, image_patch, is_thin, is_white, result))
+        return (cloud_patches, image_patch, is_thin, is_white, result)
+    cloud_patches, image_patch, is_thin, is_white, result = if_stmt(_if, _else, len(cloud_patches) == 0, (cloud_patches, image_patch, is_thin, is_white, result))
+    return result

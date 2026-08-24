@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find("sky")
+    if len(sky_patches) == 0:
+        # If no sky is found, query the image directly
+        return image_patch.simple_query("Do you think the sky is blue?")
+    is_blue = any(sky_patch.verify_property("sky", "blue") for sky_patch in sky_patches)
+    return bool_to_yesno(is_blue)

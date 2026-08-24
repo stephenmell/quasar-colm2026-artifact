@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    mirror_patches = None
+    result = None
+    towel_patches = None
+    image_patch = ImagePatch(image)
+    towel_patches = image_patch.find('towel')
+
+    def _if(image_patch, mirror_patches, result, towel_patches):
+        result = image_patch.simple_query('Is there a mirror to the right of the towel?')
+        return (image_patch, mirror_patches, result, towel_patches)
+
+    def _else(image_patch, mirror_patches, result, towel_patches):
+        mirror_patches = image_patch.find('mirror')
+
+        def _if(image_patch, mirror_patches, result, towel_patches):
+            result = 'no'
+            return (image_patch, mirror_patches, result, towel_patches)
+
+        def _else(image_patch, mirror_patches, result, towel_patches):
+            result = 'no'
+
+            def _for(towel_patch, image_patch, mirror_patches, result, towel_patches):
+
+                def _for(mirror_patch, image_patch, mirror_patches, result, towel_patches):
+
+                    def _if(image_patch, mirror_patches, result, towel_patches):
+                        result = 'yes'
+                        return (image_patch, mirror_patches, result, towel_patches)
+                    image_patch, mirror_patches, result, towel_patches = if_stmt(_if, None, mirror_patch.horizontal_center > towel_patch.horizontal_center, (image_patch, mirror_patches, result, towel_patches))
+                    return (image_patch, mirror_patches, result, towel_patches)
+                image_patch, mirror_patches, result, towel_patches = for_stmt(_for, mirror_patches, (image_patch, mirror_patches, result, towel_patches))
+                return (image_patch, mirror_patches, result, towel_patches)
+            image_patch, mirror_patches, result, towel_patches = for_stmt(_for, towel_patches, (image_patch, mirror_patches, result, towel_patches))
+            return (image_patch, mirror_patches, result, towel_patches)
+        image_patch, mirror_patches, result, towel_patches = if_stmt(_if, _else, len(mirror_patches) == 0, (image_patch, mirror_patches, result, towel_patches))
+        return (image_patch, mirror_patches, result, towel_patches)
+    image_patch, mirror_patches, result, towel_patches = if_stmt(_if, _else, len(towel_patches) == 0, (image_patch, mirror_patches, result, towel_patches))
+    return result

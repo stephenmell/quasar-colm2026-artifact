@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Identify the referenced male subject ("his"): try man, then boy
+    male_patches = image_patch.find("man")
+    if len(male_patches) == 0:
+        male_patches = image_patch.find("boy")
+
+    # If no male subject is found, ask directly
+    if len(male_patches) == 0:
+        return image_patch.simple_query("Is his hair blond and curly?")
+
+    person_patch = male_patches[0]
+
+    # Look for hair within the person crop
+    hair_patches = person_patch.find("hair")
+
+    # Helper to check blond(e) and curly
+    def is_blond_and_curly(patch: ImagePatch) -> bool:
+        is_blond = patch.verify_property("hair", "blond") or patch.verify_property("hair", "blonde")
+        is_curly = patch.verify_property("hair", "curly")
+        return is_blond and is_curly
+
+    if len(hair_patches) > 0:
+        return bool_to_yesno(is_blond_and_curly(hair_patches[0]))
+    else:
+        # If no explicit hair patch, verify on the person crop referencing "hair"
+        return bool_to_yesno(is_blond_and_curly(person_patch))

@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, the water appears relatively calm.",
+      "No, the water has some waves.",
+      "yes",
+      "no"
+    ]
+  },
+  "time_ns": 10742452076
+}

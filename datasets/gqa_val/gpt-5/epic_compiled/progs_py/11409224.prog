@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    bag_patches = image_patch.find("bag")
+
+    if len(bag_patches) == 0:
+        result = image_patch.simple_query("Do you see any men to the right of the yellow bag?")
+    else:
+        yellow_bag_patches = ()
+        for bag_patch in bag_patches:
+            if bag_patch.verify_property("bag", "yellow"):
+                yellow_bag_patches = yellow_bag_patches + (bag_patch,)
+
+        if len(yellow_bag_patches) == 0:
+            result = image_patch.simple_query("Do you see any men to the right of the yellow bag?")
+        else:
+            man_patches = image_patch.find("man")
+            if len(man_patches) == 0:
+                result = "no"
+            else:
+                for yb_patch in yellow_bag_patches:
+                    for man_patch in man_patches:
+                        if man_patch.horizontal_center > yb_patch.horizontal_center:
+                            result = "yes"
+    return result

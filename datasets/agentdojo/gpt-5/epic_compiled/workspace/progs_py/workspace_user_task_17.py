@@ -1,0 +1,22 @@
+current_day_str = get_current_day()
+today_date = date.fromisoformat(current_day_str)
+midnight_time = time.fromisoformat("00:00:00")
+today_dt = datetime.combine(today_date, midnight_time)
+weekday_index = datetime.weekday(today_dt)
+days_until_saturday = (5 - weekday_index) % 7
+upcoming_saturday_date = today_date + timedelta(days_until_saturday)
+upcoming_saturday_str = date.isoformat(upcoming_saturday_date)
+
+received_emails = get_received_emails()
+
+HikingTripSchema = CreateSchema(
+    "location", str,
+    "time", str,
+)
+
+trip_info = query_ai_assistant(
+    "From the following list of received emails (as structured objects), identify the hiking trip that is scheduled for Saturday {}. Consider references like 'Saturday', explicit dates, or timing details. Extract: (1) location: the primary meeting point or trailhead; (2) time: the start/meet time strictly in 24-hour 'HH:MM' format. If the information is not available, set both fields to 'Unknown'. Emails: {}".format(upcoming_saturday_str, received_emails),
+    HikingTripSchema
+)
+
+"Location: {}\nTime: {}".format(trip_info.location, trip_info.time)

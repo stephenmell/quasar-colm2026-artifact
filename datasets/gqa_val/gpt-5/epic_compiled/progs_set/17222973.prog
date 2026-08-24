@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_tortoise = None
+    has_turtle = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_turtle = image_patch.exists('turtle')
+    has_tortoise = image_patch.exists('tortoise')
+    result = bool_to_yesno(or_expr(has_turtle, has_tortoise))
+    return result

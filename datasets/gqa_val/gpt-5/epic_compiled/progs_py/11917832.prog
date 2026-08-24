@@ -1,0 +1,7 @@
+# Are there any dumpsters or kites in this photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_dumpster = image_patch.exists("dumpster")
+    is_kite = image_patch.exists("kite")
+    result = bool_to_yesno(is_dumpster or is_kite)
+    return result

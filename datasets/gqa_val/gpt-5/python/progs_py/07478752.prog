@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    blinds_patches = image_patch.find("blinds")
+    # Question assumes at least one blinds patch
+    if len(blinds_patches) == 0:
+        # If no blinds are found, query the image directly
+        return image_patch.simple_query("Are the blinds closed or open?")
+    closed_votes = 0
+    open_votes = 0
+    unknown = True
+    for blinds_patch in blinds_patches:
+        if blinds_patch.verify_property("blinds", "closed"):
+            closed_votes += 1
+            unknown = False
+        elif blinds_patch.verify_property("blinds", "open"):
+            open_votes += 1
+            unknown = False
+    if unknown:
+        # If we couldn't verify any property, ask using the first patch
+        return blinds_patches[0].simple_query("Are the blinds closed or open?")
+    return "closed" if closed_votes >= open_votes else "open"

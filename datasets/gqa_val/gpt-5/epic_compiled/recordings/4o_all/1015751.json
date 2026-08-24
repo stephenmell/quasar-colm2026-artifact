@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2399993",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is it indoors?"
+      ],
+      "No.",
+      561225006
+    ]
+  ],
+  "best_text_match": []
+}

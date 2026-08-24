@@ -1,0 +1,5 @@
+{
+  "result": "id_='27' title='Family Reunion' description=\"The family reunion is scheduled for June 10th, 2024 at 1 PM at Grandma's house. It will be a potluck lunch, and attendees are encouraged to bring their favorite dish. Emma confirmed she will attend and bring her apple pie. James offered to help arrange accommodations if needed, but Emma declined. All details were confirmed in the latest email exchange.\" start_time=datetime.datetime(2024, 6, 10, 13, 0) end_time=datetime.datetime(2024, 6, 10, 17, 0) location=\"Grandma's house\" participants=['james.miller@yahoo.com', 'emma.johnson@bluesparrowtech.com'] all_day=False status=confirmed",
+  "time_ns": 2673160472,
+  "utility": true
+}

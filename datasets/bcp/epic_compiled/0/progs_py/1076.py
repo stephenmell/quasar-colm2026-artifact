@@ -1,0 +1,9 @@
+context_summaries = ()
+for d in context:
+    prompt = "You are given a document. We are looking for an artwork that fits ALL or MOST of these clues:\n- Exhibited in the late 19th century in a European country, for roughly 2–3 months, at a venue established about 3 years before that exhibition and that closed more than four decades later.\n- The artwork was created more than a decade before that exhibition.\n- It expressed the artist's social and moral feelings.\n- The artwork was stolen in the late 20th century but later recovered.\n- The artist spent an entire season practicing/studying this work before creating its final version.\n- Initially, the artwork was not well received, which disappointed the artist.\nIf this document matches, respond in one line starting with MATCH and provide fields separated by ' | ' in this exact order:\nMATCH | Artwork title | Artist | Country of exhibition | Creation year | Exhibition date(s) with months and year | Venue name | Venue establishment year | Venue closure year | Theft year and recovery note | Quote about season of practice | Quote about initial poor reception. Keep it concise. If it does not match, reply exactly NO MATCH.\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT"
+    r = llm_query(prompt)
+    context_summaries = context_summaries + (r,)
+
+final_prompt = "Below are per-document extractions attempting to identify an artwork and venue that fit the puzzle. Choose the single best match that satisfies the clues, and answer ONLY with the 4-digit year the venue was closed. No words, no punctuation, just the year.\nEXTRACTIONS:\n" + "\n\n".join(context_summaries) + "\n\nAnswer with only the venue closure year (4 digits)."
+answer = llm_query(final_prompt)
+return_result(answer)

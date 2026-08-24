@@ -1,0 +1,125 @@
+({1447: 'context',
+  1453: 'str',
+  1462: 'llm_query',
+  1474: '.join',
+  1482: 'return_result'},
+ ('def',
+  1444,
+  ((),
+   ((('call', (1445,), -1, ()),
+     ('prim', 1446, 0),
+     ('def',
+      1448,
+      ((1470, 1449),
+       ((('unpack', (1464, 1450), 1470),
+         ('prim', 1451, 1),
+         ('call', (1452,), 80, (1450, 1451)),
+         ('prim',
+          1454,
+          'You are extracting facts for a difficult cross-document question. '
+          'Read the document below and ONLY extract information relevant to '
+          'the following scenario if present.\n'
+          '\n'
+          'Scenario to match:\n'
+          '- A sporting event took place between two teams in a year between '
+          '2000 and 2010 inclusive.\n'
+          '- In a year between 2015 and 2021, ahead of a title match, a '
+          'defender who had played in that earlier event wrote an online blog '
+          'for the website of the club he was then an assistant coach for, '
+          'recalling the event and what he remembered. In that blog he '
+          "indicated that the opposing team's players had all played at a high "
+          'level internationally and had gone to World Cups.\n'
+          '- Another individual who played for the opposing team mentioned '
+          'above joined that team in the late 1990s.\n'
+          "- In a retrospective article on that opposing team's official "
+          'website, it was stated that in the early 2000s, this individual was '
+          'brought on between minutes 45 and 55 to replace an injured player, '
+          'which showed his character.\n'
+          '\n'
+          'If the document clearly contains any of these pieces, extract them. '
+          'If not, skip.\n'
+          '\n'
+          'Provide output in this exact template if any relevant info is '
+          'present:\n'
+          'FOUND: yes\n'
+          'DOC_INDEX: <index number I give you>\n'
+          'TYPE: defender_blog or opposing_player_retro (use one or both if '
+          'both appear)\n'
+          'DEFENDER_NAME: <name or unknown>\n'
+          'ASSISTANT_COACH_CLUB: <club or unknown>\n'
+          'BLOG_YEAR: <year or unknown>\n'
+          'ORIGINAL_EVENT_YEAR: <year or range or unknown>\n'
+          'ORIGINAL_EVENT_TEAMS: <Team A vs Team B or unknown>\n'
+          'OPPOSING_TEAM: <name or unknown>\n'
+          'WORLD_CUP_NOTE_QUOTE: <short quote or paraphrase from doc '
+          "supporting 'players had gone to World Cups' or similar, or "
+          'unknown>\n'
+          '\n'
+          'OPPOSING_PLAYER_NAME: <name or unknown>\n'
+          'OPPOSING_PLAYER_TEAM: <team or unknown>\n'
+          'OPPOSING_PLAYER_JOIN_YEAR: <year or unknown>\n'
+          'RETRO_MINUTE_SUBBED_ON: <minute or unknown>\n'
+          'RETRO_MATCH_CONTEXT: <what match/competition or unknown>\n'
+          'RETRO_QUOTE: <short quote supporting the substitution detail or '
+          'unknown>\n'
+          '\n'
+          'If nothing relevant is present, respond with exactly:\n'
+          'FOUND: no\n'
+          'DOC_INDEX: <index number I give you>\n'
+          '\n'
+          'Document starts below.\n'
+          '\n'
+          'DOC_INDEX: '),
+         ('call', (1455,), 1453, (1452,)),
+         ('call', (1456,), 80, (1454, 1455)),
+         ('prim', 1457, '\nBEGIN_DOCUMENT\n'),
+         ('call', (1458,), 80, (1456, 1457)),
+         ('call', (1459,), 80, (1458, 1449)),
+         ('prim', 1460, '\nEND_DOCUMENT'),
+         ('call', (1461,), 80, (1459, 1460)),
+         ('call', (1463,), 1462, (1461,)),
+         ('call', (1465,), -1, (1463,)),
+         ('call', (1466,), 80, (1464, 1465)),
+         ('pack', 1471, (1466, 1452))),
+        (1471,)))),
+     ('pack', 1472, (1445, 1446)),
+     ('call', (1473,), 79, (1447,)),
+     ('call', (1469,), 1473, (1472, 1448)),
+     ('unpack', (1467, 1468), 1469),
+     ('prim',
+      1476,
+      'You are to determine the answer to a specific question using '
+      'extractions from multiple documents.\n'
+      '\n'
+      'Here are the per-document extractions:\n'
+      '\n'),
+     ('prim', 1475, '\n\n'),
+     ('call', (1477,), 1474, (1475, 1467)),
+     ('call', (1478,), 80, (1476, 1477)),
+     ('prim',
+      1479,
+      '\n'
+      '\n'
+      'Task:\n'
+      '1) Identify the defender who wrote an online blog ahead of a title '
+      'match (between 2015 and 2021) while serving as an assistant coach, '
+      'recalling an event from 2000–2010, and noting that the opposing team’s '
+      'players had gone to World Cups.\n'
+      '2) Using the matched context (including the opposing player’s '
+      'retrospective if present to validate the teams), determine precisely '
+      'which club this defender was an assistant coach of in 2018.\n'
+      '\n'
+      'Important:\n'
+      '- Give only the club name as the final answer (no extra words).\n'
+      '- If multiple candidates appear, choose the one that satisfies all '
+      'constraints and is explicitly tied to 2018 as the year he was an '
+      'assistant coach.\n'
+      '- If the defender’s blog year differs from 2018 but he is clearly '
+      'documented as an assistant coach of a club in 2018, answer with that '
+      'club.\n'
+      '- Do not explain your reasoning in the final answer; output only the '
+      'club name.\n'),
+     ('call', (1480,), 80, (1478, 1479)),
+     ('call', (1481,), 1462, (1480,)),
+     ('call', (1483,), 1482, (1481,))),
+    (1483,)))))

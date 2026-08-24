@@ -1,0 +1,20 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        result = image_patch.simple_query("Are there cars to the left of the person that wears a jacket?")
+    else:
+        car_patches = image_patch.find("car")
+        if len(car_patches) == 0:
+            result = "no"
+        else:
+            for person_patch in person_patches:
+                is_wearing_jacket = person_patch.simple_query("Is the person wearing a jacket?") == "yes"
+                if is_wearing_jacket:
+                    for car_patch in car_patches:
+                        if car_patch.horizontal_center < person_patch.horizontal_center:
+                            result = "yes"
+    return result

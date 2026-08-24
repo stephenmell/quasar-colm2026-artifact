@@ -1,0 +1,29 @@
+Stage: agentdojo_eval.exec_with_return
+Error: 1 validation error for Email
+recipients.0
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_type
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper_artifact/run_agentdojo.py", line 363, in main
+    exec_result = agentdojo_eval.exec_with_return(code, exec_globals, exec_locals)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/eval.py", line 22, in exec_with_return
+    exec(ast.unparse(a), globals, locals)
+  File "<string>", line 29, in <module>
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/tools/suite_common.py", line 40, in wrapper
+    return f(**kwargs_with_deps, **named_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/.venv/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 193, in send_email
+    return inbox.send_email(recipients, subject, body, parsed_attachments, cc, bcc)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/.venv/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 88, in send_email
+    new_email = Email(
+                ^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/.venv/lib/python3.12/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Email
+recipients.0
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_type

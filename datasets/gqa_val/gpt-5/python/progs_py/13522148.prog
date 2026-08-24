@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sweater_patches = image_patch.find("sweater")
+    # Question assumes only one sweater patch
+    if len(sweater_patches) == 0:
+        # If no sweater is found, query the image directly
+        return image_patch.simple_query("Does the sweater look black?")
+    for sweater_patch in sweater_patches:
+        if sweater_patch.verify_property("sweater", "black"):
+            return "yes"
+    return "no"

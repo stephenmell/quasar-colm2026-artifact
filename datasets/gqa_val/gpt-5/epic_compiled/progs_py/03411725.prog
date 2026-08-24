@@ -1,0 +1,26 @@
+# Are there any helmets to the right of the silver SUV?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    suv_patches = image_patch.find("suv")
+    if len(suv_patches) == 0:
+        result = image_patch.simple_query("Are there any helmets to the right of the silver SUV?")
+    else:
+        silver_suv_found = False
+        for suv_patch in suv_patches:
+            if suv_patch.verify_property("suv", "silver"):
+                silver_suv_found = True
+        if not silver_suv_found:
+            result = image_patch.simple_query("Are there any helmets to the right of the silver SUV?")
+        else:
+            helmet_patches = image_patch.find("helmet")
+            if len(helmet_patches) == 0:
+                result = "no"
+            else:
+                for suv_patch in suv_patches:
+                    if suv_patch.verify_property("suv", "silver"):
+                        for helmet_patch in helmet_patches:
+                            if helmet_patch.horizontal_center > suv_patch.horizontal_center:
+                                result = "yes"
+    return result

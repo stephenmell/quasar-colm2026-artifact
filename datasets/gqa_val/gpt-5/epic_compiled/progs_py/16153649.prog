@@ -1,0 +1,12 @@
+# Are there any tomatoes on the plate?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    result = "no"
+    if len(plate_patches) == 0:
+        result = image_patch.simple_query("Are there any tomatoes on the plate?")
+    else:
+        for plate_patch in plate_patches:
+            if plate_patch.exists("tomato"):
+                result = "yes"
+    return result

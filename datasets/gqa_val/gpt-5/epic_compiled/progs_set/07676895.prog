@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    girl_patches = None
+    helmet_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    girl_patches = image_patch.find('girl')
+    helmet_patches = image_patch.find('helmet')
+
+    def _if(girl_patches, helmet_patches, image_patch, result):
+        result = image_patch.simple_query('Is the girl to the left of a helmet?')
+        return (girl_patches, helmet_patches, image_patch, result)
+
+    def _else(girl_patches, helmet_patches, image_patch, result):
+        result = 'no'
+
+        def _for(girl_patch, girl_patches, helmet_patches, image_patch, result):
+
+            def _for(helmet_patch, girl_patches, helmet_patches, image_patch, result):
+
+                def _if(girl_patches, helmet_patches, image_patch, result):
+                    result = 'yes'
+                    return (girl_patches, helmet_patches, image_patch, result)
+                girl_patches, helmet_patches, image_patch, result = if_stmt(_if, None, girl_patch.horizontal_center < helmet_patch.horizontal_center, (girl_patches, helmet_patches, image_patch, result))
+                return (girl_patches, helmet_patches, image_patch, result)
+            girl_patches, helmet_patches, image_patch, result = for_stmt(_for, helmet_patches, (girl_patches, helmet_patches, image_patch, result))
+            return (girl_patches, helmet_patches, image_patch, result)
+        girl_patches, helmet_patches, image_patch, result = for_stmt(_for, girl_patches, (girl_patches, helmet_patches, image_patch, result))
+        return (girl_patches, helmet_patches, image_patch, result)
+    girl_patches, helmet_patches, image_patch, result = if_stmt(_if, _else, or_expr(len(girl_patches) == 0, len(helmet_patches) == 0), (girl_patches, helmet_patches, image_patch, result))
+    return result

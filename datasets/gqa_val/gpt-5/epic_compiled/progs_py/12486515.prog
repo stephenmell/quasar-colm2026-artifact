@@ -1,0 +1,43 @@
+# Are the people in the picture of different genders?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    resolved = False
+
+    # First, look for explicit gendered person categories
+    man_exists = image_patch.exists("man")
+    woman_exists = image_patch.exists("woman")
+    boy_exists = image_patch.exists("boy")
+    girl_exists = image_patch.exists("girl")
+
+    if (man_exists and woman_exists) or (man_exists and girl_exists) or (boy_exists and woman_exists) or (boy_exists and girl_exists):
+        result = "yes"
+        resolved = True
+
+    # If not resolved, analyze detected persons individually
+    if not resolved:
+        person_patches = image_patch.find("person")
+        if len(person_patches) >= 2:
+            male_found = False
+            female_found = False
+            for person_patch in person_patches:
+                gender = person_patch.best_text_match(("male", "female"))
+                if gender == "male":
+                    male_found = True
+                if gender == "female":
+                    female_found = True
+            if male_found and female_found:
+                result = "yes"
+            else:
+                result = "no"
+            resolved = True
+        elif len(person_patches) == 1:
+            # Only one person detected, cannot be different genders
+            result = "no"
+            resolved = True
+
+    # Fallback: ask the image directly if still unresolved (e.g., no persons detected)
+    if not resolved:
+        result = image_patch.simple_query("Are the people in the picture of different genders?")
+
+    return result

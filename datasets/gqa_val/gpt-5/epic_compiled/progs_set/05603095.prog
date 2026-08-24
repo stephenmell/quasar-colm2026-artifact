@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    brown_count = None
+    color = None
+    image_patch = None
+    result = None
+    shirt_patches = None
+    white_count = None
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find('shirt')
+
+    def _if(brown_count, color, image_patch, result, shirt_patches, white_count):
+        result = image_patch.simple_query('Is the shirt brown or white?')
+        return (brown_count, color, image_patch, result, shirt_patches, white_count)
+
+    def _else(brown_count, color, image_patch, result, shirt_patches, white_count):
+        brown_count = 0
+        white_count = 0
+
+        def _for(shirt_patch, brown_count, color, image_patch, shirt_patches, white_count):
+            color = shirt_patch.best_text_match(('brown', 'white'))
+
+            def _if(brown_count, color, image_patch, shirt_patches, white_count):
+                brown_count = brown_count + 1
+                return (brown_count, color, image_patch, shirt_patches, white_count)
+
+            def _else(brown_count, color, image_patch, shirt_patches, white_count):
+
+                def _if(brown_count, color, image_patch, shirt_patches, white_count):
+                    white_count = white_count + 1
+                    return (brown_count, color, image_patch, shirt_patches, white_count)
+                brown_count, color, image_patch, shirt_patches, white_count = if_stmt(_if, None, color == 'white', (brown_count, color, image_patch, shirt_patches, white_count))
+                return (brown_count, color, image_patch, shirt_patches, white_count)
+            brown_count, color, image_patch, shirt_patches, white_count = if_stmt(_if, _else, color == 'brown', (brown_count, color, image_patch, shirt_patches, white_count))
+            return (brown_count, color, image_patch, shirt_patches, white_count)
+        brown_count, color, image_patch, shirt_patches, white_count = for_stmt(_for, shirt_patches, (brown_count, color, image_patch, shirt_patches, white_count))
+
+        def _if(brown_count, color, image_patch, result, shirt_patches, white_count):
+            result = 'brown'
+            return (brown_count, color, image_patch, result, shirt_patches, white_count)
+
+        def _else(brown_count, color, image_patch, result, shirt_patches, white_count):
+            result = 'white'
+            return (brown_count, color, image_patch, result, shirt_patches, white_count)
+        brown_count, color, image_patch, result, shirt_patches, white_count = if_stmt(_if, _else, brown_count >= white_count, (brown_count, color, image_patch, result, shirt_patches, white_count))
+        return (brown_count, color, image_patch, result, shirt_patches, white_count)
+    brown_count, color, image_patch, result, shirt_patches, white_count = if_stmt(_if, _else, len(shirt_patches) == 0, (brown_count, color, image_patch, result, shirt_patches, white_count))
+    return result

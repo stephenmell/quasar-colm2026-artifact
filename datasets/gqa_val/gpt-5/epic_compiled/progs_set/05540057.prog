@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    child_candidates = None
+    image_patch = None
+    red_spear_patches = None
+    result = None
+    spear_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    spear_patches = image_patch.find('spear')
+    red_spear_patches = ()
+
+    def _for(spear_patch, image_patch, red_spear_patches, result, spear_patches):
+
+        def _if(image_patch, red_spear_patches, result, spear_patches):
+            red_spear_patches = red_spear_patches + (spear_patch,)
+            return (image_patch, red_spear_patches, result, spear_patches)
+        image_patch, red_spear_patches, result, spear_patches = if_stmt(_if, None, spear_patch.verify_property('spear', 'red'), (image_patch, red_spear_patches, result, spear_patches))
+        return (image_patch, red_spear_patches, result, spear_patches)
+    image_patch, red_spear_patches, result, spear_patches = for_stmt(_for, spear_patches, (image_patch, red_spear_patches, result, spear_patches))
+    child_candidates = ()
+    child_candidates = child_candidates + image_patch.find('children')
+    child_candidates = child_candidates + image_patch.find('child')
+    child_candidates = child_candidates + image_patch.find('kid')
+    child_candidates = child_candidates + image_patch.find('boy')
+    child_candidates = child_candidates + image_patch.find('girl')
+
+    def _if(child_candidates, image_patch, red_spear_patches, result, spear_patches):
+        result = image_patch.simple_query('Are there any children to the left of the red spear?')
+        return (child_candidates, image_patch, red_spear_patches, result, spear_patches)
+
+    def _else(child_candidates, image_patch, red_spear_patches, result, spear_patches):
+
+        def _for(child_patch, child_candidates, image_patch, red_spear_patches, result, spear_patches):
+
+            def _for(red_spear_patch, child_candidates, image_patch, red_spear_patches, result, spear_patches):
+
+                def _if(child_candidates, image_patch, red_spear_patches, result, spear_patches):
+                    result = 'yes'
+                    return (child_candidates, image_patch, red_spear_patches, result, spear_patches)
+                child_candidates, image_patch, red_spear_patches, result, spear_patches = if_stmt(_if, None, child_patch.horizontal_center < red_spear_patch.horizontal_center, (child_candidates, image_patch, red_spear_patches, result, spear_patches))
+                return (child_candidates, image_patch, red_spear_patches, result, spear_patches)
+            child_candidates, image_patch, red_spear_patches, result, spear_patches = for_stmt(_for, red_spear_patches, (child_candidates, image_patch, red_spear_patches, result, spear_patches))
+            return (child_candidates, image_patch, red_spear_patches, result, spear_patches)
+        child_candidates, image_patch, red_spear_patches, result, spear_patches = for_stmt(_for, child_candidates, (child_candidates, image_patch, red_spear_patches, result, spear_patches))
+        return (child_candidates, image_patch, red_spear_patches, result, spear_patches)
+    child_candidates, image_patch, red_spear_patches, result, spear_patches = if_stmt(_if, _else, or_expr(len(red_spear_patches) == 0, len(child_candidates) == 0), (child_candidates, image_patch, red_spear_patches, result, spear_patches))
+    return result

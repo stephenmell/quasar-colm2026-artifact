@@ -1,0 +1,56 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2377712",
+          [
+            0,
+            0,
+            500,
+            416
+          ]
+        ],
+        "blue container"
+      ],
+      [],
+      10072831921
+    ],
+    [
+      [
+        [
+          "2377712",
+          [
+            0,
+            0,
+            500,
+            416
+          ]
+        ],
+        "container"
+      ],
+      [],
+      7954921350
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2377712",
+          [
+            0,
+            0,
+            500,
+            416
+          ]
+        ],
+        "What type of furniture is to the right of the blue container?"
+      ],
+      "A bed.",
+      1592604848
+    ]
+  ],
+  "best_text_match": []
+}

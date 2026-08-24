@@ -1,0 +1,28 @@
+def execute_command(image) -> str:
+    image_patch = None
+    racket_exists = None
+    result = None
+    umbrella_exists = None
+    image_patch = ImagePatch(image)
+    umbrella_exists = False
+
+    def _for(name, image_patch, umbrella_exists):
+
+        def _if(image_patch, umbrella_exists):
+            umbrella_exists = True
+            return (image_patch, umbrella_exists)
+        image_patch, umbrella_exists = if_stmt(_if, None, image_patch.exists(name), (image_patch, umbrella_exists))
+        return (image_patch, umbrella_exists)
+    image_patch, umbrella_exists = for_stmt(_for, ('umbrella', 'umbrellas'), (image_patch, umbrella_exists))
+    racket_exists = False
+
+    def _for(name, image_patch, racket_exists, umbrella_exists):
+
+        def _if(image_patch, racket_exists, umbrella_exists):
+            racket_exists = True
+            return (image_patch, racket_exists, umbrella_exists)
+        image_patch, racket_exists, umbrella_exists = if_stmt(_if, None, image_patch.exists(name), (image_patch, racket_exists, umbrella_exists))
+        return (image_patch, racket_exists, umbrella_exists)
+    image_patch, racket_exists, umbrella_exists = for_stmt(_for, ('racket', 'tennis racket', 'rackets', 'tennis rackets'), (image_patch, racket_exists, umbrella_exists))
+    result = bool_to_yesno(and_expr(umbrella_exists, racket_exists))
+    return result

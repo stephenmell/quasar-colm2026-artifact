@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    candidate_answer = None
+    chosen_patches = None
+    cup_patches = None
+    glass_patches = None
+    image_patch = None
+    result = None
+    right_area_patch = None
+    water_glass_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    water_glass_patches = image_patch.find('water glass')
+    chosen_patches = ()
+
+    def _if(chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches):
+        chosen_patches = water_glass_patches
+        return (chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches)
+
+    def _else(chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches):
+        glass_patches = image_patch.find('glass')
+
+        def _if(chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches):
+            chosen_patches = glass_patches
+            return (chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches)
+
+        def _else(chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches):
+            cup_patches = image_patch.find('cup')
+            chosen_patches = cup_patches
+            return (chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches)
+        chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches = if_stmt(_if, _else, len(glass_patches) > 0, (chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches))
+        return (chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches)
+    chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches = if_stmt(_if, _else, len(water_glass_patches) > 0, (chosen_patches, cup_patches, glass_patches, image_patch, result, water_glass_patches))
+
+    def _if(candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches):
+        result = image_patch.simple_query('What is the food that is to the right of the water glass?')
+        return (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches)
+
+    def _else(candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches):
+
+        def _for(container_patch, candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches):
+            right_area_patch = image_patch.crop(container_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            candidate_answer = right_area_patch.simple_query('What is the food?')
+
+            def _if(candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches):
+                result = candidate_answer
+                return (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches)
+            candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches = if_stmt(_if, None, not_expr(result), (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches))
+            return (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches)
+        candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches = for_stmt(_for, chosen_patches, (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches))
+
+        def _if(candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches):
+            result = image_patch.simple_query('What is the food that is to the right of the water glass?')
+            return (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches)
+        candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches = if_stmt(_if, None, not_expr(result), (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches))
+        return (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches)
+    candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches = if_stmt(_if, _else, len(chosen_patches) == 0, (candidate_answer, chosen_patches, cup_patches, glass_patches, image_patch, result, right_area_patch, water_glass_patches))
+    return result

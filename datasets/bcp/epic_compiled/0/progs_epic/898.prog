@@ -1,0 +1,55 @@
+({1368: 'context', 1375: 'llm_query', 1382: '.join', 1390: 'return_result'},
+ ('def',
+  1366,
+  ((),
+   ((('call', (1367,), -1, ()),
+     ('def',
+      1369,
+      ((1377, 1370),
+       ((('prim', 1371, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (1372,), 80, (1371, 1370)),
+         ('prim',
+          1373,
+          '\n'
+          'END_DOCUMENT\n'
+          '\n'
+          'From this document, extract any explicitly mentioned facts from the '
+          'list below. If a fact is not present, omit it. Use one line per '
+          'item exactly as shown:\n'
+          '\n'
+          'Company: <company name>\n'
+          'Co-founders: <names>\n'
+          'Paternal leave 2018: <name and details>\n'
+          'Born same year as country won pre-2000 World Championship: <name; '
+          'birth year; country; sport/event; championship year>\n'
+          '2021 net worth between $430M and $440M: <name; estimate>\n'
+          'Valuation in September 2019: <figure and currency>\n'),
+         ('call', (1374,), 80, (1372, 1373)),
+         ('call', (1376,), 1375, (1374,)),
+         ('call', (1378,), -1, (1376,)),
+         ('call', (1379,), 80, (1377, 1378))),
+        (1379,)))),
+     ('call', (1381,), 79, (1368,)),
+     ('call', (1380,), 1381, (1367, 1369)),
+     ('prim', 1383, '\n---\n'),
+     ('call', (1384,), 1382, (1383, 1380)),
+     ('prim', 1385, 'Here are extracted snippets from the context:\n'),
+     ('call', (1386,), 80, (1385, 1384)),
+     ('prim',
+      1387,
+      '\n'
+      '\n'
+      'Using only the information above, identify the single company that '
+      'matches all three conditions:\n'
+      '1) One co-founder was born in the year their country won a pre-2000 '
+      'World Championship in a sport.\n'
+      '2) That co-founder took paternal leave in 2018.\n'
+      '3) As of 2021, the other co-founder had an estimated net worth between '
+      '$430 million and $440 million.\n'
+      '\n'
+      "Provide only that company's valuation in September 2019. Reply with "
+      'only the figure and currency (e.g., $3.2 billion).'),
+     ('call', (1388,), 80, (1386, 1387)),
+     ('call', (1389,), 1375, (1388,)),
+     ('call', (1391,), 1390, (1389,))),
+    (1391,)))))

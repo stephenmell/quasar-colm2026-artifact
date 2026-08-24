@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    answer = None
+    found = None
+    garment_names = None
+    garment_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    garment_names = ('trousers', 'pants', 'jeans')
+    garment_patches = ()
+
+    def _for(name, found, garment_names, garment_patches, image_patch, result):
+        found = image_patch.find(name)
+        garment_patches = garment_patches + found
+        return (found, garment_names, garment_patches, image_patch, result)
+    found, garment_names, garment_patches, image_patch, result = for_stmt(_for, garment_names, (found, garment_names, garment_patches, image_patch, result))
+
+    def _if(answer, found, garment_names, garment_patches, image_patch, result):
+        result = image_patch.simple_query('What color are the trousers?')
+        return (answer, found, garment_names, garment_patches, image_patch, result)
+
+    def _else(answer, found, garment_names, garment_patches, image_patch, result):
+
+        def _for(garment_patch, answer, found, garment_names, garment_patches, image_patch, result):
+            answer = garment_patch.simple_query('What color are the trousers?')
+
+            def _if(answer, found, garment_names, garment_patches, image_patch, result):
+                result = answer
+                return (answer, found, garment_names, garment_patches, image_patch, result)
+            answer, found, garment_names, garment_patches, image_patch, result = if_stmt(_if, None, answer, (answer, found, garment_names, garment_patches, image_patch, result))
+            return (answer, found, garment_names, garment_patches, image_patch, result)
+        answer, found, garment_names, garment_patches, image_patch, result = for_stmt(_for, garment_patches, (answer, found, garment_names, garment_patches, image_patch, result))
+
+        def _if(answer, found, garment_names, garment_patches, image_patch, result):
+            result = garment_patches[0].simple_query('What color are the trousers?')
+            return (answer, found, garment_names, garment_patches, image_patch, result)
+        answer, found, garment_names, garment_patches, image_patch, result = if_stmt(_if, None, not_expr(result), (answer, found, garment_names, garment_patches, image_patch, result))
+        return (answer, found, garment_names, garment_patches, image_patch, result)
+    answer, found, garment_names, garment_patches, image_patch, result = if_stmt(_if, _else, len(garment_patches) == 0, (answer, found, garment_names, garment_patches, image_patch, result))
+    return result

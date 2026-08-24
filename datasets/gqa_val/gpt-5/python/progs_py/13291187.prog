@@ -1,0 +1,43 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try to locate the person reflected in a mirror
+    mirror_patches = image_patch.find("mirror")
+    if len(mirror_patches) == 0:
+        # If no mirror is found, ask directly
+        return image_patch.simple_query("Are there any vans to the left of the person that is reflected in the mirror?")
+
+    # Find the largest person-like detection inside any mirror (most likely the reflected person)
+    target_center_x = None
+    best_area = -1
+    for mirror_patch in mirror_patches:
+        person_candidates = mirror_patch.find("person")
+        if len(person_candidates) == 0:
+            # Backups in case "person" splits as "man"/"woman"
+            person_candidates = mirror_patch.find("man") + mirror_patch.find("woman")
+        for p in person_candidates:
+            area = p.width * p.height
+            # Convert horizontal center from mirror-relative to image-absolute coords
+            center_abs_x = mirror_patch.left + p.horizontal_center
+            if area > best_area:
+                best_area = area
+                target_center_x = center_abs_x
+
+    # If we couldn't localize a reflected person inside a mirror, try asking directly per person patch
+    if target_center_x is None:
+        persons = image_patch.find("person")
+        for pp in persons:
+            if pp.simple_query("Is the person reflected in the mirror?") == "yes":
+                target_center_x = pp.horizontal_center
+                break
+        if target_center_x is None:
+            return image_patch.simple_query("Are there any vans to the left of the person that is reflected in the mirror?")
+
+    # Now check for vans to the left of the reflected person's center
+    van_patches = image_patch.find("van")
+    if len(van_patches) == 0:
+        return "no"
+    for van_patch in van_patches:
+        if van_patch.horizontal_center < target_center_x:
+            return "yes"
+    return "no"

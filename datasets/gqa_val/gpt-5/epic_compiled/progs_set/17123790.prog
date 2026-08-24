@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    all_small = None
+    cloud_patches = None
+    image_patch = None
+    is_small = None
+    result = None
+    image_patch = ImagePatch(image)
+    cloud_patches = image_patch.find('cloud')
+
+    def _if(all_small, cloud_patches, image_patch, is_small, result):
+        result = image_patch.simple_query('Are the clouds small?')
+        return (all_small, cloud_patches, image_patch, is_small, result)
+
+    def _else(all_small, cloud_patches, image_patch, is_small, result):
+        all_small = True
+
+        def _for(cloud_patch, all_small, cloud_patches, image_patch, is_small):
+            is_small = cloud_patch.verify_property('cloud', 'small')
+
+            def _if(all_small, cloud_patches, image_patch, is_small):
+                all_small = False
+                return (all_small, cloud_patches, image_patch, is_small)
+            all_small, cloud_patches, image_patch, is_small = if_stmt(_if, None, not_expr(is_small), (all_small, cloud_patches, image_patch, is_small))
+            return (all_small, cloud_patches, image_patch, is_small)
+        all_small, cloud_patches, image_patch, is_small = for_stmt(_for, cloud_patches, (all_small, cloud_patches, image_patch, is_small))
+        result = bool_to_yesno(all_small)
+        return (all_small, cloud_patches, image_patch, is_small, result)
+    all_small, cloud_patches, image_patch, is_small, result = if_stmt(_if, _else, len(cloud_patches) == 0, (all_small, cloud_patches, image_patch, is_small, result))
+    return result

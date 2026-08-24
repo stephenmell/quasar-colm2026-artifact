@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    found_playing = None
+    found_wearing_gloves = None
+    image_patch = None
+    is_playing = None
+    man_patches = None
+    result = None
+    wearing_gloves = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves):
+        result = image_patch.simple_query('Is the man that is playing wearing gloves?')
+        return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves)
+
+    def _else(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves):
+        found_playing = False
+        found_wearing_gloves = False
+
+        def _for(man_patch, found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves):
+            is_playing = man_patch.verify_property('man', 'playing')
+
+            def _if(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches):
+                is_playing = man_patch.simple_query('Is the man playing?') == 'yes'
+                return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches)
+            found_playing, found_wearing_gloves, image_patch, is_playing, man_patches = if_stmt(_if, None, not_expr(is_playing), (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches))
+
+            def _if(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves):
+
+                def _if(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches):
+                    found_playing = True
+                    return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches)
+                found_playing, found_wearing_gloves, image_patch, is_playing, man_patches = if_stmt(_if, None, not_expr(found_playing), (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches))
+                wearing_gloves = man_patch.simple_query('Is the man wearing gloves?') == 'yes'
+
+                def _if(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves):
+                    found_wearing_gloves = True
+                    return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves)
+                found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves = if_stmt(_if, None, wearing_gloves, (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves))
+                return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves)
+            found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves = if_stmt(_if, None, is_playing, (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves))
+            return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves)
+        found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves = for_stmt(_for, man_patches, (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, wearing_gloves))
+
+        def _if(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves):
+            result = bool_to_yesno(found_wearing_gloves)
+            return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves)
+
+        def _else(found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves):
+            result = image_patch.simple_query('Is the man that is playing wearing gloves?')
+            return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves)
+        found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves = if_stmt(_if, _else, found_playing, (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves))
+        return (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves)
+    found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves = if_stmt(_if, _else, len(man_patches) == 0, (found_playing, found_wearing_gloves, image_patch, is_playing, man_patches, result, wearing_gloves))
+    return result

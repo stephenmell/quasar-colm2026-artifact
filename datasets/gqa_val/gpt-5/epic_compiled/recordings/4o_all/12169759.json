@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2326760",
+          [
+            0,
+            0,
+            500,
+            332
+          ]
+        ],
+        "appliance"
+      ],
+      [],
+      7734748934
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2326760",
+          [
+            0,
+            0,
+            500,
+            332
+          ]
+        ],
+        "Is there a bed to the left of the appliance on the right side of the image?"
+      ],
+      "Yes.",
+      729435098
+    ]
+  ],
+  "best_text_match": []
+}

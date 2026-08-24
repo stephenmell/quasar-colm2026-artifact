@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    purse_patches = image_patch.find("purse")
+    # Question assumes only one purse patch
+
+    if len(purse_patches) == 0:
+        # If no purse is found, query the image directly
+        result = image_patch.simple_query("Is that purse to the left of a boy?")
+    else:
+        result = "no"
+        for purse_patch in purse_patches:
+            boy_patches = image_patch.find("boy")
+            for boy_patch in boy_patches:
+                if purse_patch.horizontal_center < boy_patch.horizontal_center:
+                    result = "yes"
+    return result

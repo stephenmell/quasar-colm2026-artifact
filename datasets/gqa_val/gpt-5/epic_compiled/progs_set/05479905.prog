@@ -1,0 +1,20 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_elephant = None
+    is_fence = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_fence = image_patch.exists('fence')
+
+    def _if(image_patch, is_fence):
+        is_fence = image_patch.exists('fences')
+        return (image_patch, is_fence)
+    image_patch, is_fence = if_stmt(_if, None, not_expr(is_fence), (image_patch, is_fence))
+    is_elephant = image_patch.exists('elephant')
+
+    def _if(image_patch, is_elephant, is_fence):
+        is_elephant = image_patch.exists('elephants')
+        return (image_patch, is_elephant, is_fence)
+    image_patch, is_elephant, is_fence = if_stmt(_if, None, not_expr(is_elephant), (image_patch, is_elephant, is_fence))
+    result = bool_to_yesno(or_expr(is_fence, is_elephant))
+    return result

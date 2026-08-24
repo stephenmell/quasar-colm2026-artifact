@@ -1,0 +1,61 @@
+def execute_command(image) -> str:
+    chosen_pizza = None
+    diff = None
+    image_patch = None
+    leftmost_woman = None
+    min_diff = None
+    pizza_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches):
+        result = image_patch.simple_query('Is the pizza to the right or to the left of the woman on the left?')
+        return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches)
+
+    def _else(chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches):
+        leftmost_woman = woman_patches[0]
+
+        def _for(woman_patch, image_patch, leftmost_woman, woman_patches):
+
+            def _if(image_patch, leftmost_woman, woman_patches):
+                leftmost_woman = woman_patch
+                return (image_patch, leftmost_woman, woman_patches)
+            image_patch, leftmost_woman, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center < leftmost_woman.horizontal_center, (image_patch, leftmost_woman, woman_patches))
+            return (image_patch, leftmost_woman, woman_patches)
+        image_patch, leftmost_woman, woman_patches = for_stmt(_for, woman_patches, (image_patch, leftmost_woman, woman_patches))
+        pizza_patches = image_patch.find('pizza')
+
+        def _if(chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches):
+            result = image_patch.simple_query('Is the pizza to the right or to the left of the woman on the left?')
+            return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches)
+
+        def _else(chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches):
+            chosen_pizza = pizza_patches[0]
+            min_diff = abs(chosen_pizza.horizontal_center - leftmost_woman.horizontal_center)
+
+            def _for(pizza_patch, chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches):
+                diff = abs(pizza_patch.horizontal_center - leftmost_woman.horizontal_center)
+
+                def _if(chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches):
+                    min_diff = diff
+                    chosen_pizza = pizza_patch
+                    return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches)
+                chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches = if_stmt(_if, None, diff < min_diff, (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches))
+                return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches)
+            chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches = for_stmt(_for, pizza_patches, (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, woman_patches))
+
+            def _if(chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches):
+                result = 'right'
+                return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches)
+
+            def _else(chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches):
+                result = 'left'
+                return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches)
+            chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches = if_stmt(_if, _else, chosen_pizza.horizontal_center > leftmost_woman.horizontal_center, (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches))
+            return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches)
+        chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches = if_stmt(_if, _else, len(pizza_patches) == 0, (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches))
+        return (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches)
+    chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (chosen_pizza, diff, image_patch, leftmost_woman, min_diff, pizza_patches, result, woman_patches))
+    return result

@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    found_color = None
+    image_patch = None
+    is_right = None
+    nightstand_patches = None
+    nightstand_patches_alt = None
+    nightstand_patches_primary = None
+    pillow_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    nightstand_patches_primary = image_patch.find('nightstand')
+    nightstand_patches_alt = image_patch.find('night stand')
+    nightstand_patches = nightstand_patches_primary + nightstand_patches_alt
+    pillow_patches = image_patch.find('pillow')
+    result = None
+
+    def _if(found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+        result = image_patch.simple_query('Is the pillow to the right of the nightstand brown or white?')
+        return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+
+    def _else(found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+        found_color = None
+
+        def _for(nightstand_patch, found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+
+            def _for(pillow_patch, found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+                is_right = pillow_patch.horizontal_center > nightstand_patch.horizontal_center
+
+                def _if(found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+
+                    def _if(found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+                        found_color = pillow_patch.best_text_match(('brown', 'white'))
+                        return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+                    found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result = if_stmt(_if, None, not_expr(found_color), (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result))
+                    return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+                found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result = if_stmt(_if, None, is_right, (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result))
+                return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+            found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result = for_stmt(_for, pillow_patches, (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result))
+            return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+        found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result = for_stmt(_for, nightstand_patches, (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result))
+
+        def _if(found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+            result = image_patch.simple_query('Is the pillow to the right of the nightstand brown or white?')
+            return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+
+        def _else(found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result):
+            result = found_color
+            return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+        found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result = if_stmt(_if, _else, not_expr(found_color), (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result))
+        return (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result)
+    found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result = if_stmt(_if, _else, or_expr(len(nightstand_patches) == 0, len(pillow_patches) == 0), (found_color, image_patch, is_right, nightstand_patches, nightstand_patches_alt, nightstand_patches_primary, pillow_patches, result))
+    return result

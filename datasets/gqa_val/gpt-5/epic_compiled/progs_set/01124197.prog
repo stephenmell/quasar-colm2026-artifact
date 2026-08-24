@@ -1,0 +1,18 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    tower_patches = None
+    wall_patches = None
+    image_patch = ImagePatch(image)
+    tower_patches = image_patch.find('tower')
+    wall_patches = image_patch.find('wall')
+
+    def _if(image_patch, result, tower_patches, wall_patches):
+        result = image_patch.simple_query('Does the tower have a different color than the wall?')
+        return (image_patch, result, tower_patches, wall_patches)
+
+    def _else(image_patch, result, tower_patches, wall_patches):
+        result = image_patch.simple_query('Does the tower have a different color than the wall?')
+        return (image_patch, result, tower_patches, wall_patches)
+    image_patch, result, tower_patches, wall_patches = if_stmt(_if, _else, or_expr(len(tower_patches) == 0, len(wall_patches) == 0), (image_patch, result, tower_patches, wall_patches))
+    return result

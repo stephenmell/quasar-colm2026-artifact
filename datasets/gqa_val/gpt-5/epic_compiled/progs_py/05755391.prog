@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find("train")
+    if len(train_patches) == 0:
+        result = image_patch.simple_query("Is the train maroon?")
+    else:
+        result = "no"
+        for train_patch in train_patches:
+            if train_patch.verify_property("train", "maroon"):
+                result = "yes"
+    return result

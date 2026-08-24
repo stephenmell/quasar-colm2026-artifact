@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    curtain_patches = None
+    image_patch = None
+    is_left = None
+    is_wood = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find('curtain')
+    table_patches = image_patch.find('table')
+
+    def _if(curtain_patches, image_patch, is_left, is_wood, result, table_patches):
+        result = image_patch.simple_query('Are the curtains to the left of the table made of wood?')
+        return (curtain_patches, image_patch, is_left, is_wood, result, table_patches)
+
+    def _else(curtain_patches, image_patch, is_left, is_wood, result, table_patches):
+        result = 'no'
+
+        def _for(table_patch, curtain_patches, image_patch, is_left, is_wood, result, table_patches):
+
+            def _for(curtain_patch, curtain_patches, image_patch, is_left, is_wood, result, table_patches):
+                is_left = curtain_patch.horizontal_center < table_patch.horizontal_center
+
+                def _if(curtain_patches, image_patch, is_left, is_wood, result, table_patches):
+                    is_wood = curtain_patch.verify_property('curtain', 'wood')
+
+                    def _if(curtain_patches, image_patch, is_left, is_wood, result, table_patches):
+                        is_wood = curtain_patch.verify_property('curtain', 'wooden')
+                        return (curtain_patches, image_patch, is_left, is_wood, result, table_patches)
+                    curtain_patches, image_patch, is_left, is_wood, result, table_patches = if_stmt(_if, None, not_expr(is_wood), (curtain_patches, image_patch, is_left, is_wood, result, table_patches))
+
+                    def _if(curtain_patches, image_patch, is_left, is_wood, result, table_patches):
+                        result = 'yes'
+                        return (curtain_patches, image_patch, is_left, is_wood, result, table_patches)
+                    curtain_patches, image_patch, is_left, is_wood, result, table_patches = if_stmt(_if, None, is_wood, (curtain_patches, image_patch, is_left, is_wood, result, table_patches))
+                    return (curtain_patches, image_patch, is_left, is_wood, result, table_patches)
+                curtain_patches, image_patch, is_left, is_wood, result, table_patches = if_stmt(_if, None, is_left, (curtain_patches, image_patch, is_left, is_wood, result, table_patches))
+                return (curtain_patches, image_patch, is_left, is_wood, result, table_patches)
+            curtain_patches, image_patch, is_left, is_wood, result, table_patches = for_stmt(_for, curtain_patches, (curtain_patches, image_patch, is_left, is_wood, result, table_patches))
+            return (curtain_patches, image_patch, is_left, is_wood, result, table_patches)
+        curtain_patches, image_patch, is_left, is_wood, result, table_patches = for_stmt(_for, table_patches, (curtain_patches, image_patch, is_left, is_wood, result, table_patches))
+        return (curtain_patches, image_patch, is_left, is_wood, result, table_patches)
+    curtain_patches, image_patch, is_left, is_wood, result, table_patches = if_stmt(_if, _else, or_expr(len(curtain_patches) == 0, len(table_patches) == 0), (curtain_patches, image_patch, is_left, is_wood, result, table_patches))
+    return result

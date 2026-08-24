@@ -1,0 +1,23 @@
+# Which kind of vegetable is to the right of the cheese?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cheese_patches = image_patch.find("cheese")
+    vegetable_patches = image_patch.find("vegetable")
+
+    if len(cheese_patches) == 0 or len(vegetable_patches) == 0:
+        result = image_patch.simple_query("Which kind of vegetable is to the right of the cheese?")
+    else:
+        best_patch = None
+        best_dx = None
+        for veg_patch in vegetable_patches:
+            for cheese_patch in cheese_patches:
+                dx = veg_patch.horizontal_center - cheese_patch.horizontal_center
+                if dx > 0:
+                    if best_dx is None or dx < best_dx:
+                        best_dx = dx
+                        best_patch = veg_patch
+        if best_patch:
+            result = best_patch.simple_query("Which kind of vegetable is this?")
+        else:
+            result = image_patch.simple_query("Which kind of vegetable is to the right of the cheese?")
+    return result

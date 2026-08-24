@@ -1,0 +1,54 @@
+def execute_command(image) -> str:
+    device_patches = None
+    image_patch = None
+    leftmost_device = None
+    pillow_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find('device')
+
+    def _if(device_patches, image_patch, leftmost_device, pillow_patches, result):
+        result = image_patch.simple_query('Is there a pillow to the right of the device on the left?')
+        return (device_patches, image_patch, leftmost_device, pillow_patches, result)
+
+    def _else(device_patches, image_patch, leftmost_device, pillow_patches, result):
+        leftmost_device = None
+
+        def _for(device_patch, device_patches, image_patch, leftmost_device):
+
+            def _if(device_patches, image_patch, leftmost_device):
+                leftmost_device = device_patch
+                return (device_patches, image_patch, leftmost_device)
+
+            def _else(device_patches, image_patch, leftmost_device):
+
+                def _if(device_patches, image_patch, leftmost_device):
+                    leftmost_device = device_patch
+                    return (device_patches, image_patch, leftmost_device)
+                device_patches, image_patch, leftmost_device = if_stmt(_if, None, device_patch.horizontal_center < leftmost_device.horizontal_center, (device_patches, image_patch, leftmost_device))
+                return (device_patches, image_patch, leftmost_device)
+            device_patches, image_patch, leftmost_device = if_stmt(_if, _else, leftmost_device is None, (device_patches, image_patch, leftmost_device))
+            return (device_patches, image_patch, leftmost_device)
+        device_patches, image_patch, leftmost_device = for_stmt(_for, device_patches, (device_patches, image_patch, leftmost_device))
+        pillow_patches = image_patch.find('pillow')
+
+        def _if(device_patches, image_patch, leftmost_device, pillow_patches, result):
+            result = 'no'
+            return (device_patches, image_patch, leftmost_device, pillow_patches, result)
+
+        def _else(device_patches, image_patch, leftmost_device, pillow_patches, result):
+            result = 'no'
+
+            def _for(pillow_patch, device_patches, image_patch, leftmost_device, pillow_patches, result):
+
+                def _if(device_patches, image_patch, leftmost_device, pillow_patches, result):
+                    result = 'yes'
+                    return (device_patches, image_patch, leftmost_device, pillow_patches, result)
+                device_patches, image_patch, leftmost_device, pillow_patches, result = if_stmt(_if, None, pillow_patch.horizontal_center > leftmost_device.horizontal_center, (device_patches, image_patch, leftmost_device, pillow_patches, result))
+                return (device_patches, image_patch, leftmost_device, pillow_patches, result)
+            device_patches, image_patch, leftmost_device, pillow_patches, result = for_stmt(_for, pillow_patches, (device_patches, image_patch, leftmost_device, pillow_patches, result))
+            return (device_patches, image_patch, leftmost_device, pillow_patches, result)
+        device_patches, image_patch, leftmost_device, pillow_patches, result = if_stmt(_if, _else, len(pillow_patches) == 0, (device_patches, image_patch, leftmost_device, pillow_patches, result))
+        return (device_patches, image_patch, leftmost_device, pillow_patches, result)
+    device_patches, image_patch, leftmost_device, pillow_patches, result = if_stmt(_if, _else, len(device_patches) == 0, (device_patches, image_patch, leftmost_device, pillow_patches, result))
+    return result

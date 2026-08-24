@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    all_short = None
+    image_patch = None
+    is_short = None
+    result = None
+    tree_patches = None
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find('tree')
+
+    def _if(all_short, image_patch, is_short, result, tree_patches):
+        result = image_patch.simple_query('Are the trees short?')
+        return (all_short, image_patch, is_short, result, tree_patches)
+
+    def _else(all_short, image_patch, is_short, result, tree_patches):
+        all_short = True
+
+        def _for(tree_patch, all_short, image_patch, is_short, tree_patches):
+            is_short = tree_patch.verify_property('tree', 'short')
+
+            def _if(all_short, image_patch, is_short, tree_patches):
+                all_short = False
+                return (all_short, image_patch, is_short, tree_patches)
+            all_short, image_patch, is_short, tree_patches = if_stmt(_if, None, not_expr(is_short), (all_short, image_patch, is_short, tree_patches))
+            return (all_short, image_patch, is_short, tree_patches)
+        all_short, image_patch, is_short, tree_patches = for_stmt(_for, tree_patches, (all_short, image_patch, is_short, tree_patches))
+        result = bool_to_yesno(all_short)
+        return (all_short, image_patch, is_short, result, tree_patches)
+    all_short, image_patch, is_short, result, tree_patches = if_stmt(_if, _else, len(tree_patches) == 0, (all_short, image_patch, is_short, result, tree_patches))
+    return result

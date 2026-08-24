@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        # If no animal is found, ask the question directly
+        return image_patch.simple_query("What kind of animal is it?")
+    # If multiple animals, pick the one closest to the center
+    center_x, center_y = image_patch.horizontal_center, image_patch.vertical_center
+    best_patch = None
+    best_dist = None
+    for patch in animal_patches:
+        dx = patch.horizontal_center - center_x
+        dy = patch.vertical_center - center_y
+        dist = dx * dx + dy * dy
+        if best_dist is None or dist < best_dist:
+            best_dist = dist
+            best_patch = patch
+    return best_patch.simple_query("What kind of animal is it?")

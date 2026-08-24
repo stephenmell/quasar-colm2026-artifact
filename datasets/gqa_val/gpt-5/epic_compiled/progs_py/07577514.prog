@@ -1,0 +1,5 @@
+# Which kind of furniture is it?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("Which kind of furniture is it?")
+    return result

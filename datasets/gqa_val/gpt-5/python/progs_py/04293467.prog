@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_elephant = image_patch.exists("elephant")
+    is_wolf = image_patch.exists("wolf")
+    if is_elephant and not is_wolf:
+        return "elephant"
+    if is_wolf and not is_elephant:
+        return "wolf"
+    return image_patch.best_text_match(["elephant", "wolf"])

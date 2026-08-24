@@ -1,0 +1,66 @@
+def execute_command(image) -> str:
+    all_headboard_patches = None
+    color_guess = None
+    first_hb = None
+    head_board_patches = None
+    headboard_patches = None
+    image_patch = None
+    is_metal = None
+    metal_color = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    head_board_patches = image_patch.find('head board')
+    headboard_patches = image_patch.find('headboard')
+    all_headboard_patches = head_board_patches + headboard_patches
+
+    def _if(all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+        result = image_patch.simple_query('Which color is the head board made of metal?')
+        return (all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+
+    def _else(all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+        metal_color = None
+
+        def _for(hb_patch, all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+            is_metal = hb_patch.verify_property('head board', 'metal')
+
+            def _if(all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+                is_metal = hb_patch.verify_property('headboard', 'metal')
+                return (all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+            all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, None, not_expr(is_metal), (all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+
+            def _if(all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+                is_metal = hb_patch.verify_property('head board', 'made of metal')
+                return (all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+            all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, None, not_expr(is_metal), (all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+
+            def _if(all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+                is_metal = hb_patch.verify_property('headboard', 'made of metal')
+                return (all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+            all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, None, not_expr(is_metal), (all_headboard_patches, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+
+            def _if(all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+                color_guess = hb_patch.simple_query('Which color is the head board?')
+
+                def _if(all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+                    metal_color = color_guess
+                    return (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+                all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, None, color_guess, (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+                return (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+            all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, None, is_metal, (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+            return (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+        all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = for_stmt(_for, all_headboard_patches, (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+
+        def _if(all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+            result = metal_color
+            return (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+        all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, None, metal_color, (all_headboard_patches, color_guess, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+
+        def _if(all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result):
+            first_hb = all_headboard_patches[0]
+            result = first_hb.simple_query('Which color is the head board made of metal?')
+            return (all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+        all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, None, not_expr(result), (all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+        return (all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result)
+    all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result = if_stmt(_if, _else, len(all_headboard_patches) == 0, (all_headboard_patches, color_guess, first_hb, head_board_patches, headboard_patches, image_patch, is_metal, metal_color, result))
+    return result

@@ -1,0 +1,49 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    found = False
+
+    # Check for fishermen directly with several synonyms
+    fisherman_terms = ("fisherman", "fishermen", "angler", "fishing man", "fishing person")
+    for term in fisherman_terms:
+        if not found:
+            if image_patch.exists(term):
+                found = True
+
+    # Heuristic: presence of both a person and a fishing rod
+    if not found:
+        if image_patch.exists("person") and image_patch.exists("fishing rod"):
+            found = True
+
+    # Fallback: ask the question directly and interpret common yes/no responses without using string methods
+    if not found:
+        direct_answer = image_patch.simple_query("Do you see any fishermen?")
+        ans_str = f"{direct_answer}"
+
+        yes_tokens = ("yes", "Yes", "YES", "y", "Y", "yeah", "Yeah", "YEAH", "yep", "Yep", "YEP", "sure", "Sure", "SURE", "true", "True", "TRUE")
+        no_tokens = ("no", "No", "NO", "n", "N", "nope", "Nope", "NOPE", "nah", "Nah", "NAH", "false", "False", "FALSE")
+
+        is_yes = False
+        for tok in yes_tokens:
+            if not is_yes:
+                if ans_str == tok:
+                    is_yes = True
+
+        is_no = False
+        for tok in no_tokens:
+            if not is_no:
+                if ans_str == tok:
+                    is_no = True
+
+        if is_yes:
+            found = True
+        else:
+            if is_no:
+                found = False
+
+    if found:
+        result = "yes"
+    else:
+        result = "no"
+    return result

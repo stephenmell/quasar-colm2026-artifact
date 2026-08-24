@@ -1,0 +1,12 @@
+# Does the tower have a different color than the wall?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tower_patches = image_patch.find("tower")
+    wall_patches = image_patch.find("wall")
+
+    if len(tower_patches) == 0 or len(wall_patches) == 0:
+        result = image_patch.simple_query("Does the tower have a different color than the wall?")
+    else:
+        # Comparative property involving two objects; ask directly on the full image
+        result = image_patch.simple_query("Does the tower have a different color than the wall?")
+    return result

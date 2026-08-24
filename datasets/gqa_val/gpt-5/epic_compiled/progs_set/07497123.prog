@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    helmet_patches = None
+    image_patch = None
+    is_green = None
+    result = None
+    image_patch = ImagePatch(image)
+    helmet_patches = image_patch.find('helmet')
+
+    def _if(helmet_patches, image_patch, is_green, result):
+        result = image_patch.simple_query('Is there a helmet in the picture that is not green?')
+        return (helmet_patches, image_patch, is_green, result)
+
+    def _else(helmet_patches, image_patch, is_green, result):
+        result = 'no'
+
+        def _for(helmet_patch, helmet_patches, image_patch, is_green, result):
+            is_green = helmet_patch.verify_property('helmet', 'green')
+
+            def _if(helmet_patches, image_patch, is_green, result):
+                result = 'yes'
+                return (helmet_patches, image_patch, is_green, result)
+            helmet_patches, image_patch, is_green, result = if_stmt(_if, None, not_expr(is_green), (helmet_patches, image_patch, is_green, result))
+            return (helmet_patches, image_patch, is_green, result)
+        helmet_patches, image_patch, is_green, result = for_stmt(_for, helmet_patches, (helmet_patches, image_patch, is_green, result))
+        return (helmet_patches, image_patch, is_green, result)
+    helmet_patches, image_patch, is_green, result = if_stmt(_if, _else, len(helmet_patches) == 0, (helmet_patches, image_patch, is_green, result))
+    return result

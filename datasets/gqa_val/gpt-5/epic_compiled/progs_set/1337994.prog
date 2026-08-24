@@ -1,0 +1,50 @@
+def execute_command(image) -> str:
+    helmet_patches = None
+    image_patch = None
+    man_patches = None
+    result = None
+    white_helmet_patches = None
+    image_patch = ImagePatch(image)
+    helmet_patches = image_patch.find('helmet')
+    white_helmet_patches = ()
+
+    def _for(helmet_patch, helmet_patches, image_patch, white_helmet_patches):
+
+        def _if(helmet_patches, image_patch, white_helmet_patches):
+            white_helmet_patches = white_helmet_patches + (helmet_patch,)
+            return (helmet_patches, image_patch, white_helmet_patches)
+        helmet_patches, image_patch, white_helmet_patches = if_stmt(_if, None, helmet_patch.verify_property('helmet', 'white'), (helmet_patches, image_patch, white_helmet_patches))
+        return (helmet_patches, image_patch, white_helmet_patches)
+    helmet_patches, image_patch, white_helmet_patches = for_stmt(_for, helmet_patches, (helmet_patches, image_patch, white_helmet_patches))
+
+    def _if(helmet_patches, image_patch, man_patches, result, white_helmet_patches):
+        result = image_patch.simple_query('Are there men to the left of the white helmet?')
+        return (helmet_patches, image_patch, man_patches, result, white_helmet_patches)
+
+    def _else(helmet_patches, image_patch, man_patches, result, white_helmet_patches):
+        man_patches = image_patch.find('man')
+
+        def _if(helmet_patches, image_patch, man_patches, result, white_helmet_patches):
+            result = 'no'
+            return (helmet_patches, image_patch, man_patches, result, white_helmet_patches)
+
+        def _else(helmet_patches, image_patch, man_patches, result, white_helmet_patches):
+            result = 'no'
+
+            def _for(white_helmet_patch, helmet_patches, image_patch, man_patches, result, white_helmet_patches):
+
+                def _for(man_patch, helmet_patches, image_patch, man_patches, result, white_helmet_patches):
+
+                    def _if(helmet_patches, image_patch, man_patches, result, white_helmet_patches):
+                        result = 'yes'
+                        return (helmet_patches, image_patch, man_patches, result, white_helmet_patches)
+                    helmet_patches, image_patch, man_patches, result, white_helmet_patches = if_stmt(_if, None, man_patch.horizontal_center < white_helmet_patch.horizontal_center, (helmet_patches, image_patch, man_patches, result, white_helmet_patches))
+                    return (helmet_patches, image_patch, man_patches, result, white_helmet_patches)
+                helmet_patches, image_patch, man_patches, result, white_helmet_patches = for_stmt(_for, man_patches, (helmet_patches, image_patch, man_patches, result, white_helmet_patches))
+                return (helmet_patches, image_patch, man_patches, result, white_helmet_patches)
+            helmet_patches, image_patch, man_patches, result, white_helmet_patches = for_stmt(_for, white_helmet_patches, (helmet_patches, image_patch, man_patches, result, white_helmet_patches))
+            return (helmet_patches, image_patch, man_patches, result, white_helmet_patches)
+        helmet_patches, image_patch, man_patches, result, white_helmet_patches = if_stmt(_if, _else, len(man_patches) == 0, (helmet_patches, image_patch, man_patches, result, white_helmet_patches))
+        return (helmet_patches, image_patch, man_patches, result, white_helmet_patches)
+    helmet_patches, image_patch, man_patches, result, white_helmet_patches = if_stmt(_if, _else, len(white_helmet_patches) == 0, (helmet_patches, image_patch, man_patches, result, white_helmet_patches))
+    return result

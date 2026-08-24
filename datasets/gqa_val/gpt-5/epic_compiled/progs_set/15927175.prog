@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    furniture_patches = None
+    furniture_types = None
+    image_patch = None
+    is_wood = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    furniture_types = ('chair', 'table', 'desk', 'cabinet', 'dresser', 'bench', 'shelf', 'sofa', 'couch', 'stool', 'bed', 'nightstand', 'bookshelf', 'wardrobe', 'armchair', 'dining table', 'coffee table', 'end table', 'tv stand')
+
+    def _for(furniture_name, furniture_patches, furniture_types, image_patch, is_wood, result):
+        furniture_patches = image_patch.find(furniture_name)
+
+        def _for(furniture_patch, furniture_patches, furniture_types, image_patch, is_wood, result):
+            is_wood = furniture_patch.verify_property(furniture_name, 'wood')
+
+            def _if(furniture_patches, furniture_types, image_patch, is_wood, result):
+                is_wood = furniture_patch.verify_property(furniture_name, 'wooden')
+                return (furniture_patches, furniture_types, image_patch, is_wood, result)
+            furniture_patches, furniture_types, image_patch, is_wood, result = if_stmt(_if, None, not_expr(is_wood), (furniture_patches, furniture_types, image_patch, is_wood, result))
+
+            def _if(furniture_patches, furniture_types, image_patch, is_wood, result):
+                is_wood = furniture_patch.verify_property(furniture_name, 'made of wood')
+                return (furniture_patches, furniture_types, image_patch, is_wood, result)
+            furniture_patches, furniture_types, image_patch, is_wood, result = if_stmt(_if, None, not_expr(is_wood), (furniture_patches, furniture_types, image_patch, is_wood, result))
+
+            def _if(furniture_patches, furniture_types, image_patch, is_wood, result):
+
+                def _if(furniture_patches, furniture_types, image_patch, is_wood, result):
+                    result = furniture_patch.simple_query('What is the piece of furniture that is made of wood called?')
+                    return (furniture_patches, furniture_types, image_patch, is_wood, result)
+                furniture_patches, furniture_types, image_patch, is_wood, result = if_stmt(_if, None, not_expr(result), (furniture_patches, furniture_types, image_patch, is_wood, result))
+                return (furniture_patches, furniture_types, image_patch, is_wood, result)
+            furniture_patches, furniture_types, image_patch, is_wood, result = if_stmt(_if, None, is_wood, (furniture_patches, furniture_types, image_patch, is_wood, result))
+            return (furniture_patches, furniture_types, image_patch, is_wood, result)
+        furniture_patches, furniture_types, image_patch, is_wood, result = for_stmt(_for, furniture_patches, (furniture_patches, furniture_types, image_patch, is_wood, result))
+        return (furniture_patches, furniture_types, image_patch, is_wood, result)
+    furniture_patches, furniture_types, image_patch, is_wood, result = for_stmt(_for, furniture_types, (furniture_patches, furniture_types, image_patch, is_wood, result))
+
+    def _if(furniture_patches, furniture_types, image_patch, is_wood, result):
+        result = image_patch.simple_query('What is the piece of furniture that is made of wood called?')
+        return (furniture_patches, furniture_types, image_patch, is_wood, result)
+    furniture_patches, furniture_types, image_patch, is_wood, result = if_stmt(_if, None, not_expr(result), (furniture_patches, furniture_types, image_patch, is_wood, result))
+    return result

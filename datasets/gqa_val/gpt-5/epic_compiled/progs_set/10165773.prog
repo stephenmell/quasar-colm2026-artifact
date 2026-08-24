@@ -1,0 +1,74 @@
+def execute_command(image) -> str:
+    food_patches = None
+    has_tie = None
+    image_patch = None
+    man_patches = None
+    result = None
+    tie_man_found = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+
+    def _if(food_patches, has_tie, image_patch, man_patches, result, tie_man_found):
+        result = image_patch.simple_query('Is there any food to the left of the man with the necktie?')
+        return (food_patches, has_tie, image_patch, man_patches, result, tie_man_found)
+
+    def _else(food_patches, has_tie, image_patch, man_patches, result, tie_man_found):
+        tie_man_found = False
+
+        def _for(man_patch, food_patches, has_tie, image_patch, man_patches, result, tie_man_found):
+            has_tie = False
+
+            def _if(has_tie, image_patch, man_patches, result, tie_man_found):
+                has_tie = True
+                return (has_tie, image_patch, man_patches, result, tie_man_found)
+
+            def _else(has_tie, image_patch, man_patches, result, tie_man_found):
+
+                def _if(has_tie, image_patch, man_patches, result, tie_man_found):
+                    has_tie = True
+                    return (has_tie, image_patch, man_patches, result, tie_man_found)
+
+                def _else(has_tie, image_patch, man_patches, result, tie_man_found):
+
+                    def _if(has_tie, image_patch, man_patches, result, tie_man_found):
+                        has_tie = True
+                        return (has_tie, image_patch, man_patches, result, tie_man_found)
+
+                    def _else(has_tie, image_patch, man_patches, result, tie_man_found):
+
+                        def _if(has_tie, image_patch, man_patches, result, tie_man_found):
+                            has_tie = True
+                            return (has_tie, image_patch, man_patches, result, tie_man_found)
+                        has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, None, man_patch.verify_property('man', 'tie'), (has_tie, image_patch, man_patches, result, tie_man_found))
+                        return (has_tie, image_patch, man_patches, result, tie_man_found)
+                    has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, _else, man_patch.verify_property('man', 'necktie'), (has_tie, image_patch, man_patches, result, tie_man_found))
+                    return (has_tie, image_patch, man_patches, result, tie_man_found)
+                has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, _else, man_patch.exists('tie'), (has_tie, image_patch, man_patches, result, tie_man_found))
+                return (has_tie, image_patch, man_patches, result, tie_man_found)
+            has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, _else, man_patch.exists('necktie'), (has_tie, image_patch, man_patches, result, tie_man_found))
+
+            def _if(food_patches, has_tie, image_patch, man_patches, result, tie_man_found):
+                tie_man_found = True
+                food_patches = image_patch.find('food')
+
+                def _for(food_patch, food_patches, has_tie, image_patch, man_patches, result, tie_man_found):
+
+                    def _if(food_patches, has_tie, image_patch, man_patches, result, tie_man_found):
+                        result = 'yes'
+                        return (food_patches, has_tie, image_patch, man_patches, result, tie_man_found)
+                    food_patches, has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, None, food_patch.horizontal_center < man_patch.horizontal_center, (food_patches, has_tie, image_patch, man_patches, result, tie_man_found))
+                    return (food_patches, has_tie, image_patch, man_patches, result, tie_man_found)
+                food_patches, has_tie, image_patch, man_patches, result, tie_man_found = for_stmt(_for, food_patches, (food_patches, has_tie, image_patch, man_patches, result, tie_man_found))
+                return (food_patches, has_tie, image_patch, man_patches, result, tie_man_found)
+            food_patches, has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, None, has_tie, (food_patches, has_tie, image_patch, man_patches, result, tie_man_found))
+            return (food_patches, has_tie, image_patch, man_patches, result, tie_man_found)
+        food_patches, has_tie, image_patch, man_patches, result, tie_man_found = for_stmt(_for, man_patches, (food_patches, has_tie, image_patch, man_patches, result, tie_man_found))
+
+        def _if(food_patches, has_tie, image_patch, man_patches, result, tie_man_found):
+            result = image_patch.simple_query('Is there any food to the left of the man with the necktie?')
+            return (food_patches, has_tie, image_patch, man_patches, result, tie_man_found)
+        food_patches, has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, None, not_expr(tie_man_found), (food_patches, has_tie, image_patch, man_patches, result, tie_man_found))
+        return (food_patches, has_tie, image_patch, man_patches, result, tie_man_found)
+    food_patches, has_tie, image_patch, man_patches, result, tie_man_found = if_stmt(_if, _else, len(man_patches) == 0, (food_patches, has_tie, image_patch, man_patches, result, tie_man_found))
+    return result

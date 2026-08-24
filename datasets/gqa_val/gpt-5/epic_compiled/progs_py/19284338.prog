@@ -1,0 +1,29 @@
+# Is the wood bowl to the left or to the right of the stove?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Find stove
+    stove_patches = image_patch.find("stove")
+
+    # Find wood bowl directly, else find a bowl with wooden property
+    wood_bowl_patches = image_patch.find("wood bowl")
+    wood_bowl_patch = None
+    if len(wood_bowl_patches) > 0:
+        wood_bowl_patch = wood_bowl_patches[0]
+    else:
+        bowl_patches = image_patch.find("bowl")
+        for bowl_patch in bowl_patches:
+            if bowl_patch.verify_property("bowl", "wood"):
+                wood_bowl_patch = bowl_patch
+
+    # If either object is missing, ask the question directly
+    if len(stove_patches) == 0 or not wood_bowl_patch:
+        result = image_patch.simple_query("Is the wood bowl to the left or to the right of the stove?")
+    else:
+        stove_patch = stove_patches[0]
+        if wood_bowl_patch.horizontal_center < stove_patch.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    tennis_ball_patches = image_patch.find("tennis ball")
+    if len(tennis_ball_patches) == 0:
+        result = image_patch.simple_query("Are there boys to the right of the tennis ball that is green?")
+    else:
+        has_green_tennis_ball = False
+        for tb_patch in tennis_ball_patches:
+            if tb_patch.verify_property("tennis ball", "green"):
+                has_green_tennis_ball = True
+        if not has_green_tennis_ball:
+            result = image_patch.simple_query("Are there boys to the right of the tennis ball that is green?")
+        else:
+            boy_patches = image_patch.find("boy")
+            if len(boy_patches) == 0:
+                result = "no"
+            else:
+                for tb_patch in tennis_ball_patches:
+                    if tb_patch.verify_property("tennis ball", "green"):
+                        for boy_patch in boy_patches:
+                            if boy_patch.horizontal_center > tb_patch.horizontal_center:
+                                result = "yes"
+    return result

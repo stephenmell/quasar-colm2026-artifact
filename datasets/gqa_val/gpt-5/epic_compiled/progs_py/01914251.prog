@@ -1,0 +1,27 @@
+# Is the person to the left of the brown bag?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    person_patches = image_patch.find("person")
+    bag_patches = image_patch.find("bag")
+
+    brown_bag_patches = ()
+    for bag_patch in bag_patches:
+        is_brown = bag_patch.verify_property("bag", "brown")
+        if is_brown:
+            brown_bag_patches = brown_bag_patches + (bag_patch,)
+
+    if len(brown_bag_patches) == 0:
+        direct_brown_bag_patches = image_patch.find("brown bag")
+        if len(direct_brown_bag_patches) > 0:
+            brown_bag_patches = direct_brown_bag_patches
+
+    if len(person_patches) == 0 or len(brown_bag_patches) == 0:
+        result = image_patch.simple_query("Is the person to the left of the brown bag?")
+    else:
+        for person_patch in person_patches:
+            for brown_bag_patch in brown_bag_patches:
+                if person_patch.horizontal_center < brown_bag_patch.horizontal_center:
+                    result = "yes"
+    return result

@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_yellow = None
+    result = None
+    sauce_exists = None
+    sauce_patches = None
+    image_patch = ImagePatch(image)
+    sauce_exists = image_patch.exists('sauce')
+
+    def _if(image_patch, is_yellow, result, sauce_exists, sauce_patches):
+        result = image_patch.simple_query('Does the sauce look yellow?')
+        return (image_patch, is_yellow, result, sauce_exists, sauce_patches)
+
+    def _else(image_patch, is_yellow, result, sauce_exists, sauce_patches):
+        sauce_patches = image_patch.find('sauce')
+        is_yellow = False
+
+        def _for(sauce_patch, image_patch, is_yellow, sauce_exists, sauce_patches):
+
+            def _if(image_patch, is_yellow, sauce_exists, sauce_patches):
+                is_yellow = True
+                return (image_patch, is_yellow, sauce_exists, sauce_patches)
+            image_patch, is_yellow, sauce_exists, sauce_patches = if_stmt(_if, None, sauce_patch.verify_property('sauce', 'yellow'), (image_patch, is_yellow, sauce_exists, sauce_patches))
+            return (image_patch, is_yellow, sauce_exists, sauce_patches)
+        image_patch, is_yellow, sauce_exists, sauce_patches = for_stmt(_for, sauce_patches, (image_patch, is_yellow, sauce_exists, sauce_patches))
+        result = bool_to_yesno(is_yellow)
+        return (image_patch, is_yellow, result, sauce_exists, sauce_patches)
+    image_patch, is_yellow, result, sauce_exists, sauce_patches = if_stmt(_if, _else, not_expr(sauce_exists), (image_patch, is_yellow, result, sauce_exists, sauce_patches))
+    return result

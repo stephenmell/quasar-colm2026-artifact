@@ -1,0 +1,10 @@
+{
+  "result": {
+    "_possibilities": [
+      "no",
+      "No, there is no bench that is not made of wood.",
+      "Yes, there is a bench that is not made of wood."
+    ]
+  },
+  "time_ns": 9184852414
+}

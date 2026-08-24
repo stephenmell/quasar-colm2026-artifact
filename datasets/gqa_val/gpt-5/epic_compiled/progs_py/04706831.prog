@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bus_exists = image_patch.exists("bus")
+    if not bus_exists:
+        result = image_patch.simple_query("Does that bus look white?")
+    else:
+        bus_patches = image_patch.find("bus")
+        result = "no"
+        for bus_patch in bus_patches:
+            is_white = bus_patch.verify_property("bus", "white")
+            if is_white:
+                result = "yes"
+    return result

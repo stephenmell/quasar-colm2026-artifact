@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    toilet_patches = image_patch.find("toilet")
+    if len(toilet_patches) == 0:
+        result = image_patch.simple_query("Do you see any bags to the left of the toilet made of porcelain?")
+    else:
+        result = "no"
+        for toilet_patch in toilet_patches:
+            is_porcelain = toilet_patch.verify_property("toilet", "porcelain")
+            if is_porcelain:
+                bag_patches = image_patch.find("bag")
+                for bag_patch in bag_patches:
+                    if bag_patch.horizontal_center < toilet_patch.horizontal_center:
+                        result = "yes"
+    return result

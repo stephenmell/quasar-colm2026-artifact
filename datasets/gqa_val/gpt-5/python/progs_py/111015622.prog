@@ -1,0 +1,30 @@
+# Do you see bottles to the left of the utensil that looks silver?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    utensil_patches = image_patch.find("utensil")
+    if len(utensil_patches) == 0:
+        # If no utensil is found, ask directly
+        return image_patch.simple_query("Do you see bottles to the left of the utensil that looks silver?")
+
+    # Find the utensil that looks silver
+    silver_utensil = None
+    for utensil_patch in utensil_patches:
+        is_silver = utensil_patch.verify_property("utensil", "silver") or (
+            utensil_patch.simple_query("Does the utensil look silver?") == "yes"
+        )
+        if is_silver:
+            silver_utensil = utensil_patch
+            break
+
+    if silver_utensil is None:
+        # If we can't identify a silver utensil, ask directly
+        return image_patch.simple_query("Do you see bottles to the left of the utensil that looks silver?")
+
+    bottle_patches = image_patch.find("bottle")
+    if len(bottle_patches) == 0:
+        return "no"
+
+    for bottle_patch in bottle_patches:
+        if bottle_patch.horizontal_center < silver_utensil.horizontal_center:
+            return "yes"
+    return "no"

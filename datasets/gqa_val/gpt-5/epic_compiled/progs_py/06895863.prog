@@ -1,0 +1,7 @@
+# Are there helmets or clocks?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_helmet = image_patch.exists("helmet")
+    is_clock = image_patch.exists("clock")
+    result = bool_to_yesno(is_helmet or is_clock)
+    return result

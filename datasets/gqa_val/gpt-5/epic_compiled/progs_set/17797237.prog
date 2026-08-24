@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    fence_patches = None
+    horse_patches = None
+    image_patch = None
+    is_black = None
+    result = None
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find('fence')
+
+    def _if(fence_patches, horse_patches, image_patch, is_black, result):
+        result = image_patch.simple_query('Do you see horses to the left of the fence that looks black?')
+        return (fence_patches, horse_patches, image_patch, is_black, result)
+
+    def _else(fence_patches, horse_patches, image_patch, is_black, result):
+        result = 'no'
+
+        def _for(fence_patch, fence_patches, horse_patches, image_patch, is_black, result):
+            is_black = fence_patch.verify_property('fence', 'black')
+
+            def _if(fence_patches, horse_patches, image_patch, is_black, result):
+                horse_patches = image_patch.find('horse')
+
+                def _for(horse_patch, fence_patches, horse_patches, image_patch, is_black, result):
+
+                    def _if(fence_patches, horse_patches, image_patch, is_black, result):
+                        result = 'yes'
+                        return (fence_patches, horse_patches, image_patch, is_black, result)
+                    fence_patches, horse_patches, image_patch, is_black, result = if_stmt(_if, None, horse_patch.horizontal_center < fence_patch.horizontal_center, (fence_patches, horse_patches, image_patch, is_black, result))
+                    return (fence_patches, horse_patches, image_patch, is_black, result)
+                fence_patches, horse_patches, image_patch, is_black, result = for_stmt(_for, horse_patches, (fence_patches, horse_patches, image_patch, is_black, result))
+                return (fence_patches, horse_patches, image_patch, is_black, result)
+            fence_patches, horse_patches, image_patch, is_black, result = if_stmt(_if, None, is_black, (fence_patches, horse_patches, image_patch, is_black, result))
+            return (fence_patches, horse_patches, image_patch, is_black, result)
+        fence_patches, horse_patches, image_patch, is_black, result = for_stmt(_for, fence_patches, (fence_patches, horse_patches, image_patch, is_black, result))
+        return (fence_patches, horse_patches, image_patch, is_black, result)
+    fence_patches, horse_patches, image_patch, is_black, result = if_stmt(_if, _else, len(fence_patches) == 0, (fence_patches, horse_patches, image_patch, is_black, result))
+    return result

@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    counter_aliases = ("kitchen counter", "counter", "countertop")
+    counter_patches = ()
+    for name in counter_aliases:
+        found_patches = image_patch.find(name)
+        counter_patches = counter_patches + found_patches
+    if len(counter_patches) == 0:
+        result = image_patch.simple_query("Is the kitchen counter made of marble?")
+    else:
+        marble_found = False
+        for counter_patch in counter_patches:
+            for alias in counter_aliases:
+                if counter_patch.verify_property(alias, "marble"):
+                    marble_found = True
+            if not marble_found:
+                answer = counter_patch.simple_query("Is the counter made of marble?")
+                if answer == "yes":
+                    marble_found = True
+        result = bool_to_yesno(marble_found)
+    return result

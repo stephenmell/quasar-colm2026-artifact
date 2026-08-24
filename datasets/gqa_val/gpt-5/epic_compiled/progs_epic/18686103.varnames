@@ -1,0 +1,13 @@
+{16: 'or',
+ 75: 'execute_command',
+ 76: 'image',
+ 77: 'ImagePatch',
+ 78: 'image_patch',
+ 79: '.exists',
+ 80: '#implicit#',
+ 81: 'is_lemon',
+ 82: '#implicit#',
+ 83: 'is_fork',
+ 84: 'bool_to_yesno',
+ 85: '#implicit#',
+ 86: 'result'}

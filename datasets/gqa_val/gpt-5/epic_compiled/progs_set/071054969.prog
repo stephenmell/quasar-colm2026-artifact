@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    car_found = None
+    car_terms = None
+    image_patch = None
+    plane_found = None
+    plane_terms = None
+    result = None
+    image_patch = ImagePatch(image)
+    plane_terms = ('plane', 'airplane')
+    car_terms = ('car',)
+    plane_found = False
+
+    def _for(term, car_terms, image_patch, plane_found, plane_terms):
+
+        def _if(car_terms, image_patch, plane_found, plane_terms):
+            plane_found = True
+            return (car_terms, image_patch, plane_found, plane_terms)
+        car_terms, image_patch, plane_found, plane_terms = if_stmt(_if, None, image_patch.exists(term), (car_terms, image_patch, plane_found, plane_terms))
+        return (car_terms, image_patch, plane_found, plane_terms)
+    car_terms, image_patch, plane_found, plane_terms = for_stmt(_for, plane_terms, (car_terms, image_patch, plane_found, plane_terms))
+    car_found = False
+
+    def _for(term, car_found, car_terms, image_patch, plane_found, plane_terms):
+
+        def _if(car_found, car_terms, image_patch, plane_found, plane_terms):
+            car_found = True
+            return (car_found, car_terms, image_patch, plane_found, plane_terms)
+        car_found, car_terms, image_patch, plane_found, plane_terms = if_stmt(_if, None, image_patch.exists(term), (car_found, car_terms, image_patch, plane_found, plane_terms))
+        return (car_found, car_terms, image_patch, plane_found, plane_terms)
+    car_found, car_terms, image_patch, plane_found, plane_terms = for_stmt(_for, car_terms, (car_found, car_terms, image_patch, plane_found, plane_terms))
+    result = bool_to_yesno(or_expr(plane_found, car_found))
+    return result

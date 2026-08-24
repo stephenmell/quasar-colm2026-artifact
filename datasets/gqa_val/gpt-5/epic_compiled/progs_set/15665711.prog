@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    car_labels = None
+    image_patch = None
+    is_car_present = None
+    is_white_words = None
+    result = None
+    word_labels = None
+    word_patches = None
+    image_patch = ImagePatch(image)
+    is_white_words = False
+    word_labels = ('word', 'words', 'text', 'letters')
+
+    def _for(word_label, image_patch, is_white_words, word_labels, word_patches):
+
+        def _if(image_patch, is_white_words, word_labels, word_patches):
+            word_patches = image_patch.find(word_label)
+
+            def _for(word_patch, image_patch, is_white_words, word_labels, word_patches):
+
+                def _if(image_patch, is_white_words, word_labels, word_patches):
+                    is_white_words = True
+                    return (image_patch, is_white_words, word_labels, word_patches)
+                image_patch, is_white_words, word_labels, word_patches = if_stmt(_if, None, word_patch.verify_property(word_label, 'white'), (image_patch, is_white_words, word_labels, word_patches))
+                return (image_patch, is_white_words, word_labels, word_patches)
+            image_patch, is_white_words, word_labels, word_patches = for_stmt(_for, word_patches, (image_patch, is_white_words, word_labels, word_patches))
+            return (image_patch, is_white_words, word_labels, word_patches)
+        image_patch, is_white_words, word_labels, word_patches = if_stmt(_if, None, image_patch.exists(word_label), (image_patch, is_white_words, word_labels, word_patches))
+        return (image_patch, is_white_words, word_labels, word_patches)
+    image_patch, is_white_words, word_labels, word_patches = for_stmt(_for, word_labels, (image_patch, is_white_words, word_labels, word_patches))
+    is_car_present = False
+    car_labels = ('car', 'cars')
+
+    def _for(car_label, car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches):
+
+        def _if(car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches):
+            is_car_present = True
+            return (car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches)
+        car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches = if_stmt(_if, None, image_patch.exists(car_label), (car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches))
+        return (car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches)
+    car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches = for_stmt(_for, car_labels, (car_labels, image_patch, is_car_present, is_white_words, word_labels, word_patches))
+    result = bool_to_yesno(or_expr(is_white_words, is_car_present))
+
+    def _if(car_labels, image_patch, is_car_present, is_white_words, result, word_labels, word_patches):
+        result = image_patch.simple_query('Do you see any white words or cars?')
+        return (car_labels, image_patch, is_car_present, is_white_words, result, word_labels, word_patches)
+    car_labels, image_patch, is_car_present, is_white_words, result, word_labels, word_patches = if_stmt(_if, None, result == 'no', (car_labels, image_patch, is_car_present, is_white_words, result, word_labels, word_patches))
+    return result

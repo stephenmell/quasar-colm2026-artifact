@@ -1,0 +1,73 @@
+def execute_command(image) -> str:
+    appliance_names = None
+    appliance_patches = None
+    found = None
+    garbage_names = None
+    garbage_patches = None
+    image_patch = None
+    is_on = None
+    kettle_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    kettle_patches = image_patch.find('tea kettle')
+
+    def _if(image_patch, kettle_patches, result):
+        kettle_patches = image_patch.find('kettle')
+        return (image_patch, kettle_patches, result)
+    image_patch, kettle_patches, result = if_stmt(_if, None, len(kettle_patches) == 0, (image_patch, kettle_patches, result))
+    appliance_patches = ()
+    appliance_names = ('appliance', 'stove', 'oven', 'microwave', 'stovetop', 'cooktop', 'range', 'stove top')
+
+    def _for(name, appliance_names, appliance_patches, found, image_patch, kettle_patches, result):
+        found = image_patch.find(name)
+
+        def _if(appliance_names, appliance_patches, found, image_patch, kettle_patches, result):
+            appliance_patches = appliance_patches + found
+            return (appliance_names, appliance_patches, found, image_patch, kettle_patches, result)
+        appliance_names, appliance_patches, found, image_patch, kettle_patches, result = if_stmt(_if, None, len(found) > 0, (appliance_names, appliance_patches, found, image_patch, kettle_patches, result))
+        return (appliance_names, appliance_patches, found, image_patch, kettle_patches, result)
+    appliance_names, appliance_patches, found, image_patch, kettle_patches, result = for_stmt(_for, appliance_names, (appliance_names, appliance_patches, found, image_patch, kettle_patches, result))
+    garbage_patches = ()
+    garbage_names = ('garbage bin', 'trash can', 'trash bin', 'garbage can', 'bin', 'rubbish bin', 'waste bin', 'trash')
+
+    def _for(name, appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result):
+        found = image_patch.find(name)
+
+        def _if(appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result):
+            garbage_patches = garbage_patches + found
+            return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result)
+        appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result = if_stmt(_if, None, len(found) > 0, (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result))
+        return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result)
+    appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result = for_stmt(_for, garbage_names, (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, kettle_patches, result))
+
+    def _if(appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result):
+        result = image_patch.simple_query('Is the garbage bin to the left of the appliance the tea kettle is on?')
+        return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result)
+
+    def _else(appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result):
+
+        def _for(kettle_patch, appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result):
+
+            def _for(appliance_patch, appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result):
+                is_on = and_expr(kettle_patch.vertical_center < appliance_patch.vertical_center, and_expr(kettle_patch.horizontal_center > appliance_patch.left, kettle_patch.horizontal_center < appliance_patch.right))
+
+                def _if(appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result):
+
+                    def _for(garbage_patch, appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result):
+
+                        def _if(appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result):
+                            result = 'yes'
+                            return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result)
+                        appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result = if_stmt(_if, None, garbage_patch.horizontal_center < appliance_patch.horizontal_center, (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result))
+                        return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result)
+                    appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result = for_stmt(_for, garbage_patches, (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result))
+                    return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result)
+                appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result = if_stmt(_if, None, is_on, (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result))
+                return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result)
+            appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result = for_stmt(_for, appliance_patches, (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result))
+            return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result)
+        appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result = for_stmt(_for, kettle_patches, (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result))
+        return (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result)
+    appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result = if_stmt(_if, _else, or_expr(len(kettle_patches) == 0, or_expr(len(appliance_patches) == 0, len(garbage_patches) == 0)), (appliance_names, appliance_patches, found, garbage_names, garbage_patches, image_patch, is_on, kettle_patches, result))
+    return result

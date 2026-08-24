@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    candidate_objects = ("fence", "fences", "chain link fence", "picket fence", "wooden fence", "railing")
+    found = False
+    for name in candidate_objects:
+        found = found or image_patch.exists(name)
+    result = bool_to_yesno(found)
+    return result

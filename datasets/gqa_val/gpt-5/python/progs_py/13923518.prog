@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sand_patches = image_patch.find("sand")
+    # Question assumes only one sand patch
+    if len(sand_patches) == 0:
+        # If no sand is found, query the image directly
+        return image_patch.simple_query("Does the sand have white color?")
+    return bool_to_yesno(sand_patches[0].verify_property("sand", "white"))

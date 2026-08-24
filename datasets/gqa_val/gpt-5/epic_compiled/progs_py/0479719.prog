@@ -1,0 +1,56 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    open_doorway_candidates = image_patch.find("open doorway")
+
+    if len(open_doorway_candidates) == 0:
+        doorway_patches = image_patch.find("doorway")
+        open_from_doorway = ()
+        for dw_patch in doorway_patches:
+            is_open = dw_patch.verify_property("doorway", "open")
+            if is_open:
+                open_from_doorway = open_from_doorway + (dw_patch,)
+        open_doorway_candidates = open_from_doorway
+
+    if len(open_doorway_candidates) == 0:
+        door_patches = image_patch.find("door")
+        open_from_door = ()
+        for door_patch in door_patches:
+            is_open2 = door_patch.verify_property("door", "open")
+            if is_open2:
+                open_from_door = open_from_door + (door_patch,)
+        open_doorway_candidates = open_from_door
+
+    found_near = False
+    for od_patch in open_doorway_candidates:
+        max_dim = od_patch.width if od_patch.width >= od_patch.height else od_patch.height
+        half = int(max_dim * 0.5)
+        margin = half if half >= 20 else 20
+
+        left = od_patch.left - margin
+        if left < 0:
+            left = 0
+        lower = od_patch.lower - margin
+        if lower < 0:
+            lower = 0
+        right = od_patch.right + margin
+        if right > image_patch.right:
+            right = image_patch.right
+        upper = od_patch.upper + margin
+        if upper > image_patch.upper:
+            upper = image_patch.upper
+
+        vicinity_patch = image_patch.crop(left, lower, right, upper)
+
+        any_women_patches = vicinity_patch.find("woman")
+        if len(any_women_patches) == 0:
+            any_women_patches = vicinity_patch.find("women")
+
+        if len(any_women_patches) > 0:
+            found_near = True
+
+    if found_near:
+        result = "yes"
+    return result

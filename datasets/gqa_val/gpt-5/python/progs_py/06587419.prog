@@ -1,0 +1,13 @@
+# Is there grass in the picture that is not tan?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    grass_patches = image_patch.find("grass")
+    # Question assumes at least one grass patch
+    if len(grass_patches) == 0:
+        # If no grass is found, query the image directly
+        return image_patch.simple_query("Is there grass in the picture that is not tan?")
+    for grass_patch in grass_patches:
+        # If any grass patch is not tan, answer yes
+        if not grass_patch.verify_property("grass", "tan"):
+            return "yes"
+    return "no"

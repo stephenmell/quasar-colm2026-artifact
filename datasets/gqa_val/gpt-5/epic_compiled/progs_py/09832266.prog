@@ -1,0 +1,14 @@
+# Is the water dark and wavy?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    water_patches = image_patch.find("water")
+    result = "no"
+    if len(water_patches) == 0:
+        result = image_patch.simple_query("Is the water dark and wavy?")
+    else:
+        for water_patch in water_patches:
+            is_dark = water_patch.verify_property("water", "dark")
+            is_wavy = water_patch.verify_property("water", "wavy")
+            if is_dark and is_wavy:
+                result = "yes"
+    return result

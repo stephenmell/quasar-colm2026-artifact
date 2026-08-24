@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cell_phone_patches = image_patch.find("cell phone")
+    if len(cell_phone_patches) == 0:
+        # If no cell phones are found, query the image directly
+        return image_patch.simple_query("Do you see cell phones there that are large?")
+    for phone_patch in cell_phone_patches:
+        if phone_patch.verify_property("cell phone", "large"):
+            return "yes"
+    return "no"

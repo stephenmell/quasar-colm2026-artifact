@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    road_patches = None
+    image_patch = ImagePatch(image)
+    road_patches = image_patch.find('road')
+
+    def _if(image_patch, result, road_patches):
+        result = image_patch.simple_query('Is the color of the road yellow?')
+        return (image_patch, result, road_patches)
+
+    def _else(image_patch, result, road_patches):
+        result = 'no'
+
+        def _for(road_patch, image_patch, result, road_patches):
+
+            def _if(image_patch, result, road_patches):
+                result = 'yes'
+                return (image_patch, result, road_patches)
+            image_patch, result, road_patches = if_stmt(_if, None, road_patch.verify_property('road', 'yellow'), (image_patch, result, road_patches))
+            return (image_patch, result, road_patches)
+        image_patch, result, road_patches = for_stmt(_for, road_patches, (image_patch, result, road_patches))
+        return (image_patch, result, road_patches)
+    image_patch, result, road_patches = if_stmt(_if, _else, len(road_patches) == 0, (image_patch, result, road_patches))
+    return result

@@ -1,0 +1,13 @@
+# Does the water have large size?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    water_patches = image_patch.find("water")
+    if len(water_patches) == 0:
+        result = image_patch.simple_query("Does the water have large size?")
+    else:
+        result = "no"
+        for water_patch in water_patches:
+            has_large = water_patch.verify_property("water", "large") or water_patch.verify_property("water", "large size")
+            if has_large:
+                result = "yes"
+    return result

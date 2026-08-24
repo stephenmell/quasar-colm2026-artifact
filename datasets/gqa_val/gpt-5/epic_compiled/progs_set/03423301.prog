@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_white = None
+    result = None
+    snow_patches = None
+    image_patch = ImagePatch(image)
+    snow_patches = image_patch.find('snow')
+
+    def _if(image_patch, is_white, result, snow_patches):
+        result = image_patch.simple_query('Does that snow look white?')
+        return (image_patch, is_white, result, snow_patches)
+
+    def _else(image_patch, is_white, result, snow_patches):
+        is_white = False
+
+        def _for(snow_patch, image_patch, is_white, snow_patches):
+
+            def _if(image_patch, is_white, snow_patches):
+                is_white = True
+                return (image_patch, is_white, snow_patches)
+            image_patch, is_white, snow_patches = if_stmt(_if, None, snow_patch.verify_property('snow', 'white'), (image_patch, is_white, snow_patches))
+            return (image_patch, is_white, snow_patches)
+        image_patch, is_white, snow_patches = for_stmt(_for, snow_patches, (image_patch, is_white, snow_patches))
+        result = bool_to_yesno(is_white)
+        return (image_patch, is_white, result, snow_patches)
+    image_patch, is_white, result, snow_patches = if_stmt(_if, _else, len(snow_patches) == 0, (image_patch, is_white, result, snow_patches))
+    return result

@@ -1,0 +1,115 @@
+({2631: 'context', 2637: 'llm_query', 2668: '.join', 2674: 'return_result'},
+ ('def',
+  2628,
+  ((),
+   ((('call', (2629,), -1, ()),
+     ('prim', 2630, 0),
+     ('def',
+      2632,
+      ((2664, 2633),
+       ((('unpack', (2658, 2634), 2664),
+         ('prim', 2635, 1),
+         ('call', (2636,), 80, (2634, 2635)),
+         ('prim',
+          2638,
+          'You will be given one document. Identify authors mentioned and '
+          'check for six specific attributes. Be precise and cite exact '
+          'phrases.\n'
+          '\n'
+          'BEGIN_DOCUMENT_'),
+         ('call', (2639,), 118, (2636,)),
+         ('prim', 2640, '\n'),
+         ('call', (2641,), 118, (2633,)),
+         ('prim', 2642, '\nEND_DOCUMENT_'),
+         ('call', (2643,), 118, (2636,)),
+         ('prim',
+          2644,
+          '\n'
+          '\n'
+          'Task:\n'
+          '- List every author explicitly mentioned in the document. For each '
+          'author, state whether the document provides evidence for the '
+          'following six attributes. Quote the exact supporting text for any '
+          '"Yes".\n'
+          '  1) Was (or is) a university instructor.\n'
+          '  2) Their books have been translated into twenty-plus languages.\n'
+          '  3) Has worked as an editor (any editorial role counts: '
+          'book/magazine/journal/contributing editor, etc.).\n'
+          '  4) Their parents were members of the NRA (National Rifle '
+          'Association).\n'
+          '  5) Had a recurring nightmare about a wolf creature (e.g., '
+          'werewolf/wolf-man/wolf-like being; recurring dream or nightmare).\n'
+          '  6) Has three children, two of which are adopted (i.e., total '
+          'three children, exactly two adopted).\n'
+          '\n'
+          'Output format for each author:\n'
+          'Author: <Full Name>\n'
+          'Matches: <X>/6\n'
+          '- Attr1 (university instructor): <Yes/No> | Quote: "<quote or write '
+          '\'None\'>"\n'
+          '- Attr2 (20+ languages): <Yes/No> | Quote: "<quote or \'None\'>"\n'
+          '- Attr3 (editor): <Yes/No> | Quote: "<quote or \'None\'>"\n'
+          '- Attr4 (parents NRA): <Yes/No> | Quote: "<quote or \'None\'>"\n'
+          '- Attr5 (recurring wolf nightmare): <Yes/No> | Quote: "<quote or '
+          '\'None\'>"\n'
+          '- Attr6 (3 children, 2 adopted): <Yes/No> | Quote: "<quote or '
+          '\'None\'>"\n'
+          'Other possibly relevant biographical details quoted verbatim:\n'
+          '"<short relevant excerpts>"\n'
+          '\n'
+          'If the document mentions no authors or none with any relevant info, '
+          'output:\n'
+          'No relevant author.\n'),
+         ('def',
+          2654,
+          ((2645, 2646),
+           ((('call', (2647,), 2646, (2645, 2638)),
+             ('call', (2648,), 2646, (2647, 2639)),
+             ('call', (2649,), 2646, (2648, 2640)),
+             ('call', (2650,), 2646, (2649, 2641)),
+             ('call', (2651,), 2646, (2650, 2642)),
+             ('call', (2652,), 2646, (2651, 2643)),
+             ('call', (2653,), 2646, (2652, 2644))),
+            (2653,)))),
+         ('prim', 2655, ''),
+         ('call', (2656,), 2654, (2655, 80)),
+         ('call', (2657,), 2637, (2656,)),
+         ('call', (2659,), -1, (2657,)),
+         ('call', (2660,), 80, (2658, 2659)),
+         ('pack', 2665, (2660, 2636))),
+        (2665,)))),
+     ('pack', 2666, (2629, 2630)),
+     ('call', (2667,), 79, (2631,)),
+     ('call', (2663,), 2667, (2666, 2632)),
+     ('unpack', (2661, 2662), 2663),
+     ('prim',
+      2670,
+      'You will be given extracted notes from multiple documents. Using them '
+      'together, identify the single author who, as of December 31, 2023, '
+      'satisfies ALL of the following:\n'
+      '1) Was a university instructor.\n'
+      '2) Their books have been translated into twenty-plus languages.\n'
+      '3) Has worked as an editor.\n'
+      '4) Their parents were members of the NRA.\n'
+      '5) Had a recurring nightmare about a wolf creature.\n'
+      '6) Has three children, two of which are adopted.\n'
+      '\n'
+      'Instructions:\n'
+      '- Consider that different documents may provide different subsets of '
+      'evidence about the same author; combine evidence across documents if '
+      'the same author appears multiple times.\n'
+      '- Prefer direct, quoted evidence for each attribute.\n'
+      '- If exactly one author fulfills all six attributes based on the '
+      'combined evidence, output ONLY their full name, nothing else.\n'
+      '- If more than one candidate appears, choose the one with the strongest '
+      'direct evidence matching all six attributes and output ONLY their full '
+      'name.\n'
+      '- If no candidate clearly satisfies all six, output: Unknown\n'
+      '\n'
+      'Here are the extracted notes:\n'),
+     ('prim', 2669, '\n\n-----\n\n'),
+     ('call', (2671,), 2668, (2669, 2661)),
+     ('call', (2672,), 80, (2670, 2671)),
+     ('call', (2673,), 2637, (2672,)),
+     ('call', (2675,), 2674, (2673,))),
+    (2675,)))))

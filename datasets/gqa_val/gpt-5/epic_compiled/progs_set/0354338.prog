@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_gray_american = None
+    is_gray_british = None
+    object_names = None
+    patches = None
+    result = None
+    total_found = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    object_names = ('ski', 'skis')
+    total_found = 0
+
+    def _for(object_name, image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found):
+        patches = image_patch.find(object_name)
+        total_found = total_found + len(patches)
+
+        def _for(patch, image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found):
+            is_gray_american = patch.verify_property(object_name, 'gray')
+            is_gray_british = patch.verify_property(object_name, 'grey')
+
+            def _if(image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found):
+                result = 'yes'
+                return (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found)
+            image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found = if_stmt(_if, None, or_expr(is_gray_american, is_gray_british), (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found))
+            return (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found)
+        image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found = for_stmt(_for, patches, (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found))
+        return (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found)
+    image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found = for_stmt(_for, object_names, (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found))
+
+    def _if(image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found):
+        result = image_patch.simple_query('Are there any skis in this picture that are gray?')
+        return (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found)
+    image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found = if_stmt(_if, None, total_found == 0, (image_patch, is_gray_american, is_gray_british, object_names, patches, result, total_found))
+    return result

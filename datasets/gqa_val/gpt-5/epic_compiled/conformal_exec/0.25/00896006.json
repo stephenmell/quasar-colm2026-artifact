@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, the trees appear short.",
+      "No, the trees are not short.",
+      "yes",
+      "no"
+    ]
+  },
+  "time_ns": 9455688549
+}

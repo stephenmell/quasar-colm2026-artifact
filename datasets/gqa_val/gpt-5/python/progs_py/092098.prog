@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    oven_patches = image_patch.find("oven")
+    # Question assumes only one oven patch
+    if len(oven_patches) == 0:
+        # If no oven is found, query the image directly
+        return image_patch.simple_query("Do you see refrigerators to the right of the oven?")
+    oven_patch = oven_patches[0]
+    refrigerator_patches = image_patch.find("refrigerator")
+    if len(refrigerator_patches) == 0:
+        return "no"
+    for refrigerator_patch in refrigerator_patches:
+        if refrigerator_patch.horizontal_center > oven_patch.horizontal_center:
+            return "yes"
+    return "no"

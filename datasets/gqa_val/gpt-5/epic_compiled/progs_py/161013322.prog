@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_car = image_patch.exists("car") or image_patch.exists("cars")
+    has_fence = image_patch.exists("fence") or image_patch.exists("fences")
+    result = bool_to_yesno(has_car or has_fence)
+    return result

@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_balloon = None
+    has_kite = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_kite = image_patch.exists('kite')
+    has_balloon = image_patch.exists('balloon')
+    result = bool_to_yesno(or_expr(has_kite, has_balloon))
+    return result

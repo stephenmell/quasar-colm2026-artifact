@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find("train")
+    # Question assumes at least one train
+    if len(train_patches) == 0:
+        # If no train is found, query the image directly
+        return image_patch.simple_query("Is there a train that is not gray?")
+    for train_patch in train_patches:
+        if not train_patch.verify_property("train", "gray"):
+            return "yes"
+    return "no"

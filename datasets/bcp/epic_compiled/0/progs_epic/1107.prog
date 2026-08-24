@@ -1,0 +1,148 @@
+({2323: 'enumerate',
+  2324: 'context',
+  2334: 'llm_query',
+  2341: '.join',
+  2347: 'return_result'},
+ ('def',
+  2321,
+  ((),
+   ((('call', (2322,), -1, ()),
+     ('call', (2325,), 2323, (2324,)),
+     ('def',
+      2326,
+      ((2336, 2329),
+       ((('unpack', (2327, 2328), 2329),
+         ('prim',
+          2330,
+          'You will receive a single document. Extract whether it matches any '
+          'of three roles relevant to a chained query, and provide structured, '
+          'concise results copying exact quoted text where requested.\n'
+          '\n'
+          'Roles to detect (a document may match multiple):\n'
+          '- Role1 (Animals biting speaker article): An article published '
+          'between 2020-01-01 and 2023-12-31 that explicitly mentions that '
+          'when various sounds were played on a speaker, some of the animals '
+          'would try to bite the speaker (or very close phrasing). Extract the '
+          'exact quote containing this idea, the author/byline, title, and '
+          'publication date as shown in the document.\n'
+          '- Role2 (AI strategy article): An article published between '
+          '2012-01-01 and 2022-12-31 that mentions a “new strategy” (or '
+          'similar: new approach, novel method, strategy, framework) for '
+          'studying something “with artificial intelligence” (or similar '
+          'wording). In the same article, it mentions a paper that was '
+          'published sometime between 2016-01-01 and 2021-12-31. Extract: the '
+          'article’s author/byline, title, publication date; the exact quote '
+          'mentioning the new strategy with AI; and for the mentioned paper: '
+          'its title (if present), year, and the full author list as presented '
+          '(in order, copying exact spelling and order). Also identify the '
+          'last-listed author (copy exact).\n'
+          '- Role3 (2001 volume 68 paper): A paper published in 2001 that is '
+          'in volume 68. Extract: the paper title, full author list as '
+          'presented (copy exact order), year, volume; the exact '
+          'Acknowledgments section text (copy verbatim); and a list of thanked '
+          'individual names in the acknowledgments in the order they appear '
+          '(copy exact spellings). Also provide the last person thanked (copy '
+          'exact).\n'
+          '\n'
+          'Important instructions:\n'
+          '- Be conservative: only mark a role as a match if the document '
+          'itself gives clear evidence. Quote exactly for any requested quotes '
+          'or names; preserve punctuation, capitalization, and diacritics.\n'
+          '- If some metadata (title, date, volume) is not explicit in the '
+          'document, write Unknown.\n'
+          '- If a role doesn’t match, mark it clearly as No.\n'
+          '\n'
+          'Provide the output in the following template (fill Unknown where '
+          'needed):\n'
+          'DocIndex: {idx}\n'
+          'Title: <title or Unknown>\n'
+          'AuthorByline: <as shown or Unknown>\n'
+          'PublicationType: <Article/Paper/Unknown>\n'
+          'PublicationDate: <as shown or Unknown>\n'
+          'Volume: <as shown or Unknown>\n'
+          '\n'
+          'Role1Match: <Yes/No>\n'
+          'Role1EvidenceQuote: "<exact quote about animals trying to bite the '
+          'speaker>"\n'
+          '\n'
+          'Role2Match: <Yes/No>\n'
+          'Role2_AIStrategy_ExactQuote: "<exact quote>"\n'
+          'Role2_CitedPaper_Title: <title or Unknown>\n'
+          'Role2_CitedPaper_Year: <year or Unknown>\n'
+          'Role2_CitedPaper_Authors_In_Order: <copy authors exactly in order '
+          'as presented>\n'
+          'Role2_CitedPaper_LastAuthor: <copy exact>\n'
+          '\n'
+          'Role3Match: <Yes/No>\n'
+          'Role3_PaperTitle: <title or Unknown>\n'
+          'Role3_Authors_In_Order: <copy authors exactly in order as '
+          'presented>\n'
+          'Role3_Year: <year or Unknown>\n'
+          'Role3_Volume: <volume or Unknown>\n'
+          'Role3_Acknowledgments_Section_Exact: "<verbatim acknowledgments '
+          'text>"\n'
+          'Role3_Acknowledgments_ThankedNames_In_Order: <copy names exactly as '
+          'they appear, in order>\n'
+          'Role3_Acknowledgments_LastPersonThanked: <copy exact>\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2331,), 80, (2330, 2328)),
+         ('prim', 2332, '\nEND_DOCUMENT'),
+         ('call', (2333,), 80, (2331, 2332)),
+         ('call', (2335,), 2334, (2333,)),
+         ('call', (2337,), -1, (2335,)),
+         ('call', (2338,), 80, (2336, 2337))),
+        (2338,)))),
+     ('call', (2340,), 79, (2325,)),
+     ('call', (2339,), 2340, (2322, 2326)),
+     ('prim',
+      2342,
+      '\n\n================ DOCUMENT SUMMARY ================\n\n'),
+     ('call', (2343,), 2341, (2342, 2339)),
+     ('prim',
+      2344,
+      'You will be given structured summaries of multiple documents. Your task '
+      'is to identify a specific chain and return a single name. Follow these '
+      'steps carefully and return ONLY the final name (no explanations):\n'
+      '\n'
+      'Goal: Identify the last person thanked in the acknowledgments section '
+      'of a paper published sometime in 2001 in volume 68, where that paper is '
+      'coauthored by the last-listed author of a separate paper (published '
+      '2016–2021) that was mentioned in an article (2012–2022) by the same '
+      'author who also wrote a 2020–2023 article that says animals tried to '
+      'bite a speaker when various sounds were played.\n'
+      '\n'
+      'Steps:\n'
+      '1) From Role1Match: Collect candidate authors of the 2020–2023 article '
+      'that explicitly mentions animals trying to bite the speaker when sounds '
+      "were played. Note each candidate's author/byline and publication date.\n"
+      '2) From Role2Match: Find any 2012–2022 article(s) whose author/byline '
+      'matches one of the Role1 authors from step 1. The Role2 article must '
+      'mention a “new strategy” (or similar) for studying something with '
+      'artificial intelligence and also mention a paper published 2016–2021. '
+      'For each such Role2 match, record the cited paper’s author list (in '
+      'order) and identify the last-listed author.\n'
+      '3) From Role3Match: Among 2001, volume 68 papers, find one whose author '
+      'list includes (as an author) the last-listed author identified in step '
+      '2. Use exact matching on author names as presented in the summaries.\n'
+      '4) From that Role3 paper, read '
+      'Role3_Acknowledgments_ThankedNames_In_Order and identify the last '
+      'person thanked. Copy the name exactly as written (preserve punctuation, '
+      'capitalization, diacritics) and return ONLY that name.\n'
+      '\n'
+      'Rules and tie-breaking:\n'
+      '- If multiple possible chains exist, choose the one with the strongest '
+      'exact-name matches and closest adherence to the date windows. If still '
+      'multiple, choose the one where all required pieces (quotes, authors, '
+      'year, volume) are most explicitly available.\n'
+      '- If any piece is missing for a candidate chain, disregard that chain '
+      'in favor of one with complete information.\n'
+      '- Return ONLY the exact name string of the last person thanked; do not '
+      'include any other text.\n'
+      '\n'
+      'Here are the document summaries:\n'
+      '\n'),
+     ('call', (2345,), 80, (2344, 2343)),
+     ('call', (2346,), 2334, (2345,)),
+     ('call', (2348,), 2347, (2346,))),
+    (2348,)))))

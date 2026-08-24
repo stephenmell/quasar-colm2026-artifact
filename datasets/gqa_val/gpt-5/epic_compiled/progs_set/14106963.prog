@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    coat_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    coat_patches = image_patch.find('coat')
+
+    def _if(coat_patches, image_patch, result):
+        result = image_patch.simple_query('Does the coat have blue color?')
+        return (coat_patches, image_patch, result)
+
+    def _else(coat_patches, image_patch, result):
+        result = bool_to_yesno(coat_patches[0].verify_property('coat', 'blue'))
+        return (coat_patches, image_patch, result)
+    coat_patches, image_patch, result = if_stmt(_if, _else, len(coat_patches) == 0, (coat_patches, image_patch, result))
+    return result

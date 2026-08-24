@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    image_patch = None
+    result = None
+    shelf_patches = None
+    image_patch = ImagePatch(image)
+    shelf_patches = image_patch.find('shelf')
+
+    def _if(chair_patches, image_patch, result, shelf_patches):
+        result = image_patch.simple_query('Is there a chair to the left of the shelf?')
+        return (chair_patches, image_patch, result, shelf_patches)
+
+    def _else(chair_patches, image_patch, result, shelf_patches):
+        chair_patches = image_patch.find('chair')
+
+        def _if(chair_patches, image_patch, result, shelf_patches):
+            result = 'no'
+            return (chair_patches, image_patch, result, shelf_patches)
+
+        def _else(chair_patches, image_patch, result, shelf_patches):
+            result = 'no'
+
+            def _for(shelf_patch, chair_patches, image_patch, result, shelf_patches):
+
+                def _for(chair_patch, chair_patches, image_patch, result, shelf_patches):
+
+                    def _if(chair_patches, image_patch, result, shelf_patches):
+                        result = 'yes'
+                        return (chair_patches, image_patch, result, shelf_patches)
+                    chair_patches, image_patch, result, shelf_patches = if_stmt(_if, None, chair_patch.horizontal_center < shelf_patch.horizontal_center, (chair_patches, image_patch, result, shelf_patches))
+                    return (chair_patches, image_patch, result, shelf_patches)
+                chair_patches, image_patch, result, shelf_patches = for_stmt(_for, chair_patches, (chair_patches, image_patch, result, shelf_patches))
+                return (chair_patches, image_patch, result, shelf_patches)
+            chair_patches, image_patch, result, shelf_patches = for_stmt(_for, shelf_patches, (chair_patches, image_patch, result, shelf_patches))
+            return (chair_patches, image_patch, result, shelf_patches)
+        chair_patches, image_patch, result, shelf_patches = if_stmt(_if, _else, len(chair_patches) == 0, (chair_patches, image_patch, result, shelf_patches))
+        return (chair_patches, image_patch, result, shelf_patches)
+    chair_patches, image_patch, result, shelf_patches = if_stmt(_if, _else, len(shelf_patches) == 0, (chair_patches, image_patch, result, shelf_patches))
+    return result

@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2327387",
+          [
+            0,
+            0,
+            500,
+            334
+          ]
+        ],
+        "snack"
+      ],
+      [],
+      10129216536
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2327387",
+          [
+            0,
+            0,
+            500,
+            334
+          ]
+        ],
+        "Does the donut to the right of the snack look round?"
+      ],
+      "Yes.",
+      1600359256
+    ]
+  ],
+  "best_text_match": []
+}

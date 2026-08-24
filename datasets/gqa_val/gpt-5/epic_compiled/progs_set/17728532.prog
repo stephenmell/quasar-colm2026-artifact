@@ -1,0 +1,26 @@
+def execute_command(image) -> str:
+    can_patches = None
+    image_patch = None
+    is_red_can = None
+    plate_exists = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    is_red_can = False
+    can_patches = image_patch.find('can')
+
+    def _for(can_patch, can_patches, image_patch, is_red_can, result):
+
+        def _if(can_patches, image_patch, is_red_can, result):
+            is_red_can = True
+            return (can_patches, image_patch, is_red_can, result)
+        can_patches, image_patch, is_red_can, result = if_stmt(_if, None, can_patch.verify_property('can', 'red'), (can_patches, image_patch, is_red_can, result))
+        return (can_patches, image_patch, is_red_can, result)
+    can_patches, image_patch, is_red_can, result = for_stmt(_for, can_patches, (can_patches, image_patch, is_red_can, result))
+    plate_exists = image_patch.exists('plate')
+
+    def _if(can_patches, image_patch, is_red_can, plate_exists, result):
+        result = 'yes'
+        return (can_patches, image_patch, is_red_can, plate_exists, result)
+    can_patches, image_patch, is_red_can, plate_exists, result = if_stmt(_if, None, or_expr(is_red_can, plate_exists), (can_patches, image_patch, is_red_can, plate_exists, result))
+    return result

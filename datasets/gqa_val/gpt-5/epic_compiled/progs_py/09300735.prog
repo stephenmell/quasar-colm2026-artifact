@@ -1,0 +1,21 @@
+# Does the ball look white or purple?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ball_patches = image_patch.find("ball")
+
+    if len(ball_patches) == 0:
+        result = image_patch.best_text_match(("white", "purple"))
+    else:
+        white_votes = 0
+        purple_votes = 0
+        for ball_patch in ball_patches:
+            vote = ball_patch.best_text_match(("white", "purple"))
+            if vote == "white":
+                white_votes = white_votes + 1
+            else:
+                purple_votes = purple_votes + 1
+        if white_votes >= purple_votes:
+            result = "white"
+        else:
+            result = "purple"
+    return result

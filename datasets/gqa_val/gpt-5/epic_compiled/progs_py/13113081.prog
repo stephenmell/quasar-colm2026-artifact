@@ -1,0 +1,36 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    curtain_patches = image_patch.find("curtain")
+    if len(curtain_patches) == 0:
+        result = image_patch.simple_query("Is the curtain that looks maroon and red closed or open?")
+    else:
+        chosen_patch = None
+        fallback_patch = None
+        found_both = False
+
+        for curtain_patch in curtain_patches:
+            has_maroon = curtain_patch.verify_property("curtain", "maroon")
+            has_red = curtain_patch.verify_property("curtain", "red")
+
+            if has_maroon and has_red:
+                if not found_both and chosen_patch is None:
+                    chosen_patch = curtain_patch
+                found_both = True
+            else:
+                if (has_maroon or has_red) and fallback_patch is None:
+                    fallback_patch = curtain_patch
+
+        selected_patch = None
+        if found_both and chosen_patch is not None:
+            selected_patch = chosen_patch
+        else:
+            if fallback_patch is not None:
+                selected_patch = fallback_patch
+
+        if selected_patch is not None:
+            result = selected_patch.best_text_match(("closed", "open"))
+        else:
+            result = image_patch.simple_query("Is the curtain that looks maroon and red closed or open?")
+    return result

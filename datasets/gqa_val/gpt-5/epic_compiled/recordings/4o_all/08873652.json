@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2354055",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "grass"
+      ],
+      [],
+      7976787413
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2354055",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Do you see grass in this photograph that is not green?"
+      ],
+      "Yes.",
+      1098841492
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,34 @@
+def execute_command(image) -> str:
+    candidate_objects = None
+    image_patch = None
+    is_blond = None
+    is_curly = None
+    patches = None
+    result = None
+    selected_patch = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    selected_patch = None
+    candidate_objects = ('man', 'boy', 'person')
+
+    def _for(obj_name, candidate_objects, image_patch, patches, result, selected_patch):
+        patches = image_patch.find(obj_name)
+
+        def _if(candidate_objects, image_patch, patches, result, selected_patch):
+            selected_patch = patches[0]
+            return (candidate_objects, image_patch, patches, result, selected_patch)
+        candidate_objects, image_patch, patches, result, selected_patch = if_stmt(_if, None, and_expr(len(patches) > 0, selected_patch is None), (candidate_objects, image_patch, patches, result, selected_patch))
+        return (candidate_objects, image_patch, patches, result, selected_patch)
+    candidate_objects, image_patch, patches, result, selected_patch = for_stmt(_for, candidate_objects, (candidate_objects, image_patch, patches, result, selected_patch))
+
+    def _if(candidate_objects, image_patch, is_blond, is_curly, patches, result, selected_patch):
+        result = image_patch.simple_query('Is his hair blond and curly?')
+        return (candidate_objects, image_patch, is_blond, is_curly, patches, result, selected_patch)
+
+    def _else(candidate_objects, image_patch, is_blond, is_curly, patches, result, selected_patch):
+        is_blond = selected_patch.verify_property('hair', 'blond')
+        is_curly = selected_patch.verify_property('hair', 'curly')
+        result = bool_to_yesno(and_expr(is_blond, is_curly))
+        return (candidate_objects, image_patch, is_blond, is_curly, patches, result, selected_patch)
+    candidate_objects, image_patch, is_blond, is_curly, patches, result, selected_patch = if_stmt(_if, _else, selected_patch is None, (candidate_objects, image_patch, is_blond, is_curly, patches, result, selected_patch))
+    return result

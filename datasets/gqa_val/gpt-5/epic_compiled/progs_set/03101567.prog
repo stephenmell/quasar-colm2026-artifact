@@ -1,0 +1,68 @@
+def execute_command(image) -> str:
+    desk_exists = None
+    dresser_exists = None
+    image_patch = None
+    is_on_desk = None
+    is_on_dresser = None
+    lamp_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    lamp_patches = image_patch.find('lamp')
+
+    def _if(desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+        result = image_patch.simple_query('What is the lamp on, a dresser or a desk?')
+        return (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+
+    def _else(desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+        result = None
+
+        def _for(lamp_patch, image_patch, is_on_dresser, lamp_patches, result):
+            is_on_dresser = lamp_patch.simple_query('Is the lamp on a dresser?') == 'yes'
+
+            def _if(image_patch, is_on_dresser, lamp_patches, result):
+                result = 'dresser'
+                return (image_patch, is_on_dresser, lamp_patches, result)
+            image_patch, is_on_dresser, lamp_patches, result = if_stmt(_if, None, and_expr(is_on_dresser, not result), (image_patch, is_on_dresser, lamp_patches, result))
+            return (image_patch, is_on_dresser, lamp_patches, result)
+        image_patch, is_on_dresser, lamp_patches, result = for_stmt(_for, lamp_patches, (image_patch, is_on_dresser, lamp_patches, result))
+
+        def _if(image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+
+            def _for(lamp_patch, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+                is_on_desk = lamp_patch.simple_query('Is the lamp on a desk?') == 'yes'
+
+                def _if(image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+                    result = 'desk'
+                    return (image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+                image_patch, is_on_desk, is_on_dresser, lamp_patches, result = if_stmt(_if, None, and_expr(is_on_desk, not result), (image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+                return (image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+            image_patch, is_on_desk, is_on_dresser, lamp_patches, result = for_stmt(_for, lamp_patches, (image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+            return (image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+        image_patch, is_on_desk, is_on_dresser, lamp_patches, result = if_stmt(_if, None, not_expr(result), (image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+
+        def _if(desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+            dresser_exists = image_patch.exists('dresser')
+            desk_exists = image_patch.exists('desk')
+
+            def _if(desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+                result = 'dresser'
+                return (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+
+            def _else(desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+
+                def _if(desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+                    result = 'desk'
+                    return (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+                desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result = if_stmt(_if, None, and_expr(desk_exists, not dresser_exists), (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+                return (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+            desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result = if_stmt(_if, _else, and_expr(dresser_exists, not desk_exists), (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+            return (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+        desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result = if_stmt(_if, None, not_expr(result), (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+
+        def _if(desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result):
+            result = lamp_patches[0].best_text_match(('dresser', 'desk'))
+            return (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+        desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result = if_stmt(_if, None, not_expr(result), (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+        return (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result)
+    desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result = if_stmt(_if, _else, len(lamp_patches) == 0, (desk_exists, dresser_exists, image_patch, is_on_desk, is_on_dresser, lamp_patches, result))
+    return result

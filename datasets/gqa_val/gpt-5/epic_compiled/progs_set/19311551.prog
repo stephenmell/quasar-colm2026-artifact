@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    officer_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    officer_patches = image_patch.find('officer')
+
+    def _if(image_patch, officer_patches, result):
+        result = image_patch.simple_query('Is the officer on the left?')
+        return (image_patch, officer_patches, result)
+
+    def _else(image_patch, officer_patches, result):
+        result = 'no'
+
+        def _for(officer_patch, image_patch, officer_patches, result):
+
+            def _if(image_patch, officer_patches, result):
+                result = 'yes'
+                return (image_patch, officer_patches, result)
+            image_patch, officer_patches, result = if_stmt(_if, None, officer_patch.horizontal_center < image_patch.horizontal_center, (image_patch, officer_patches, result))
+            return (image_patch, officer_patches, result)
+        image_patch, officer_patches, result = for_stmt(_for, officer_patches, (image_patch, officer_patches, result))
+        return (image_patch, officer_patches, result)
+    image_patch, officer_patches, result = if_stmt(_if, _else, len(officer_patches) == 0, (image_patch, officer_patches, result))
+    return result

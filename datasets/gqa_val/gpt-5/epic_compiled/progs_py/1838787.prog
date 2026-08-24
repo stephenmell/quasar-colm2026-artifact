@@ -1,0 +1,12 @@
+# Is the color of the road yellow?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    road_patches = image_patch.find("road")
+    if len(road_patches) == 0:
+        result = image_patch.simple_query("Is the color of the road yellow?")
+    else:
+        result = "no"
+        for road_patch in road_patches:
+            if road_patch.verify_property("road", "yellow"):
+                result = "yes"
+    return result

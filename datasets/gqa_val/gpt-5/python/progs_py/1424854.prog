@@ -1,0 +1,17 @@
+# Is there a bench that is not made of wood?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bench_patches = image_patch.find("bench")
+    # If no bench is found, ask directly
+    if len(bench_patches) == 0:
+        return image_patch.simple_query("Is there a bench that is not made of wood?")
+    for bench_patch in bench_patches:
+        # Ask directly about material for robustness
+        answer = bench_patch.simple_query("Is the bench made of wood?")
+        if answer == "no":
+            return "yes"
+        if answer != "yes":
+            # Fallback to property verification if uncertain
+            if not bench_patch.verify_property("bench", "wooden"):
+                return "yes"
+    return "no"

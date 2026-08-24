@@ -1,0 +1,39 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find reference objects
+    bowl_patches = image_patch.find("bowl")
+    glasses_patches = image_patch.find("glasses")
+    if len(glasses_patches) == 0:
+        # fallback in case "glasses" not found under plural
+        glasses_patches = image_patch.find("glass")
+
+    # Find kids (with simple synonym fallback)
+    kid_patches = image_patch.find("kid")
+    if len(kid_patches) == 0:
+        kid_patches = image_patch.find("boy") + image_patch.find("girl") + image_patch.find("child")
+
+    # If any key object is missing, ask directly
+    if len(bowl_patches) == 0 or len(glasses_patches) == 0 or len(kid_patches) == 0:
+        return image_patch.simple_query("Are the kid to the left of the bowl and the kid to the left of the glasses both happy?")
+
+    # Helper to pick the closest kid to the left of a given object
+    def closest_kid_left_of(obj_patch, candidates):
+        left_kids = [k for k in candidates if k.horizontal_center < obj_patch.horizontal_center]
+        if len(left_kids) == 0:
+            return None
+        return max(left_kids, key=lambda k: k.horizontal_center)  # closest from the left
+
+    bowl_ref = bowl_patches[0]
+    glasses_ref = glasses_patches[0]
+
+    kid_left_of_bowl = closest_kid_left_of(bowl_ref, kid_patches)
+    kid_left_of_glasses = closest_kid_left_of(glasses_ref, kid_patches)
+
+    if kid_left_of_bowl is None or kid_left_of_glasses is None:
+        return image_patch.simple_query("Are the kid to the left of the bowl and the kid to the left of the glasses both happy?")
+
+    is_bowl_kid_happy = kid_left_of_bowl.verify_property("kid", "happy")
+    is_glasses_kid_happy = kid_left_of_glasses.verify_property("kid", "happy")
+
+    return bool_to_yesno(is_bowl_kid_happy and is_glasses_kid_happy)

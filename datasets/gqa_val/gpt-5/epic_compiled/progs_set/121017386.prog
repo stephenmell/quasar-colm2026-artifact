@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_blue = None
+    result = None
+    sky_patches = None
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find('sky')
+
+    def _if(image_patch, is_blue, result, sky_patches):
+        result = image_patch.simple_query('Do you think the sky is blue?')
+        return (image_patch, is_blue, result, sky_patches)
+
+    def _else(image_patch, is_blue, result, sky_patches):
+        is_blue = False
+
+        def _for(sky_patch, image_patch, is_blue, sky_patches):
+
+            def _if(image_patch, is_blue, sky_patches):
+                is_blue = True
+                return (image_patch, is_blue, sky_patches)
+            image_patch, is_blue, sky_patches = if_stmt(_if, None, sky_patch.verify_property('sky', 'blue'), (image_patch, is_blue, sky_patches))
+            return (image_patch, is_blue, sky_patches)
+        image_patch, is_blue, sky_patches = for_stmt(_for, sky_patches, (image_patch, is_blue, sky_patches))
+        result = bool_to_yesno(is_blue)
+        return (image_patch, is_blue, result, sky_patches)
+    image_patch, is_blue, result, sky_patches = if_stmt(_if, _else, len(sky_patches) == 0, (image_patch, is_blue, result, sky_patches))
+    return result

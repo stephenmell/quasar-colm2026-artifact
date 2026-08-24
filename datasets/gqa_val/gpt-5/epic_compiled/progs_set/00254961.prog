@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    cat_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    cat_patches = image_patch.find('cat')
+
+    def _if(cat_patches, image_patch, result):
+        result = image_patch.simple_query('Are there any happy cats?')
+        return (cat_patches, image_patch, result)
+
+    def _else(cat_patches, image_patch, result):
+        result = 'no'
+
+        def _for(cat_patch, cat_patches, image_patch, result):
+
+            def _if(cat_patches, image_patch, result):
+                result = 'yes'
+                return (cat_patches, image_patch, result)
+            cat_patches, image_patch, result = if_stmt(_if, None, cat_patch.verify_property('cat', 'happy'), (cat_patches, image_patch, result))
+            return (cat_patches, image_patch, result)
+        cat_patches, image_patch, result = for_stmt(_for, cat_patches, (cat_patches, image_patch, result))
+        return (cat_patches, image_patch, result)
+    cat_patches, image_patch, result = if_stmt(_if, _else, len(cat_patches) == 0, (cat_patches, image_patch, result))
+    return result

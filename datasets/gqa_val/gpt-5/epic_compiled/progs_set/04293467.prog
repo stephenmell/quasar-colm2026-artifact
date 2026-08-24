@@ -1,0 +1,85 @@
+def execute_command(image) -> str:
+    combined_patches = None
+    elephant_exists = None
+    elephant_patches = None
+    elephant_votes = None
+    image_patch = None
+    label = None
+    result = None
+    wolf_exists = None
+    wolf_patches = None
+    wolf_votes = None
+    image_patch = ImagePatch(image)
+    elephant_exists = image_patch.exists('elephant')
+    wolf_exists = image_patch.exists('wolf')
+
+    def _if(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+        result = 'elephant'
+        return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+
+    def _else(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+
+        def _if(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+            result = 'wolf'
+            return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+
+        def _else(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+            elephant_patches = ()
+            wolf_patches = ()
+
+            def _if(elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches):
+                elephant_patches = image_patch.find('elephant')
+                return (elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches)
+            elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches = if_stmt(_if, None, elephant_exists, (elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches))
+
+            def _if(elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches):
+                wolf_patches = image_patch.find('wolf')
+                return (elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches)
+            elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches = if_stmt(_if, None, wolf_exists, (elephant_exists, elephant_patches, image_patch, wolf_exists, wolf_patches))
+            combined_patches = elephant_patches + wolf_patches
+
+            def _if(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+                result = image_patch.best_text_match(('elephant', 'wolf'))
+                return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+
+            def _else(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+                elephant_votes = 0
+                wolf_votes = 0
+
+                def _for(patch, combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes):
+                    label = patch.best_text_match(('elephant', 'wolf'))
+
+                    def _if(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes):
+                        elephant_votes = elephant_votes + 1
+                        return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes)
+
+                    def _else(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes):
+                        wolf_votes = wolf_votes + 1
+                        return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes)
+                    combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes = if_stmt(_if, _else, label == 'elephant', (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes))
+                    return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes)
+                combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes = for_stmt(_for, combined_patches, (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, wolf_exists, wolf_patches, wolf_votes))
+
+                def _if(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+                    result = 'elephant'
+                    return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+
+                def _else(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+
+                    def _if(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+                        result = 'wolf'
+                        return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+
+                    def _else(combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes):
+                        result = image_patch.best_text_match(('elephant', 'wolf'))
+                        return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+                    combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes = if_stmt(_if, _else, wolf_votes > elephant_votes, (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes))
+                    return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+                combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes = if_stmt(_if, _else, elephant_votes > wolf_votes, (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes))
+                return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+            combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes = if_stmt(_if, _else, len(combined_patches) == 0, (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes))
+            return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+        combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes = if_stmt(_if, _else, and_expr(wolf_exists, not elephant_exists), (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes))
+        return (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes)
+    combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes = if_stmt(_if, _else, and_expr(elephant_exists, not wolf_exists), (combined_patches, elephant_exists, elephant_patches, elephant_votes, image_patch, label, result, wolf_exists, wolf_patches, wolf_votes))
+    return result

@@ -1,0 +1,29 @@
+Stage: agentdojo_eval.exec_with_return
+Error: Contact with name 'John Mitchell' not found.
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/AgentDojo/pipeline_run_agentdojo.py", line 295, in main
+    exec_result = exec_locals.get("execute_command")()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_33.prog", line 217, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 185, in abstract_if_stmt
+    lvars = then_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_33.prog", line 181, in _if
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 185, in abstract_if_stmt
+    lvars = then_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_33.prog", line 179, in _if
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 185, in abstract_if_stmt
+    lvars = then_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_33.prog", line 133, in _if
+  File "/home/sm1/projects/conformal_viper/AgentDojo/tools/suite_common.py", line 40, in wrapper
+    return f(**kwargs_with_deps, **named_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 244, in search_contacts_by_name
+    return inbox.find_contacts_by_name(query)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 132, in find_contacts_by_name
+    raise ValueError(f"Contact with name '{name}' not found.")
+ValueError: Contact with name 'John Mitchell' not found.

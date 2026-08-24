@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to localize the yellow sign first
+    sign_patches = image_patch.find("sign")
+    if len(sign_patches) == 0:
+        # If no sign is found, ask directly
+        return image_patch.simple_query("Is the yellow sign on the pole?")
+    found_yellow = False
+    for sign_patch in sign_patches:
+        if sign_patch.verify_property("sign", "yellow"):
+            found_yellow = True
+            # Relational question ("on") -> ask directly on the focused patch
+            if sign_patch.simple_query("Is the yellow sign on the pole?") == "yes":
+                return "yes"
+    # If no yellow sign was localized, fall back to asking globally
+    if not found_yellow:
+        return image_patch.simple_query("Is the yellow sign on the pole?")
+    # Yellow sign found but not on the pole
+    return "no"

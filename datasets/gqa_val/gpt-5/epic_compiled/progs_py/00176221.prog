@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check computers
+    if image_patch.exists("computer"):
+        computer_patches = image_patch.find("computer")
+        for computer_patch in computer_patches:
+            is_white = computer_patch.verify_property("computer", "white")
+            if not is_white:
+                result = "yes"
+
+    # Check phones
+    if image_patch.exists("phone"):
+        phone_patches = image_patch.find("phone")
+        for phone_patch in phone_patches:
+            is_white = phone_patch.verify_property("phone", "white")
+            if not is_white:
+                result = "yes"
+
+    return result

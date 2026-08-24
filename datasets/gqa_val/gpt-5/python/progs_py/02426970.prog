@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    boy_patches = image_patch.find("boy")
+    # If no boy is found, ask directly
+    if len(boy_patches) == 0:
+        return image_patch.simple_query("Is the motorcycle to the right of a boy?")
+    motorcycle_patches = image_patch.find("motorcycle")
+    if len(motorcycle_patches) == 0:
+        return "no"
+    for motorcycle_patch in motorcycle_patches:
+        for boy_patch in boy_patches:
+            if motorcycle_patch.horizontal_center > boy_patch.horizontal_center:
+                return "yes"
+    return "no"

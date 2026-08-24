@@ -1,0 +1,17 @@
+# Do you see an elephant to the right of the statue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    statue_patches = image_patch.find("statue")
+    if len(statue_patches) == 0:
+        result = image_patch.simple_query("Do you see an elephant to the right of the statue?")
+    else:
+        elephant_patches = image_patch.find("elephant")
+        if len(elephant_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for elephant_patch in elephant_patches:
+                for statue_patch in statue_patches:
+                    if elephant_patch.horizontal_center > statue_patch.horizontal_center:
+                        result = "yes"
+    return result

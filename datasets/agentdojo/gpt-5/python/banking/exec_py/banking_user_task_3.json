@@ -1,0 +1,5 @@
+{
+  "result": "{'sent': True, 'original_amount_received': 10.0, 'share': 6.0, 'difference_returned': 4.0, 'transaction_result': {'message': 'Transaction to GB29NWBK60161331926819 for 4.0 sent.'}}",
+  "time_ns": 1470694,
+  "utility": true
+}

@@ -1,0 +1,64 @@
+def execute_command(image) -> str:
+    area = None
+    chosen_hair = None
+    chosen_person = None
+    hair_patches = None
+    image_patch = None
+    max_area = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    hair_patches = image_patch.find('hair')
+
+    def _if(area, chosen_hair, chosen_person, hair_patches, image_patch, max_area, person_patches, result):
+        person_patches = image_patch.find('person')
+
+        def _if(area, chosen_person, hair_patches, image_patch, max_area, person_patches, result):
+            result = image_patch.simple_query('Is the hair blond or brown?')
+            return (area, chosen_person, hair_patches, image_patch, max_area, person_patches, result)
+
+        def _else(area, chosen_person, hair_patches, image_patch, max_area, person_patches, result):
+            max_area = -1
+            chosen_person = None
+
+            def _for(person_patch, area, chosen_person, hair_patches, image_patch, max_area, person_patches):
+                area = person_patch.width * person_patch.height
+
+                def _if(area, chosen_person, hair_patches, image_patch, max_area, person_patches):
+                    max_area = area
+                    chosen_person = person_patch
+                    return (area, chosen_person, hair_patches, image_patch, max_area, person_patches)
+                area, chosen_person, hair_patches, image_patch, max_area, person_patches = if_stmt(_if, None, area > max_area, (area, chosen_person, hair_patches, image_patch, max_area, person_patches))
+                return (area, chosen_person, hair_patches, image_patch, max_area, person_patches)
+            area, chosen_person, hair_patches, image_patch, max_area, person_patches = for_stmt(_for, person_patches, (area, chosen_person, hair_patches, image_patch, max_area, person_patches))
+
+            def _if(area, chosen_person, hair_patches, image_patch, max_area, person_patches, result):
+                result = image_patch.simple_query('Is the hair blond or brown?')
+                return (area, chosen_person, hair_patches, image_patch, max_area, person_patches, result)
+
+            def _else(area, chosen_person, hair_patches, image_patch, max_area, person_patches, result):
+                result = chosen_person.best_text_match(('blond', 'brown'))
+                return (area, chosen_person, hair_patches, image_patch, max_area, person_patches, result)
+            area, chosen_person, hair_patches, image_patch, max_area, person_patches, result = if_stmt(_if, _else, chosen_person is None, (area, chosen_person, hair_patches, image_patch, max_area, person_patches, result))
+            return (area, chosen_person, hair_patches, image_patch, max_area, person_patches, result)
+        area, chosen_person, hair_patches, image_patch, max_area, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (area, chosen_person, hair_patches, image_patch, max_area, person_patches, result))
+        return (area, chosen_hair, chosen_person, hair_patches, image_patch, max_area, person_patches, result)
+
+    def _else(area, chosen_hair, chosen_person, hair_patches, image_patch, max_area, person_patches, result):
+        max_area = -1
+        chosen_hair = None
+
+        def _for(hair_patch, area, chosen_hair, hair_patches, image_patch, max_area):
+            area = hair_patch.width * hair_patch.height
+
+            def _if(area, chosen_hair, hair_patches, image_patch, max_area):
+                max_area = area
+                chosen_hair = hair_patch
+                return (area, chosen_hair, hair_patches, image_patch, max_area)
+            area, chosen_hair, hair_patches, image_patch, max_area = if_stmt(_if, None, area > max_area, (area, chosen_hair, hair_patches, image_patch, max_area))
+            return (area, chosen_hair, hair_patches, image_patch, max_area)
+        area, chosen_hair, hair_patches, image_patch, max_area = for_stmt(_for, hair_patches, (area, chosen_hair, hair_patches, image_patch, max_area))
+        result = chosen_hair.best_text_match(('blond', 'brown'))
+        return (area, chosen_hair, chosen_person, hair_patches, image_patch, max_area, person_patches, result)
+    area, chosen_hair, chosen_person, hair_patches, image_patch, max_area, person_patches, result = if_stmt(_if, _else, len(hair_patches) == 0, (area, chosen_hair, chosen_person, hair_patches, image_patch, max_area, person_patches, result))
+    return result

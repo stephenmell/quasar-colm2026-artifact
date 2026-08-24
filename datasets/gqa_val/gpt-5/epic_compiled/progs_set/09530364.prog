@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    cakes_names = None
+    glasses_names = None
+    has_cakes = None
+    has_glasses = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    glasses_names = ('glasses', 'glass', 'eyeglasses', 'sunglasses', 'wine glass', 'drinking glass')
+    cakes_names = ('cake', 'cakes')
+    has_glasses = False
+    has_cakes = False
+
+    def _for(name, cakes_names, glasses_names, has_cakes, has_glasses, image_patch):
+
+        def _if(cakes_names, glasses_names, has_cakes, has_glasses, image_patch):
+            has_glasses = True
+            return (cakes_names, glasses_names, has_cakes, has_glasses, image_patch)
+        cakes_names, glasses_names, has_cakes, has_glasses, image_patch = if_stmt(_if, None, image_patch.exists(name), (cakes_names, glasses_names, has_cakes, has_glasses, image_patch))
+        return (cakes_names, glasses_names, has_cakes, has_glasses, image_patch)
+    cakes_names, glasses_names, has_cakes, has_glasses, image_patch = for_stmt(_for, glasses_names, (cakes_names, glasses_names, has_cakes, has_glasses, image_patch))
+
+    def _for(name, cakes_names, glasses_names, has_cakes, has_glasses, image_patch):
+
+        def _if(cakes_names, glasses_names, has_cakes, has_glasses, image_patch):
+            has_cakes = True
+            return (cakes_names, glasses_names, has_cakes, has_glasses, image_patch)
+        cakes_names, glasses_names, has_cakes, has_glasses, image_patch = if_stmt(_if, None, image_patch.exists(name), (cakes_names, glasses_names, has_cakes, has_glasses, image_patch))
+        return (cakes_names, glasses_names, has_cakes, has_glasses, image_patch)
+    cakes_names, glasses_names, has_cakes, has_glasses, image_patch = for_stmt(_for, cakes_names, (cakes_names, glasses_names, has_cakes, has_glasses, image_patch))
+    result = bool_to_yesno(and_expr(has_glasses, has_cakes))
+    return result

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2344346",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "Which kind of animal is on the desk?"
+      ],
+      "A cat.",
+      928325111
+    ]
+  ],
+  "best_text_match": []
+}

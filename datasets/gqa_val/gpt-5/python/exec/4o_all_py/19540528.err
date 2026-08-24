@@ -1,0 +1,9 @@
+Stage: other execution error
+Error: ImagePatch.simple_query() missing 1 required positional argument: 'query'
+Traceback:
+Traceback (most recent call last):
+  File "/home/bzhang16/conformal_viper/GQA/pipeline_run_gqa.py", line 290, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "19540528.prog", line 23, in execute_command
+TypeError: ImagePatch.simple_query() missing 1 required positional argument: 'query'

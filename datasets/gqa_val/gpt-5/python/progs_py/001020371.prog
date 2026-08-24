@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bench_patches = image_patch.find("bench")
+    zebra_patches = image_patch.find("zebra")
+
+    # If key objects are missing, ask directly
+    if len(bench_patches) == 0 or len(zebra_patches) == 0:
+        return image_patch.simple_query("Does the zebra to the left of the bench look black?")
+
+    found_left = False
+    for bench_patch in bench_patches:
+        for zebra_patch in zebra_patches:
+            if zebra_patch.horizontal_center < bench_patch.horizontal_center:
+                found_left = True
+                if zebra_patch.verify_property("zebra", "black"):
+                    return "yes"
+
+    # If no zebra is found to the left of any bench or none looks black
+    return "no"

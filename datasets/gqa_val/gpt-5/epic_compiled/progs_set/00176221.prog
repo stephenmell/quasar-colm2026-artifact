@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    computer_patches = None
+    image_patch = None
+    is_white = None
+    phone_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+
+    def _if(computer_patches, image_patch, is_white, result):
+        computer_patches = image_patch.find('computer')
+
+        def _for(computer_patch, computer_patches, image_patch, is_white, result):
+            is_white = computer_patch.verify_property('computer', 'white')
+
+            def _if(computer_patches, image_patch, is_white, result):
+                result = 'yes'
+                return (computer_patches, image_patch, is_white, result)
+            computer_patches, image_patch, is_white, result = if_stmt(_if, None, not_expr(is_white), (computer_patches, image_patch, is_white, result))
+            return (computer_patches, image_patch, is_white, result)
+        computer_patches, image_patch, is_white, result = for_stmt(_for, computer_patches, (computer_patches, image_patch, is_white, result))
+        return (computer_patches, image_patch, is_white, result)
+    computer_patches, image_patch, is_white, result = if_stmt(_if, None, image_patch.exists('computer'), (computer_patches, image_patch, is_white, result))
+
+    def _if(computer_patches, image_patch, is_white, phone_patches, result):
+        phone_patches = image_patch.find('phone')
+
+        def _for(phone_patch, computer_patches, image_patch, is_white, phone_patches, result):
+            is_white = phone_patch.verify_property('phone', 'white')
+
+            def _if(computer_patches, image_patch, is_white, phone_patches, result):
+                result = 'yes'
+                return (computer_patches, image_patch, is_white, phone_patches, result)
+            computer_patches, image_patch, is_white, phone_patches, result = if_stmt(_if, None, not_expr(is_white), (computer_patches, image_patch, is_white, phone_patches, result))
+            return (computer_patches, image_patch, is_white, phone_patches, result)
+        computer_patches, image_patch, is_white, phone_patches, result = for_stmt(_for, phone_patches, (computer_patches, image_patch, is_white, phone_patches, result))
+        return (computer_patches, image_patch, is_white, phone_patches, result)
+    computer_patches, image_patch, is_white, phone_patches, result = if_stmt(_if, None, image_patch.exists('phone'), (computer_patches, image_patch, is_white, phone_patches, result))
+    return result

@@ -1,0 +1,67 @@
+def execute_command(image) -> str:
+    clothing_names = None
+    clothing_patches = None
+    color = None
+    color2 = None
+    image_patch = None
+    question = None
+    result = None
+    selected_clothing_patch = None
+    selected_label = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    woman_patches = image_patch.find('woman')
+
+    def _if(clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+        result = image_patch.simple_query('What color does the t-shirt the woman is wearing have?')
+        return (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+
+    def _else(clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+
+        def _for(woman_patch, clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+            selected_clothing_patch = None
+            selected_label = None
+            clothing_names = ('t-shirt', 't shirt', 'tshirt', 'tee shirt', 'tee', 'shirt')
+
+            def _for(name, clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches):
+                clothing_patches = woman_patch.find(name)
+
+                def _if(clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches):
+                    selected_clothing_patch = clothing_patches[0]
+                    selected_label = name
+                    return (clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches)
+                clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches = if_stmt(_if, None, and_expr(len(clothing_patches) > 0, selected_clothing_patch is None), (clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches))
+                return (clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches)
+            clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches = for_stmt(_for, clothing_names, (clothing_names, clothing_patches, image_patch, result, selected_clothing_patch, selected_label, woman_patches))
+
+            def _if(clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+                question = f'What color is the {selected_label}?'
+                color = selected_clothing_patch.simple_query(question)
+
+                def _if(clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+                    result = color
+                    return (clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+                clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches = if_stmt(_if, None, color, (clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches))
+                return (clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+            clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches = if_stmt(_if, None, and_expr(selected_clothing_patch is not None, not result), (clothing_names, clothing_patches, color, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches))
+
+            def _if(clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+                color2 = woman_patch.simple_query('What color is the t-shirt the woman is wearing?')
+
+                def _if(clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+                    result = color2
+                    return (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+                clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches = if_stmt(_if, None, color2, (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches))
+                return (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+            clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches = if_stmt(_if, None, not_expr(result), (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches))
+            return (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+        clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches = for_stmt(_for, woman_patches, (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches))
+        return (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+    clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches))
+
+    def _if(clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches):
+        result = image_patch.simple_query('What color does the t-shirt the woman is wearing have?')
+        return (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches)
+    clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches = if_stmt(_if, None, not_expr(result), (clothing_names, clothing_patches, color, color2, image_patch, question, result, selected_clothing_patch, selected_label, woman_patches))
+    return result

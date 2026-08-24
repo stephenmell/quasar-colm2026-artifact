@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("Is there an umbrella to the right of the boy that is to the right of the woman?")
+    else:
+        result = "no"
+        boy_patches = image_patch.find("boy")
+        umbrella_patches = image_patch.find("umbrella")
+        for woman_patch in woman_patches:
+            for boy_patch in boy_patches:
+                if boy_patch.horizontal_center > woman_patch.horizontal_center:
+                    for umbrella_patch in umbrella_patches:
+                        if umbrella_patch.horizontal_center > boy_patch.horizontal_center:
+                            result = "yes"
+    return result

@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    vegetable_patches = image_patch.find("vegetable")
+    if len(vegetable_patches) == 0:
+        result = image_patch.simple_query("Are there any rugs to the right of the green vegetable?")
+    else:
+        rug_patches = image_patch.find("rug")
+        found_green_vegetable = False
+
+        for vegetable_patch in vegetable_patches:
+            if vegetable_patch.verify_property("vegetable", "green"):
+                found_green_vegetable = True
+                for rug_patch in rug_patches:
+                    if rug_patch.horizontal_center > vegetable_patch.horizontal_center:
+                        result = "yes"
+
+        if not found_green_vegetable:
+            result = image_patch.simple_query("Are there any rugs to the right of the green vegetable?")
+    return result

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    bench_patches = None
+    image_patch = None
+    is_wood_answer = None
+    result = None
+    image_patch = ImagePatch(image)
+    bench_patches = image_patch.find('bench')
+
+    def _if(bench_patches, image_patch, is_wood_answer, result):
+        result = image_patch.simple_query('Is there a bench that is not made of wood?')
+        return (bench_patches, image_patch, is_wood_answer, result)
+
+    def _else(bench_patches, image_patch, is_wood_answer, result):
+        result = 'no'
+
+        def _for(bench_patch, bench_patches, image_patch, is_wood_answer, result):
+            is_wood_answer = bench_patch.simple_query('Is the bench made of wood?')
+
+            def _if(bench_patches, image_patch, is_wood_answer, result):
+                result = 'yes'
+                return (bench_patches, image_patch, is_wood_answer, result)
+            bench_patches, image_patch, is_wood_answer, result = if_stmt(_if, None, is_wood_answer == 'no', (bench_patches, image_patch, is_wood_answer, result))
+            return (bench_patches, image_patch, is_wood_answer, result)
+        bench_patches, image_patch, is_wood_answer, result = for_stmt(_for, bench_patches, (bench_patches, image_patch, is_wood_answer, result))
+        return (bench_patches, image_patch, is_wood_answer, result)
+    bench_patches, image_patch, is_wood_answer, result = if_stmt(_if, _else, len(bench_patches) == 0, (bench_patches, image_patch, is_wood_answer, result))
+    return result

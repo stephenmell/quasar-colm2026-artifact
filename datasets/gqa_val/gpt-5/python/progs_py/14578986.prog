@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    # Question assumes at least one woman patch
+    if len(woman_patches) == 0:
+        # If no woman is found, query the image directly
+        return image_patch.simple_query("Is the woman to the left of a racket?")
+    racket_patches = image_patch.find("racket")
+    if len(racket_patches) == 0:
+        return "no"
+    for woman_patch in woman_patches:
+        for racket_patch in racket_patches:
+            if woman_patch.horizontal_center < racket_patch.horizontal_center:
+                return "yes"
+    return "no"

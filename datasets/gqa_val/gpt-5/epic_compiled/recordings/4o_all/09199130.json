@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2386700",
+          [
+            0,
+            0,
+            500,
+            500
+          ]
+        ],
+        "Is the fresh pizza to the left of the plate next to the boy?"
+      ],
+      "Yes.",
+      1034187081
+    ]
+  ],
+  "best_text_match": []
+}

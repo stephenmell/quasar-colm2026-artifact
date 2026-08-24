@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    car_patches = image_patch.find("car")
+    if len(car_patches) == 0:
+        return image_patch.simple_query("Is there any bag to the right of the person that is to the right of the car?")
+
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Is there any bag to the right of the person that is to the right of the car?")
+
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return "no"
+
+    # For any person that is to the right of any car, check if there's a bag to the right of that person
+    for person_patch in person_patches:
+        for car_patch in car_patches:
+            if person_patch.horizontal_center > car_patch.horizontal_center:
+                for bag_patch in bag_patches:
+                    if bag_patch.horizontal_center > person_patch.horizontal_center:
+                        return "yes"
+                break  # No need to compare this person with other cars once relation holds
+    return "no"

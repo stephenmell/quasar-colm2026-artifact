@@ -1,0 +1,62 @@
+def execute_command(image) -> str:
+    boy_patches = None
+    has_green_tennis_ball = None
+    image_patch = None
+    result = None
+    tennis_ball_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    tennis_ball_patches = image_patch.find('tennis ball')
+
+    def _if(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+        result = image_patch.simple_query('Are there boys to the right of the tennis ball that is green?')
+        return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+
+    def _else(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+        has_green_tennis_ball = False
+
+        def _for(tb_patch, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+
+            def _if(has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+                has_green_tennis_ball = True
+                return (has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+            has_green_tennis_ball, image_patch, result, tennis_ball_patches = if_stmt(_if, None, tb_patch.verify_property('tennis ball', 'green'), (has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+            return (has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+        has_green_tennis_ball, image_patch, result, tennis_ball_patches = for_stmt(_for, tennis_ball_patches, (has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+
+        def _if(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+            result = image_patch.simple_query('Are there boys to the right of the tennis ball that is green?')
+            return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+
+        def _else(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+            boy_patches = image_patch.find('boy')
+
+            def _if(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+                result = 'no'
+                return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+
+            def _else(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+
+                def _for(tb_patch, boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+
+                    def _if(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+
+                        def _for(boy_patch, boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+
+                            def _if(boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches):
+                                result = 'yes'
+                                return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+                            boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches = if_stmt(_if, None, boy_patch.horizontal_center > tb_patch.horizontal_center, (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+                            return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+                        boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches = for_stmt(_for, boy_patches, (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+                        return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+                    boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches = if_stmt(_if, None, tb_patch.verify_property('tennis ball', 'green'), (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+                    return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+                boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches = for_stmt(_for, tennis_ball_patches, (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+                return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+            boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches = if_stmt(_if, _else, len(boy_patches) == 0, (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+            return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+        boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches = if_stmt(_if, _else, not_expr(has_green_tennis_ball), (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+        return (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches)
+    boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches = if_stmt(_if, _else, len(tennis_ball_patches) == 0, (boy_patches, has_green_tennis_ball, image_patch, result, tennis_ball_patches))
+    return result

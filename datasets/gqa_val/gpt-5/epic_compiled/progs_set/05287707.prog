@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    found_green_vegetable = None
+    image_patch = None
+    result = None
+    rug_patches = None
+    vegetable_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    vegetable_patches = image_patch.find('vegetable')
+
+    def _if(found_green_vegetable, image_patch, result, rug_patches, vegetable_patches):
+        result = image_patch.simple_query('Are there any rugs to the right of the green vegetable?')
+        return (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches)
+
+    def _else(found_green_vegetable, image_patch, result, rug_patches, vegetable_patches):
+        rug_patches = image_patch.find('rug')
+        found_green_vegetable = False
+
+        def _for(vegetable_patch, found_green_vegetable, image_patch, result, rug_patches, vegetable_patches):
+
+            def _if(found_green_vegetable, image_patch, result, rug_patches, vegetable_patches):
+                found_green_vegetable = True
+
+                def _for(rug_patch, found_green_vegetable, image_patch, result, rug_patches, vegetable_patches):
+
+                    def _if(found_green_vegetable, image_patch, result, rug_patches, vegetable_patches):
+                        result = 'yes'
+                        return (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches)
+                    found_green_vegetable, image_patch, result, rug_patches, vegetable_patches = if_stmt(_if, None, rug_patch.horizontal_center > vegetable_patch.horizontal_center, (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches))
+                    return (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches)
+                found_green_vegetable, image_patch, result, rug_patches, vegetable_patches = for_stmt(_for, rug_patches, (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches))
+                return (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches)
+            found_green_vegetable, image_patch, result, rug_patches, vegetable_patches = if_stmt(_if, None, vegetable_patch.verify_property('vegetable', 'green'), (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches))
+            return (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches)
+        found_green_vegetable, image_patch, result, rug_patches, vegetable_patches = for_stmt(_for, vegetable_patches, (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches))
+
+        def _if(found_green_vegetable, image_patch, result, rug_patches, vegetable_patches):
+            result = image_patch.simple_query('Are there any rugs to the right of the green vegetable?')
+            return (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches)
+        found_green_vegetable, image_patch, result, rug_patches, vegetable_patches = if_stmt(_if, None, not_expr(found_green_vegetable), (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches))
+        return (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches)
+    found_green_vegetable, image_patch, result, rug_patches, vegetable_patches = if_stmt(_if, _else, len(vegetable_patches) == 0, (found_green_vegetable, image_patch, result, rug_patches, vegetable_patches))
+    return result

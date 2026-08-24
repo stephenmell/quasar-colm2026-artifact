@@ -1,0 +1,4 @@
+def execute_command(image) -> str:
+    image_patch = None
+    image_patch = ImagePatch(image)
+    return image_patch.simple_query('What meat is on top of the food with the pineapple?')

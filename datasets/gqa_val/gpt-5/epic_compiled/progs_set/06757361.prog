@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    any_non_black = None
+    guitar_exists = None
+    guitar_patches = None
+    image_patch = None
+    is_black = None
+    result = None
+    image_patch = ImagePatch(image)
+    guitar_exists = image_patch.exists('guitar')
+
+    def _if(any_non_black, guitar_exists, guitar_patches, image_patch, is_black, result):
+        result = image_patch.simple_query('Do you see a guitar that is not black?')
+        return (any_non_black, guitar_exists, guitar_patches, image_patch, is_black, result)
+
+    def _else(any_non_black, guitar_exists, guitar_patches, image_patch, is_black, result):
+        guitar_patches = image_patch.find('guitar')
+        any_non_black = False
+
+        def _for(guitar_patch, any_non_black, guitar_exists, guitar_patches, image_patch, is_black):
+            is_black = guitar_patch.verify_property('guitar', 'black')
+
+            def _if(any_non_black, guitar_exists, guitar_patches, image_patch, is_black):
+                any_non_black = True
+                return (any_non_black, guitar_exists, guitar_patches, image_patch, is_black)
+            any_non_black, guitar_exists, guitar_patches, image_patch, is_black = if_stmt(_if, None, not_expr(is_black), (any_non_black, guitar_exists, guitar_patches, image_patch, is_black))
+            return (any_non_black, guitar_exists, guitar_patches, image_patch, is_black)
+        any_non_black, guitar_exists, guitar_patches, image_patch, is_black = for_stmt(_for, guitar_patches, (any_non_black, guitar_exists, guitar_patches, image_patch, is_black))
+        result = bool_to_yesno(any_non_black)
+        return (any_non_black, guitar_exists, guitar_patches, image_patch, is_black, result)
+    any_non_black, guitar_exists, guitar_patches, image_patch, is_black, result = if_stmt(_if, _else, not_expr(guitar_exists), (any_non_black, guitar_exists, guitar_patches, image_patch, is_black, result))
+    return result

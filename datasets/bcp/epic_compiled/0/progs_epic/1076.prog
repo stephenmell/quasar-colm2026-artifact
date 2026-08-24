@@ -1,0 +1,57 @@
+({2046: 'context', 2053: 'llm_query', 2060: '.join', 2068: 'return_result'},
+ ('def',
+  2044,
+  ((),
+   ((('call', (2045,), -1, ()),
+     ('def',
+      2047,
+      ((2055, 2048),
+       ((('prim',
+          2049,
+          'You are given a document. We are looking for an artwork that fits '
+          'ALL or MOST of these clues:\n'
+          '- Exhibited in the late 19th century in a European country, for '
+          'roughly 2–3 months, at a venue established about 3 years before '
+          'that exhibition and that closed more than four decades later.\n'
+          '- The artwork was created more than a decade before that '
+          'exhibition.\n'
+          "- It expressed the artist's social and moral feelings.\n"
+          '- The artwork was stolen in the late 20th century but later '
+          'recovered.\n'
+          '- The artist spent an entire season practicing/studying this work '
+          'before creating its final version.\n'
+          '- Initially, the artwork was not well received, which disappointed '
+          'the artist.\n'
+          'If this document matches, respond in one line starting with MATCH '
+          "and provide fields separated by ' | ' in this exact order:\n"
+          'MATCH | Artwork title | Artist | Country of exhibition | Creation '
+          'year | Exhibition date(s) with months and year | Venue name | Venue '
+          'establishment year | Venue closure year | Theft year and recovery '
+          'note | Quote about season of practice | Quote about initial poor '
+          'reception. Keep it concise. If it does not match, reply exactly NO '
+          'MATCH.\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2050,), 80, (2049, 2048)),
+         ('prim', 2051, '\nEND_DOCUMENT'),
+         ('call', (2052,), 80, (2050, 2051)),
+         ('call', (2054,), 2053, (2052,)),
+         ('call', (2056,), -1, (2054,)),
+         ('call', (2057,), 80, (2055, 2056))),
+        (2057,)))),
+     ('call', (2059,), 79, (2046,)),
+     ('call', (2058,), 2059, (2045, 2047)),
+     ('prim',
+      2062,
+      'Below are per-document extractions attempting to identify an artwork '
+      'and venue that fit the puzzle. Choose the single best match that '
+      'satisfies the clues, and answer ONLY with the 4-digit year the venue '
+      'was closed. No words, no punctuation, just the year.\n'
+      'EXTRACTIONS:\n'),
+     ('prim', 2061, '\n\n'),
+     ('call', (2063,), 2060, (2061, 2058)),
+     ('call', (2064,), 80, (2062, 2063)),
+     ('prim', 2065, '\n\nAnswer with only the venue closure year (4 digits).'),
+     ('call', (2066,), 80, (2064, 2065)),
+     ('call', (2067,), 2053, (2066,)),
+     ('call', (2069,), 2068, (2067,))),
+    (2069,)))))

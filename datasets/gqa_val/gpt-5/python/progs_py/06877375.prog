@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try finding the headboard (both spaced and unspaced variants)
+    headboard_patches = image_patch.find("head board")
+    if len(headboard_patches) == 0:
+        headboard_patches = image_patch.find("headboard")
+    # If no headboard is found, ask directly
+    if len(headboard_patches) == 0:
+        return image_patch.simple_query("Which color is the head board made of metal?")
+    # Prefer the headboard patch that is made of metal
+    for hb_patch in headboard_patches:
+        if hb_patch.verify_property("head board", "metal") or hb_patch.verify_property("headboard", "metal"):
+            return hb_patch.simple_query("Which color is the head board made of metal?")
+    # If none verified as metal, ask about the first headboard patch as fallback
+    return headboard_patches[0].simple_query("Which color is the head board made of metal?")

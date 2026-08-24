@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    candidate_labels = ("person", "man", "woman", "chef", "cook", "boy", "girl", "waiter", "waitress")
+    for label in candidate_labels:
+        subject_patches = image_patch.find(label)
+        for subject_patch in subject_patches:
+            is_wearing_apron = (subject_patch.simple_query(f"Is the {label} wearing an apron?") == "yes")
+            if is_wearing_apron:
+                result = subject_patch.simple_query("Who is wearing an apron?")
+    if not result:
+        result = image_patch.simple_query("Who is wearing an apron?")
+    return result

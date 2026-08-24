@@ -1,0 +1,122 @@
+def execute_command():
+    NamesSchema = None
+    PriceRangeSchema = None
+    RatingSchema = None
+    best_company_name = None
+    best_company_price_per_day = None
+    best_company_rating = None
+    best_hotel_max_price = None
+    best_hotel_min_price = None
+    best_hotel_name = None
+    best_hotel_rating = None
+    best_restaurant_name = None
+    best_restaurant_price_per_person = None
+    best_restaurant_rating = None
+    city = None
+    companies_schema = None
+    companies_str = None
+    company_names = None
+    company_prices = None
+    company_ratings_text = None
+    ctxt = None
+    estimated_min_cost = None
+    hotel_names = None
+    hotel_prices_text = None
+    hotel_ratings_text = None
+    hotel_total_min = None
+    hotels_schema = None
+    hotels_str = None
+    meals_per_day = None
+    pr = None
+    price_pd = None
+    price_pp = None
+    price_text = None
+    rating_text = None
+    restaurant_names = None
+    restaurant_prices = None
+    restaurant_ratings_text = None
+    restaurant_total_min = None
+    restaurants_schema = None
+    restaurants_str = None
+    rr = None
+    rtext = None
+    trip_days = None
+    city = 'Paris'
+    trip_days = 3
+    meals_per_day = 2
+    hotels_str = get_all_hotels_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    hotels_schema = query_ai_assistant('Here is a list of hotels: {}. Extract ONLY the hotel names as a clean JSON list of strings, preserving exact names and order.'.format(hotels_str), NamesSchema)
+    hotel_names = hotels_schema.names
+    hotel_prices_text = get_hotels_prices(hotel_names)
+    hotel_ratings_text = get_rating_reviews_for_hotels(hotel_names)
+    PriceRangeSchema = CreateSchema('min_price', float, 'max_price', float)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_hotel_name = None
+    best_hotel_rating = -1.0
+    best_hotel_min_price = float('inf')
+    best_hotel_max_price = float('inf')
+
+    def _for(h, NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days):
+        price_text = hotel_prices_text.get(h)
+        rating_text = hotel_ratings_text.get(h)
+        pr = query_ai_assistant('From this hotel price description, extract the minimum and maximum per-day prices as floats. If only one price is present, use it for both min_price and max_price. Text: {}'.format(price_text), PriceRangeSchema)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this hotel rating and reviews: {}'.format(rating_text), RatingSchema)
+
+        def _if(NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days):
+            best_hotel_name = h
+            best_hotel_rating = rr.rating
+            best_hotel_min_price = pr.min_price
+            best_hotel_max_price = pr.max_price
+            return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days)
+        NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days = if_stmt(_if, None, or_expr(rr.rating > best_hotel_rating, rr.rating == best_hotel_rating and pr.max_price < best_hotel_max_price), (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days))
+        return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days)
+    NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days = for_stmt(_for, hotel_names, (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_text, rating_text, rr, trip_days))
+    restaurants_str = get_all_restaurants_in_city(city)
+    restaurants_schema = query_ai_assistant('Here is a list of restaurants: {}. Extract ONLY the restaurant names as a clean JSON list of strings, preserving exact names and order.'.format(restaurants_str), NamesSchema)
+    restaurant_names = restaurants_schema.names
+    restaurant_ratings_text = get_rating_reviews_for_restaurants(restaurant_names)
+    restaurant_prices = get_price_for_restaurants(restaurant_names)
+    best_restaurant_name = None
+    best_restaurant_rating = -1.0
+    best_restaurant_price_per_person = float('inf')
+
+    def _for(r, NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days):
+        rtext = restaurant_ratings_text.get(r)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this restaurant rating and reviews: {}'.format(rtext), RatingSchema)
+        price_pp = restaurant_prices.get(r)
+
+        def _if(NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days):
+            best_restaurant_name = r
+            best_restaurant_rating = rr.rating
+            best_restaurant_price_per_person = price_pp
+            return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days)
+        NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days = if_stmt(_if, None, or_expr(rr.rating > best_restaurant_rating, rr.rating == best_restaurant_rating and price_pp < best_restaurant_price_per_person), (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days))
+        return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days)
+    NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days = for_stmt(_for, restaurant_names, (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days))
+    companies_str = get_all_car_rental_companies_in_city(city)
+    companies_schema = query_ai_assistant('Here is a list of car rental companies: {}. Extract ONLY the company names as a clean JSON list of strings, preserving exact names and order.'.format(companies_str), NamesSchema)
+    company_names = companies_schema.names
+    company_ratings_text = get_rating_reviews_for_car_rental(company_names)
+    company_prices = get_car_price_per_day(company_names)
+    best_company_name = None
+    best_company_rating = -1.0
+    best_company_price_per_day = float('inf')
+
+    def _for(c, NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days):
+        ctxt = company_ratings_text.get(c)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this car rental company rating and reviews: {}'.format(ctxt), RatingSchema)
+        price_pd = company_prices.get(c)
+
+        def _if(NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days):
+            best_company_name = c
+            best_company_rating = rr.rating
+            best_company_price_per_day = price_pd
+            return (NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days)
+        NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days = if_stmt(_if, None, or_expr(rr.rating > best_company_rating, rr.rating == best_company_rating and price_pd < best_company_price_per_day), (NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days))
+        return (NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days)
+    NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days = for_stmt(_for, company_names, (NamesSchema, PriceRangeSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, city, companies_schema, companies_str, company_names, company_prices, company_ratings_text, ctxt, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, meals_per_day, pr, price_pd, price_pp, price_text, rating_text, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, rr, rtext, trip_days))
+    hotel_total_min = best_hotel_min_price * trip_days
+    restaurant_total_min = best_restaurant_price_per_person * meals_per_day * trip_days
+    estimated_min_cost = hotel_total_min + restaurant_total_min
+    return {'car_rental_company': best_company_name, 'hotel_name': best_hotel_name, 'restaurant_name': best_restaurant_name, 'estimated_min_cost': estimated_min_cost}

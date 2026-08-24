@@ -1,0 +1,63 @@
+def execute_command(image) -> str:
+    black_umbrella = None
+    found_patches = None
+    image_patch = None
+    result = None
+    umbrella_patches = None
+    vehicle_types = None
+    white_vehicle = None
+    image_patch = ImagePatch(image)
+    result = None
+    umbrella_patches = image_patch.find('umbrella')
+    black_umbrella = None
+
+    def _for(umbrella_patch, black_umbrella, image_patch, result, umbrella_patches):
+
+        def _if(black_umbrella, image_patch, result, umbrella_patches):
+
+            def _if(black_umbrella, image_patch, result, umbrella_patches):
+                black_umbrella = umbrella_patch
+                return (black_umbrella, image_patch, result, umbrella_patches)
+            black_umbrella, image_patch, result, umbrella_patches = if_stmt(_if, None, umbrella_patch.verify_property('umbrella', 'black'), (black_umbrella, image_patch, result, umbrella_patches))
+            return (black_umbrella, image_patch, result, umbrella_patches)
+        black_umbrella, image_patch, result, umbrella_patches = if_stmt(_if, None, black_umbrella is None, (black_umbrella, image_patch, result, umbrella_patches))
+        return (black_umbrella, image_patch, result, umbrella_patches)
+    black_umbrella, image_patch, result, umbrella_patches = for_stmt(_for, umbrella_patches, (black_umbrella, image_patch, result, umbrella_patches))
+    vehicle_types = ('vehicle', 'car', 'truck', 'bus', 'van', 'suv', 'automobile')
+    white_vehicle = None
+
+    def _for(vehicle_name, black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+        found_patches = image_patch.find(vehicle_name)
+
+        def _for(vehicle_patch, black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+
+            def _if(black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+
+                def _if(black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+                    white_vehicle = vehicle_patch
+                    return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+                black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle = if_stmt(_if, None, vehicle_patch.verify_property(vehicle_name, 'white'), (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle))
+                return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+            black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle = if_stmt(_if, None, white_vehicle is None, (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle))
+            return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+        black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle = for_stmt(_for, found_patches, (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle))
+        return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+    black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle = for_stmt(_for, vehicle_types, (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle))
+
+    def _if(black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+
+        def _if(black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+            result = 'right'
+            return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+
+        def _else(black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+            result = 'left'
+            return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+        black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle = if_stmt(_if, _else, black_umbrella.horizontal_center > white_vehicle.horizontal_center, (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle))
+        return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+
+    def _else(black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle):
+        result = image_patch.simple_query('Is the black umbrella to the right or to the left of the white vehicle?')
+        return (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle)
+    black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle = if_stmt(_if, _else, and_expr(black_umbrella is not None, white_vehicle is not None), (black_umbrella, found_patches, image_patch, result, umbrella_patches, vehicle_types, white_vehicle))
+    return result

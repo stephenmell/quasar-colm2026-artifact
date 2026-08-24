@@ -1,0 +1,12 @@
+# Is that a red tablecloth?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tablecloth_patches = image_patch.find("tablecloth")
+    if len(tablecloth_patches) == 0:
+        result = image_patch.simple_query("Is that a red tablecloth?")
+    else:
+        result = "no"
+        for tablecloth_patch in tablecloth_patches:
+            if tablecloth_patch.verify_property("tablecloth", "red"):
+                result = "yes"
+    return result

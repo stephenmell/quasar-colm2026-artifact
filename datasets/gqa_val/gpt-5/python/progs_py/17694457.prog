@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    nightstand_patches = image_patch.find("nightstand")
+    # If no nightstand is found, ask directly
+    if len(nightstand_patches) == 0:
+        return image_patch.simple_query("Is the pillow to the right of the nightstand brown or white?")
+    nightstand_patch = nightstand_patches[0]
+
+    pillow_patches = image_patch.find("pillow")
+    # If no pillows are found, ask directly
+    if len(pillow_patches) == 0:
+        return image_patch.simple_query("Is the pillow to the right of the nightstand brown or white?")
+
+    # Filter pillows to those right of the nightstand
+    right_pillows = [p for p in pillow_patches if p.horizontal_center > nightstand_patch.horizontal_center]
+    if len(right_pillows) == 0:
+        return image_patch.simple_query("Is the pillow to the right of the nightstand brown or white?")
+
+    # Choose the closest pillow to the right
+    right_pillows.sort(key=lambda p: p.horizontal_center - nightstand_patch.horizontal_center)
+    target_pillow = right_pillows[0]
+    return target_pillow.best_text_match(["brown", "white"])

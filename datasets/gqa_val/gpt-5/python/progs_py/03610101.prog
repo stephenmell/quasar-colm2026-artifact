@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find("vehicle")
+
+    # Filter to blue vehicles
+    blue_vehicle_patches = []
+    for vehicle_patch in vehicle_patches:
+        if vehicle_patch.verify_property("vehicle", "blue"):
+            blue_vehicle_patches.append(vehicle_patch)
+
+    # If no blue vehicle is detected, ask directly
+    if len(blue_vehicle_patches) == 0:
+        return image_patch.simple_query("Is the blue vehicle to the left of a tent?")
+
+    tent_patches = image_patch.find("tent")
+    if len(tent_patches) == 0:
+        return "no"
+
+    for vehicle_patch in blue_vehicle_patches:
+        for tent_patch in tent_patches:
+            if vehicle_patch.horizontal_center < tent_patch.horizontal_center:
+                return "yes"
+    return "no"

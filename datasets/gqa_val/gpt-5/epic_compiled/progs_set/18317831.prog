@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    bottom_patch = None
+    cucumber_patches = None
+    image_patch = None
+    mid_vertical = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    mid_vertical = int(image_patch.vertical_center)
+    bottom_patch = image_patch.crop(image_patch.left, image_patch.lower, image_patch.right, mid_vertical)
+    cucumber_patches = bottom_patch.find('cucumber')
+
+    def _if(bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result):
+        result = bottom_patch.simple_query('Is there a plate to the right of the cucumber?')
+        return (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result)
+
+    def _else(bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result):
+        plate_patches = bottom_patch.find('plate')
+
+        def _if(bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result):
+            result = 'no'
+            return (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result)
+
+        def _else(bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result):
+            result = 'no'
+
+            def _for(cucumber_patch, bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result):
+
+                def _for(plate_patch, bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result):
+
+                    def _if(bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result):
+                        result = 'yes'
+                        return (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result)
+                    bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result = if_stmt(_if, None, plate_patch.horizontal_center > cucumber_patch.horizontal_center, (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result))
+                    return (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result)
+                bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result = for_stmt(_for, plate_patches, (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result))
+                return (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result)
+            bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result = for_stmt(_for, cucumber_patches, (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result))
+            return (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result)
+        bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result = if_stmt(_if, _else, len(plate_patches) == 0, (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result))
+        return (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result)
+    bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result = if_stmt(_if, _else, len(cucumber_patches) == 0, (bottom_patch, cucumber_patches, image_patch, mid_vertical, plate_patches, result))
+    return result

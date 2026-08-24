@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+
+    if len(person_patches) == 0:
+        result = image_patch.simple_query("Do you see any purses to the right of the person in the middle?")
+    else:
+        # Select the person whose horizontal center is closest to the image center (the "middle" person)
+        image_center_x = image_patch.horizontal_center
+        best_idx = 0
+        best_dist = None
+        idx = 0
+        for person_patch in person_patches:
+            dist = abs(person_patch.horizontal_center - image_center_x)
+            if best_dist is None or dist < best_dist:
+                best_dist = dist
+                best_idx = idx
+            idx = idx + 1
+        middle_person = person_patches[best_idx]
+
+        # Look for any purses (including handbags) to the right of the middle person
+        result = "no"
+        purse_patches = ()
+        purse_patches = purse_patches + image_patch.find("purse")
+        purse_patches = purse_patches + image_patch.find("handbag")
+        for purse_patch in purse_patches:
+            if purse_patch.horizontal_center > middle_person.horizontal_center:
+                result = "yes"
+    return result

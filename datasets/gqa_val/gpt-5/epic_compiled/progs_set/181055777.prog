@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    door_patches = None
+    image_patch = None
+    is_white = None
+    result = None
+    image_patch = ImagePatch(image)
+    door_patches = image_patch.find('door')
+
+    def _if(door_patches, image_patch, is_white, result):
+        result = image_patch.simple_query('Do you see any door that is not white?')
+        return (door_patches, image_patch, is_white, result)
+
+    def _else(door_patches, image_patch, is_white, result):
+        result = 'no'
+
+        def _for(door_patch, door_patches, image_patch, is_white, result):
+            is_white = door_patch.verify_property('door', 'white')
+
+            def _if(door_patches, image_patch, is_white, result):
+                result = 'yes'
+                return (door_patches, image_patch, is_white, result)
+            door_patches, image_patch, is_white, result = if_stmt(_if, None, not_expr(is_white), (door_patches, image_patch, is_white, result))
+            return (door_patches, image_patch, is_white, result)
+        door_patches, image_patch, is_white, result = for_stmt(_for, door_patches, (door_patches, image_patch, is_white, result))
+        return (door_patches, image_patch, is_white, result)
+    door_patches, image_patch, is_white, result = if_stmt(_if, _else, len(door_patches) == 0, (door_patches, image_patch, is_white, result))
+    return result

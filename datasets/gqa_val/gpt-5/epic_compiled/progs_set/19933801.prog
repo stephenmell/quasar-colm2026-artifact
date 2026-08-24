@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    bottom_sheet_patch = None
+    image_patch = None
+    man_patches = None
+    result = None
+    sheet_patches = None
+    image_patch = ImagePatch(image)
+    sheet_patches = image_patch.find('sheet')
+
+    def _if(bottom_sheet_patch, image_patch, man_patches, result, sheet_patches):
+        result = image_patch.simple_query('Are there men to the right of the sheet that is in the bottom?')
+        return (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches)
+
+    def _else(bottom_sheet_patch, image_patch, man_patches, result, sheet_patches):
+        bottom_sheet_patch = sheet_patches[0]
+
+        def _for(sheet_patch, bottom_sheet_patch, image_patch, sheet_patches):
+
+            def _if(bottom_sheet_patch, image_patch, sheet_patches):
+                bottom_sheet_patch = sheet_patch
+                return (bottom_sheet_patch, image_patch, sheet_patches)
+            bottom_sheet_patch, image_patch, sheet_patches = if_stmt(_if, None, sheet_patch.vertical_center < bottom_sheet_patch.vertical_center, (bottom_sheet_patch, image_patch, sheet_patches))
+            return (bottom_sheet_patch, image_patch, sheet_patches)
+        bottom_sheet_patch, image_patch, sheet_patches = for_stmt(_for, sheet_patches, (bottom_sheet_patch, image_patch, sheet_patches))
+        man_patches = image_patch.find('man')
+
+        def _if(bottom_sheet_patch, image_patch, man_patches, result, sheet_patches):
+            result = 'no'
+            return (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches)
+
+        def _else(bottom_sheet_patch, image_patch, man_patches, result, sheet_patches):
+            result = 'no'
+
+            def _for(man_patch, bottom_sheet_patch, image_patch, man_patches, result, sheet_patches):
+
+                def _if(bottom_sheet_patch, image_patch, man_patches, result, sheet_patches):
+                    result = 'yes'
+                    return (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches)
+                bottom_sheet_patch, image_patch, man_patches, result, sheet_patches = if_stmt(_if, None, man_patch.horizontal_center > bottom_sheet_patch.horizontal_center, (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches))
+                return (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches)
+            bottom_sheet_patch, image_patch, man_patches, result, sheet_patches = for_stmt(_for, man_patches, (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches))
+            return (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches)
+        bottom_sheet_patch, image_patch, man_patches, result, sheet_patches = if_stmt(_if, _else, len(man_patches) == 0, (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches))
+        return (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches)
+    bottom_sheet_patch, image_patch, man_patches, result, sheet_patches = if_stmt(_if, _else, len(sheet_patches) == 0, (bottom_sheet_patch, image_patch, man_patches, result, sheet_patches))
+    return result

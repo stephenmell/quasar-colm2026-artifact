@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tiles_patches = image_patch.find("tiles")
+    tile_patches = image_patch.find("tile")
+    all_patches = tiles_patches + tile_patches
+
+    if len(all_patches) == 0:
+        result = image_patch.simple_query("Do the tiles look pink?")
+    else:
+        is_pink = False
+        for patch in all_patches:
+            has_pink_tiles = patch.verify_property("tiles", "pink")
+            has_pink_tile = patch.verify_property("tile", "pink")
+            if has_pink_tiles or has_pink_tile:
+                is_pink = True
+        result = bool_to_yesno(is_pink)
+    return result

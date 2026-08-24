@@ -1,0 +1,13 @@
+# Is it a forest?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    if image_patch.exists("forest"):
+        result = "yes"
+    else:
+        answer = image_patch.simple_query("Is it a forest?")
+        if answer == "yes":
+            result = "yes"
+        else:
+            result = "no"
+    return result

@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    car_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find('car')
+
+    def _if(car_patches, image_patch, result):
+        result = image_patch.simple_query('Does that car look red?')
+        return (car_patches, image_patch, result)
+
+    def _else(car_patches, image_patch, result):
+        result = 'no'
+
+        def _for(car_patch, car_patches, image_patch, result):
+
+            def _if(car_patches, image_patch, result):
+                result = 'yes'
+                return (car_patches, image_patch, result)
+            car_patches, image_patch, result = if_stmt(_if, None, car_patch.verify_property('car', 'red'), (car_patches, image_patch, result))
+            return (car_patches, image_patch, result)
+        car_patches, image_patch, result = for_stmt(_for, car_patches, (car_patches, image_patch, result))
+        return (car_patches, image_patch, result)
+    car_patches, image_patch, result = if_stmt(_if, _else, len(car_patches) == 0, (car_patches, image_patch, result))
+    return result

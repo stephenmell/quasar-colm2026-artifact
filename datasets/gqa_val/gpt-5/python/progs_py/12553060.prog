@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    remote_patches = image_patch.find("remote")
+    if len(remote_patches) == 0:
+        return image_patch.simple_query("What color is the chair the remote is to the right of?")
+    chair_patches = image_patch.find("chair")
+    if len(chair_patches) == 0:
+        return image_patch.simple_query("What color is the chair the remote is to the right of?")
+
+    closest_chair = None
+    best_dx = None
+    best_dv = None
+    for remote_patch in remote_patches:
+        for chair_patch in chair_patches:
+            dx = remote_patch.horizontal_center - chair_patch.horizontal_center
+            if dx > 0:  # chair is to the left of the remote (remote is to the right of the chair)
+                dv = abs(remote_patch.vertical_center - chair_patch.vertical_center)
+                if best_dx is None or dx < best_dx or (dx == best_dx and dv < best_dv):
+                    best_dx = dx
+                    best_dv = dv
+                    closest_chair = chair_patch
+
+    if closest_chair is None:
+        return image_patch.simple_query("What color is the chair the remote is to the right of?")
+    return closest_chair.simple_query("What color is the chair?")

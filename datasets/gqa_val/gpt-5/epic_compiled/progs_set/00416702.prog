@@ -1,0 +1,81 @@
+def execute_command(image) -> str:
+    bird_patches = None
+    flower_patches = None
+    green_found = None
+    image_patch = None
+    left = None
+    lower = None
+    near_patch = None
+    pad_x = None
+    pad_y = None
+    result = None
+    right = None
+    upper = None
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find('bird')
+
+    def _if(bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+        result = image_patch.simple_query('Do the flowers near the bird look green?')
+        return (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+
+    def _else(bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+        result = 'no'
+
+        def _for(bird_patch, bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+            pad_x = int(0.15 * image_patch.width)
+            pad_y = int(0.15 * image_patch.height)
+            left = bird_patch.left - pad_x
+
+            def _if(bird_patches, image_patch, left, pad_x, pad_y, result):
+                left = image_patch.left
+                return (bird_patches, image_patch, left, pad_x, pad_y, result)
+            bird_patches, image_patch, left, pad_x, pad_y, result = if_stmt(_if, None, left < image_patch.left, (bird_patches, image_patch, left, pad_x, pad_y, result))
+            lower = bird_patch.lower - pad_y
+
+            def _if(bird_patches, image_patch, left, lower, pad_x, pad_y, result):
+                lower = image_patch.lower
+                return (bird_patches, image_patch, left, lower, pad_x, pad_y, result)
+            bird_patches, image_patch, left, lower, pad_x, pad_y, result = if_stmt(_if, None, lower < image_patch.lower, (bird_patches, image_patch, left, lower, pad_x, pad_y, result))
+            right = bird_patch.right + pad_x
+
+            def _if(bird_patches, image_patch, left, lower, pad_x, pad_y, result, right):
+                right = image_patch.right
+                return (bird_patches, image_patch, left, lower, pad_x, pad_y, result, right)
+            bird_patches, image_patch, left, lower, pad_x, pad_y, result, right = if_stmt(_if, None, right > image_patch.right, (bird_patches, image_patch, left, lower, pad_x, pad_y, result, right))
+            upper = bird_patch.upper + pad_y
+
+            def _if(bird_patches, image_patch, left, lower, pad_x, pad_y, result, right, upper):
+                upper = image_patch.upper
+                return (bird_patches, image_patch, left, lower, pad_x, pad_y, result, right, upper)
+            bird_patches, image_patch, left, lower, pad_x, pad_y, result, right, upper = if_stmt(_if, None, upper > image_patch.upper, (bird_patches, image_patch, left, lower, pad_x, pad_y, result, right, upper))
+            near_patch = image_patch.crop(left, lower, right, upper)
+            flower_patches = near_patch.find('flower')
+
+            def _if(bird_patches, flower_patches, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+                flower_patches = near_patch.find('flowers')
+                return (bird_patches, flower_patches, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+            bird_patches, flower_patches, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper = if_stmt(_if, None, len(flower_patches) == 0, (bird_patches, flower_patches, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper))
+            green_found = False
+
+            def _if(bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+
+                def _for(flower_patch, bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+
+                    def _if(bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+                        green_found = True
+                        return (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+                    bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper = if_stmt(_if, None, or_expr(flower_patch.verify_property('flower', 'green'), flower_patch.verify_property('flowers', 'green')), (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper))
+                    return (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+                bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper = for_stmt(_for, flower_patches, (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper))
+                return (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+            bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper = if_stmt(_if, None, len(flower_patches) > 0, (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper))
+
+            def _if(bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper):
+                result = 'yes'
+                return (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+            bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper = if_stmt(_if, None, green_found, (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper))
+            return (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+        bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper = for_stmt(_for, bird_patches, (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper))
+        return (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper)
+    bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper = if_stmt(_if, _else, len(bird_patches) == 0, (bird_patches, flower_patches, green_found, image_patch, left, lower, near_patch, pad_x, pad_y, result, right, upper))
+    return result

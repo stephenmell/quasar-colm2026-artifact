@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    found_calm = None
+    image_patch = None
+    is_calm = None
+    result = None
+    selected_color = None
+    water_patches = None
+    image_patch = ImagePatch(image)
+    water_patches = image_patch.find('water')
+
+    def _if(found_calm, image_patch, is_calm, result, selected_color, water_patches):
+        result = image_patch.simple_query('Is the calm water black or green?')
+        return (found_calm, image_patch, is_calm, result, selected_color, water_patches)
+
+    def _else(found_calm, image_patch, is_calm, result, selected_color, water_patches):
+        found_calm = False
+        selected_color = None
+
+        def _for(water_patch, found_calm, image_patch, is_calm, selected_color, water_patches):
+            is_calm = water_patch.verify_property('water', 'calm')
+
+            def _if(found_calm, image_patch, is_calm, selected_color, water_patches):
+                selected_color = water_patch.best_text_match(('black', 'green'))
+                found_calm = True
+                return (found_calm, image_patch, is_calm, selected_color, water_patches)
+            found_calm, image_patch, is_calm, selected_color, water_patches = if_stmt(_if, None, and_expr(is_calm, not found_calm), (found_calm, image_patch, is_calm, selected_color, water_patches))
+            return (found_calm, image_patch, is_calm, selected_color, water_patches)
+        found_calm, image_patch, is_calm, selected_color, water_patches = for_stmt(_for, water_patches, (found_calm, image_patch, is_calm, selected_color, water_patches))
+
+        def _if(found_calm, image_patch, is_calm, result, selected_color, water_patches):
+            result = selected_color
+            return (found_calm, image_patch, is_calm, result, selected_color, water_patches)
+
+        def _else(found_calm, image_patch, is_calm, result, selected_color, water_patches):
+            result = image_patch.simple_query('Is the calm water black or green?')
+            return (found_calm, image_patch, is_calm, result, selected_color, water_patches)
+        found_calm, image_patch, is_calm, result, selected_color, water_patches = if_stmt(_if, _else, and_expr(found_calm, selected_color), (found_calm, image_patch, is_calm, result, selected_color, water_patches))
+        return (found_calm, image_patch, is_calm, result, selected_color, water_patches)
+    found_calm, image_patch, is_calm, result, selected_color, water_patches = if_stmt(_if, _else, len(water_patches) == 0, (found_calm, image_patch, is_calm, result, selected_color, water_patches))
+    return result

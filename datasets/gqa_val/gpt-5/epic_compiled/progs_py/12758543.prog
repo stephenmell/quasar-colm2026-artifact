@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    can_patches = image_patch.find("can")
+
+    if len(can_patches) == 0:
+        result = image_patch.simple_query("Do you see any screens to the left of the cans on the counter?")
+    else:
+        screen_patches = image_patch.find("screen")
+        if len(screen_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for can_patch in can_patches:
+                is_on_counter = (can_patch.simple_query("Is the can on the counter?") == "yes")
+                if is_on_counter:
+                    for screen_patch in screen_patches:
+                        if screen_patch.horizontal_center < can_patch.horizontal_center:
+                            result = "yes"
+    return result

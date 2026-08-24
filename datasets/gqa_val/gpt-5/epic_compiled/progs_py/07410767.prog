@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_mirror = image_patch.exists("mirror")
+    is_chair = image_patch.exists("chair")
+    result = bool_to_yesno(is_mirror or is_chair)
+    return result

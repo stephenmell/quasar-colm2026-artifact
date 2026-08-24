@@ -1,0 +1,80 @@
+def execute_command():
+    chosen_event = None
+    events = None
+    events_all = None
+    events_generic = None
+    new_event = None
+    participants = None
+    result = None
+    events = search_calendar_events('Introductory meeting', '2024-05-15')
+    chosen_event = None
+
+    def _if(chosen_event, events):
+
+        def _for(e, chosen_event, events):
+
+            def _if(chosen_event, events):
+
+                def _if(chosen_event, events):
+                    chosen_event = e
+                    return (chosen_event, events)
+                chosen_event, events = if_stmt(_if, None, chosen_event is None, (chosen_event, events))
+                return (chosen_event, events)
+            chosen_event, events = if_stmt(_if, None, and_expr(e.start_time.strftime('%Y-%m-%d') == '2024-05-15', e.title == 'Introductory meeting' or e.title.lower() == 'introductory meeting'), (chosen_event, events))
+            return (chosen_event, events)
+        chosen_event, events = for_stmt(_for, events, (chosen_event, events))
+        return (chosen_event, events)
+    chosen_event, events = if_stmt(_if, None, len(events) != 0, (chosen_event, events))
+
+    def _if(chosen_event, events, events_all):
+        events_all = search_calendar_events('Introductory meeting', None)
+
+        def _if(chosen_event, events, events_all):
+
+            def _for(e, chosen_event, events, events_all):
+
+                def _if(chosen_event, events, events_all):
+
+                    def _if(chosen_event, events, events_all):
+                        chosen_event = e
+                        return (chosen_event, events, events_all)
+                    chosen_event, events, events_all = if_stmt(_if, None, chosen_event is None, (chosen_event, events, events_all))
+                    return (chosen_event, events, events_all)
+                chosen_event, events, events_all = if_stmt(_if, None, and_expr(e.start_time.strftime('%Y-%m-%d') == '2024-05-15', e.title == 'Introductory meeting' or e.title.lower() == 'introductory meeting'), (chosen_event, events, events_all))
+                return (chosen_event, events, events_all)
+            chosen_event, events, events_all = for_stmt(_for, events_all, (chosen_event, events, events_all))
+            return (chosen_event, events, events_all)
+        chosen_event, events, events_all = if_stmt(_if, None, len(events_all) != 0, (chosen_event, events, events_all))
+        return (chosen_event, events, events_all)
+    chosen_event, events, events_all = if_stmt(_if, None, chosen_event is None, (chosen_event, events, events_all))
+
+    def _if(chosen_event, events, events_all, events_generic):
+        events_generic = search_calendar_events('Introductory', '2024-05-15')
+
+        def _if(chosen_event, events, events_all, events_generic):
+
+            def _for(e, chosen_event, events, events_all, events_generic):
+
+                def _if(chosen_event, events, events_all, events_generic):
+
+                    def _if(chosen_event, events, events_all, events_generic):
+                        chosen_event = e
+                        return (chosen_event, events, events_all, events_generic)
+                    chosen_event, events, events_all, events_generic = if_stmt(_if, None, chosen_event is None, (chosen_event, events, events_all, events_generic))
+                    return (chosen_event, events, events_all, events_generic)
+                chosen_event, events, events_all, events_generic = if_stmt(_if, None, e.start_time.strftime('%Y-%m-%d') == '2024-05-15', (chosen_event, events, events_all, events_generic))
+                return (chosen_event, events, events_all, events_generic)
+            chosen_event, events, events_all, events_generic = for_stmt(_for, events_generic, (chosen_event, events, events_all, events_generic))
+            return (chosen_event, events, events_all, events_generic)
+        chosen_event, events, events_all, events_generic = if_stmt(_if, None, len(events_generic) != 0, (chosen_event, events, events_all, events_generic))
+        return (chosen_event, events, events_all, events_generic)
+    chosen_event, events, events_all, events_generic = if_stmt(_if, None, chosen_event is None, (chosen_event, events, events_all, events_generic))
+    result = "Could not find the 'Introductory meeting' event on 2024-05-15 to copy participants from, so I did not create the follow-up event."
+
+    def _if(chosen_event, events, events_all, events_generic, new_event, participants, result):
+        participants = chosen_event.participants
+        new_event = create_calendar_event('Follow-up meeting', '2024-05-16 10:00', '2024-05-16 11:00', 'Follow-up meeting to discuss the project.', participants, None)
+        result = "Created 'Follow-up meeting' on 2024-05-16 from 10:00 to 11:00 with the same participants as the 'Introductory meeting' on 2024-05-15. Event ID: {}. Participants: {}.".format(new_event.id_, ', '.join(participants))
+        return (chosen_event, events, events_all, events_generic, new_event, participants, result)
+    chosen_event, events, events_all, events_generic, new_event, participants, result = if_stmt(_if, None, chosen_event is not None, (chosen_event, events, events_all, events_generic, new_event, participants, result))
+    return result

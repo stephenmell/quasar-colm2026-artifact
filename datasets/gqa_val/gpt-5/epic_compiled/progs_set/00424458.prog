@@ -1,0 +1,42 @@
+def execute_command(image) -> str:
+    curly_hair_patches = None
+    hair_patches = None
+    image_patch = None
+    is_curly = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    curly_hair_patches = image_patch.find('curly hair')
+
+    def _if(curly_hair_patches, hair_patches, image_patch, is_curly, result):
+        hair_patches = image_patch.find('hair')
+
+        def _if(curly_hair_patches, hair_patches, image_patch, is_curly, result):
+            result = image_patch.simple_query('Which color is the curly hair?')
+            return (curly_hair_patches, hair_patches, image_patch, is_curly, result)
+
+        def _else(curly_hair_patches, hair_patches, image_patch, is_curly, result):
+
+            def _for(hair_patch, curly_hair_patches, hair_patches, image_patch, is_curly, result):
+                is_curly = hair_patch.verify_property('hair', 'curly')
+
+                def _if(curly_hair_patches, hair_patches, image_patch, is_curly, result):
+                    result = hair_patch.simple_query('Which color is the curly hair?')
+                    return (curly_hair_patches, hair_patches, image_patch, is_curly, result)
+                curly_hair_patches, hair_patches, image_patch, is_curly, result = if_stmt(_if, None, and_expr(is_curly, not result), (curly_hair_patches, hair_patches, image_patch, is_curly, result))
+                return (curly_hair_patches, hair_patches, image_patch, is_curly, result)
+            curly_hair_patches, hair_patches, image_patch, is_curly, result = for_stmt(_for, hair_patches, (curly_hair_patches, hair_patches, image_patch, is_curly, result))
+
+            def _if(curly_hair_patches, hair_patches, image_patch, is_curly, result):
+                result = image_patch.simple_query('Which color is the curly hair?')
+                return (curly_hair_patches, hair_patches, image_patch, is_curly, result)
+            curly_hair_patches, hair_patches, image_patch, is_curly, result = if_stmt(_if, None, not_expr(result), (curly_hair_patches, hair_patches, image_patch, is_curly, result))
+            return (curly_hair_patches, hair_patches, image_patch, is_curly, result)
+        curly_hair_patches, hair_patches, image_patch, is_curly, result = if_stmt(_if, _else, len(hair_patches) == 0, (curly_hair_patches, hair_patches, image_patch, is_curly, result))
+        return (curly_hair_patches, hair_patches, image_patch, is_curly, result)
+
+    def _else(curly_hair_patches, hair_patches, image_patch, is_curly, result):
+        result = curly_hair_patches[0].simple_query('Which color is the curly hair?')
+        return (curly_hair_patches, hair_patches, image_patch, is_curly, result)
+    curly_hair_patches, hair_patches, image_patch, is_curly, result = if_stmt(_if, _else, len(curly_hair_patches) == 0, (curly_hair_patches, hair_patches, image_patch, is_curly, result))
+    return result

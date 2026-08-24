@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    boy_patches = image_patch.find("boy")
+    if len(boy_patches) == 0:
+        result = image_patch.simple_query("Is the drink to the right of the boy that eats a pizza?")
+    else:
+        # Collect possible drink-like objects
+        drink_patches = ()
+        for term in ("drink", "cup", "glass", "bottle", "can", "mug"):
+            term_patches = image_patch.find(term)
+            if len(term_patches) > 0:
+                drink_patches = drink_patches + term_patches
+
+        eating_boy_found = False
+        for boy_patch in boy_patches:
+            is_eating_pizza = (boy_patch.simple_query("Is the boy eating a pizza?") == "yes")
+            if is_eating_pizza:
+                eating_boy_found = True
+                for drink_patch in drink_patches:
+                    if drink_patch.horizontal_center > boy_patch.horizontal_center:
+                        result = "yes"
+        if not eating_boy_found:
+            result = image_patch.simple_query("Is the drink to the right of the boy that eats a pizza?")
+    return result

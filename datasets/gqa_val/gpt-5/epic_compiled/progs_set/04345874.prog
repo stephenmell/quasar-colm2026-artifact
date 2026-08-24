@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    ball_found = None
+    image_patch = None
+    racket_found = None
+    result = None
+    image_patch = ImagePatch(image)
+    racket_found = or_expr(image_patch.exists('racket'), or_expr(image_patch.exists('tennis racket'), or_expr(image_patch.exists('racquet'), image_patch.exists('tennis racquet'))))
+    ball_found = or_expr(image_patch.exists('ball'), or_expr(image_patch.exists('sports ball'), image_patch.exists('tennis ball')))
+    result = bool_to_yesno(or_expr(racket_found, ball_found))
+    return result

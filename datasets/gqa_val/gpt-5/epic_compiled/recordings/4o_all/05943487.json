@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2412612",
+          [
+            0,
+            0,
+            500,
+            186
+          ]
+        ],
+        "Does the sand beside the grass look gold?"
+      ],
+      "No.",
+      976399263
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,1 @@
+raise NotEnoughInformationError("No actionable user request was provided to convert into structured Python code.")

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    grass_patches = None
+    image_patch = None
+    is_tan = None
+    result = None
+    image_patch = ImagePatch(image)
+    grass_patches = image_patch.find('grass')
+
+    def _if(grass_patches, image_patch, is_tan, result):
+        result = image_patch.simple_query('Is there grass in the picture that is not tan?')
+        return (grass_patches, image_patch, is_tan, result)
+
+    def _else(grass_patches, image_patch, is_tan, result):
+        result = 'no'
+
+        def _for(grass_patch, grass_patches, image_patch, is_tan, result):
+            is_tan = grass_patch.verify_property('grass', 'tan')
+
+            def _if(grass_patches, image_patch, is_tan, result):
+                result = 'yes'
+                return (grass_patches, image_patch, is_tan, result)
+            grass_patches, image_patch, is_tan, result = if_stmt(_if, None, not_expr(is_tan), (grass_patches, image_patch, is_tan, result))
+            return (grass_patches, image_patch, is_tan, result)
+        grass_patches, image_patch, is_tan, result = for_stmt(_for, grass_patches, (grass_patches, image_patch, is_tan, result))
+        return (grass_patches, image_patch, is_tan, result)
+    grass_patches, image_patch, is_tan, result = if_stmt(_if, _else, len(grass_patches) == 0, (grass_patches, image_patch, is_tan, result))
+    return result

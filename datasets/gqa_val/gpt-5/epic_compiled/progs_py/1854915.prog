@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find("device")
+    if len(device_patches) == 0:
+        result = image_patch.simple_query("Are there any bottles to the right of the black device?")
+    else:
+        bottle_patches = image_patch.find("bottle")
+        if len(bottle_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for device_patch in device_patches:
+                is_black_device = device_patch.verify_property("device", "black")
+                if is_black_device:
+                    for bottle_patch in bottle_patches:
+                        if bottle_patch.horizontal_center > device_patch.horizontal_center:
+                            result = "yes"
+    return result

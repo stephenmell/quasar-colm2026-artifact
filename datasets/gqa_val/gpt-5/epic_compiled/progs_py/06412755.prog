@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("Is the bus on top of the road both tall and high?")
+    return result

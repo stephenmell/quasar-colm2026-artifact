@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_labels = ["vehicle", "car", "truck", "bus", "van", "suv"]
+    found_any = False
+
+    for label in vehicle_labels:
+        patches = image_patch.find(label)
+        if len(patches) == 0:
+            continue
+        found_any = True
+        for p in patches:
+            if p.verify_property(label, "white") and p.verify_property(label, "large"):
+                return "yes"
+
+    if not found_any:
+        return image_patch.simple_query("Does the white vehicle look large?")
+    return "no"

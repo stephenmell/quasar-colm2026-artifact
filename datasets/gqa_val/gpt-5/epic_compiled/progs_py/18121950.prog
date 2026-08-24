@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    bench_exists = image_patch.exists("bench")
+    if bench_exists:
+        bench_patches = image_patch.find("bench")
+        for bench_patch in bench_patches:
+            is_wooden = bench_patch.verify_property("bench", "wooden")
+            is_made_of_wood = bench_patch.verify_property("bench", "made of wood")
+            if is_wooden or is_made_of_wood:
+                result = "yes"
+
+    fence_exists = image_patch.exists("fence")
+    if fence_exists:
+        fence_patches = image_patch.find("fence")
+        for fence_patch in fence_patches:
+            is_wooden = fence_patch.verify_property("fence", "wooden")
+            is_made_of_wood = fence_patch.verify_property("fence", "made of wood")
+            if is_wooden or is_made_of_wood:
+                result = "yes"
+
+    if (not bench_exists) and (not fence_exists):
+        result = image_patch.simple_query("Do you see either any benches or fences that are made of wood?")
+    return result

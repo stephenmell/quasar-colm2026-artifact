@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Ask directly first
+    direct = image_patch.simple_query("Is it an outdoors scene?")
+    if direct in ["yes", "no"]:
+        return direct
+
+    # Heuristic fallback using common cues
+    outdoor_cues = [
+        "sky", "tree", "grass", "mountain", "ocean", "beach", "street",
+        "sidewalk", "snow", "sand", "river", "lake", "clouds", "sun", "park"
+    ]
+    for cue in outdoor_cues:
+        if image_patch.exists(cue):
+            return "yes"
+
+    indoor_cues = [
+        "ceiling", "sofa", "bed", "stove", "refrigerator", "toilet", "sink",
+        "shower", "mirror", "cabinet", "keyboard", "monitor", "television",
+        "microwave", "oven", "counter", "chair", "table", "lamp"
+    ]
+    for cue in indoor_cues:
+        if image_patch.exists(cue):
+            return "no"
+
+    # Additional fallback phrasing
+    alt = image_patch.simple_query("Is this an outdoor scene?")
+    if alt in ["yes", "no"]:
+        return alt
+
+    return "no"

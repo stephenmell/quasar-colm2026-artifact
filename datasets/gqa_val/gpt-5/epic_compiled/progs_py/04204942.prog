@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    snack_patches = image_patch.find("snack")
+    
+    if len(snack_patches) == 0:
+        result = image_patch.simple_query("Does the donut to the right of the snack look round?")
+    else:
+        donut_patches = image_patch.find("donut")
+        if len(donut_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for snack_patch in snack_patches:
+                for donut_patch in donut_patches:
+                    is_right = donut_patch.horizontal_center > snack_patch.horizontal_center
+                    if is_right and donut_patch.verify_property("donut", "round"):
+                        result = "yes"
+    return result

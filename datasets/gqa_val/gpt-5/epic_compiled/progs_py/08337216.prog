@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    knee_pad_patches = image_patch.find("knee pad")
+    if len(knee_pad_patches) == 0:
+        knee_pad_patches = image_patch.find("knee pads")
+
+    if len(knee_pad_patches) == 0:
+        result = image_patch.simple_query("What are the people to the right of the knee pads wearing?")
+    else:
+        rightmost_right = knee_pad_patches[0].right
+        for kp in knee_pad_patches:
+            if kp.right > rightmost_right:
+                rightmost_right = kp.right
+        if rightmost_right < image_patch.right:
+            right_area_patch = image_patch.crop(rightmost_right, image_patch.lower, image_patch.right, image_patch.upper)
+            result = right_area_patch.simple_query("What are the people wearing?")
+        else:
+            result = image_patch.simple_query("What are the people to the right of the knee pads wearing?")
+
+    if not result:
+        result = image_patch.simple_query("What are the people to the right of the knee pads wearing?")
+    return result

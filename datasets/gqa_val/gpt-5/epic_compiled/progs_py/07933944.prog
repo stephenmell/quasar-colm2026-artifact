@@ -1,0 +1,20 @@
+# Are there boys or bags in this photograph?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    boy_terms = ("boy", "boys")
+    bag_terms = ("bag", "bags", "handbag", "backpack", "purse", "shopping bag")
+
+    is_boy = False
+    for term in boy_terms:
+        if image_patch.exists(term):
+            is_boy = True
+
+    is_bag = False
+    for term in bag_terms:
+        if image_patch.exists(term):
+            is_bag = True
+
+    result = bool_to_yesno(is_boy or is_bag)
+    return result

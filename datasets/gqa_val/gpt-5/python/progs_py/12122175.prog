@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tennis_ball_patches = image_patch.find("tennis ball")
+    # If no tennis ball is found, ask directly
+    if len(tennis_ball_patches) == 0:
+        return image_patch.simple_query("Are there boys to the right of the tennis ball that is green?")
+    # Filter to green tennis balls
+    green_balls = [ball for ball in tennis_ball_patches if ball.verify_property("tennis ball", "green")]
+    if len(green_balls) == 0:
+        return image_patch.simple_query("Are there boys to the right of the tennis ball that is green?")
+    # Find boys
+    boy_patches = image_patch.find("boy")
+    if len(boy_patches) == 0:
+        return "no"
+    # Check if any boy is to the right of any green tennis ball
+    for green_ball in green_balls:
+        for boy in boy_patches:
+            if boy.horizontal_center > green_ball.horizontal_center:
+                return "yes"
+    return "no"

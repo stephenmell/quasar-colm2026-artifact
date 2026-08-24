@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    traffic_light_patches = image_patch.find("traffic light")
+    has_yellow_traffic_light = any(
+        tl_patch.verify_property("traffic light", "yellow") for tl_patch in traffic_light_patches
+    )
+    is_tennis_ball = image_patch.exists("tennis ball")
+    return bool_to_yesno(has_yellow_traffic_light or is_tennis_ball)

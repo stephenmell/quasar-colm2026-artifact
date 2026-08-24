@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    drawer_terms = None
+    found = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    drawer_terms = ('drawer', 'drawers', 'dresser drawer')
+    found = False
+
+    def _for(term, drawer_terms, found, image_patch):
+
+        def _if(drawer_terms, found, image_patch):
+            found = True
+            return (drawer_terms, found, image_patch)
+        drawer_terms, found, image_patch = if_stmt(_if, None, image_patch.exists(term), (drawer_terms, found, image_patch))
+        return (drawer_terms, found, image_patch)
+    drawer_terms, found, image_patch = for_stmt(_for, drawer_terms, (drawer_terms, found, image_patch))
+    result = bool_to_yesno(found)
+    return result

@@ -1,0 +1,44 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the man
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Are there trash cans to the left of the bag the man holds?")
+    man_patch = man_patches[0]
+
+    # Find bags
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return image_patch.simple_query("Are there trash cans to the left of the bag the man holds?")
+
+    # Identify which bag(s) the man holds
+    held_bag_patches = []
+    for bag_patch in bag_patches:
+        if bag_patch.simple_query("Is the man holding this bag?") == "yes":
+            held_bag_patches.append(bag_patch)
+
+    # Heuristic fallback: bag center within man's bounding box
+    if len(held_bag_patches) == 0:
+        for bag_patch in bag_patches:
+            if (man_patch.left < bag_patch.horizontal_center < man_patch.right and
+                man_patch.lower < bag_patch.vertical_center < man_patch.upper):
+                held_bag_patches.append(bag_patch)
+
+    if len(held_bag_patches) == 0:
+        return image_patch.simple_query("Are there trash cans to the left of the bag the man holds?")
+
+    # Find trash cans (try common synonyms)
+    trash_patches = []
+    for name in ["trash can", "trashcan", "garbage can", "trash bin", "garbage bin"]:
+        trash_patches.extend(image_patch.find(name))
+
+    if len(trash_patches) == 0:
+        return "no"
+
+    # Check if any trash can is to the left of the held bag
+    for held_bag in held_bag_patches:
+        for trash in trash_patches:
+            if trash.horizontal_center < held_bag.horizontal_center:
+                return "yes"
+    return "no"

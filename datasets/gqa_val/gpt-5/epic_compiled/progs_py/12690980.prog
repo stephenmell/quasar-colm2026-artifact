@@ -1,0 +1,23 @@
+# Do you see any clean forks or spoons?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    fork_exists = image_patch.exists("fork")
+    if fork_exists:
+        fork_patches = image_patch.find("fork")
+        for fork_patch in fork_patches:
+            if fork_patch.verify_property("fork", "clean"):
+                result = "yes"
+
+    spoon_exists = image_patch.exists("spoon")
+    if spoon_exists:
+        spoon_patches = image_patch.find("spoon")
+        for spoon_patch in spoon_patches:
+            if spoon_patch.verify_property("spoon", "clean"):
+                result = "yes"
+
+    if result == "no":
+        if not fork_exists and not spoon_exists:
+            result = image_patch.simple_query("Do you see any clean forks or spoons?")
+    return result

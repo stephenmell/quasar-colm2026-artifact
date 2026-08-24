@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_picture = None
+    is_traffic_light = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_picture = or_expr(image_patch.exists('picture'), image_patch.exists('pictures'))
+    is_traffic_light = or_expr(image_patch.exists('traffic light'), image_patch.exists('traffic lights'))
+    result = bool_to_yesno(or_expr(is_picture, is_traffic_light))
+    return result

@@ -1,0 +1,50 @@
+def execute_command(image) -> str:
+    device_patches = None
+    image_patch = None
+    leftmost_woman = None
+    result = None
+    right_area_patch = None
+    target_device = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches):
+        result = image_patch.simple_query('How is the device to the right of the woman on the left called?')
+        return (device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches)
+
+    def _else(device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches):
+        leftmost_woman = woman_patches[0]
+
+        def _for(w_patch, image_patch, leftmost_woman, woman_patches):
+
+            def _if(image_patch, leftmost_woman, woman_patches):
+                leftmost_woman = w_patch
+                return (image_patch, leftmost_woman, woman_patches)
+            image_patch, leftmost_woman, woman_patches = if_stmt(_if, None, w_patch.horizontal_center < leftmost_woman.horizontal_center, (image_patch, leftmost_woman, woman_patches))
+            return (image_patch, leftmost_woman, woman_patches)
+        image_patch, leftmost_woman, woman_patches = for_stmt(_for, woman_patches, (image_patch, leftmost_woman, woman_patches))
+        right_area_patch = image_patch.crop(leftmost_woman.right, image_patch.lower, image_patch.right, image_patch.upper)
+        device_patches = right_area_patch.find('device')
+
+        def _if(device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches):
+            result = right_area_patch.simple_query('What is the device called?')
+            return (device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches)
+
+        def _else(device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches):
+            target_device = device_patches[0]
+
+            def _for(d_patch, device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches):
+
+                def _if(device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches):
+                    target_device = d_patch
+                    return (device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches)
+                device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches = if_stmt(_if, None, d_patch.horizontal_center < target_device.horizontal_center, (device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches))
+                return (device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches)
+            device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches = for_stmt(_for, device_patches, (device_patches, image_patch, leftmost_woman, right_area_patch, target_device, woman_patches))
+            result = target_device.simple_query('What is the device called?')
+            return (device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches)
+        device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches = if_stmt(_if, _else, len(device_patches) == 0, (device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches))
+        return (device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches)
+    device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (device_patches, image_patch, leftmost_woman, result, right_area_patch, target_device, woman_patches))
+    return result

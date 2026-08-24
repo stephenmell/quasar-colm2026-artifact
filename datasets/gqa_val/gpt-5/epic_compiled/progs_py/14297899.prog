@@ -1,0 +1,12 @@
+# Are there any white remote controls?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    remote_patches = image_patch.find("remote control")
+    if len(remote_patches) == 0:
+        result = image_patch.simple_query("Are there any white remote controls?")
+    else:
+        result = "no"
+        for remote_patch in remote_patches:
+            if remote_patch.verify_property("remote control", "white"):
+                result = "yes"
+    return result

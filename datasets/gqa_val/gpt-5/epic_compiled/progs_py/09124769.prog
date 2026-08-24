@@ -1,0 +1,20 @@
+# Do the skateboard and the fence have different colors?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    skateboard_patches = image_patch.find("skateboard")
+    fence_patches = image_patch.find("fence")
+
+    if len(skateboard_patches) == 0 or len(fence_patches) == 0:
+        result = image_patch.simple_query("Do the skateboard and the fence have different colors?")
+    else:
+        color_options = ("red", "orange", "yellow", "green", "blue", "purple", "pink",
+                         "brown", "black", "white", "gray", "silver", "gold", "beige", "tan")
+        skateboard_color = skateboard_patches[0].best_text_match(color_options)
+        fence_color = fence_patches[0].best_text_match(color_options)
+        if skateboard_color != fence_color:
+            result = "yes"
+        else:
+            result = "no"
+    return result

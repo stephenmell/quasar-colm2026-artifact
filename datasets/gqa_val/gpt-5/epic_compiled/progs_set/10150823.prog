@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    bed_patch = None
+    bed_patches = None
+    image_patch = None
+    lamp_patches = None
+    result = None
+    white_lamp_patch = None
+    white_lamp_patches = None
+    image_patch = ImagePatch(image)
+    bed_patches = image_patch.find('bed')
+    lamp_patches = image_patch.find('lamp')
+    white_lamp_patches = ()
+
+    def _for(lamp_patch, bed_patches, image_patch, lamp_patches, white_lamp_patches):
+
+        def _if(bed_patches, image_patch, lamp_patches, white_lamp_patches):
+            white_lamp_patches = white_lamp_patches + (lamp_patch,)
+            return (bed_patches, image_patch, lamp_patches, white_lamp_patches)
+        bed_patches, image_patch, lamp_patches, white_lamp_patches = if_stmt(_if, None, lamp_patch.verify_property('lamp', 'white'), (bed_patches, image_patch, lamp_patches, white_lamp_patches))
+        return (bed_patches, image_patch, lamp_patches, white_lamp_patches)
+    bed_patches, image_patch, lamp_patches, white_lamp_patches = for_stmt(_for, lamp_patches, (bed_patches, image_patch, lamp_patches, white_lamp_patches))
+
+    def _if(bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches):
+        result = image_patch.simple_query('Is the bed to the left or to the right of the white lamp?')
+        return (bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches)
+
+    def _else(bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches):
+        bed_patch = bed_patches[0]
+        white_lamp_patch = white_lamp_patches[0]
+
+        def _if(bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches):
+            result = 'left'
+            return (bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches)
+
+        def _else(bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches):
+            result = 'right'
+            return (bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches)
+        bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches = if_stmt(_if, _else, bed_patch.horizontal_center < white_lamp_patch.horizontal_center, (bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches))
+        return (bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches)
+    bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches = if_stmt(_if, _else, or_expr(len(bed_patches) == 0, len(white_lamp_patches) == 0), (bed_patch, bed_patches, image_patch, lamp_patches, result, white_lamp_patch, white_lamp_patches))
+    return result

@@ -1,0 +1,72 @@
+def execute_command(image) -> str:
+    chosen_patch = None
+    curtain_patches = None
+    fallback_patch = None
+    found_both = None
+    has_maroon = None
+    has_red = None
+    image_patch = None
+    result = None
+    selected_patch = None
+    image_patch = ImagePatch(image)
+    result = None
+    curtain_patches = image_patch.find('curtain')
+
+    def _if(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch):
+        result = image_patch.simple_query('Is the curtain that looks maroon and red closed or open?')
+        return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch)
+
+    def _else(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch):
+        chosen_patch = None
+        fallback_patch = None
+        found_both = False
+
+        def _for(curtain_patch, chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result):
+            has_maroon = curtain_patch.verify_property('curtain', 'maroon')
+            has_red = curtain_patch.verify_property('curtain', 'red')
+
+            def _if(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result):
+
+                def _if(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result):
+                    chosen_patch = curtain_patch
+                    return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result)
+                chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result = if_stmt(_if, None, and_expr(not found_both, chosen_patch is None), (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result))
+                found_both = True
+                return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result)
+
+            def _else(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result):
+
+                def _if(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result):
+                    fallback_patch = curtain_patch
+                    return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result)
+                chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result = if_stmt(_if, None, and_expr(has_maroon or has_red, fallback_patch is None), (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result))
+                return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result)
+            chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result = if_stmt(_if, _else, and_expr(has_maroon, has_red), (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result))
+            return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result)
+        chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result = for_stmt(_for, curtain_patches, (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result))
+        selected_patch = None
+
+        def _if(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch):
+            selected_patch = chosen_patch
+            return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch)
+
+        def _else(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch):
+
+            def _if(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch):
+                selected_patch = fallback_patch
+                return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch)
+            chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch = if_stmt(_if, None, fallback_patch is not None, (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch))
+            return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch)
+        chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch = if_stmt(_if, _else, and_expr(found_both, chosen_patch is not None), (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch))
+
+        def _if(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch):
+            result = selected_patch.best_text_match(('closed', 'open'))
+            return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch)
+
+        def _else(chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch):
+            result = image_patch.simple_query('Is the curtain that looks maroon and red closed or open?')
+            return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch)
+        chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch = if_stmt(_if, _else, selected_patch is not None, (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch))
+        return (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch)
+    chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch = if_stmt(_if, _else, len(curtain_patches) == 0, (chosen_patch, curtain_patches, fallback_patch, found_both, has_maroon, has_red, image_patch, result, selected_patch))
+    return result

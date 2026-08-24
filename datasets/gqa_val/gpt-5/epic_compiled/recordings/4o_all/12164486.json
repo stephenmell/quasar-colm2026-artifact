@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2398485",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "What is on the concrete wall?"
+      ],
+      "The concrete wall appears to have some wear and discoloration.",
+      1482743658
+    ]
+  ],
+  "best_text_match": []
+}

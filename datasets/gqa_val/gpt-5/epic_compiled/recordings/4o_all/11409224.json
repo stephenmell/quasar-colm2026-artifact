@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2406452",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "bag"
+      ],
+      [],
+      11411541798
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2406452",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Do you see any men to the right of the yellow bag?"
+      ],
+      "Yes.",
+      978347628
+    ]
+  ],
+  "best_text_match": []
+}

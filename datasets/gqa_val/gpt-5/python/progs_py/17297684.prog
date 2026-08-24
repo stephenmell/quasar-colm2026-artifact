@@ -1,0 +1,34 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find people (use "person" as the canonical detection class)
+    people_patches = image_patch.find("person")
+    if len(people_patches) == 0:
+        # If no people are found, query directly
+        return image_patch.simple_query("Are there children to the right of the people the sky is above?")
+
+    # Filter to people for whom the sky is above them
+    people_under_sky = []
+    for person_patch in people_patches:
+        if person_patch.simple_query("Is the sky above the person?") == "yes":
+            people_under_sky.append(person_patch)
+
+    if len(people_under_sky) == 0:
+        # If we can't determine any such people, ask directly
+        return image_patch.simple_query("Are there children to the right of the people the sky is above?")
+
+    # Find children (try common synonyms)
+    children_patches = image_patch.find("child")
+    if len(children_patches) == 0:
+        children_patches = image_patch.find("kid")
+    if len(children_patches) == 0:
+        children_patches = image_patch.find("children")
+    if len(children_patches) == 0:
+        # If no children found, ask directly
+        return image_patch.simple_query("Are there children to the right of the people the sky is above?")
+
+    # Check if any child is to the right of any of the people under the sky
+    for person_patch in people_under_sky:
+        for child_patch in children_patches:
+            if child_patch.horizontal_center > person_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2356544",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "What kind of furniture is the same color as the toaster that the blender is in front of?"
+      ],
+      "White furniture.",
+      1587141556
+    ]
+  ],
+  "best_text_match": []
+}

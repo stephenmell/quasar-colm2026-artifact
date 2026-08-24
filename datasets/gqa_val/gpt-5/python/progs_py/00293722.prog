@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    boy_patches = image_patch.find("boy")
+    # Question assumes one boy patch
+    if len(boy_patches) == 0:
+        # If no boy is found, query the image directly
+        return image_patch.simple_query("Is the boy to the right of a screen?")
+    screen_patches = image_patch.find("screen")
+    if len(screen_patches) == 0:
+        return "no"
+    for boy_patch in boy_patches:
+        for screen_patch in screen_patches:
+            if boy_patch.horizontal_center > screen_patch.horizontal_center:
+                return "yes"
+    return "no"

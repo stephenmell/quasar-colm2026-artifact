@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    has_right_remote = None
+    image_patch = None
+    remote_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    remote_patches = image_patch.find('remote')
+    chair_patches = image_patch.find('chair')
+    result = None
+
+    def _if(chair_patches, has_right_remote, image_patch, remote_patches, result):
+        result = image_patch.simple_query('What color is the chair the remote is to the right of?')
+        return (chair_patches, has_right_remote, image_patch, remote_patches, result)
+
+    def _else(chair_patches, has_right_remote, image_patch, remote_patches, result):
+
+        def _for(chair_patch, chair_patches, has_right_remote, image_patch, remote_patches, result):
+            has_right_remote = False
+
+            def _for(remote_patch, chair_patches, has_right_remote, image_patch, remote_patches, result):
+
+                def _if(chair_patches, has_right_remote, image_patch, remote_patches, result):
+                    has_right_remote = True
+                    return (chair_patches, has_right_remote, image_patch, remote_patches, result)
+                chair_patches, has_right_remote, image_patch, remote_patches, result = if_stmt(_if, None, remote_patch.horizontal_center > chair_patch.horizontal_center, (chair_patches, has_right_remote, image_patch, remote_patches, result))
+                return (chair_patches, has_right_remote, image_patch, remote_patches, result)
+            chair_patches, has_right_remote, image_patch, remote_patches, result = for_stmt(_for, remote_patches, (chair_patches, has_right_remote, image_patch, remote_patches, result))
+
+            def _if(chair_patches, has_right_remote, image_patch, remote_patches, result):
+                result = chair_patch.simple_query('What color is the chair?')
+                return (chair_patches, has_right_remote, image_patch, remote_patches, result)
+            chair_patches, has_right_remote, image_patch, remote_patches, result = if_stmt(_if, None, and_expr(has_right_remote, not result), (chair_patches, has_right_remote, image_patch, remote_patches, result))
+            return (chair_patches, has_right_remote, image_patch, remote_patches, result)
+        chair_patches, has_right_remote, image_patch, remote_patches, result = for_stmt(_for, chair_patches, (chair_patches, has_right_remote, image_patch, remote_patches, result))
+
+        def _if(chair_patches, has_right_remote, image_patch, remote_patches, result):
+            result = image_patch.simple_query('What color is the chair the remote is to the right of?')
+            return (chair_patches, has_right_remote, image_patch, remote_patches, result)
+        chair_patches, has_right_remote, image_patch, remote_patches, result = if_stmt(_if, None, not_expr(result), (chair_patches, has_right_remote, image_patch, remote_patches, result))
+        return (chair_patches, has_right_remote, image_patch, remote_patches, result)
+    chair_patches, has_right_remote, image_patch, remote_patches, result = if_stmt(_if, _else, or_expr(len(remote_patches) == 0, len(chair_patches) == 0), (chair_patches, has_right_remote, image_patch, remote_patches, result))
+    return result

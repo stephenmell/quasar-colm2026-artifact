@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    window_patches = image_patch.find("window")
+    # Question assumes only one window patch
+    if len(window_patches) == 0:
+        # If no window is found, query the image directly
+        return image_patch.simple_query("What size is that window, large or little?")
+    return window_patches[0].best_text_match(["large", "little"])

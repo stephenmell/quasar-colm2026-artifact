@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for brown fields
+    if image_patch.exists("field"):
+        field_patches = image_patch.find("field")
+        for field_patch in field_patches:
+            if field_patch.verify_property("field", "brown"):
+                result = "yes"
+
+    # Check for brown beaches
+    if image_patch.exists("beach"):
+        beach_patches = image_patch.find("beach")
+        for beach_patch in beach_patches:
+            if beach_patch.verify_property("beach", "brown"):
+                result = "yes"
+    return result

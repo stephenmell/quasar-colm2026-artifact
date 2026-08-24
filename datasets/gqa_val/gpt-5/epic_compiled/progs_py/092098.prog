@@ -1,0 +1,13 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    oven_patches = image_patch.find("oven")
+    if len(oven_patches) == 0:
+        result = image_patch.simple_query("Do you see refrigerators to the right of the oven?")
+    else:
+        oven_patch = oven_patches[0]
+        right_area_patch = image_patch.crop(oven_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+        is_refrigerator = right_area_patch.exists("refrigerator")
+        is_fridge = right_area_patch.exists("fridge")
+        result = bool_to_yesno(is_refrigerator or is_fridge)
+    return result

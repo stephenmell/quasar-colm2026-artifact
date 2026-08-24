@@ -1,0 +1,20 @@
+# Are there helmets to the left of the person that is wearing a shoe?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, query the image directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Are there helmets to the left of the person that is wearing a shoe?")
+    helmet_patches = image_patch.find("helmet")
+    if len(helmet_patches) == 0:
+        return "no"
+    for person_patch in person_patches:
+        # Check if this person is wearing a shoe (or shoes)
+        is_wearing_shoe = (person_patch.simple_query("Is the person wearing a shoe?") == "yes")
+        if not is_wearing_shoe:
+            is_wearing_shoe = (person_patch.simple_query("Is the person wearing shoes?") == "yes")
+        if is_wearing_shoe:
+            for helmet_patch in helmet_patches:
+                if helmet_patch.horizontal_center < person_patch.horizontal_center:
+                    return "yes"
+    return "no"

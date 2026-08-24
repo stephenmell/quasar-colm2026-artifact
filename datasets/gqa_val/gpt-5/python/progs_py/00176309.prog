@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    door_patches = image_patch.find("door")
+    # Question assumes only one door patch
+    if len(door_patches) == 0:
+        # If no door is found, query the image directly
+        return image_patch.simple_query("What was used to make the door, metal or wood?")
+    return door_patches[0].best_text_match(["metal", "wood"])

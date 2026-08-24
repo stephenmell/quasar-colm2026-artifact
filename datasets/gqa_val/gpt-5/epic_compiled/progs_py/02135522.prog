@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    skateboarder_patches = image_patch.find("skateboarder")
+
+    if len(skateboarder_patches) == 0:
+        result = image_patch.simple_query("Do you see people to the right of the skateboarder that is wearing sneakers?")
+    else:
+        result = "no"
+        person_patches = image_patch.find("person")
+        for skateboarder_patch in skateboarder_patches:
+            is_wearing_sneakers = (skateboarder_patch.simple_query("Is the skateboarder wearing sneakers?") == "yes")
+            if is_wearing_sneakers:
+                for person_patch in person_patches:
+                    if person_patch.horizontal_center > skateboarder_patch.horizontal_center:
+                        result = "yes"
+    return result

@@ -1,0 +1,59 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    center_x = None
+    center_y = None
+    closest_animal = None
+    closest_dist = None
+    dist_sq = None
+    dx = None
+    dy = None
+    image_patch = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result):
+        result = image_patch.simple_query('Is the man to the right of the animal in the center?')
+        return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result)
+
+    def _else(animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result):
+        center_x = image_patch.horizontal_center
+        center_y = image_patch.vertical_center
+        closest_animal = None
+        closest_dist = None
+
+        def _for(animal_patch, animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch):
+            dx = animal_patch.horizontal_center - center_x
+            dy = animal_patch.vertical_center - center_y
+            dist_sq = dx * dx + dy * dy
+
+            def _if(animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch):
+                closest_dist = dist_sq
+                closest_animal = animal_patch
+                return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch)
+            animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch = if_stmt(_if, None, or_expr(closest_dist is None, dist_sq < closest_dist), (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch))
+            return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch)
+        animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch = for_stmt(_for, animal_patches, (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch))
+        man_patches = image_patch.find('man')
+
+        def _if(animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result):
+            result = 'no'
+            return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result)
+
+        def _else(animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result):
+            result = 'no'
+
+            def _for(man_patch, animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result):
+
+                def _if(animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result):
+                    result = 'yes'
+                    return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result)
+                animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result = if_stmt(_if, None, man_patch.horizontal_center > closest_animal.horizontal_center, (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result))
+                return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result)
+            animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result = for_stmt(_for, man_patches, (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result))
+            return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result)
+        animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result))
+        return (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result)
+    animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result = if_stmt(_if, _else, len(animal_patches) == 0, (animal_patches, center_x, center_y, closest_animal, closest_dist, dist_sq, dx, dy, image_patch, man_patches, result))
+    return result

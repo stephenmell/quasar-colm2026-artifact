@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    found = None
+    image_patch = None
+    result = None
+    terms = None
+    image_patch = ImagePatch(image)
+    terms = ('glasses', 'sunglasses', 'eyeglasses', 'spectacles')
+    found = False
+
+    def _for(term, found, image_patch, terms):
+
+        def _if(found, image_patch, terms):
+            found = True
+            return (found, image_patch, terms)
+        found, image_patch, terms = if_stmt(_if, None, image_patch.exists(term), (found, image_patch, terms))
+        return (found, image_patch, terms)
+    found, image_patch, terms = for_stmt(_for, terms, (found, image_patch, terms))
+    result = bool_to_yesno(found)
+    return result

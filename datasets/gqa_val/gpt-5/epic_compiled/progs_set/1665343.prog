@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    image_patch = None
+    is_porcelain = None
+    result = None
+    toilet_patches = None
+    image_patch = ImagePatch(image)
+    toilet_patches = image_patch.find('toilet')
+
+    def _if(bag_patches, image_patch, is_porcelain, result, toilet_patches):
+        result = image_patch.simple_query('Do you see any bags to the left of the toilet made of porcelain?')
+        return (bag_patches, image_patch, is_porcelain, result, toilet_patches)
+
+    def _else(bag_patches, image_patch, is_porcelain, result, toilet_patches):
+        result = 'no'
+
+        def _for(toilet_patch, bag_patches, image_patch, is_porcelain, result, toilet_patches):
+            is_porcelain = toilet_patch.verify_property('toilet', 'porcelain')
+
+            def _if(bag_patches, image_patch, is_porcelain, result, toilet_patches):
+                bag_patches = image_patch.find('bag')
+
+                def _for(bag_patch, bag_patches, image_patch, is_porcelain, result, toilet_patches):
+
+                    def _if(bag_patches, image_patch, is_porcelain, result, toilet_patches):
+                        result = 'yes'
+                        return (bag_patches, image_patch, is_porcelain, result, toilet_patches)
+                    bag_patches, image_patch, is_porcelain, result, toilet_patches = if_stmt(_if, None, bag_patch.horizontal_center < toilet_patch.horizontal_center, (bag_patches, image_patch, is_porcelain, result, toilet_patches))
+                    return (bag_patches, image_patch, is_porcelain, result, toilet_patches)
+                bag_patches, image_patch, is_porcelain, result, toilet_patches = for_stmt(_for, bag_patches, (bag_patches, image_patch, is_porcelain, result, toilet_patches))
+                return (bag_patches, image_patch, is_porcelain, result, toilet_patches)
+            bag_patches, image_patch, is_porcelain, result, toilet_patches = if_stmt(_if, None, is_porcelain, (bag_patches, image_patch, is_porcelain, result, toilet_patches))
+            return (bag_patches, image_patch, is_porcelain, result, toilet_patches)
+        bag_patches, image_patch, is_porcelain, result, toilet_patches = for_stmt(_for, toilet_patches, (bag_patches, image_patch, is_porcelain, result, toilet_patches))
+        return (bag_patches, image_patch, is_porcelain, result, toilet_patches)
+    bag_patches, image_patch, is_porcelain, result, toilet_patches = if_stmt(_if, _else, len(toilet_patches) == 0, (bag_patches, image_patch, is_porcelain, result, toilet_patches))
+    return result

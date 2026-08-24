@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        result = image_patch.simple_query("Are there locomotives to the left of the people that are waiting?")
+    else:
+        locomotive_patches = image_patch.find("locomotive")
+        if len(locomotive_patches) > 0:
+            for person_patch in person_patches:
+                is_waiting = person_patch.verify_property("person", "waiting")
+                if is_waiting:
+                    for locomotive_patch in locomotive_patches:
+                        if locomotive_patch.horizontal_center < person_patch.horizontal_center:
+                            result = "yes"
+    return result

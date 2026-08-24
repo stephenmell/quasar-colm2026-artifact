@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    doorway_patches = image_patch.find("doorway")
+    if len(doorway_patches) == 0:
+        # If no doorway is found, ask directly
+        return image_patch.simple_query("Do you see any women by the open doorway?")
+    # Filter doorways that are open
+    open_doorways = []
+    for doorway in doorway_patches:
+        if doorway.verify_property("doorway", "open"):
+            open_doorways.append(doorway)
+    if len(open_doorways) == 0:
+        # If no open doorway is detected, ask directly
+        return image_patch.simple_query("Do you see any women by the open doorway?")
+    # Look for women
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        return "no"
+    # Check proximity (by = near) between any woman and any open doorway
+    for door in open_doorways:
+        dcx, dcy = door.horizontal_center, door.vertical_center
+        # Threshold based on doorway size
+        thresh = max(door.width, door.height) * 1.5
+        thresh_sq = thresh * thresh
+        for woman in woman_patches:
+            dx = woman.horizontal_center - dcx
+            dy = woman.vertical_center - dcy
+            if dx*dx + dy*dy <= thresh_sq:
+                return "yes"
+    return "no"

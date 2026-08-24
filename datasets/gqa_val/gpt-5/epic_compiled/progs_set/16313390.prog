@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    chosen_patch = None
+    cup_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    cup_patches = image_patch.find('cup')
+
+    def _if(chosen_patch, cup_patches, image_patch, result):
+        result = image_patch.simple_query('On which side of the photo is the white cup?')
+        return (chosen_patch, cup_patches, image_patch, result)
+
+    def _else(chosen_patch, cup_patches, image_patch, result):
+        chosen_patch = None
+
+        def _for(cup_patch, chosen_patch, cup_patches, image_patch):
+
+            def _if(chosen_patch, cup_patches, image_patch):
+                chosen_patch = cup_patch
+                return (chosen_patch, cup_patches, image_patch)
+            chosen_patch, cup_patches, image_patch = if_stmt(_if, None, cup_patch.verify_property('cup', 'white'), (chosen_patch, cup_patches, image_patch))
+            return (chosen_patch, cup_patches, image_patch)
+        chosen_patch, cup_patches, image_patch = for_stmt(_for, cup_patches, (chosen_patch, cup_patches, image_patch))
+
+        def _if(chosen_patch, cup_patches, image_patch, result):
+            result = image_patch.simple_query('On which side of the photo is the white cup?')
+            return (chosen_patch, cup_patches, image_patch, result)
+
+        def _else(chosen_patch, cup_patches, image_patch, result):
+
+            def _if(chosen_patch, cup_patches, image_patch, result):
+                result = 'left'
+                return (chosen_patch, cup_patches, image_patch, result)
+
+            def _else(chosen_patch, cup_patches, image_patch, result):
+                result = 'right'
+                return (chosen_patch, cup_patches, image_patch, result)
+            chosen_patch, cup_patches, image_patch, result = if_stmt(_if, _else, chosen_patch.horizontal_center < image_patch.horizontal_center, (chosen_patch, cup_patches, image_patch, result))
+            return (chosen_patch, cup_patches, image_patch, result)
+        chosen_patch, cup_patches, image_patch, result = if_stmt(_if, _else, not_expr(chosen_patch), (chosen_patch, cup_patches, image_patch, result))
+        return (chosen_patch, cup_patches, image_patch, result)
+    chosen_patch, cup_patches, image_patch, result = if_stmt(_if, _else, len(cup_patches) == 0, (chosen_patch, cup_patches, image_patch, result))
+    return result

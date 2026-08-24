@@ -1,0 +1,26 @@
+# Where is the crosswalk?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    crosswalk_exists = image_patch.exists("crosswalk")
+    if not crosswalk_exists:
+        result = image_patch.simple_query("Where is the crosswalk?")
+    else:
+        street_exists = image_patch.exists("street")
+        road_exists = image_patch.exists("road")
+        intersection_exists = image_patch.exists("intersection")
+        sidewalk_exists = image_patch.exists("sidewalk")
+
+        if street_exists:
+            result = "on the street"
+        else:
+            if road_exists:
+                result = "on the road"
+            else:
+                if intersection_exists:
+                    result = "at the intersection"
+                else:
+                    if sidewalk_exists:
+                        result = "near the sidewalk"
+                    else:
+                        result = image_patch.simple_query("Where is the crosswalk?")
+    return result

@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    food_patches = None
+    image_patch = None
+    lettuce_patch = None
+    lettuce_patches = None
+    result = None
+    right_area_patch = None
+    image_patch = ImagePatch(image)
+    lettuce_patches = image_patch.find('lettuce')
+
+    def _if(food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch):
+        result = image_patch.simple_query('Which kind of food is to the right of the lettuce?')
+        return (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch)
+
+    def _else(food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch):
+        lettuce_patch = lettuce_patches[0]
+        food_patches = image_patch.find('food')
+
+        def _if(food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch):
+            right_area_patch = image_patch.crop(lettuce_patch.right, lettuce_patch.lower, image_patch.right, lettuce_patch.upper)
+            result = right_area_patch.simple_query('What kind of food is this?')
+            return (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch)
+
+        def _else(food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch):
+            result = None
+
+            def _for(food_patch, food_patches, image_patch, lettuce_patch, lettuce_patches, result):
+
+                def _if(food_patches, image_patch, lettuce_patch, lettuce_patches, result):
+
+                    def _if(food_patches, image_patch, lettuce_patch, lettuce_patches, result):
+                        result = food_patch.simple_query('What kind of food is this?')
+                        return (food_patches, image_patch, lettuce_patch, lettuce_patches, result)
+                    food_patches, image_patch, lettuce_patch, lettuce_patches, result = if_stmt(_if, None, not_expr(result), (food_patches, image_patch, lettuce_patch, lettuce_patches, result))
+                    return (food_patches, image_patch, lettuce_patch, lettuce_patches, result)
+                food_patches, image_patch, lettuce_patch, lettuce_patches, result = if_stmt(_if, None, food_patch.horizontal_center > lettuce_patch.horizontal_center, (food_patches, image_patch, lettuce_patch, lettuce_patches, result))
+                return (food_patches, image_patch, lettuce_patch, lettuce_patches, result)
+            food_patches, image_patch, lettuce_patch, lettuce_patches, result = for_stmt(_for, food_patches, (food_patches, image_patch, lettuce_patch, lettuce_patches, result))
+
+            def _if(food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch):
+                right_area_patch = image_patch.crop(lettuce_patch.right, lettuce_patch.lower, image_patch.right, lettuce_patch.upper)
+                result = right_area_patch.simple_query('Which kind of food is to the right of the lettuce?')
+                return (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch)
+            food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch = if_stmt(_if, None, not_expr(result), (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch))
+            return (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch)
+        food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch = if_stmt(_if, _else, len(food_patches) == 0, (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch))
+        return (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch)
+    food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch = if_stmt(_if, _else, len(lettuce_patches) == 0, (food_patches, image_patch, lettuce_patch, lettuce_patches, result, right_area_patch))
+    return result

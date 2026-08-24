@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2324564",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "cabinet"
+      ],
+      [],
+      10441579246
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2324564",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is there any blanket to the right of the cabinet?"
+      ],
+      "No.",
+      1140727518
+    ]
+  ],
+  "best_text_match": []
+}

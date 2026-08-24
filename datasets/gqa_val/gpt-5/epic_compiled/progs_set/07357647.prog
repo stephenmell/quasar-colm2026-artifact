@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_fork = None
+    has_plate = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_fork = image_patch.exists('fork')
+    has_plate = image_patch.exists('plate')
+    result = bool_to_yesno(and_expr(has_fork, has_plate))
+    return result

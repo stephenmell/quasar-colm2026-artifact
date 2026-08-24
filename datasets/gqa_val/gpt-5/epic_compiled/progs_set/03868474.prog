@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    carpet_color = None
+    carpet_patches = None
+    chandelier_color = None
+    chandelier_patches = None
+    colors = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    chandelier_patches = image_patch.find('chandelier')
+    carpet_patches = image_patch.find('carpet')
+    result = 'no'
+
+    def _if(carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result):
+        result = image_patch.simple_query('Is the color of the chandelier the same as the carpet?')
+        return (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result)
+
+    def _else(carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result):
+        colors = ('white', 'black', 'gray', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'brown', 'beige', 'gold', 'silver', 'tan')
+
+        def _for(chandelier_patch, carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result):
+            chandelier_color = chandelier_patch.best_text_match(colors)
+
+            def _for(carpet_patch, carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result):
+                carpet_color = carpet_patch.best_text_match(colors)
+
+                def _if(carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result):
+                    result = 'yes'
+                    return (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result)
+                carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result = if_stmt(_if, None, chandelier_color == carpet_color, (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result))
+                return (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result)
+            carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result = for_stmt(_for, carpet_patches, (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result))
+            return (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result)
+        carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result = for_stmt(_for, chandelier_patches, (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result))
+        return (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result)
+    carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result = if_stmt(_if, _else, or_expr(len(chandelier_patches) == 0, len(carpet_patches) == 0), (carpet_color, carpet_patches, chandelier_color, chandelier_patches, colors, image_patch, result))
+    return result

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2328560",
+          [
+            0,
+            0,
+            500,
+            357
+          ]
+        ],
+        "Is the tree behind an elephant?"
+      ],
+      "No.",
+      1289193278
+    ]
+  ],
+  "best_text_match": []
+}

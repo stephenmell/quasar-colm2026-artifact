@@ -1,0 +1,19 @@
+# Is there a orange scarf or bag?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    scarf_types = ("scarf", "shawl")
+    for scarf_name in scarf_types:
+        scarf_patches = image_patch.find(scarf_name)
+        for scarf_patch in scarf_patches:
+            if scarf_patch.verify_property(scarf_name, "orange"):
+                result = "yes"
+
+    bag_types = ("bag", "handbag", "purse", "backpack", "shopping bag", "tote bag")
+    for bag_name in bag_types:
+        bag_patches = image_patch.find(bag_name)
+        for bag_patch in bag_patches:
+            if bag_patch.verify_property(bag_name, "orange"):
+                result = "yes"
+    return result

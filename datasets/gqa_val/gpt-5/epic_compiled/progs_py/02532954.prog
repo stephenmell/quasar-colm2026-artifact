@@ -1,0 +1,29 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    donkey_patches = image_patch.find("donkey")
+    zebra_patches = image_patch.find("zebra")
+
+    if len(donkey_patches) == 0 and len(zebra_patches) == 0:
+        result = image_patch.best_text_match(("donkey", "zebra"))
+    else:
+        if len(donkey_patches) > 0 and len(zebra_patches) == 0:
+            result = "donkey"
+        elif len(zebra_patches) > 0 and len(donkey_patches) == 0:
+            result = "zebra"
+        else:
+            donkey_max_area = 0
+            for donkey_patch in donkey_patches:
+                area = donkey_patch.width * donkey_patch.height
+                if area > donkey_max_area:
+                    donkey_max_area = area
+            zebra_max_area = 0
+            for zebra_patch in zebra_patches:
+                area = zebra_patch.width * zebra_patch.height
+                if area > zebra_max_area:
+                    zebra_max_area = area
+            if donkey_max_area >= zebra_max_area:
+                result = "donkey"
+            else:
+                result = "zebra"
+    return result

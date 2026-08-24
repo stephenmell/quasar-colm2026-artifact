@@ -1,0 +1,21 @@
+# What type of furniture is that plate on, a table or a cabinet?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    plate_patches = image_patch.find("plate")
+    if len(plate_patches) == 0:
+        result = image_patch.simple_query("What type of furniture is that plate on, a table or a cabinet?")
+    else:
+        chosen_plate = plate_patches[0]
+        best_distance = abs(chosen_plate.horizontal_center - image_patch.horizontal_center) + abs(chosen_plate.vertical_center - image_patch.vertical_center)
+        for plate_patch in plate_patches:
+            current_distance = abs(plate_patch.horizontal_center - image_patch.horizontal_center) + abs(plate_patch.vertical_center - image_patch.vertical_center)
+            if current_distance < best_distance:
+                chosen_plate = plate_patch
+                best_distance = current_distance
+        result = chosen_plate.simple_query("What type of furniture is that plate on, a table or a cabinet?")
+
+    if not result:
+        result = image_patch.best_text_match(("table", "cabinet"))
+    return result

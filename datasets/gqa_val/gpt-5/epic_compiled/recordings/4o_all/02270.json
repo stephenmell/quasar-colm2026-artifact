@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2361815",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "man"
+      ],
+      [],
+      16139422768
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2361815",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "On which side of the photo is the man, the left or the right?"
+      ],
+      "The man is on the left side of the photo.",
+      1602917320
+    ]
+  ],
+  "best_text_match": []
+}

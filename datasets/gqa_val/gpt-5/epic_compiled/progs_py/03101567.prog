@@ -1,0 +1,36 @@
+# What is the lamp on, a dresser or a desk?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lamp_patches = image_patch.find("lamp")
+
+    if len(lamp_patches) == 0:
+        result = image_patch.simple_query("What is the lamp on, a dresser or a desk?")
+    else:
+        result = None
+
+        # Check directly via yes/no questions on each lamp patch
+        for lamp_patch in lamp_patches:
+            is_on_dresser = (lamp_patch.simple_query("Is the lamp on a dresser?") == "yes")
+            if is_on_dresser and not result:
+                result = "dresser"
+
+        if not result:
+            for lamp_patch in lamp_patches:
+                is_on_desk = (lamp_patch.simple_query("Is the lamp on a desk?") == "yes")
+                if is_on_desk and not result:
+                    result = "desk"
+
+        # Fallback based on which furniture exists in the image
+        if not result:
+            dresser_exists = image_patch.exists("dresser")
+            desk_exists = image_patch.exists("desk")
+            if dresser_exists and not desk_exists:
+                result = "dresser"
+            elif desk_exists and not dresser_exists:
+                result = "desk"
+
+        # Final fallback: pick the best of the two options from the lamp context
+        if not result:
+            result = lamp_patches[0].best_text_match(("dresser", "desk"))
+
+    return result

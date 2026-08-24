@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    device_patches = None
+    image_patch = None
+    result = None
+    rightmost_device = None
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find('device')
+
+    def _if(chair_patches, device_patches, image_patch, result, rightmost_device):
+        result = image_patch.simple_query('Are there chairs to the left of the device on the right?')
+        return (chair_patches, device_patches, image_patch, result, rightmost_device)
+
+    def _else(chair_patches, device_patches, image_patch, result, rightmost_device):
+        rightmost_device = device_patches[0]
+
+        def _for(device_patch, device_patches, image_patch, rightmost_device):
+
+            def _if(device_patches, image_patch, rightmost_device):
+                rightmost_device = device_patch
+                return (device_patches, image_patch, rightmost_device)
+            device_patches, image_patch, rightmost_device = if_stmt(_if, None, device_patch.horizontal_center > rightmost_device.horizontal_center, (device_patches, image_patch, rightmost_device))
+            return (device_patches, image_patch, rightmost_device)
+        device_patches, image_patch, rightmost_device = for_stmt(_for, device_patches, (device_patches, image_patch, rightmost_device))
+        chair_patches = image_patch.find('chair')
+
+        def _if(chair_patches, device_patches, image_patch, result, rightmost_device):
+            result = 'no'
+            return (chair_patches, device_patches, image_patch, result, rightmost_device)
+
+        def _else(chair_patches, device_patches, image_patch, result, rightmost_device):
+            result = 'no'
+
+            def _for(chair_patch, chair_patches, device_patches, image_patch, result, rightmost_device):
+
+                def _if(chair_patches, device_patches, image_patch, result, rightmost_device):
+                    result = 'yes'
+                    return (chair_patches, device_patches, image_patch, result, rightmost_device)
+                chair_patches, device_patches, image_patch, result, rightmost_device = if_stmt(_if, None, chair_patch.horizontal_center < rightmost_device.horizontal_center, (chair_patches, device_patches, image_patch, result, rightmost_device))
+                return (chair_patches, device_patches, image_patch, result, rightmost_device)
+            chair_patches, device_patches, image_patch, result, rightmost_device = for_stmt(_for, chair_patches, (chair_patches, device_patches, image_patch, result, rightmost_device))
+            return (chair_patches, device_patches, image_patch, result, rightmost_device)
+        chair_patches, device_patches, image_patch, result, rightmost_device = if_stmt(_if, _else, len(chair_patches) == 0, (chair_patches, device_patches, image_patch, result, rightmost_device))
+        return (chair_patches, device_patches, image_patch, result, rightmost_device)
+    chair_patches, device_patches, image_patch, result, rightmost_device = if_stmt(_if, _else, len(device_patches) == 0, (chair_patches, device_patches, image_patch, result, rightmost_device))
+    return result

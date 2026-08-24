@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    fork_patches = None
+    has_black = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    fork_patches = image_patch.find('fork')
+
+    def _if(fork_patches, has_black, image_patch, result):
+        result = image_patch.simple_query('Does the fork have black color?')
+        return (fork_patches, has_black, image_patch, result)
+
+    def _else(fork_patches, has_black, image_patch, result):
+        has_black = False
+
+        def _for(fork_patch, fork_patches, has_black, image_patch):
+
+            def _if(fork_patches, has_black, image_patch):
+                has_black = True
+                return (fork_patches, has_black, image_patch)
+            fork_patches, has_black, image_patch = if_stmt(_if, None, fork_patch.verify_property('fork', 'black'), (fork_patches, has_black, image_patch))
+            return (fork_patches, has_black, image_patch)
+        fork_patches, has_black, image_patch = for_stmt(_for, fork_patches, (fork_patches, has_black, image_patch))
+        result = bool_to_yesno(has_black)
+        return (fork_patches, has_black, image_patch, result)
+    fork_patches, has_black, image_patch, result = if_stmt(_if, _else, len(fork_patches) == 0, (fork_patches, has_black, image_patch, result))
+    return result

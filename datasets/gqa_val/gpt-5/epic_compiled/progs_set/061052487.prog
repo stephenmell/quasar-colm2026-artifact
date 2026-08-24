@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    bus_exists = None
+    image_patch = None
+    result = None
+    top_boundary = None
+    top_bus_patches = None
+    top_patch = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    bus_exists = image_patch.exists('bus')
+
+    def _if(bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch):
+        result = image_patch.simple_query('Is the white bus in the top of the image?')
+        return (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch)
+
+    def _else(bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch):
+        top_boundary = int(image_patch.vertical_center)
+        top_patch = image_patch.crop(0, 0, image_patch.right, top_boundary)
+        top_bus_patches = top_patch.find('bus')
+
+        def _if(bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch):
+
+            def _for(bus_patch, bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch):
+
+                def _if(bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch):
+                    result = 'yes'
+                    return (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch)
+                bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch = if_stmt(_if, None, bus_patch.verify_property('bus', 'white'), (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch))
+                return (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch)
+            bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch = for_stmt(_for, top_bus_patches, (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch))
+            return (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch)
+        bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch = if_stmt(_if, None, len(top_bus_patches) > 0, (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch))
+        return (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch)
+    bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch = if_stmt(_if, _else, not_expr(bus_exists), (bus_exists, image_patch, result, top_boundary, top_bus_patches, top_patch))
+    return result

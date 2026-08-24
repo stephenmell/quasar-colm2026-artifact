@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    found = False
+    pot_names = ("pot", "pots", "flower pot", "flowerpot", "plant pot", "cooking pot", "teapot")
+    for name in pot_names:
+        if image_patch.exists(name):
+            found = True
+    if found:
+        result = "yes"
+    else:
+        result = image_patch.simple_query("Are there any pots?")
+    return result

@@ -1,0 +1,33 @@
+def execute_command(image) -> str:
+    has_truck_left = None
+    image_patch = None
+    left_area_patch = None
+    leftmost_vehicle = None
+    question_text = None
+    result = None
+    vehicle_patches = None
+    image_patch = ImagePatch(image)
+    question_text = 'Do you see any trucks to the left of the vehicle on the left?'
+    vehicle_patches = image_patch.find('vehicle')
+
+    def _if(has_truck_left, image_patch, left_area_patch, leftmost_vehicle, question_text, result, vehicle_patches):
+        result = image_patch.simple_query(question_text)
+        return (has_truck_left, image_patch, left_area_patch, leftmost_vehicle, question_text, result, vehicle_patches)
+
+    def _else(has_truck_left, image_patch, left_area_patch, leftmost_vehicle, question_text, result, vehicle_patches):
+        leftmost_vehicle = vehicle_patches[0]
+
+        def _for(vp, image_patch, leftmost_vehicle, question_text, vehicle_patches):
+
+            def _if(image_patch, leftmost_vehicle, question_text, vehicle_patches):
+                leftmost_vehicle = vp
+                return (image_patch, leftmost_vehicle, question_text, vehicle_patches)
+            image_patch, leftmost_vehicle, question_text, vehicle_patches = if_stmt(_if, None, vp.left < leftmost_vehicle.left, (image_patch, leftmost_vehicle, question_text, vehicle_patches))
+            return (image_patch, leftmost_vehicle, question_text, vehicle_patches)
+        image_patch, leftmost_vehicle, question_text, vehicle_patches = for_stmt(_for, vehicle_patches, (image_patch, leftmost_vehicle, question_text, vehicle_patches))
+        left_area_patch = image_patch.crop(image_patch.left, image_patch.lower, leftmost_vehicle.left, image_patch.upper)
+        has_truck_left = left_area_patch.exists('truck')
+        result = bool_to_yesno(has_truck_left)
+        return (has_truck_left, image_patch, left_area_patch, leftmost_vehicle, question_text, result, vehicle_patches)
+    has_truck_left, image_patch, left_area_patch, leftmost_vehicle, question_text, result, vehicle_patches = if_stmt(_if, _else, len(vehicle_patches) == 0, (has_truck_left, image_patch, left_area_patch, leftmost_vehicle, question_text, result, vehicle_patches))
+    return result

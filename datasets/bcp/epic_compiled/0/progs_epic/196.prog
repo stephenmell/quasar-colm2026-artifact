@@ -1,0 +1,108 @@
+({779: 'context', 782: 'llm_query', 800: '.join', 818: 'return_result'},
+ ('def',
+  777,
+  ((),
+   ((('call', (778,), -1, ()),
+     ('def',
+      780,
+      ((795, 781),
+       ((('prim',
+          783,
+          'You are given a single document. Identify whether it mentions a '
+          'person who matches any of these facts (available as of Dec 2023):\n'
+          '- Born in 1987.\n'
+          '- Used a stage name when they first began acting (or initially '
+          'used/considered another name).\n'
+          '- Received advice from an individual of Indian origin to keep their '
+          'original identity/name.\n'
+          '- Had lived on three continents by age 12.\n'
+          '- Got a matching tattoo alongside their sibling and cousin in the '
+          'early 2020s.\n'
+          '- In 2017, when asked about their next big project, they said they '
+          'would be hosting red carpet award shows like The Oscars.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (784,), 118, (781,)),
+         ('prim',
+          785,
+          '\n'
+          'END_DOCUMENT\n'
+          '\n'
+          'Instructions:\n'
+          '- If the document contains any mentions that match any of the '
+          'above, extract the candidate(s).\n'
+          '- For each candidate, provide:\n'
+          '  Candidate: <full name>\n'
+          '  StageName(s): <list any known stage/performing names; especially '
+          'what they used when they first began acting>\n'
+          '  BirthYear: <year if present>\n'
+          '  Matches:\n'
+          "    - Born in 1987: <evidence or 'not found'>\n"
+          "    - Used a stage name early: <evidence or 'not found'>\n"
+          "    - Indian-origin advisor to keep identity: <evidence or 'not "
+          "found'>\n"
+          "    - Lived on 3 continents by 12: <evidence or 'not found'>\n"
+          '    - Matching tattoo with sibling and cousin in early 2020s: '
+          "<evidence or 'not found'>\n"
+          '    - 2017 quote about hosting red carpet award shows like The '
+          "Oscars: <evidence or 'not found'>\n"
+          '  Quotes: <quote relevant lines verbatim>\n'
+          '  OverallMatchCount: <0-6>\n'
+          '- If no relevant info, reply exactly: No relevant info.'),
+         ('def',
+          791,
+          ((786, 787),
+           ((('call', (788,), 787, (786, 783)),
+             ('call', (789,), 787, (788, 784)),
+             ('call', (790,), 787, (789, 785))),
+            (790,)))),
+         ('prim', 792, ''),
+         ('call', (793,), 791, (792, 80)),
+         ('call', (794,), 782, (793,)),
+         ('call', (796,), -1, (794,)),
+         ('call', (797,), 80, (795, 796))),
+        (797,)))),
+     ('call', (799,), 79, (779,)),
+     ('call', (798,), 799, (778, 780)),
+     ('prim', 801, '\n\n'),
+     ('call', (802,), 800, (801, 798)),
+     ('prim',
+      803,
+      "Based on the user's clues (born in 1987; used a stage name when they "
+      'first began acting; advised by an Indian-origin individual to keep '
+      'their original identity; lived on three continents by age 12; matching '
+      'tattoo with sibling and cousin in the early 2020s; in 2017 said their '
+      'next big project would be hosting red carpet award shows like The '
+      'Oscars), identify the single best-matching person and provide ONLY '
+      'their stage name (the one the user is trying to remember). Output only '
+      'the stage name, with no extra words.'),
+     ('prim',
+      804,
+      'You are given extracted findings from multiple documents:\n'
+      '\n'
+      'BEGIN_FINDINGS\n'),
+     ('call', (805,), 118, (802,)),
+     ('prim',
+      806,
+      '\n'
+      'END_FINDINGS\n'
+      '\n'
+      'Task: Determine which candidate satisfies ALL the clues. If more than '
+      'one candidate appears, choose the one with the highest '
+      'OverallMatchCount and best direct evidence for the specific clues. If '
+      'none match all clues but one is clearly intended, choose that one.\n'
+      '\n'),
+     ('call', (807,), 118, (803,)),
+     ('def',
+      814,
+      ((808, 809),
+       ((('call', (810,), 809, (808, 804)),
+         ('call', (811,), 809, (810, 805)),
+         ('call', (812,), 809, (811, 806)),
+         ('call', (813,), 809, (812, 807))),
+        (813,)))),
+     ('prim', 815, ''),
+     ('call', (816,), 814, (815, 80)),
+     ('call', (817,), 782, (816,)),
+     ('call', (819,), 818, (817,))),
+    (819,)))))

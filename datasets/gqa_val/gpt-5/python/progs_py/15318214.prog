@@ -1,0 +1,10 @@
+# What color do you think the box is?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    box_patches = image_patch.find("box")
+    if len(box_patches) == 0:
+        # If no box is found, query the image directly
+        return image_patch.simple_query("What color do you think the box is?")
+    # Choose the largest detected box (most likely the main one)
+    target_patch = max(box_patches, key=lambda p: p.width * p.height)
+    return target_patch.simple_query("What color do you think the box is?")

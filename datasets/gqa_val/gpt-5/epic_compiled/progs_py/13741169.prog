@@ -1,0 +1,25 @@
+# What kind of animal is it?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("What kind of animal is it?")
+    else:
+        img_cx = image_patch.horizontal_center
+        img_cy = image_patch.vertical_center
+
+        best_patch = animal_patches[0]
+        dx0 = best_patch.horizontal_center - img_cx
+        dy0 = best_patch.vertical_center - img_cy
+        best_score = dx0 * dx0 + dy0 * dy0
+
+        for patch in animal_patches:
+            dx = patch.horizontal_center - img_cx
+            dy = patch.vertical_center - img_cy
+            dist = dx * dx + dy * dy
+            if dist < best_score:
+                best_score = dist
+                best_patch = patch
+        result = best_patch.simple_query("What kind of animal is it?")
+    return result

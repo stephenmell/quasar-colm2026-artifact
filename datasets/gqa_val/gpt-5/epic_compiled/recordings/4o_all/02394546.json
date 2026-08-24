@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2366773",
+          [
+            0,
+            0,
+            500,
+            306
+          ]
+        ],
+        "How is the weather?"
+      ],
+      "The weather appears to be clear and mild.",
+      763684143
+    ]
+  ],
+  "best_text_match": []
+}

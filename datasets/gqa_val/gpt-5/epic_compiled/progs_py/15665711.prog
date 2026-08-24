@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Check for white words
+    is_white_words = False
+    word_labels = ("word", "words", "text", "letters")
+    for word_label in word_labels:
+        if image_patch.exists(word_label):
+            word_patches = image_patch.find(word_label)
+            for word_patch in word_patches:
+                if word_patch.verify_property(word_label, "white"):
+                    is_white_words = True
+
+    # Check for cars (any color)
+    is_car_present = False
+    car_labels = ("car", "cars")
+    for car_label in car_labels:
+        if image_patch.exists(car_label):
+            is_car_present = True
+
+    result = bool_to_yesno(is_white_words or is_car_present)
+    if result == "no":
+        result = image_patch.simple_query("Do you see any white words or cars?")
+    return result

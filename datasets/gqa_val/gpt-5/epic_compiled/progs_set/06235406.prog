@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    bottle_patches = None
+    image_patch = None
+    leftmost_man = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(bottle_patches, image_patch, leftmost_man, man_patches, result):
+        result = image_patch.simple_query('Is there any bottle to the right of the man on the left side?')
+        return (bottle_patches, image_patch, leftmost_man, man_patches, result)
+
+    def _else(bottle_patches, image_patch, leftmost_man, man_patches, result):
+        leftmost_man = man_patches[0]
+
+        def _for(man_patch, image_patch, leftmost_man, man_patches):
+
+            def _if(image_patch, leftmost_man, man_patches):
+                leftmost_man = man_patch
+                return (image_patch, leftmost_man, man_patches)
+            image_patch, leftmost_man, man_patches = if_stmt(_if, None, man_patch.horizontal_center < leftmost_man.horizontal_center, (image_patch, leftmost_man, man_patches))
+            return (image_patch, leftmost_man, man_patches)
+        image_patch, leftmost_man, man_patches = for_stmt(_for, man_patches, (image_patch, leftmost_man, man_patches))
+        bottle_patches = image_patch.find('bottle')
+
+        def _if(bottle_patches, image_patch, leftmost_man, man_patches, result):
+            result = 'no'
+            return (bottle_patches, image_patch, leftmost_man, man_patches, result)
+
+        def _else(bottle_patches, image_patch, leftmost_man, man_patches, result):
+            result = 'no'
+
+            def _for(bottle_patch, bottle_patches, image_patch, leftmost_man, man_patches, result):
+
+                def _if(bottle_patches, image_patch, leftmost_man, man_patches, result):
+                    result = 'yes'
+                    return (bottle_patches, image_patch, leftmost_man, man_patches, result)
+                bottle_patches, image_patch, leftmost_man, man_patches, result = if_stmt(_if, None, bottle_patch.horizontal_center > leftmost_man.horizontal_center, (bottle_patches, image_patch, leftmost_man, man_patches, result))
+                return (bottle_patches, image_patch, leftmost_man, man_patches, result)
+            bottle_patches, image_patch, leftmost_man, man_patches, result = for_stmt(_for, bottle_patches, (bottle_patches, image_patch, leftmost_man, man_patches, result))
+            return (bottle_patches, image_patch, leftmost_man, man_patches, result)
+        bottle_patches, image_patch, leftmost_man, man_patches, result = if_stmt(_if, _else, len(bottle_patches) == 0, (bottle_patches, image_patch, leftmost_man, man_patches, result))
+        return (bottle_patches, image_patch, leftmost_man, man_patches, result)
+    bottle_patches, image_patch, leftmost_man, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (bottle_patches, image_patch, leftmost_man, man_patches, result))
+    return result

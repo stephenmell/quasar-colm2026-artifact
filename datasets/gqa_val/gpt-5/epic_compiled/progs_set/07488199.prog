@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    found_checkered = None
+    found_gray = None
+    image_patch = None
+    is_check = None
+    is_gray = None
+    question = None
+    result = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    question = 'Does the umbrella that looks gray look checkered?'
+    result = 'no'
+
+    def _if(found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches):
+        result = image_patch.simple_query(question)
+        return (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches)
+
+    def _else(found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches):
+        umbrella_patches = image_patch.find('umbrella')
+        found_gray = False
+        found_checkered = False
+
+        def _for(umbrella_patch, found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches):
+            is_gray = or_expr(umbrella_patch.verify_property('umbrella', 'gray'), umbrella_patch.verify_property('umbrella', 'grey'))
+
+            def _if(found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches):
+                found_gray = True
+                is_check = or_expr(umbrella_patch.verify_property('umbrella', 'checkered'), umbrella_patch.verify_property('umbrella', 'chequered'))
+
+                def _if(found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches):
+                    found_checkered = True
+                    return (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches)
+                found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches = if_stmt(_if, None, is_check, (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches))
+                return (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches)
+            found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches = if_stmt(_if, None, is_gray, (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches))
+            return (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches)
+        found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches = for_stmt(_for, umbrella_patches, (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches))
+
+        def _if(found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches):
+            result = bool_to_yesno(found_checkered)
+            return (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches)
+
+        def _else(found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches):
+            result = image_patch.simple_query(question)
+            return (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches)
+        found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches = if_stmt(_if, _else, found_gray, (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches))
+        return (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches)
+    found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches = if_stmt(_if, _else, not_expr(image_patch.exists('umbrella')), (found_checkered, found_gray, image_patch, is_check, is_gray, question, result, umbrella_patches))
+    return result

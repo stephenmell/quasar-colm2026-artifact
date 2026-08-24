@@ -1,0 +1,6 @@
+# Is there a bag?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bag_exists = image_patch.exists("bag")
+    result = bool_to_yesno(bag_exists)
+    return result

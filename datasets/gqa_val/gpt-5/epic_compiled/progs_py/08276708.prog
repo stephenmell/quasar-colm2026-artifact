@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Select one black umbrella (first found that is black)
+    umbrella_patches = image_patch.find("umbrella")
+    black_umbrella = None
+    for umbrella_patch in umbrella_patches:
+        if black_umbrella is None:
+            if umbrella_patch.verify_property("umbrella", "black"):
+                black_umbrella = umbrella_patch
+
+    # Select one white vehicle (first found among common vehicle types)
+    vehicle_types = ("vehicle", "car", "truck", "bus", "van", "suv", "automobile")
+    white_vehicle = None
+    for vehicle_name in vehicle_types:
+        found_patches = image_patch.find(vehicle_name)
+        for vehicle_patch in found_patches:
+            if white_vehicle is None:
+                if vehicle_patch.verify_property(vehicle_name, "white"):
+                    white_vehicle = vehicle_patch
+
+    # Decide relative position or fall back to direct question
+    if (black_umbrella is not None) and (white_vehicle is not None):
+        if black_umbrella.horizontal_center > white_vehicle.horizontal_center:
+            result = "right"
+        else:
+            result = "left"
+    else:
+        result = image_patch.simple_query("Is the black umbrella to the right or to the left of the white vehicle?")
+    return result

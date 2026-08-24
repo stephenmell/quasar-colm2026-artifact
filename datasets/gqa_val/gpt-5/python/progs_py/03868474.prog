@@ -1,0 +1,31 @@
+# Is the color of the chandelier the same as the carpet?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chandelier_patches = image_patch.find("chandelier")
+    carpet_patches = image_patch.find("carpet")
+    # If either object is missing, ask directly
+    if len(chandelier_patches) == 0 or len(carpet_patches) == 0:
+        return image_patch.simple_query("Is the color of the chandelier the same as the carpet?")
+    chandelier_patch = chandelier_patches[0]
+    carpet_patch = carpet_patches[0]
+
+    # Query colors
+    chandelier_color = chandelier_patch.simple_query("What color is the chandelier?")
+    carpet_color = carpet_patch.simple_query("What color is the carpet?")
+
+    # Normalize colors for comparison
+    def normalize_color(s: str) -> str:
+        if s is None:
+            return ""
+        s = str(s).lower().strip()
+        color_vocab = [
+            "black","blue","brown","gray","grey","green","orange","pink","purple",
+            "red","white","yellow","gold","silver","beige","tan","maroon","teal",
+            "turquoise","magenta","navy","cyan","violet","cream"
+        ]
+        for c in color_vocab:
+            if c in s:
+                return "gray" if c in ["gray", "grey"] else c
+        return s
+
+    return "yes" if normalize_color(chandelier_color) == normalize_color(carpet_color) else "no"

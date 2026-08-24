@@ -1,0 +1,33 @@
+def execute_command(image) -> str:
+    color_options = None
+    fence_color = None
+    fence_patches = None
+    image_patch = None
+    result = None
+    skateboard_color = None
+    skateboard_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    skateboard_patches = image_patch.find('skateboard')
+    fence_patches = image_patch.find('fence')
+
+    def _if(color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches):
+        result = image_patch.simple_query('Do the skateboard and the fence have different colors?')
+        return (color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches)
+
+    def _else(color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches):
+        color_options = ('red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'brown', 'black', 'white', 'gray', 'silver', 'gold', 'beige', 'tan')
+        skateboard_color = skateboard_patches[0].best_text_match(color_options)
+        fence_color = fence_patches[0].best_text_match(color_options)
+
+        def _if(color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches):
+            result = 'yes'
+            return (color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches)
+
+        def _else(color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches):
+            result = 'no'
+            return (color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches)
+        color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches = if_stmt(_if, _else, skateboard_color != fence_color, (color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches))
+        return (color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches)
+    color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches = if_stmt(_if, _else, or_expr(len(skateboard_patches) == 0, len(fence_patches) == 0), (color_options, fence_color, fence_patches, image_patch, result, skateboard_color, skateboard_patches))
+    return result

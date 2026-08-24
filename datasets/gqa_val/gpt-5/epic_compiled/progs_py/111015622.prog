@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    utensil_patches = image_patch.find("utensil")
+    if len(utensil_patches) == 0:
+        result = image_patch.simple_query("Do you see bottles to the left of the utensil that looks silver?")
+    else:
+        silver_utensil_centers = ()
+        for utensil_patch in utensil_patches:
+            if utensil_patch.verify_property("utensil", "silver"):
+                silver_utensil_centers = silver_utensil_centers + (utensil_patch.horizontal_center,)
+        if len(silver_utensil_centers) == 0:
+            result = image_patch.simple_query("Do you see bottles to the left of the utensil that looks silver?")
+        else:
+            bottle_patches = image_patch.find("bottle")
+            if len(bottle_patches) == 0:
+                result = "no"
+            else:
+                result = "no"
+                for bottle_patch in bottle_patches:
+                    is_left_of_any_silver_utensil = False
+                    for center in silver_utensil_centers:
+                        if bottle_patch.horizontal_center < center:
+                            is_left_of_any_silver_utensil = True
+                    if is_left_of_any_silver_utensil:
+                        result = "yes"
+    return result

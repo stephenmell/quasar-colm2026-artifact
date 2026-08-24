@@ -1,0 +1,11 @@
+# Is there a Caucasian woman in the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_exists = image_patch.exists("person")
+    alternative_info = ""
+    if person_exists:
+        alternative_info = " There is at least one person in the image."
+    else:
+        alternative_info = " I do not detect any people in the image."
+    result = "Sorry, I can’t help with identifying or guessing someone’s race or gender in an image." + alternative_info + " I can describe non-sensitive attributes like clothing, hair color, or actions if that helps."
+    return result

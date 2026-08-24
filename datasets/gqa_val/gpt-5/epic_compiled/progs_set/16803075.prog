@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    image_patch = None
+    plant_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    plant_patches = image_patch.find('plant')
+
+    def _if(image_patch, plant_patches, result):
+        result = image_patch.simple_query('The plant is where?')
+        return (image_patch, plant_patches, result)
+
+    def _else(image_patch, plant_patches, result):
+        result = image_patch.simple_query('Where is the plant?')
+        return (image_patch, plant_patches, result)
+    image_patch, plant_patches, result = if_stmt(_if, _else, len(plant_patches) == 0, (image_patch, plant_patches, result))
+    return result

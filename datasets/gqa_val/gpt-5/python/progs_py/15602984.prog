@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find animals and identify one that is lying on the chair
+    animal_patches = image_patch.find("animal")
+    lying_on_chair_animals = []
+    for animal_patch in animal_patches:
+        if animal_patch.simple_query("Is the animal lying on the chair?") == "yes":
+            lying_on_chair_animals.append(animal_patch)
+    # If no such animal is found, ask directly
+    if len(lying_on_chair_animals) == 0:
+        return image_patch.simple_query("Is the container to the left of the animal that is lying on the chair?")
+    # Find containers
+    container_patches = image_patch.find("container")
+    if len(container_patches) == 0:
+        return "no"
+    # Check if any container is to the left of any qualifying animal
+    for animal_patch in lying_on_chair_animals:
+        for container_patch in container_patches:
+            if container_patch.horizontal_center < animal_patch.horizontal_center:
+                return "yes"
+    return "no"

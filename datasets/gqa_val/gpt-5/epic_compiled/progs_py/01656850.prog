@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find("device")
+    result = None
+
+    if len(device_patches) == 0:
+        result = image_patch.simple_query("What device is to the right of the white device?")
+    else:
+        best_right_patch = None
+        best_diff = None
+
+        for white_candidate in device_patches:
+            is_white = white_candidate.verify_property("device", "white")
+            if is_white:
+                for other in device_patches:
+                    if other is not white_candidate:
+                        diff = other.horizontal_center - white_candidate.horizontal_center
+                        if diff > 0:
+                            if best_diff is None or diff < best_diff:
+                                best_diff = diff
+                                best_right_patch = other
+
+        if best_right_patch is not None:
+            result = best_right_patch.simple_query("What device is this?")
+        else:
+            result = image_patch.simple_query("What device is to the right of the white device?")
+    return result

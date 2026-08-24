@@ -1,0 +1,54 @@
+def execute_command(image) -> str:
+    bicycle_patches = None
+    bicycle_patches_a = None
+    bicycle_patches_b = None
+    cone_patches = None
+    cone_patches_a = None
+    cone_patches_b = None
+    image_patch = None
+    leftmost_bicycle = None
+    result = None
+    image_patch = ImagePatch(image)
+    bicycle_patches_a = image_patch.find('bicycle')
+    bicycle_patches_b = image_patch.find('bike')
+    bicycle_patches = bicycle_patches_a + bicycle_patches_b
+
+    def _if(bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result):
+        result = image_patch.simple_query('Are there any cones to the right of the bicycle on the left of the image?')
+        return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result)
+
+    def _else(bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result):
+        leftmost_bicycle = bicycle_patches[0]
+
+        def _for(bp, bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle):
+
+            def _if(bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle):
+                leftmost_bicycle = bp
+                return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle)
+            bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle = if_stmt(_if, None, bp.horizontal_center < leftmost_bicycle.horizontal_center, (bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle))
+            return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle)
+        bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle = for_stmt(_for, bicycle_patches, (bicycle_patches, bicycle_patches_a, bicycle_patches_b, image_patch, leftmost_bicycle))
+        cone_patches_a = image_patch.find('traffic cone')
+        cone_patches_b = image_patch.find('cone')
+        cone_patches = cone_patches_a + cone_patches_b
+
+        def _if(bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result):
+            result = 'no'
+            return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result)
+
+        def _else(bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result):
+            result = 'no'
+
+            def _for(cp, bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result):
+
+                def _if(bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result):
+                    result = 'yes'
+                    return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result)
+                bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result = if_stmt(_if, None, cp.horizontal_center > leftmost_bicycle.horizontal_center, (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result))
+                return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result)
+            bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result = for_stmt(_for, cone_patches, (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result))
+            return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result)
+        bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result = if_stmt(_if, _else, len(cone_patches) == 0, (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result))
+        return (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result)
+    bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result = if_stmt(_if, _else, len(bicycle_patches) == 0, (bicycle_patches, bicycle_patches_a, bicycle_patches_b, cone_patches, cone_patches_a, cone_patches_b, image_patch, leftmost_bicycle, result))
+    return result

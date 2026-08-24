@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    box_patches = None
+    image_patch = None
+    result = None
+    tap_patches = None
+    image_patch = ImagePatch(image)
+    tap_patches = image_patch.find('tap')
+    box_patches = image_patch.find('box')
+
+    def _if(box_patches, image_patch, result, tap_patches):
+        result = image_patch.simple_query('Is the tap to the left of the box?')
+        return (box_patches, image_patch, result, tap_patches)
+
+    def _else(box_patches, image_patch, result, tap_patches):
+        result = 'no'
+
+        def _for(tap_patch, box_patches, image_patch, result, tap_patches):
+
+            def _for(box_patch, box_patches, image_patch, result, tap_patches):
+
+                def _if(box_patches, image_patch, result, tap_patches):
+                    result = 'yes'
+                    return (box_patches, image_patch, result, tap_patches)
+                box_patches, image_patch, result, tap_patches = if_stmt(_if, None, tap_patch.horizontal_center < box_patch.horizontal_center, (box_patches, image_patch, result, tap_patches))
+                return (box_patches, image_patch, result, tap_patches)
+            box_patches, image_patch, result, tap_patches = for_stmt(_for, box_patches, (box_patches, image_patch, result, tap_patches))
+            return (box_patches, image_patch, result, tap_patches)
+        box_patches, image_patch, result, tap_patches = for_stmt(_for, tap_patches, (box_patches, image_patch, result, tap_patches))
+        return (box_patches, image_patch, result, tap_patches)
+    box_patches, image_patch, result, tap_patches = if_stmt(_if, _else, or_expr(len(tap_patches) == 0, len(box_patches) == 0), (box_patches, image_patch, result, tap_patches))
+    return result

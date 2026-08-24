@@ -1,0 +1,7 @@
+# Do you see any fences or zebras?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_exists = image_patch.exists("fence")
+    zebra_exists = image_patch.exists("zebra")
+    result = bool_to_yesno(fence_exists or zebra_exists)
+    return result

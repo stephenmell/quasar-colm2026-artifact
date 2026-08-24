@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find people/person patches
+    people_patches = image_patch.find("people")
+    if len(people_patches) == 0:
+        people_patches = image_patch.find("person")
+    if len(people_patches) == 0:
+        # If no people/person found, ask directly
+        return image_patch.simple_query("Is the book to the left or to the right of the people on the right side?")
+
+    # Keep only the people on the right side of the image
+    right_side_people = [p for p in people_patches if p.horizontal_center >= image_patch.horizontal_center]
+    if len(right_side_people) == 0:
+        # If none clearly on the right, use the rightmost person as a proxy
+        rightmost_person = max(people_patches, key=lambda p: p.horizontal_center)
+        right_side_people = [rightmost_person]
+
+    # Compute the horizontal center of the right-side people group
+    group_center = sum(p.horizontal_center for p in right_side_people) / len(right_side_people)
+
+    # Find book patches
+    book_patches = image_patch.find("book")
+    if len(book_patches) == 0:
+        return image_patch.simple_query("Is the book to the left or to the right of the people on the right side?")
+
+    # Choose the book closest (horizontally) to the right-side people group
+    book_patch = min(book_patches, key=lambda b: abs(b.horizontal_center - group_center))
+
+    return "left" if book_patch.horizontal_center < group_center else "right"

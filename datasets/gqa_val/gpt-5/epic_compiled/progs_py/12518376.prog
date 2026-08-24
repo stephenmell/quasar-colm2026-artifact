@@ -1,0 +1,12 @@
+# Does that table have round shape?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    result = "no"
+    if len(table_patches) == 0:
+        result = image_patch.simple_query("Does that table have round shape?")
+    else:
+        for table_patch in table_patches:
+            if table_patch.verify_property("table", "round"):
+                result = "yes"
+    return result

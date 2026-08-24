@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    desk_material = None
+    desk_patches = None
+    image_patch = None
+    lamp_material = None
+    lamp_patches = None
+    materials = None
+    result = None
+    same_material = None
+    image_patch = ImagePatch(image)
+    desk_patches = image_patch.find('desk')
+    lamp_patches = image_patch.find('lamp')
+
+    def _if(desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, result, same_material):
+        result = image_patch.simple_query('Are the desk and the lamp made of the same material?')
+        return (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, result, same_material)
+
+    def _else(desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, result, same_material):
+        materials = ('wood', 'metal', 'plastic', 'glass', 'ceramic', 'fabric', 'stone')
+        same_material = False
+
+        def _for(desk_patch, desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material):
+            desk_material = desk_patch.best_text_match(materials)
+
+            def _for(lamp_patch, desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material):
+                lamp_material = lamp_patch.best_text_match(materials)
+
+                def _if(desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material):
+                    same_material = True
+                    return (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material)
+                desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material = if_stmt(_if, None, desk_material == lamp_material, (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material))
+                return (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material)
+            desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material = for_stmt(_for, lamp_patches, (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material))
+            return (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material)
+        desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material = for_stmt(_for, desk_patches, (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, same_material))
+        result = bool_to_yesno(same_material)
+        return (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, result, same_material)
+    desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, result, same_material = if_stmt(_if, _else, or_expr(len(desk_patches) == 0, len(lamp_patches) == 0), (desk_material, desk_patches, image_patch, lamp_material, lamp_patches, materials, result, same_material))
+    return result

@@ -1,0 +1,29 @@
+# Are there black traffic lights or traffic signs?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    any_target_exists = False
+
+    # Check traffic lights
+    traffic_light_exists = image_patch.exists("traffic light")
+    if traffic_light_exists:
+        any_target_exists = True
+        traffic_light_patches = image_patch.find("traffic light")
+        for tl_patch in traffic_light_patches:
+            if tl_patch.verify_property("traffic light", "black"):
+                result = "yes"
+
+    # Check traffic signs
+    traffic_sign_exists = image_patch.exists("traffic sign")
+    if traffic_sign_exists:
+        any_target_exists = True
+        traffic_sign_patches = image_patch.find("traffic sign")
+        for ts_patch in traffic_sign_patches:
+            if ts_patch.verify_property("traffic sign", "black"):
+                result = "yes"
+
+    # If neither object is found, ask directly
+    if not any_target_exists:
+        result = image_patch.simple_query("Are there black traffic lights or traffic signs?")
+    return result

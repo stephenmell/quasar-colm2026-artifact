@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tent_patches = image_patch.find("tent")
+    if len(tent_patches) == 0:
+        # If no tent is found, query the image directly
+        return image_patch.simple_query("Is the umbrella to the left of the tent closed and black?")
+    umbrella_patches = image_patch.find("umbrella")
+    if len(umbrella_patches) == 0:
+        # If no umbrella is found, query the image directly
+        return image_patch.simple_query("Is the umbrella to the left of the tent closed and black?")
+    for tent_patch in tent_patches:
+        for umbrella_patch in umbrella_patches:
+            if umbrella_patch.horizontal_center < tent_patch.horizontal_center:
+                is_closed = umbrella_patch.verify_property("umbrella", "closed")
+                is_black = umbrella_patch.verify_property("umbrella", "black")
+                if is_closed and is_black:
+                    return "yes"
+    return "no"

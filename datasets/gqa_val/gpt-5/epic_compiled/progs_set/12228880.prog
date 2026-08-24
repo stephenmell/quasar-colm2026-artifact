@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    has_carpet = None
+    has_couch = None
+    has_rug = None
+    has_sofa = None
+    image_patch = None
+    result = None
+    result_bool = None
+    image_patch = ImagePatch(image)
+    has_couch = image_patch.exists('couch')
+    has_sofa = image_patch.exists('sofa')
+    has_rug = image_patch.exists('rug')
+    has_carpet = image_patch.exists('carpet')
+    result_bool = or_expr(has_couch or has_sofa, has_rug or has_carpet)
+    result = bool_to_yesno(result_bool)
+    return result

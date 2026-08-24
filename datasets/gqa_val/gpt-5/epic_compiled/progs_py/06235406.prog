@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Is there any bottle to the right of the man on the left side?")
+    else:
+        leftmost_man = man_patches[0]
+        for man_patch in man_patches:
+            if man_patch.horizontal_center < leftmost_man.horizontal_center:
+                leftmost_man = man_patch
+        bottle_patches = image_patch.find("bottle")
+        if len(bottle_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for bottle_patch in bottle_patches:
+                if bottle_patch.horizontal_center > leftmost_man.horizontal_center:
+                    result = "yes"
+    return result

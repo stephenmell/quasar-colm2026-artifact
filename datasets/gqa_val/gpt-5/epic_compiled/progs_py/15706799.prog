@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cheese_patches = image_patch.find("cheese")
+    if len(cheese_patches) == 0:
+        result = image_patch.simple_query("Are the cheese food to the left of a fork?")
+    else:
+        result = "no"
+        fork_patches = image_patch.find("fork")
+        for cheese_patch in cheese_patches:
+            for fork_patch in fork_patches:
+                if cheese_patch.horizontal_center < fork_patch.horizontal_center:
+                    result = "yes"
+    return result

@@ -1,0 +1,13 @@
+# Is she snowboarding?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    for object_name in ["woman", "girl", "lady"]:
+        person_patches = image_patch.find(object_name)
+        if len(person_patches) == 0:
+            continue
+        for person_patch in person_patches:
+            if person_patch.verify_property(object_name, "snowboarding"):
+                return "yes"
+        return "no"
+    # If no female person is found, fall back to asking directly
+    return image_patch.simple_query("Is she snowboarding?")

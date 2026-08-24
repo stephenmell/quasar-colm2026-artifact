@@ -1,0 +1,218 @@
+def execute_command():
+    BestContactIndexSchema = None
+    BestFileIndexSchema = None
+    EmailPickSchema = None
+    MeetingDetailsSchema = None
+    attachments = None
+    best_next_date = None
+    body = None
+    c = None
+    cal_events = None
+    can_send = None
+    chosen_file = None
+    client_email_str = None
+    client_name = None
+    contact_choice = None
+    contacts = None
+    contacts_listing = None
+    details = None
+    em = None
+    email_candidates_listing = None
+    ev_date_str = None
+    f = None
+    file_summaries = None
+    files = None
+    index_choice = None
+    needs_lookup = None
+    next_date_str = None
+    next_meeting_line = None
+    pick = None
+    recipient_email = None
+    related_emails = None
+    result = None
+    salutation = None
+    sent_email = None
+    subject = None
+    summary_text = None
+    today = None
+    files = search_files_by_filename('client-meeting-minutes.docx')
+
+    def _if(files):
+        files = search_files('client meeting minutes')
+        return (files,)
+    files, = if_stmt(_if, None, len(files) == 0, (files,))
+    result = "I could not find any file related to 'client-meeting-minutes.docx'. Please make sure it exists in your drive."
+    chosen_file = None
+
+    def _if(BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result):
+
+        def _if(BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result):
+            chosen_file = files[0]
+            return (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result)
+
+        def _else(BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result):
+            file_summaries = ''
+
+            def _for(i, chosen_file, f, file_summaries, files, result):
+                f = files[i]
+                file_summaries = file_summaries + 'Index: {}\nFilename: {}\nLast modified: {}\nContent:\n{}\n------------------------\n'.format(str(i), f.filename, f.last_modified.isoformat(), f.content)
+                return (chosen_file, f, file_summaries, files, result)
+            chosen_file, f, file_summaries, files, result = for_stmt(_for, range(len(files)), (chosen_file, f, file_summaries, files, result))
+            BestFileIndexSchema = CreateSchema('best_index', int)
+            index_choice = query_ai_assistant("You are given multiple files that could be the 'client meeting minutes'. Your task is to pick the single best file to use for emailing a client summary. Criteria: (1) The content clearly looks like meeting minutes for a client meeting; (2) Prefer the most recent document if several are valid; (3) Avoid drafts or placeholders.\nProvide only the integer index in the field 'best_index'.\nFiles:\n{}".format(file_summaries), BestFileIndexSchema)
+
+            def _if(BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result):
+                chosen_file = files[index_choice.best_index]
+                return (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result)
+
+            def _else(BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result):
+                chosen_file = files[0]
+                return (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result)
+            BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result = if_stmt(_if, _else, and_expr(index_choice.best_index >= 0, index_choice.best_index < len(files)), (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result))
+            return (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result)
+        BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result = if_stmt(_if, _else, len(files) == 1, (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result))
+        return (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result)
+    BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result = if_stmt(_if, None, len(files) != 0, (BestFileIndexSchema, chosen_file, f, file_summaries, files, index_choice, result))
+
+    def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today):
+        today = get_current_day()
+        MeetingDetailsSchema = CreateSchema('summary', str, 'next_meeting_date', str, 'client_email', str, 'client_name', str)
+        details = query_ai_assistant("From the following meeting minutes document, extract:\n1) 'summary': a concise, client-facing summary (4–7 sentences, business tone) suitable for an email.\n2) 'next_meeting_date': the date of the next meeting in strict 'YYYY-MM-DD' format. If the minutes mention a relative date, resolve it using today's date {}. If multiple candidate future dates are present, choose the earliest future meeting. If no next meeting is mentioned at all, put 'unknown'.\n3) 'client_email': the client's email address if present anywhere in the document (including headers/footers/signatures), otherwise 'unknown'.\n4) 'client_name': the client's name as referenced in the document, otherwise 'unknown'.\n\nDocument content:\n{}".format(today, chosen_file.content), MeetingDetailsSchema)
+        summary_text = details.summary
+        next_date_str = details.next_meeting_date
+        client_email_str = details.client_email
+        client_name = details.client_name
+
+        def _if(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today):
+            cal_events = search_calendar_events(client_name, None)
+            best_next_date = None
+
+            def _if(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today):
+
+                def _for(ev, BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today):
+                    ev_date_str = ev.start_time.strftime('%Y-%m-%d')
+
+                    def _if(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today):
+
+                        def _if(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today):
+                            best_next_date = ev_date_str
+                            return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today)
+                        BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today = if_stmt(_if, None, or_expr(best_next_date is None, ev_date_str < best_next_date), (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today))
+                        return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today)
+                    BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today = if_stmt(_if, None, ev_date_str >= today, (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today))
+                    return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today)
+                BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today = for_stmt(_for, cal_events, (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today))
+                return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today)
+            BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today = if_stmt(_if, None, len(cal_events) != 0, (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today))
+
+            def _if(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today):
+                next_date_str = best_next_date
+                return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today)
+            BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today = if_stmt(_if, None, best_next_date is not None, (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today))
+            return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today)
+        BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today = if_stmt(_if, None, and_expr(next_date_str == 'unknown', and_expr(client_name != 'unknown', client_name.strip() != '')), (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, next_date_str, result, summary_text, today))
+        recipient_email = client_email_str
+        needs_lookup = False
+
+        def _if(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today):
+            needs_lookup = True
+            return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today)
+
+        def _else(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today):
+
+            def _if(BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today):
+                needs_lookup = True
+                return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today)
+            BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today = if_stmt(_if, None, or_expr(recipient_email.strip() == '', recipient_email.find('@') == -1), (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today))
+            return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today)
+        BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today = if_stmt(_if, _else, recipient_email == 'unknown', (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today))
+
+        def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+
+            def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+                contacts = search_contacts_by_name(client_name)
+
+                def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+                    recipient_email = contacts[0].email
+                    return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+
+                def _else(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+
+                    def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+                        contacts_listing = ''
+
+                        def _for(i, BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today):
+                            c = contacts[i]
+                            contacts_listing = contacts_listing + 'Index: {}\nName: {}\nEmail: {}\n------------------------\n'.format(str(i), c.name, c.email)
+                            return (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today)
+                        BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today = for_stmt(_for, range(len(contacts)), (BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today))
+                        BestContactIndexSchema = CreateSchema('best_index', int)
+                        contact_choice = query_ai_assistant("We need the client's email address to send them a summary of the attached minutes. Based on the document content below and the list of contacts, choose the single best matching contact index (most likely the client referenced in the minutes). Provide only the integer index in 'best_index'.\n\nDocument content:\n{}\n\nContacts:\n{}".format(chosen_file.content, contacts_listing), BestContactIndexSchema)
+
+                        def _if(BestContactIndexSchema, BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today):
+                            recipient_email = contacts[contact_choice.best_index].email
+                            return (BestContactIndexSchema, BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today)
+                        BestContactIndexSchema, BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today = if_stmt(_if, None, and_expr(contact_choice.best_index >= 0, contact_choice.best_index < len(contacts)), (BestContactIndexSchema, BestFileIndexSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, result, summary_text, today))
+                        return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+
+                    def _else(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+                        related_emails = search_emails(client_name, None)
+
+                        def _if(BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+                            EmailPickSchema = CreateSchema('selected_email', EmailStr)
+                            email_candidates_listing = ''
+
+                            def _for(i, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, related_emails, result, summary_text, today):
+                                em = related_emails[i]
+                                email_candidates_listing = email_candidates_listing + 'Index: {}\nSender: {}\nRecipients: {}\nSubject: {}\nBody excerpt:\n{}\n------------------------\n'.format(str(i), em.sender, ', '.join(em.recipients), em.subject, em.body)
+                                return (BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, related_emails, result, summary_text, today)
+                            BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, related_emails, result, summary_text, today = for_stmt(_for, range(len(related_emails)), (BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, recipient_email, related_emails, result, summary_text, today))
+                            pick = query_ai_assistant("From the email threads below related to '{}', pick the single most likely external client email address to send a meeting summary to. Choose an email that most plausibly belongs to the client (not Emma Johnson or internal addresses). Output it in the 'selected_email' field.\n\nEmails:\n{}".format(client_name, email_candidates_listing), EmailPickSchema)
+                            recipient_email = pick.selected_email
+                            return (BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+                        BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today = if_stmt(_if, None, len(related_emails) != 0, (BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, cal_events, chosen_file, client_email_str, client_name, contacts, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today))
+                        return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+                    BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today = if_stmt(_if, _else, len(contacts) > 1, (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today))
+                    return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+                BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today = if_stmt(_if, _else, len(contacts) == 1, (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today))
+                return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+            BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today = if_stmt(_if, None, and_expr(client_name != 'unknown', client_name.strip() != ''), (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today))
+            return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+        BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today = if_stmt(_if, None, needs_lookup, (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today))
+        can_send = True
+
+        def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+            can_send = False
+            return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+
+        def _else(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+
+            def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today):
+                can_send = False
+                return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+            BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today = if_stmt(_if, None, or_expr(recipient_email.strip() == '', recipient_email.find('@') == -1), (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today))
+            return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today)
+        BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today = if_stmt(_if, _else, recipient_email == 'unknown', (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, summary_text, today))
+        subject = 'Summary of the client meeting'
+        salutation = 'Hello,'
+
+        def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, salutation, subject, summary_text, today):
+            salutation = 'Hi {}, '.format(client_name.strip())
+            return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, salutation, subject, summary_text, today)
+        BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, salutation, subject, summary_text, today = if_stmt(_if, None, and_expr(client_name != 'unknown', client_name.strip() != ''), (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, best_next_date, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, pick, recipient_email, related_emails, result, salutation, subject, summary_text, today))
+        next_meeting_line = 'Next meeting: {}'.format(next_date_str) if next_date_str != 'unknown' else 'Next meeting: to be determined'
+        body = '{}\n\nPlease find attached the meeting minutes document. Here is a brief summary:\n\n{}\n\n{}\n\nBest regards,\nEmma Johnson\nBlue Sparrow Tech'.format(salutation, summary_text, next_meeting_line)
+
+        def _if(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today):
+            attachments = [{'type': 'file', 'file_id': chosen_file.id_}]
+            sent_email = send_email([recipient_email], subject, body, attachments, None, None)
+            result = "Email sent to {} with subject '{}' and the document '{}' attached.".format(recipient_email, subject, chosen_file.filename)
+            return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today)
+
+        def _else(BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today):
+            result = "I prepared the summary, but could not determine the client's email address to send it. Extracted next meeting date: {}. Please provide the client's email or add them to contacts so I can send the email.".format(next_date_str)
+            return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today)
+        BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today = if_stmt(_if, _else, can_send, (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today))
+        return (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today)
+    BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today = if_stmt(_if, None, chosen_file is not None, (BestContactIndexSchema, BestFileIndexSchema, EmailPickSchema, MeetingDetailsSchema, attachments, best_next_date, body, c, cal_events, can_send, chosen_file, client_email_str, client_name, contact_choice, contacts, contacts_listing, details, em, email_candidates_listing, ev_date_str, f, file_summaries, files, index_choice, needs_lookup, next_date_str, next_meeting_line, pick, recipient_email, related_emails, result, salutation, sent_email, subject, summary_text, today))
+    return result

@@ -1,0 +1,32 @@
+# Are there any cars next to the boat?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    boat_patches = image_patch.find("boat")
+
+    if len(boat_patches) == 0:
+        result = image_patch.simple_query("Are there any cars next to the boat?")
+    else:
+        car_exists = image_patch.exists("car")
+        if car_exists:
+            for boat_patch in boat_patches:
+                margin_w = boat_patch.width // 2
+                margin_h = boat_patch.height // 2
+
+                left = boat_patch.left - margin_w
+                if left < 0:
+                    left = 0
+                right = boat_patch.right + margin_w
+                if right > image_patch.right:
+                    right = image_patch.right
+                lower = boat_patch.lower - margin_h
+                if lower < 0:
+                    lower = 0
+                upper = boat_patch.upper + margin_h
+                if upper > image_patch.upper:
+                    upper = image_patch.upper
+
+                neighborhood_patch = image_patch.crop(left, lower, right, upper)
+                if neighborhood_patch.exists("car"):
+                    result = "yes"
+    return result

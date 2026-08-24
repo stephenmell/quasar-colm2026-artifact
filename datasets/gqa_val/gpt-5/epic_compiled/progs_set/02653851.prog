@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    attic_patches = None
+    dirty_attic_patch = None
+    image_patch = None
+    is_dirty = None
+    result = None
+    image_patch = ImagePatch(image)
+    attic_patches = image_patch.find('attic')
+
+    def _if(attic_patches, dirty_attic_patch, image_patch, is_dirty, result):
+        result = image_patch.simple_query('What is the color of the dirty attic?')
+        return (attic_patches, dirty_attic_patch, image_patch, is_dirty, result)
+
+    def _else(attic_patches, dirty_attic_patch, image_patch, is_dirty, result):
+        dirty_attic_patch = None
+
+        def _for(attic_patch, attic_patches, dirty_attic_patch, image_patch, is_dirty):
+            is_dirty = attic_patch.verify_property('attic', 'dirty')
+
+            def _if(attic_patches, dirty_attic_patch, image_patch, is_dirty):
+                dirty_attic_patch = attic_patch
+                return (attic_patches, dirty_attic_patch, image_patch, is_dirty)
+            attic_patches, dirty_attic_patch, image_patch, is_dirty = if_stmt(_if, None, and_expr(is_dirty, dirty_attic_patch is None), (attic_patches, dirty_attic_patch, image_patch, is_dirty))
+            return (attic_patches, dirty_attic_patch, image_patch, is_dirty)
+        attic_patches, dirty_attic_patch, image_patch, is_dirty = for_stmt(_for, attic_patches, (attic_patches, dirty_attic_patch, image_patch, is_dirty))
+
+        def _if(attic_patches, dirty_attic_patch, image_patch, is_dirty, result):
+            result = attic_patches[0].simple_query('What is the color of the dirty attic?')
+            return (attic_patches, dirty_attic_patch, image_patch, is_dirty, result)
+
+        def _else(attic_patches, dirty_attic_patch, image_patch, is_dirty, result):
+            result = dirty_attic_patch.simple_query('What is the color of the dirty attic?')
+            return (attic_patches, dirty_attic_patch, image_patch, is_dirty, result)
+        attic_patches, dirty_attic_patch, image_patch, is_dirty, result = if_stmt(_if, _else, dirty_attic_patch is None, (attic_patches, dirty_attic_patch, image_patch, is_dirty, result))
+        return (attic_patches, dirty_attic_patch, image_patch, is_dirty, result)
+    attic_patches, dirty_attic_patch, image_patch, is_dirty, result = if_stmt(_if, _else, len(attic_patches) == 0, (attic_patches, dirty_attic_patch, image_patch, is_dirty, result))
+    return result

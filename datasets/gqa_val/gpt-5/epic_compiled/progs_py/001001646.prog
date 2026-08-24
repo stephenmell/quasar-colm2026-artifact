@@ -1,0 +1,22 @@
+# Are there flags or boats that are small?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for small flags
+    flag_exists = image_patch.exists("flag")
+    if flag_exists:
+        flag_patches = image_patch.find("flag")
+        for flag_patch in flag_patches:
+            if flag_patch.verify_property("flag", "small"):
+                result = "yes"
+
+    # Check for small boats if not already found
+    if result == "no":
+        boat_exists = image_patch.exists("boat")
+        if boat_exists:
+            boat_patches = image_patch.find("boat")
+            for boat_patch in boat_patches:
+                if boat_patch.verify_property("boat", "small"):
+                    result = "yes"
+    return result

@@ -1,0 +1,9 @@
+Stage: agentdojo_eval.exec_with_return
+Error: duplicate argument 'f' in function definition (workspace_user_task_19.prog, line 398)
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/AgentDojo/pipeline_run_agentdojo.py", line 290, in main
+    comp = compile(code, filename=filename, mode='exec')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "workspace_user_task_19.prog", line 398
+SyntaxError: duplicate argument 'f' in function definition

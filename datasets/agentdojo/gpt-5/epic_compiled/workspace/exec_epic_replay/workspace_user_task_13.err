@@ -1,0 +1,35 @@
+Stage: semantics.reduce_graph_opportunistic
+Error: Var(id=474, name='#while#')
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper_artifact/run_agentdojo.py", line 330, in main
+    epic_exec_trace = tuple(semantics.reduce_graph_opportunistic(epic_term))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 152, in reduce_graph_opportunistic
+    g = reduce_term(f, "bfs", False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 145, in reduce_term
+    return asyncio.get_event_loop().run_until_complete(reduce_term_async(e, tree_policy, blocking_async))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 125, in reduce_term_async
+    new_ops, toucheds = await graph_step(s, ident)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 197, in graph_step
+    return await graph_step_call(s, ident)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 212, in graph_step_call
+    return graph_step_call_normal(s, call_ident, call_f, inps, def_ident)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 226, in graph_step_call_normal
+    return graph_step_body(s, call_ident, vm, func[1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 312, in graph_step_body
+    new_ident = add_statement_to_graph(s.g, vm, stmt)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_syntax_utils.py", line 11, in add_statement_to_graph
+    ident, f_new = g.add_def(f.name, func, {v : vm[v] for v in fvs})
+                                                ~~^^^
+KeyError: Var(id=474, name='#while#')

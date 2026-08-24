@@ -1,0 +1,46 @@
+# Is the plastic chair to the right or to the left of the man that is wearing a shirt?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the man who is wearing a shirt
+    man_patches = image_patch.find("man")
+    man_with_shirt = None
+    for man_patch in man_patches:
+        if man_patch.simple_query("Is the man wearing a shirt?") == "yes":
+            man_with_shirt = man_patch
+            break
+        # Fallback in case the simple query fails
+        try:
+            if man_patch.verify_property("man", "wearing a shirt"):
+                man_with_shirt = man_patch
+                break
+        except Exception:
+            pass
+
+    if man_with_shirt is None:
+        # If we can't identify the specific man, ask directly
+        return image_patch.simple_query("Is the plastic chair to the right or to the left of the man that is wearing a shirt?")
+
+    # Find the plastic chair
+    plastic_chair_patches = image_patch.find("plastic chair")
+    if len(plastic_chair_patches) == 0:
+        # Try finding chairs and verifying if they're plastic
+        candidate_chairs = []
+        chair_patches = image_patch.find("chair")
+        for chair_patch in chair_patches:
+            if chair_patch.simple_query("Is the chair plastic?") == "yes" or chair_patch.verify_property("chair", "plastic"):
+                candidate_chairs.append(chair_patch)
+        plastic_chair_patches = candidate_chairs
+
+    if len(plastic_chair_patches) == 0:
+        # If no plastic chair is found, ask directly
+        return image_patch.simple_query("Is the plastic chair to the right or to the left of the man that is wearing a shirt?")
+
+    # Choose the plastic chair closest (horizontally) to the man with the shirt
+    plastic_chair_patch = min(plastic_chair_patches, key=lambda p: abs(p.horizontal_center - man_with_shirt.horizontal_center))
+
+    # Compare positions
+    if plastic_chair_patch.horizontal_center > man_with_shirt.horizontal_center:
+        return "right"
+    else:
+        return "left"

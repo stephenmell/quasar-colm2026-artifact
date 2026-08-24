@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    image_patch = None
+    nose_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    nose_patches = image_patch.find('nose')
+
+    def _if(image_patch, nose_patches, result):
+        result = image_patch.simple_query('Does the nose have white color?')
+        return (image_patch, nose_patches, result)
+
+    def _else(image_patch, nose_patches, result):
+        result = bool_to_yesno(nose_patches[0].verify_property('nose', 'white'))
+        return (image_patch, nose_patches, result)
+    image_patch, nose_patches, result = if_stmt(_if, _else, len(nose_patches) == 0, (image_patch, nose_patches, result))
+    return result

@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    clothing_patches = image_patch.find("clothing")
+    # If no clothing is found, ask directly
+    if len(clothing_patches) == 0:
+        return image_patch.simple_query("What is the blue clothing item?")
+    # Look for a clothing item that is blue
+    for clothing_patch in clothing_patches:
+        if clothing_patch.verify_property("clothing", "blue"):
+            # Crop likely contains the blue clothing, keep it in the query
+            return clothing_patch.simple_query("What is the blue clothing item?")
+    # Fallback: ask the whole image
+    return image_patch.simple_query("What is the blue clothing item?")

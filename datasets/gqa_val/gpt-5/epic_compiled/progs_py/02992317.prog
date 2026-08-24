@@ -1,0 +1,10 @@
+# Are there any pictures in the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    search_terms = ("picture", "picture frame", "painting", "poster", "photo", "photograph", "art", "artwork", "frame")
+    any_found = False
+    for term in search_terms:
+        if image_patch.exists(term):
+            any_found = True
+    result = bool_to_yesno(any_found)
+    return result

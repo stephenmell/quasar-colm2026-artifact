@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    boy_patches = image_patch.find("boy")
+    plate_patches = image_patch.find("plate")
+    pizza_patches = image_patch.find("pizza")
+
+    # If we can't reliably detect the key objects, ask directly
+    if len(boy_patches) == 0 or len(plate_patches) == 0 or len(pizza_patches) == 0:
+        return image_patch.simple_query("Is the fresh pizza to the left of the plate next to the boy?")
+
+    # Filter pizzas by the "fresh" property
+    fresh_pizzas = [p for p in pizza_patches if p.verify_property("pizza", "fresh")]
+    if len(fresh_pizzas) == 0:
+        # If no pizza is verified as fresh, ask directly
+        return image_patch.simple_query("Is the fresh pizza to the left of the plate next to the boy?")
+
+    def center(patch):
+        return (patch.horizontal_center, patch.vertical_center)
+
+    def dist2(c1, c2):
+        return (c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2
+
+    # For each boy, find the nearest plate (interpreted as "the plate next to the boy")
+    for boy_patch in boy_patches:
+        boy_c = center(boy_patch)
+        nearest_plate = min(plate_patches, key=lambda pl: dist2(center(pl), boy_c))
+
+        # Check if any fresh pizza is to the left of this plate
+        for pizza_patch in fresh_pizzas:
+            if pizza_patch.horizontal_center < nearest_plate.horizontal_center:
+                return "yes"
+
+    return "no"

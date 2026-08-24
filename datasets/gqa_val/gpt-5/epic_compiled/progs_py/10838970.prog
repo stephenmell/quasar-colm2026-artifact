@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    keyboard_patches = image_patch.find("keyboard")
+    if len(keyboard_patches) == 0:
+        result = image_patch.simple_query("What kind of device is to the right of the keyboard on the left?")
+    else:
+        leftmost_keyboard = keyboard_patches[0]
+        for kb in keyboard_patches:
+            if kb.horizontal_center < leftmost_keyboard.horizontal_center:
+                leftmost_keyboard = kb
+        right_area_patch = image_patch.crop(leftmost_keyboard.right, leftmost_keyboard.lower, image_patch.right, leftmost_keyboard.upper)
+        result = right_area_patch.simple_query("What kind of device is to the right of the keyboard on the left?")
+    return result

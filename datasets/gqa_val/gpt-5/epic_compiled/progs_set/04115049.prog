@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    has_black = None
+    image_patch = None
+    result = None
+    tap_patches = None
+    image_patch = ImagePatch(image)
+    tap_patches = image_patch.find('tap')
+
+    def _if(has_black, image_patch, result, tap_patches):
+        result = image_patch.simple_query('Does the tap have black color?')
+        return (has_black, image_patch, result, tap_patches)
+
+    def _else(has_black, image_patch, result, tap_patches):
+        has_black = False
+
+        def _for(tap_patch, has_black, image_patch, tap_patches):
+
+            def _if(has_black, image_patch, tap_patches):
+                has_black = True
+                return (has_black, image_patch, tap_patches)
+            has_black, image_patch, tap_patches = if_stmt(_if, None, tap_patch.verify_property('tap', 'black'), (has_black, image_patch, tap_patches))
+            return (has_black, image_patch, tap_patches)
+        has_black, image_patch, tap_patches = for_stmt(_for, tap_patches, (has_black, image_patch, tap_patches))
+        result = bool_to_yesno(has_black)
+        return (has_black, image_patch, result, tap_patches)
+    has_black, image_patch, result, tap_patches = if_stmt(_if, _else, len(tap_patches) == 0, (has_black, image_patch, result, tap_patches))
+    return result

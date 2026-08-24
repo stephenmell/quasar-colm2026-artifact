@@ -1,0 +1,20 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    right_area_patch = None
+    umpire_patch = None
+    umpire_patches = None
+    image_patch = ImagePatch(image)
+    umpire_patches = image_patch.find('umpire')
+
+    def _if(image_patch, result, right_area_patch, umpire_patch, umpire_patches):
+        result = image_patch.simple_query('Which kind of furniture is to the right of the umpire?')
+        return (image_patch, result, right_area_patch, umpire_patch, umpire_patches)
+
+    def _else(image_patch, result, right_area_patch, umpire_patch, umpire_patches):
+        umpire_patch = umpire_patches[0]
+        right_area_patch = image_patch.crop(umpire_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+        result = right_area_patch.simple_query('Which kind of furniture is here?')
+        return (image_patch, result, right_area_patch, umpire_patch, umpire_patches)
+    image_patch, result, right_area_patch, umpire_patch, umpire_patches = if_stmt(_if, _else, len(umpire_patches) == 0, (image_patch, result, right_area_patch, umpire_patch, umpire_patches))
+    return result

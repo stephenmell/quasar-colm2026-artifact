@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    home_patches = image_patch.find("home")
+    house_patches = image_patch.find("house")
+    all_home_patches = home_patches + house_patches
+
+    if len(all_home_patches) == 0:
+        result = image_patch.simple_query("Are the homes in the bottom of the photo?")
+    else:
+        result = "no"
+        for home_patch in all_home_patches:
+            if home_patch.vertical_center < image_patch.vertical_center:
+                result = "yes"
+    return result

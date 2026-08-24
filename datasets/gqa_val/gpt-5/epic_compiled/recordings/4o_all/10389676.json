@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2401079",
+          [
+            0,
+            0,
+            500,
+            334
+          ]
+        ],
+        "animal"
+      ],
+      [],
+      14852107293
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2401079",
+          [
+            0,
+            0,
+            500,
+            334
+          ]
+        ],
+        "What is the red animal called?"
+      ],
+      "It's a parrot.",
+      1296702165
+    ]
+  ],
+  "best_text_match": []
+}

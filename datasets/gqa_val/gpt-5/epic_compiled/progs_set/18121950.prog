@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    bench_exists = None
+    bench_patches = None
+    fence_exists = None
+    fence_patches = None
+    image_patch = None
+    is_made_of_wood = None
+    is_wooden = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    bench_exists = image_patch.exists('bench')
+
+    def _if(bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result):
+        bench_patches = image_patch.find('bench')
+
+        def _for(bench_patch, bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result):
+            is_wooden = bench_patch.verify_property('bench', 'wooden')
+            is_made_of_wood = bench_patch.verify_property('bench', 'made of wood')
+
+            def _if(bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result):
+                result = 'yes'
+                return (bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result)
+            bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result = if_stmt(_if, None, or_expr(is_wooden, is_made_of_wood), (bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result))
+            return (bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result)
+        bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result = for_stmt(_for, bench_patches, (bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result))
+        return (bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result)
+    bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result = if_stmt(_if, None, bench_exists, (bench_exists, bench_patches, image_patch, is_made_of_wood, is_wooden, result))
+    fence_exists = image_patch.exists('fence')
+
+    def _if(bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result):
+        fence_patches = image_patch.find('fence')
+
+        def _for(fence_patch, bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result):
+            is_wooden = fence_patch.verify_property('fence', 'wooden')
+            is_made_of_wood = fence_patch.verify_property('fence', 'made of wood')
+
+            def _if(bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result):
+                result = 'yes'
+                return (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result)
+            bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result = if_stmt(_if, None, or_expr(is_wooden, is_made_of_wood), (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result))
+            return (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result)
+        bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result = for_stmt(_for, fence_patches, (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result))
+        return (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result)
+    bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result = if_stmt(_if, None, fence_exists, (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result))
+
+    def _if(bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result):
+        result = image_patch.simple_query('Do you see either any benches or fences that are made of wood?')
+        return (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result)
+    bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result = if_stmt(_if, None, and_expr(not bench_exists, not fence_exists), (bench_exists, bench_patches, fence_exists, fence_patches, image_patch, is_made_of_wood, is_wooden, result))
+    return result

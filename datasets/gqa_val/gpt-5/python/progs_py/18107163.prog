@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_tv = image_patch.exists("television") or image_patch.exists("tv")
+    is_remote = image_patch.exists("remote control") or image_patch.exists("remote")
+    return bool_to_yesno(is_tv or is_remote)

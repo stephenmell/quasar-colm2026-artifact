@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    tomato_patches = image_patch.find("tomato")
+    if len(tomato_patches) == 0:
+        result = image_patch.simple_query("Do the veggies to the right of the tomatoes have green color?")
+    else:
+        # Determine the rightmost tomato center
+        rightmost_tomato_center = tomato_patches[0].horizontal_center
+        for tomato_patch in tomato_patches:
+            if tomato_patch.horizontal_center > rightmost_tomato_center:
+                rightmost_tomato_center = tomato_patch.horizontal_center
+
+        # Gather possible vegetable detections under different names
+        veggie_names = ("vegetable", "veggie", "vegetables", "veggies")
+        veggie_patches = ()
+        for name in veggie_names:
+            found = image_patch.find(name)
+            veggie_patches = veggie_patches + found
+
+        if len(veggie_patches) == 0:
+            result = image_patch.simple_query("Do the veggies to the right of the tomatoes have green color?")
+        else:
+            for veggie_patch in veggie_patches:
+                is_right = veggie_patch.horizontal_center > rightmost_tomato_center
+                if is_right:
+                    if veggie_patch.verify_property("vegetable", "green"):
+                        result = "yes"
+    return result

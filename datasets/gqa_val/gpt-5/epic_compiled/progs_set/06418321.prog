@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    area = None
+    best_area = None
+    chosen_patch = None
+    image_patch = None
+    result = None
+    television_patches = None
+    image_patch = ImagePatch(image)
+    television_patches = image_patch.find('television')
+
+    def _if(area, best_area, chosen_patch, image_patch, result, television_patches):
+        result = image_patch.simple_query('On which side of the picture is the television?')
+        return (area, best_area, chosen_patch, image_patch, result, television_patches)
+
+    def _else(area, best_area, chosen_patch, image_patch, result, television_patches):
+        best_area = -1
+        chosen_patch = None
+
+        def _for(tv_patch, area, best_area, chosen_patch, image_patch, television_patches):
+            area = tv_patch.width * tv_patch.height
+
+            def _if(area, best_area, chosen_patch, image_patch, television_patches):
+                best_area = area
+                chosen_patch = tv_patch
+                return (area, best_area, chosen_patch, image_patch, television_patches)
+            area, best_area, chosen_patch, image_patch, television_patches = if_stmt(_if, None, area > best_area, (area, best_area, chosen_patch, image_patch, television_patches))
+            return (area, best_area, chosen_patch, image_patch, television_patches)
+        area, best_area, chosen_patch, image_patch, television_patches = for_stmt(_for, television_patches, (area, best_area, chosen_patch, image_patch, television_patches))
+
+        def _if(area, best_area, chosen_patch, image_patch, result, television_patches):
+            result = 'left'
+            return (area, best_area, chosen_patch, image_patch, result, television_patches)
+
+        def _else(area, best_area, chosen_patch, image_patch, result, television_patches):
+            result = 'right'
+            return (area, best_area, chosen_patch, image_patch, result, television_patches)
+        area, best_area, chosen_patch, image_patch, result, television_patches = if_stmt(_if, _else, chosen_patch.horizontal_center < image_patch.horizontal_center, (area, best_area, chosen_patch, image_patch, result, television_patches))
+        return (area, best_area, chosen_patch, image_patch, result, television_patches)
+    area, best_area, chosen_patch, image_patch, result, television_patches = if_stmt(_if, _else, len(television_patches) == 0, (area, best_area, chosen_patch, image_patch, result, television_patches))
+    return result

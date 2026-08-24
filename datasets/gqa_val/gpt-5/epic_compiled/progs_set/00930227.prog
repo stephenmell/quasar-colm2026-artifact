@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_sitting_on_bench = None
+    man_patches = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+        result = image_patch.simple_query('Are there men to the right of the sitting person on the bench?')
+        return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+
+    def _else(image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+        man_patches = image_patch.find('man')
+
+        def _if(image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+            result = 'no'
+            return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+
+        def _else(image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+            result = 'no'
+
+            def _for(person_patch, image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+                is_sitting_on_bench = person_patch.simple_query('Is the person sitting on a bench?') == 'yes'
+
+                def _if(image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+
+                    def _for(man_patch, image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+
+                        def _if(image_patch, is_sitting_on_bench, man_patches, person_patches, result):
+                            result = 'yes'
+                            return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+                        image_patch, is_sitting_on_bench, man_patches, person_patches, result = if_stmt(_if, None, man_patch.horizontal_center > person_patch.horizontal_center, (image_patch, is_sitting_on_bench, man_patches, person_patches, result))
+                        return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+                    image_patch, is_sitting_on_bench, man_patches, person_patches, result = for_stmt(_for, man_patches, (image_patch, is_sitting_on_bench, man_patches, person_patches, result))
+                    return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+                image_patch, is_sitting_on_bench, man_patches, person_patches, result = if_stmt(_if, None, is_sitting_on_bench, (image_patch, is_sitting_on_bench, man_patches, person_patches, result))
+                return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+            image_patch, is_sitting_on_bench, man_patches, person_patches, result = for_stmt(_for, person_patches, (image_patch, is_sitting_on_bench, man_patches, person_patches, result))
+            return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+        image_patch, is_sitting_on_bench, man_patches, person_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (image_patch, is_sitting_on_bench, man_patches, person_patches, result))
+        return (image_patch, is_sitting_on_bench, man_patches, person_patches, result)
+    image_patch, is_sitting_on_bench, man_patches, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (image_patch, is_sitting_on_bench, man_patches, person_patches, result))
+    return result

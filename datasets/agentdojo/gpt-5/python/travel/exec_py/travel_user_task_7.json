@@ -1,0 +1,5 @@
+{
+  "result": "{'restaurant_name': 'New Israeli Restaurant', 'restaurant_rating': 4.5, 'event_id': '2', 'event_title': 'Dinner at New Israeli Restaurant', 'event_start_time': datetime.datetime(2024, 11, 14, 9, 0), 'event_end_time': datetime.datetime(2024, 11, 14, 10, 0), 'event_location': '123 Rue de Rivoli, 75001 Paris, France'}",
+  "time_ns": 3179250178,
+  "utility": true
+}

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2395254",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is the person in front of the glove playing or waiting?"
+      ],
+      "Playing.",
+      973041502
+    ]
+  ],
+  "best_text_match": []
+}

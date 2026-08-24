@@ -1,0 +1,26 @@
+# What kind of furniture is to the right of the man?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("What kind of furniture is to the right of the man?")
+    else:
+        man_patch = man_patches[0]
+        right_area_patch = image_patch.crop(man_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+
+        furniture_types = (
+            "chair", "sofa", "couch", "table", "desk", "bed", "bench", "stool",
+            "cabinet", "dresser", "shelf", "bookshelf", "nightstand", "ottoman",
+            "armchair", "counter", "cupboard"
+        )
+        detected = None
+        for furn in furniture_types:
+            exists_here = right_area_patch.exists(furn)
+            if exists_here and detected is None:
+                detected = furn
+
+        if detected:
+            result = detected
+        else:
+            result = right_area_patch.simple_query("What kind of furniture is here?")
+    return result

@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find("tree")
+    # If no trees are found, query the image directly
+    if len(tree_patches) == 0:
+        return image_patch.simple_query("Are the trees tall and green?")
+    # If any tree is both tall and green, answer yes
+    for tree_patch in tree_patches:
+        is_tall = tree_patch.verify_property("tree", "tall")
+        is_green = tree_patch.verify_property("tree", "green")
+        if is_tall and is_green:
+            return "yes"
+    return "no"

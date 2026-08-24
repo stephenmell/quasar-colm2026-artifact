@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Try to find a blue container directly
+    blue_container_patches = image_patch.find("blue container")
+    selected_container_patch = None
+    if len(blue_container_patches) == 0:
+        # Fall back to finding any container and verifying it's blue
+        container_patches = image_patch.find("container")
+        for container_patch in container_patches:
+            if container_patch.verify_property("container", "blue") and selected_container_patch is None:
+                selected_container_patch = container_patch
+    else:
+        selected_container_patch = blue_container_patches[0]
+
+    if selected_container_patch is None:
+        # If we couldn't localize the blue container, ask the full question directly
+        result = image_patch.simple_query("What type of furniture is to the right of the blue container?")
+    else:
+        # Crop the area to the right of the blue container and query that region
+        right_area_patch = image_patch.crop(selected_container_patch.right, selected_container_patch.lower,
+                                            image_patch.right, selected_container_patch.upper)
+        result = right_area_patch.simple_query("What type of furniture is here?")
+    return result

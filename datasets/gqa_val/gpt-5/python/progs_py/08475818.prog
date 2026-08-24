@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no people found, ask directly due to relational nature
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Are there plates to the right of the people that are using a mobile phone?")
+    plate_patches = image_patch.find("plate")
+    if len(plate_patches) == 0:
+        return "no"
+    # Check for any person using a mobile phone with a plate to their right
+    for person_patch in person_patches:
+        using_phone = (person_patch.simple_query("Is the person using a mobile phone?") == "yes")
+        if using_phone:
+            for plate_patch in plate_patches:
+                if plate_patch.horizontal_center > person_patch.horizontal_center:
+                    return "yes"
+    return "no"

@@ -1,0 +1,11 @@
+# Are there notepads in the scene?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Check common variants just in case
+    notepad_exists = image_patch.exists("notepad")
+    if not notepad_exists:
+        notepad_exists = image_patch.exists("note pad")
+    if not notepad_exists:
+        notepad_exists = image_patch.exists("notepads")
+    result = bool_to_yesno(notepad_exists)
+    return result

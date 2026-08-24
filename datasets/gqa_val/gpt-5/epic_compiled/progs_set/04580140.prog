@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    bus_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find('bus')
+
+    def _if(bus_patches, image_patch, result):
+        result = image_patch.simple_query('Is that bus small?')
+        return (bus_patches, image_patch, result)
+
+    def _else(bus_patches, image_patch, result):
+        result = 'no'
+
+        def _for(bus_patch, bus_patches, image_patch, result):
+
+            def _if(bus_patches, image_patch, result):
+                result = 'yes'
+                return (bus_patches, image_patch, result)
+            bus_patches, image_patch, result = if_stmt(_if, None, bus_patch.verify_property('bus', 'small'), (bus_patches, image_patch, result))
+            return (bus_patches, image_patch, result)
+        bus_patches, image_patch, result = for_stmt(_for, bus_patches, (bus_patches, image_patch, result))
+        return (bus_patches, image_patch, result)
+    bus_patches, image_patch, result = if_stmt(_if, _else, len(bus_patches) == 0, (bus_patches, image_patch, result))
+    return result

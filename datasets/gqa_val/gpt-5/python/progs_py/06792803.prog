@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bathtub_patches = image_patch.find("bathtub")
+    # Question assumes only one bathtub patch
+    if len(bathtub_patches) == 0:
+        # If no bathtub is found, query the image directly
+        return image_patch.simple_query("Is the bathtub white or red?")
+    return bathtub_patches[0].best_text_match(["white", "red"])

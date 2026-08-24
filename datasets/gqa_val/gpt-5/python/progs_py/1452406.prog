@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tail_patches = image_patch.find("tail")
+    if len(tail_patches) == 0:
+        # If no tail is found, query the image directly
+        return image_patch.simple_query("Does the tail look short?")
+    is_short = any(tail_patch.verify_property("tail", "short") for tail_patch in tail_patches)
+    return bool_to_yesno(is_short)

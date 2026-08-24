@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find("vehicle")
+    if len(vehicle_patches) == 0:
+        # If no vehicle is found, query the image directly
+        return image_patch.simple_query("Which size is the white vehicle, large or small?")
+
+    white_vehicle = None
+    # First try using verify_property
+    for vp in vehicle_patches:
+        if vp.verify_property("vehicle", "white"):
+            white_vehicle = vp
+            break
+    # Fallback: ask directly per patch
+    if white_vehicle is None:
+        for vp in vehicle_patches:
+            if vp.simple_query("Is the vehicle white?") == "yes":
+                white_vehicle = vp
+                break
+
+    if white_vehicle is None:
+        # If no white vehicle is identified, ask the question directly
+        return image_patch.simple_query("Which size is the white vehicle, large or small?")
+
+    return white_vehicle.best_text_match(["large", "small"])

@@ -1,0 +1,92 @@
+({1645: 'context', 1652: 'llm_query', 1665: 'return_result'},
+ ('def',
+  1643,
+  ((),
+   ((('prim', 1644, ''),
+     ('def',
+      1646,
+      ((1654, 1647),
+       ((('prim',
+          1648,
+          'You are given a single document. Your task is to extract any '
+          'information about soccer/football clubs and any state/city metadata '
+          'relevant to this query:\n'
+          '\n'
+          'QUERY CLUES:\n'
+          '- We want a soccer team that was founded in the capital city of a '
+          'state (as of 2016).\n'
+          '- The state was established between 1985 and 1992.\n'
+          '- The state has a total area between 3,800 sq. km and 5,300 sq. km '
+          '(as of 2016).\n'
+          '- In the 2015/16 season, the team finished with the same number of '
+          'league matches won, lost, and drawn.\n'
+          '- The team won its last league match of that season, which was '
+          'played in October.\n'
+          '\n'
+          'For this document, do the following:\n'
+          '1) List any soccer/football team(s) or club(s) mentioned, giving '
+          'for each:\n'
+          '   - Team full name\n'
+          '   - City and state/province\n'
+          '   - Whether the listed city is the capital of that state (as of '
+          '2016)\n'
+          "   - The state's establishment/creation date or year, if given\n"
+          "   - The state's total area, if given\n"
+          '   - Where and when the team was founded (city and year), if given\n'
+          '   - 2015/16 season league summary (wins, draws, losses) if '
+          'present; indicate explicitly if W, D, and L are equal\n'
+          '   - The date and result of the last league match of the 2015/16 '
+          'season; indicate if it was played in October and if it was a win\n'
+          '2) If the document only contains state/city metadata (no club), '
+          'still extract:\n'
+          '   - State name, capital, creation year, and total area.\n'
+          '3) Provide direct quotes from the document supporting each '
+          'extracted fact when possible. If the document does not contain '
+          'relevant information, respond with NO_RELEVANT_INFO.\n'
+          '\n'
+          'Return a compact, structured summary. Avoid speculation; only use '
+          'what is stated or directly inferable from this document.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1649,), 80, (1648, 1647)),
+         ('prim', 1650, '\nEND_DOCUMENT'),
+         ('call', (1651,), 80, (1649, 1650)),
+         ('call', (1653,), 1652, (1651,)),
+         ('call', (1655,), 80, (1654, 1653)),
+         ('prim', 1656, '\n-----\n'),
+         ('call', (1657,), 80, (1655, 1656))),
+        (1657,)))),
+     ('call', (1659,), 79, (1645,)),
+     ('call', (1658,), 1659, (1644, 1646)),
+     ('prim',
+      1660,
+      'You are given extracted notes from multiple documents. Your job is to '
+      'identify the single soccer/football team that matches ALL of the '
+      'following constraints:\n'
+      '- The team was founded in the capital city of a state (as of 2016).\n'
+      '- The state was established between 1985 and 1992.\n'
+      '- The state has a total area between 3,800 sq. km and 5,300 sq. km (as '
+      'of 2016).\n'
+      '- In the 2015/16 season, the team finished with the same number of '
+      'league matches won, lost, and drawn.\n'
+      '- The team also won its last league match of that season, which was '
+      'played in October.\n'
+      '\n'
+      'Use only the information in the extractions below. If state metadata '
+      'and club details are in different extractions, you may combine them if '
+      'they clearly refer to the same state and club. If more than one team '
+      'appears, choose the one that satisfies all constraints most directly '
+      'and explicitly.\n'
+      '\n'
+      'EXTRACTIONS:\n'),
+     ('call', (1661,), 80, (1660, 1658)),
+     ('prim',
+      1662,
+      '\n'
+      '\n'
+      'IMPORTANT: Output only the full name of the soccer team that matches, '
+      'with no additional words, punctuation, or commentary.'),
+     ('call', (1663,), 80, (1661, 1662)),
+     ('call', (1664,), 1652, (1663,)),
+     ('call', (1666,), 1665, (1664,))),
+    (1666,)))))

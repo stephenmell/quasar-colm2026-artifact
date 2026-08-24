@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    food_patches = image_patch.find("food")
+
+    if len(food_patches) == 0:
+        result = image_patch.simple_query("Are there any stoves to the right of the food that looks orange?")
+    else:
+        stove_patches = image_patch.find("stove")
+        if len(stove_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for food_patch in food_patches:
+                is_orange = food_patch.verify_property("food", "orange")
+                if is_orange:
+                    for stove_patch in stove_patches:
+                        if stove_patch.horizontal_center > food_patch.horizontal_center:
+                            result = "yes"
+    return result

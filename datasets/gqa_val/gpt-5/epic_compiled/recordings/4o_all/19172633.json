@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2368908",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "parachute"
+      ],
+      [],
+      13708053375
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2368908",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "Do you see airplanes to the right of the parachute?"
+      ],
+      "Yes.",
+      1239359419
+    ]
+  ],
+  "best_text_match": []
+}

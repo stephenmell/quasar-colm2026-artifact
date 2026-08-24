@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find("giraffe")
+    # Question assumes only one giraffe patch
+    if len(giraffe_patches) == 0:
+        # If no giraffe is found, query the image directly
+        return image_patch.simple_query("Does the giraffe have white color?")
+    return bool_to_yesno(giraffe_patches[0].verify_property("giraffe", "white"))

@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    fork_exists = None
+    fork_patches = None
+    image_patch = None
+    result = None
+    spoon_exists = None
+    spoon_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    fork_exists = image_patch.exists('fork')
+
+    def _if(fork_exists, fork_patches, image_patch, result):
+        fork_patches = image_patch.find('fork')
+
+        def _for(fork_patch, fork_exists, fork_patches, image_patch, result):
+
+            def _if(fork_exists, fork_patches, image_patch, result):
+                result = 'yes'
+                return (fork_exists, fork_patches, image_patch, result)
+            fork_exists, fork_patches, image_patch, result = if_stmt(_if, None, fork_patch.verify_property('fork', 'clean'), (fork_exists, fork_patches, image_patch, result))
+            return (fork_exists, fork_patches, image_patch, result)
+        fork_exists, fork_patches, image_patch, result = for_stmt(_for, fork_patches, (fork_exists, fork_patches, image_patch, result))
+        return (fork_exists, fork_patches, image_patch, result)
+    fork_exists, fork_patches, image_patch, result = if_stmt(_if, None, fork_exists, (fork_exists, fork_patches, image_patch, result))
+    spoon_exists = image_patch.exists('spoon')
+
+    def _if(fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches):
+        spoon_patches = image_patch.find('spoon')
+
+        def _for(spoon_patch, fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches):
+
+            def _if(fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches):
+                result = 'yes'
+                return (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches)
+            fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches = if_stmt(_if, None, spoon_patch.verify_property('spoon', 'clean'), (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches))
+            return (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches)
+        fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches = for_stmt(_for, spoon_patches, (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches))
+        return (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches)
+    fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches = if_stmt(_if, None, spoon_exists, (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches))
+
+    def _if(fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches):
+
+        def _if(fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches):
+            result = image_patch.simple_query('Do you see any clean forks or spoons?')
+            return (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches)
+        fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches = if_stmt(_if, None, and_expr(not fork_exists, not spoon_exists), (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches))
+        return (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches)
+    fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches = if_stmt(_if, None, result == 'no', (fork_exists, fork_patches, image_patch, result, spoon_exists, spoon_patches))
+    return result

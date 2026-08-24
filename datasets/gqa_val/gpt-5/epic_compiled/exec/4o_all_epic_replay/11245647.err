@@ -1,0 +1,14 @@
+Stage: epics_syntax.observe_term_as_value
+Error: ('call', '', (Var(id=64, name='#implicit#'),), Var(id=17, name='not'), (Var(id=138, name='result'),))
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 276, in main
+    epic_exec_result_value = epics_syntax.observe_term_as_value(epic_exec_result)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/epics_syntax.py", line 157, in observe_term_as_value
+    if outp in stmt_return_vars(stmt):
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/epics_syntax.py", line 152, in stmt_return_vars
+    assert False, s
+           ^^^^^
+AssertionError: ('call', '', (Var(id=64, name='#implicit#'),), Var(id=17, name='not'), (Var(id=138, name='result'),))

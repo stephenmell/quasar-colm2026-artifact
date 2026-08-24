@@ -1,0 +1,13 @@
+Stage: other execution error
+Error: unsupported operand type(s) for +: 'AbstractTuple' and 'AbstractTuple'
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "19971173.prog", line 42, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 191, in abstract_if_stmt
+    lvars_f = else_body(*lvars) if else_body is not None else lvars
+              ^^^^^^^^^^^^^^^^^
+  File "19971173.prog", line 18, in _else
+TypeError: unsupported operand type(s) for +: 'AbstractTuple' and 'AbstractTuple'

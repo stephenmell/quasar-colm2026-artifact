@@ -1,0 +1,25 @@
+# Is the man that is playing wearing gloves?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Is the man that is playing wearing gloves?")
+    else:
+        found_playing = False
+        found_wearing_gloves = False
+        for man_patch in man_patches:
+            is_playing = man_patch.verify_property("man", "playing")
+            if not is_playing:
+                is_playing = (man_patch.simple_query("Is the man playing?") == "yes")
+            if is_playing:
+                if not found_playing:
+                    found_playing = True
+                wearing_gloves = (man_patch.simple_query("Is the man wearing gloves?") == "yes")
+                if wearing_gloves:
+                    found_wearing_gloves = True
+        if found_playing:
+            result = bool_to_yesno(found_wearing_gloves)
+        else:
+            result = image_patch.simple_query("Is the man that is playing wearing gloves?")
+    return result

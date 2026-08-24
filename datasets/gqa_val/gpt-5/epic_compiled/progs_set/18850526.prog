@@ -1,0 +1,117 @@
+def execute_command(image) -> str:
+    alt_answer = None
+    answer = None
+    image_patch = None
+    indoor_objects = None
+    is_indoor = None
+    is_outdoor = None
+    outdoor_objects = None
+    result = None
+    scene_label = None
+    yn = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    scene_label = image_patch.best_text_match(('outdoor scene', 'indoor scene'))
+
+    def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+        result = 'yes'
+        return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+    def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+
+        def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+            result = 'no'
+            return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+        def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+            outdoor_objects = ('sky', 'tree', 'mountain', 'grass', 'beach', 'ocean', 'sea', 'snow', 'river', 'lake', 'cloud', 'street', 'road', 'sidewalk', 'park', 'field', 'sand', 'forest')
+            indoor_objects = ('ceiling', 'sofa', 'couch', 'bed', 'lamp', 'television', 'cabinet', 'sink', 'toilet', 'stove', 'microwave', 'refrigerator', 'bookshelf', 'desk', 'table', 'chair', 'window', 'door', 'wall', 'floor', 'carpet')
+            is_outdoor = False
+
+            def _for(obj, image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label):
+
+                def _if(image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label):
+
+                    def _if(image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label):
+                        is_outdoor = True
+                        return (image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label)
+                    image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label = if_stmt(_if, None, image_patch.exists(obj), (image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label))
+                    return (image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label)
+                image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label = if_stmt(_if, None, not_expr(is_outdoor), (image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label))
+                return (image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label)
+            image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label = for_stmt(_for, outdoor_objects, (image_patch, indoor_objects, is_outdoor, outdoor_objects, result, scene_label))
+            is_indoor = False
+
+            def _for(obj, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label):
+
+                def _if(image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label):
+
+                    def _if(image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label):
+                        is_indoor = True
+                        return (image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label)
+                    image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label = if_stmt(_if, None, image_patch.exists(obj), (image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label))
+                    return (image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label)
+                image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label = if_stmt(_if, None, not_expr(is_indoor), (image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label))
+                return (image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label)
+            image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label = for_stmt(_for, indoor_objects, (image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label))
+
+            def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                result = 'yes'
+                return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+            def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+
+                def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                    result = 'no'
+                    return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+                def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                    answer = image_patch.simple_query('Is it an outdoors scene?')
+
+                    def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                        result = 'yes'
+                        return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+                    def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+
+                        def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                            result = 'no'
+                            return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+                        def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                            alt_answer = image_patch.simple_query('Is this photo taken outdoors?')
+
+                            def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                                result = 'yes'
+                                return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+                            def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+
+                                def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                                    result = 'no'
+                                    return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+
+                                def _else(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                                    yn = image_patch.best_text_match(('yes', 'no'))
+
+                                    def _if(alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn):
+                                        result = yn
+                                        return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+                                    alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, None, or_expr(yn == 'yes', yn == 'no'), (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+                                    return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+                                alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, alt_answer == 'no', (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+                                return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+                            alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, alt_answer == 'yes', (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+                            return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+                        alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, answer == 'no', (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+                        return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+                    alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, answer == 'yes', (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+                    return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+                alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, and_expr(is_indoor, not is_outdoor), (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+                return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+            alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, and_expr(is_outdoor, not is_indoor), (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+            return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+        alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, scene_label == 'indoor scene', (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+        return (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn)
+    alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn = if_stmt(_if, _else, scene_label == 'outdoor scene', (alt_answer, answer, image_patch, indoor_objects, is_indoor, is_outdoor, outdoor_objects, result, scene_label, yn))
+    return result

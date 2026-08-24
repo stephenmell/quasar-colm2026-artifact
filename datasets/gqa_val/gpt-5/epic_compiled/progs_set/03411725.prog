@@ -1,0 +1,62 @@
+def execute_command(image) -> str:
+    helmet_patches = None
+    image_patch = None
+    result = None
+    silver_suv_found = None
+    suv_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    suv_patches = image_patch.find('suv')
+
+    def _if(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+        result = image_patch.simple_query('Are there any helmets to the right of the silver SUV?')
+        return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+
+    def _else(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+        silver_suv_found = False
+
+        def _for(suv_patch, image_patch, result, silver_suv_found, suv_patches):
+
+            def _if(image_patch, result, silver_suv_found, suv_patches):
+                silver_suv_found = True
+                return (image_patch, result, silver_suv_found, suv_patches)
+            image_patch, result, silver_suv_found, suv_patches = if_stmt(_if, None, suv_patch.verify_property('suv', 'silver'), (image_patch, result, silver_suv_found, suv_patches))
+            return (image_patch, result, silver_suv_found, suv_patches)
+        image_patch, result, silver_suv_found, suv_patches = for_stmt(_for, suv_patches, (image_patch, result, silver_suv_found, suv_patches))
+
+        def _if(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+            result = image_patch.simple_query('Are there any helmets to the right of the silver SUV?')
+            return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+
+        def _else(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+            helmet_patches = image_patch.find('helmet')
+
+            def _if(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+                result = 'no'
+                return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+
+            def _else(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+
+                def _for(suv_patch, helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+
+                    def _if(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+
+                        def _for(helmet_patch, helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+
+                            def _if(helmet_patches, image_patch, result, silver_suv_found, suv_patches):
+                                result = 'yes'
+                                return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+                            helmet_patches, image_patch, result, silver_suv_found, suv_patches = if_stmt(_if, None, helmet_patch.horizontal_center > suv_patch.horizontal_center, (helmet_patches, image_patch, result, silver_suv_found, suv_patches))
+                            return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+                        helmet_patches, image_patch, result, silver_suv_found, suv_patches = for_stmt(_for, helmet_patches, (helmet_patches, image_patch, result, silver_suv_found, suv_patches))
+                        return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+                    helmet_patches, image_patch, result, silver_suv_found, suv_patches = if_stmt(_if, None, suv_patch.verify_property('suv', 'silver'), (helmet_patches, image_patch, result, silver_suv_found, suv_patches))
+                    return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+                helmet_patches, image_patch, result, silver_suv_found, suv_patches = for_stmt(_for, suv_patches, (helmet_patches, image_patch, result, silver_suv_found, suv_patches))
+                return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+            helmet_patches, image_patch, result, silver_suv_found, suv_patches = if_stmt(_if, _else, len(helmet_patches) == 0, (helmet_patches, image_patch, result, silver_suv_found, suv_patches))
+            return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+        helmet_patches, image_patch, result, silver_suv_found, suv_patches = if_stmt(_if, _else, not_expr(silver_suv_found), (helmet_patches, image_patch, result, silver_suv_found, suv_patches))
+        return (helmet_patches, image_patch, result, silver_suv_found, suv_patches)
+    helmet_patches, image_patch, result, silver_suv_found, suv_patches = if_stmt(_if, _else, len(suv_patches) == 0, (helmet_patches, image_patch, result, silver_suv_found, suv_patches))
+    return result

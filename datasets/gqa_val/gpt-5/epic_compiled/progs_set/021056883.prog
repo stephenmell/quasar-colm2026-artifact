@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_long = None
+    result = None
+    shirt_patches = None
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find('shirt')
+
+    def _if(image_patch, is_long, result, shirt_patches):
+        result = image_patch.simple_query('Does the shirt look long?')
+        return (image_patch, is_long, result, shirt_patches)
+
+    def _else(image_patch, is_long, result, shirt_patches):
+        is_long = False
+
+        def _for(shirt_patch, image_patch, is_long, shirt_patches):
+
+            def _if(image_patch, is_long, shirt_patches):
+                is_long = True
+                return (image_patch, is_long, shirt_patches)
+            image_patch, is_long, shirt_patches = if_stmt(_if, None, shirt_patch.verify_property('shirt', 'long'), (image_patch, is_long, shirt_patches))
+            return (image_patch, is_long, shirt_patches)
+        image_patch, is_long, shirt_patches = for_stmt(_for, shirt_patches, (image_patch, is_long, shirt_patches))
+        result = bool_to_yesno(is_long)
+        return (image_patch, is_long, result, shirt_patches)
+    image_patch, is_long, result, shirt_patches = if_stmt(_if, _else, len(shirt_patches) == 0, (image_patch, is_long, result, shirt_patches))
+    return result

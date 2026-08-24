@@ -1,0 +1,152 @@
+def execute_command():
+    MondayOpenSchema = None
+    NamesSchema = None
+    RatingSchema = None
+    affordable_restaurants = None
+    best_address = None
+    best_address_map = None
+    best_restaurant_hours = None
+    best_restaurant_name = None
+    best_restaurant_price_per_person = None
+    best_restaurant_rating = None
+    best_restaurant_reviews_count = None
+    better = None
+    c = None
+    candidate_restaurants = None
+    chinese_restaurants = None
+    city = None
+    cuisines = None
+    hours_text = None
+    max_price_per_person = None
+    monday_open_restaurants = None
+    monday_schema = None
+    opening_hours = None
+    price_pp = None
+    restaurant_names = None
+    restaurant_prices = None
+    restaurant_ratings_text = None
+    restaurants_schema = None
+    restaurants_str = None
+    result = None
+    reviews_count = None
+    rr = None
+    rtext = None
+    city = 'Paris'
+    max_price_per_person = 34.0
+    restaurants_str = get_all_restaurants_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    restaurants_schema = query_ai_assistant('Here is a list of restaurants: {}. Extract ONLY the restaurant names as a clean JSON list of strings, preserving exact names.'.format(restaurants_str), NamesSchema)
+    restaurant_names = restaurants_schema.names
+    cuisines = get_cuisine_type_for_restaurants(restaurant_names)
+    chinese_restaurants = []
+
+    def _for(r, NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str):
+        c = cuisines.get(r)
+
+        def _if(NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str):
+            chinese_restaurants = chinese_restaurants + [r]
+            return (NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str)
+        NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, c.find('Chinese') != -1, (NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str))
+        return (NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str)
+    NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str = for_stmt(_for, restaurant_names, (NamesSchema, c, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str))
+    candidate_restaurants = chinese_restaurants
+
+    def _if(NamesSchema, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str):
+        candidate_restaurants = restaurant_names
+        return (NamesSchema, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str)
+    NamesSchema, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, len(candidate_restaurants) == 0, (NamesSchema, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, restaurant_names, restaurants_schema, restaurants_str))
+    restaurant_prices = get_price_for_restaurants(candidate_restaurants)
+    affordable_restaurants = []
+
+    def _for(r, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str):
+        price_pp = restaurant_prices.get(r)
+
+        def _if(NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str):
+            affordable_restaurants = affordable_restaurants + [r]
+            return (NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str)
+        NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str = if_stmt(_if, None, price_pp <= max_price_per_person, (NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str))
+        return (NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str)
+    NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str = for_stmt(_for, candidate_restaurants, (NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str))
+
+    def _if(NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str):
+        affordable_restaurants = candidate_restaurants
+        return (NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str)
+    NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str = if_stmt(_if, None, len(affordable_restaurants) == 0, (NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, max_price_per_person, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str))
+    opening_hours = check_restaurant_opening_hours(affordable_restaurants)
+    MondayOpenSchema = CreateSchema('open_on_monday', bool)
+    monday_open_restaurants = []
+
+    def _for(r, MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str):
+        hours_text = opening_hours.get(r)
+        monday_schema = query_ai_assistant('Given this restaurant opening hours string: {}. Determine if the restaurant is OPEN on Mondays at any time. Respond with open_on_monday True if open on Monday, else False.'.format(hours_text), MondayOpenSchema)
+
+        def _if(MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str):
+            monday_open_restaurants = monday_open_restaurants + [r]
+            return (MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str)
+        MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str = if_stmt(_if, None, monday_schema.open_on_monday, (MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str))
+        return (MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str)
+    MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str = for_stmt(_for, affordable_restaurants, (MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str))
+
+    def _if(MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str):
+        monday_open_restaurants = affordable_restaurants
+        return (MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str)
+    MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str = if_stmt(_if, None, len(monday_open_restaurants) == 0, (MondayOpenSchema, NamesSchema, affordable_restaurants, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurants_schema, restaurants_str))
+    restaurant_ratings_text = get_rating_reviews_for_restaurants(monday_open_restaurants)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_restaurant_name = None
+    best_restaurant_rating = -1.0
+    best_restaurant_reviews_count = -1
+    best_restaurant_price_per_person = float('inf')
+    best_restaurant_hours = ''
+
+    def _for(r, MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+        rtext = restaurant_ratings_text.get(r)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this restaurant rating and reviews: {}'.format(rtext), RatingSchema)
+        price_pp = restaurant_prices.get(r)
+        hours_text = opening_hours.get(r)
+        reviews_count = len(rr.reviews)
+        better = False
+
+        def _if(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+            better = True
+            return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+
+        def _else(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+
+            def _if(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+
+                def _if(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+                    better = True
+                    return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+
+                def _else(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+
+                    def _if(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+
+                        def _if(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+                            better = True
+                            return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+                        MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext = if_stmt(_if, None, price_pp < best_restaurant_price_per_person, (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext))
+                        return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+                    MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext = if_stmt(_if, None, reviews_count == best_restaurant_reviews_count, (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext))
+                    return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+                MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext = if_stmt(_if, _else, reviews_count > best_restaurant_reviews_count, (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext))
+                return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+            MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext = if_stmt(_if, None, rr.rating == best_restaurant_rating, (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext))
+            return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+        MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext = if_stmt(_if, _else, rr.rating > best_restaurant_rating, (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext))
+
+        def _if(MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext):
+            best_restaurant_name = r
+            best_restaurant_rating = rr.rating
+            best_restaurant_reviews_count = reviews_count
+            best_restaurant_price_per_person = price_pp
+            best_restaurant_hours = hours_text
+            return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+        MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext = if_stmt(_if, None, better, (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext))
+        return (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext)
+    MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext = for_stmt(_for, monday_open_restaurants, (MondayOpenSchema, NamesSchema, RatingSchema, affordable_restaurants, best_restaurant_hours, best_restaurant_name, best_restaurant_price_per_person, best_restaurant_rating, best_restaurant_reviews_count, better, c, candidate_restaurants, chinese_restaurants, city, cuisines, hours_text, max_price_per_person, monday_open_restaurants, monday_schema, opening_hours, price_pp, restaurant_names, restaurant_prices, restaurant_ratings_text, restaurants_schema, restaurants_str, reviews_count, rr, rtext))
+    best_address_map = get_restaurants_address([best_restaurant_name])
+    best_address = best_address_map.get(best_restaurant_name)
+    result = {'restaurant_name': best_restaurant_name, 'rating': best_restaurant_rating, 'address': best_address, 'price_per_person': best_restaurant_price_per_person, 'operating_hours': best_restaurant_hours}
+    return result

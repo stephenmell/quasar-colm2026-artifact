@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tap_patches = image_patch.find("tap")
+    box_patches = image_patch.find("box")
+
+    if len(tap_patches) == 0 or len(box_patches) == 0:
+        result = image_patch.simple_query("Is the tap to the left of the box?")
+    else:
+        result = "no"
+        for tap_patch in tap_patches:
+            for box_patch in box_patches:
+                if tap_patch.horizontal_center < box_patch.horizontal_center:
+                    result = "yes"
+    return result

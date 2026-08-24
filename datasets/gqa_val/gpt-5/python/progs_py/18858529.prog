@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ipod_patches = image_patch.find("ipod")
+    # If no iPod is found, ask directly
+    if len(ipod_patches) == 0:
+        return image_patch.simple_query("Are there cameras near the ipod that looks pink?")
+
+    camera_patches = image_patch.find("camera")
+    if len(camera_patches) == 0:
+        return "no"
+
+    import math
+    # Define a nearness threshold relative to image size
+    near_thresh = 0.25 * max(image_patch.width, image_patch.height)
+
+    for ipod_patch in ipod_patches:
+        # Check if this iPod looks pink
+        if ipod_patch.verify_property("ipod", "pink"):
+            for camera_patch in camera_patches:
+                dx = camera_patch.horizontal_center - ipod_patch.horizontal_center
+                dy = camera_patch.vertical_center - ipod_patch.vertical_center
+                dist = math.hypot(dx, dy)
+                if dist <= near_thresh:
+                    return "yes"
+    return "no"

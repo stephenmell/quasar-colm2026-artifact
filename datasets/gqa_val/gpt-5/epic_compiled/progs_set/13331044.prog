@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    candidate = None
+    desk_patch = None
+    desk_patches = None
+    image_patch = None
+    laptop_patches = None
+    mouse_names = None
+    mouse_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    desk_patches = image_patch.find('desk')
+
+    def _if(candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result):
+        result = image_patch.simple_query('Is the laptop to the right of the computer mouse on the desk?')
+        return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result)
+
+    def _else(candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result):
+        desk_patch = desk_patches[0]
+        laptop_patches = desk_patch.find('laptop')
+        mouse_patches = ()
+        mouse_names = ('computer mouse', 'mouse')
+
+        def _for(name, candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches):
+            candidate = desk_patch.find(name)
+
+            def _if(candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches):
+                mouse_patches = candidate
+                return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches)
+            candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches = if_stmt(_if, None, and_expr(len(mouse_patches) == 0, len(candidate) > 0), (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches))
+            return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches)
+        candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches = for_stmt(_for, mouse_names, (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches))
+
+        def _if(candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result):
+            result = 'no'
+            return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result)
+
+        def _else(candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result):
+            result = 'no'
+
+            def _for(laptop_patch, candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result):
+
+                def _for(mouse_patch, candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result):
+
+                    def _if(candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result):
+                        result = 'yes'
+                        return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result)
+                    candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result = if_stmt(_if, None, laptop_patch.horizontal_center > mouse_patch.horizontal_center, (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result))
+                    return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result)
+                candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result = for_stmt(_for, mouse_patches, (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result))
+                return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result)
+            candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result = for_stmt(_for, laptop_patches, (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result))
+            return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result)
+        candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result = if_stmt(_if, _else, or_expr(len(laptop_patches) == 0, len(mouse_patches) == 0), (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result))
+        return (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result)
+    candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result = if_stmt(_if, _else, len(desk_patches) == 0, (candidate, desk_patch, desk_patches, image_patch, laptop_patches, mouse_names, mouse_patches, result))
+    return result

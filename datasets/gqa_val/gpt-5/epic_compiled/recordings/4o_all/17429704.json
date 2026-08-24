@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2400089",
+          [
+            0,
+            0,
+            332,
+            500
+          ]
+        ],
+        "Which place is it?"
+      ],
+      "I don't know the specific place.",
+      876933451
+    ]
+  ],
+  "best_text_match": []
+}

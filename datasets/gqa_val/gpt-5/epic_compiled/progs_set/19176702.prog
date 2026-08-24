@@ -1,0 +1,64 @@
+def execute_command(image) -> str:
+    beverage_patches = None
+    beverage_terms = None
+    image_patch = None
+    man_patches = None
+    man_terms = None
+    result = None
+    term_patches = None
+    image_patch = ImagePatch(image)
+    beverage_terms = ('beverage', 'drink', 'bottle', 'cup', 'glass', 'mug', 'can')
+    beverage_patches = ()
+
+    def _for(term, beverage_patches, beverage_terms, image_patch, term_patches):
+        term_patches = image_patch.find(term)
+
+        def _if(beverage_patches, beverage_terms, image_patch, term_patches):
+            beverage_patches = beverage_patches + term_patches
+            return (beverage_patches, beverage_terms, image_patch, term_patches)
+        beverage_patches, beverage_terms, image_patch, term_patches = if_stmt(_if, None, len(term_patches) > 0, (beverage_patches, beverage_terms, image_patch, term_patches))
+        return (beverage_patches, beverage_terms, image_patch, term_patches)
+    beverage_patches, beverage_terms, image_patch, term_patches = for_stmt(_for, beverage_terms, (beverage_patches, beverage_terms, image_patch, term_patches))
+
+    def _if(beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches):
+        result = image_patch.simple_query('Do you see men to the left of the beverage?')
+        return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches)
+
+    def _else(beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches):
+        man_terms = ('man', 'men', 'guy', 'male')
+        man_patches = ()
+
+        def _for(term, beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches):
+            term_patches = image_patch.find(term)
+
+            def _if(beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches):
+                man_patches = man_patches + term_patches
+                return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches)
+            beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches = if_stmt(_if, None, len(term_patches) > 0, (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches))
+            return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches)
+        beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches = for_stmt(_for, man_terms, (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, term_patches))
+
+        def _if(beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches):
+            result = 'no'
+            return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches)
+
+        def _else(beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches):
+            result = 'no'
+
+            def _for(beverage_patch, beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches):
+
+                def _for(man_patch, beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches):
+
+                    def _if(beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches):
+                        result = 'yes'
+                        return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches)
+                    beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches = if_stmt(_if, None, man_patch.horizontal_center < beverage_patch.horizontal_center, (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches))
+                    return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches)
+                beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches = for_stmt(_for, man_patches, (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches))
+                return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches)
+            beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches = for_stmt(_for, beverage_patches, (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches))
+            return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches)
+        beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches = if_stmt(_if, _else, len(man_patches) == 0, (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches))
+        return (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches)
+    beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches = if_stmt(_if, _else, len(beverage_patches) == 0, (beverage_patches, beverage_terms, image_patch, man_patches, man_terms, result, term_patches))
+    return result

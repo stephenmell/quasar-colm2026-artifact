@@ -1,0 +1,7 @@
+# Are there any faucets or boxes in the scene?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    faucet_exists = image_patch.exists("faucet")
+    box_exists = image_patch.exists("box")
+    result = bool_to_yesno(faucet_exists or box_exists)
+    return result

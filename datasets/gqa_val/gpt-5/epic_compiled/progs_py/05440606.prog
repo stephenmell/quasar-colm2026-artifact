@@ -1,0 +1,20 @@
+# What is the color of the devices made of wood?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find("device")
+    if len(device_patches) == 0:
+        result = image_patch.simple_query("What is the color of the devices made of wood?")
+    else:
+        result = None
+        for device_patch in device_patches:
+            is_wood = device_patch.verify_property("device", "wood")
+            if not is_wood:
+                is_wood = device_patch.verify_property("device", "wooden")
+            if not is_wood:
+                is_wood = device_patch.verify_property("device", "made of wood")
+            if is_wood:
+                color = device_patch.simple_query("What color is the device?")
+                result = color
+        if not result:
+            result = image_patch.simple_query("What is the color of the devices made of wood?")
+    return result

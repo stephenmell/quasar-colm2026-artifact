@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    boy_patches = None
+    image_patch = None
+    purse_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    purse_patches = image_patch.find('purse')
+
+    def _if(boy_patches, image_patch, purse_patches, result):
+        result = image_patch.simple_query('Is that purse to the left of a boy?')
+        return (boy_patches, image_patch, purse_patches, result)
+
+    def _else(boy_patches, image_patch, purse_patches, result):
+        result = 'no'
+
+        def _for(purse_patch, boy_patches, image_patch, purse_patches, result):
+            boy_patches = image_patch.find('boy')
+
+            def _for(boy_patch, boy_patches, image_patch, purse_patches, result):
+
+                def _if(boy_patches, image_patch, purse_patches, result):
+                    result = 'yes'
+                    return (boy_patches, image_patch, purse_patches, result)
+                boy_patches, image_patch, purse_patches, result = if_stmt(_if, None, purse_patch.horizontal_center < boy_patch.horizontal_center, (boy_patches, image_patch, purse_patches, result))
+                return (boy_patches, image_patch, purse_patches, result)
+            boy_patches, image_patch, purse_patches, result = for_stmt(_for, boy_patches, (boy_patches, image_patch, purse_patches, result))
+            return (boy_patches, image_patch, purse_patches, result)
+        boy_patches, image_patch, purse_patches, result = for_stmt(_for, purse_patches, (boy_patches, image_patch, purse_patches, result))
+        return (boy_patches, image_patch, purse_patches, result)
+    boy_patches, image_patch, purse_patches, result = if_stmt(_if, _else, len(purse_patches) == 0, (boy_patches, image_patch, purse_patches, result))
+    return result

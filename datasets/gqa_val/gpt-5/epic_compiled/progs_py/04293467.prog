@@ -1,0 +1,37 @@
+# Is this an elephant or a wolf?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    elephant_exists = image_patch.exists("elephant")
+    wolf_exists = image_patch.exists("wolf")
+
+    if elephant_exists and not wolf_exists:
+        result = "elephant"
+    elif wolf_exists and not elephant_exists:
+        result = "wolf"
+    else:
+        elephant_patches = ()
+        wolf_patches = ()
+        if elephant_exists:
+            elephant_patches = image_patch.find("elephant")
+        if wolf_exists:
+            wolf_patches = image_patch.find("wolf")
+        combined_patches = elephant_patches + wolf_patches
+
+        if len(combined_patches) == 0:
+            result = image_patch.best_text_match(("elephant", "wolf"))
+        else:
+            elephant_votes = 0
+            wolf_votes = 0
+            for patch in combined_patches:
+                label = patch.best_text_match(("elephant", "wolf"))
+                if label == "elephant":
+                    elephant_votes = elephant_votes + 1
+                else:
+                    wolf_votes = wolf_votes + 1
+            if elephant_votes > wolf_votes:
+                result = "elephant"
+            elif wolf_votes > elephant_votes:
+                result = "wolf"
+            else:
+                result = image_patch.best_text_match(("elephant", "wolf"))
+    return result

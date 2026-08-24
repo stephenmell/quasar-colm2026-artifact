@@ -1,0 +1,22 @@
+# What is the tap made of?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    tap_patches = image_patch.find("tap")
+    faucet_patches = ()
+    if len(tap_patches) == 0:
+        faucet_patches = image_patch.find("faucet")
+
+    if len(tap_patches) > 0 or len(faucet_patches) > 0:
+        target_patches = tap_patches if len(tap_patches) > 0 else faucet_patches
+        material_options = ("metal", "plastic", "chrome", "stainless steel", "brass")
+        for target_patch in target_patches:
+            guess = target_patch.best_text_match(material_options)
+            if not result:
+                result = guess
+        if not result:
+            result = target_patches[0].simple_query("What is the tap made of?")
+    else:
+        result = image_patch.simple_query("What is the tap made of?")
+    return result

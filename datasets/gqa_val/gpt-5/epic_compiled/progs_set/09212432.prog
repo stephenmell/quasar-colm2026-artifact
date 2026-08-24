@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    color_options = None
+    fence_color = None
+    fence_colors = None
+    fence_patches = None
+    image_patch = None
+    result = None
+    shoe_color = None
+    shoe_colors = None
+    shoe_patches = None
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find('fence')
+    shoe_patches = image_patch.find('shoe')
+
+    def _if(color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches):
+        result = image_patch.simple_query('Are both the fence and the shoe the same color?')
+        return (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches)
+
+    def _else(color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches):
+        color_options = ('white', 'black', 'brown', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'gray', 'grey', 'tan', 'beige', 'gold', 'silver')
+        fence_colors = ()
+
+        def _for(fence_patch, color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_patches):
+            fence_color = fence_patch.best_text_match(color_options)
+            fence_colors = fence_colors + (fence_color,)
+            return (color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_patches)
+        color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_patches = for_stmt(_for, fence_patches, (color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_patches))
+        shoe_colors = ()
+
+        def _for(shoe_patch, color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_color, shoe_colors, shoe_patches):
+            shoe_color = shoe_patch.best_text_match(color_options)
+            shoe_colors = shoe_colors + (shoe_color,)
+            return (color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_color, shoe_colors, shoe_patches)
+        color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_color, shoe_colors, shoe_patches = for_stmt(_for, shoe_patches, (color_options, fence_color, fence_colors, fence_patches, image_patch, shoe_color, shoe_colors, shoe_patches))
+        result = 'no'
+
+        def _for(fc, color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches):
+
+            def _for(sc, color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches):
+
+                def _if(color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches):
+                    result = 'yes'
+                    return (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches)
+                color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches = if_stmt(_if, None, fc == sc, (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches))
+                return (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches)
+            color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches = for_stmt(_for, shoe_colors, (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches))
+            return (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches)
+        color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches = for_stmt(_for, fence_colors, (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches))
+        return (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches)
+    color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches = if_stmt(_if, _else, or_expr(len(fence_patches) == 0, len(shoe_patches) == 0), (color_options, fence_color, fence_colors, fence_patches, image_patch, result, shoe_color, shoe_colors, shoe_patches))
+    return result

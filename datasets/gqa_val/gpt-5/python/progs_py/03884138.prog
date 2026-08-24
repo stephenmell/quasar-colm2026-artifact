@@ -1,0 +1,43 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    toaster_patches = image_patch.find("toaster")
+    if len(toaster_patches) == 0:
+        # If no toaster is found, ask directly
+        return image_patch.simple_query("Which type of appliance is to the right of the toaster?")
+    toaster_patch = toaster_patches[0]
+    t_center = toaster_patch.horizontal_center
+
+    # Common kitchen appliances
+    appliance_types = [
+        "microwave",
+        "oven",
+        "stove",
+        "refrigerator",
+        "fridge",
+        "dishwasher",
+        "coffee maker",
+        "espresso machine",
+        "kettle",
+        "blender",
+        "mixer",
+        "rice cooker",
+        "slow cooker",
+        "toaster oven"
+    ]
+
+    best_name = None
+    best_dx = None
+    for name in appliance_types:
+        patches = image_patch.find(name)
+        for p in patches:
+            dx = p.horizontal_center - t_center
+            if dx > 0:  # to the right of the toaster
+                if best_dx is None or dx < best_dx:
+                    best_dx = dx
+                    best_name = name
+
+    if best_name is not None:
+        return best_name
+
+    # Fallback: ask directly if nothing matched
+    return image_patch.simple_query("Which type of appliance is to the right of the toaster?")

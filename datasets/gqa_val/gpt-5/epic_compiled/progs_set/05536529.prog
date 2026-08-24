@@ -1,0 +1,20 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_rug = None
+    is_wheelchair = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_rug = image_patch.exists('rug')
+    is_wheelchair = image_patch.exists('wheelchair')
+
+    def _if(image_patch, is_rug, is_wheelchair):
+        is_rug = image_patch.exists('carpet')
+        return (image_patch, is_rug, is_wheelchair)
+    image_patch, is_rug, is_wheelchair = if_stmt(_if, None, not_expr(is_rug), (image_patch, is_rug, is_wheelchair))
+
+    def _if(image_patch, is_rug, is_wheelchair):
+        is_wheelchair = image_patch.exists('wheel chair')
+        return (image_patch, is_rug, is_wheelchair)
+    image_patch, is_rug, is_wheelchair = if_stmt(_if, None, not_expr(is_wheelchair), (image_patch, is_rug, is_wheelchair))
+    result = bool_to_yesno(or_expr(is_rug, is_wheelchair))
+    return result

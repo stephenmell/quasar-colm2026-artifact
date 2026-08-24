@@ -1,0 +1,15 @@
+# Are there any boys to the right of the books?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find("book")
+    # If no books are found, query the image directly
+    if len(book_patches) == 0:
+        return image_patch.simple_query("Are there any boys to the right of the books?")
+    boy_patches = image_patch.find("boy")
+    if len(boy_patches) == 0:
+        return "no"
+    max_book_x = max(bp.horizontal_center for bp in book_patches)
+    for boy_patch in boy_patches:
+        if boy_patch.horizontal_center > max_book_x:
+            return "yes"
+    return "no"

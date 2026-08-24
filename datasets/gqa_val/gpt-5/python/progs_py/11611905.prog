@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    rug_patches = image_patch.find("rug")
+    # If no rug is found, ask directly
+    if len(rug_patches) == 0:
+        return image_patch.simple_query("Are there any toilets to the right of the rug?")
+    toilet_patches = image_patch.find("toilet")
+    if len(toilet_patches) == 0:
+        return "no"
+    for rug_patch in rug_patches:
+        for toilet_patch in toilet_patches:
+            if toilet_patch.horizontal_center > rug_patch.horizontal_center:
+                return "yes"
+    return "no"

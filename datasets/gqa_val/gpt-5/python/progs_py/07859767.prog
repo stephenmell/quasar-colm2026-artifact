@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find("vehicle")
+    # Question assumes only one blue vehicle
+    if len(vehicle_patches) == 0:
+        # If no vehicle is found, query the image directly
+        return image_patch.simple_query("Does the blue vehicle look small and long?")
+    for vehicle_patch in vehicle_patches:
+        if vehicle_patch.verify_property("vehicle", "blue"):
+            is_small = vehicle_patch.verify_property("vehicle", "small")
+            is_long = vehicle_patch.verify_property("vehicle", "long")
+            if is_small and is_long:
+                return "yes"
+    return "no"

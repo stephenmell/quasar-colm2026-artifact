@@ -1,0 +1,28 @@
+# Does the umbrella to the left of the boats look blue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find("umbrella")
+    boat_patches = image_patch.find("boat")
+
+    if len(umbrella_patches) == 0 or len(boat_patches) == 0:
+        result = image_patch.simple_query("Does the umbrella to the left of the boats look blue?")
+    else:
+        # Find the leftmost boat (by horizontal center)
+        min_boat_center = boat_patches[0].horizontal_center
+        for boat_patch in boat_patches:
+            if boat_patch.horizontal_center < min_boat_center:
+                min_boat_center = boat_patch.horizontal_center
+
+        found_left = False
+        is_blue = False
+        for umbrella_patch in umbrella_patches:
+            if umbrella_patch.horizontal_center < min_boat_center:
+                found_left = True
+                if umbrella_patch.verify_property("umbrella", "blue"):
+                    is_blue = True
+
+        if found_left:
+            result = bool_to_yesno(is_blue)
+        else:
+            result = image_patch.simple_query("Does the umbrella to the left of the boats look blue?")
+    return result

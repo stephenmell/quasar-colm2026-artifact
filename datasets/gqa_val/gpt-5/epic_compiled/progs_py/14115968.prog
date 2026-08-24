@@ -1,0 +1,24 @@
+# Are there any men to the left of the people underneath the umbrella?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    umbrella_patches = image_patch.find("umbrella")
+    person_patches = image_patch.find("person")
+    man_patches = image_patch.find("man")
+
+    if len(umbrella_patches) == 0 or len(person_patches) == 0 or len(man_patches) == 0:
+        result = image_patch.simple_query("Are there any men to the left of the people underneath the umbrella?")
+    else:
+        for person_patch in person_patches:
+            is_under_any_umbrella = False
+            for umbrella_patch in umbrella_patches:
+                is_horiz_within = (person_patch.horizontal_center >= umbrella_patch.left) and (person_patch.horizontal_center <= umbrella_patch.right)
+                is_below = person_patch.vertical_center < umbrella_patch.lower
+                if is_horiz_within and is_below:
+                    is_under_any_umbrella = True
+            if is_under_any_umbrella:
+                for man_patch in man_patches:
+                    if man_patch.horizontal_center < person_patch.horizontal_center:
+                        result = "yes"
+    return result

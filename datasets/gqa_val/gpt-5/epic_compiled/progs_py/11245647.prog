@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Try to find generic clothing items that are black
+    clothing_patches = image_patch.find("clothing")
+    if len(clothing_patches) > 0:
+        for clothing_patch in clothing_patches:
+            if clothing_patch.verify_property("clothing", "black"):
+                if not result:
+                    result = clothing_patch.simple_query("What is the black clothing item called?")
+
+    # If not found, try common clothing categories
+    if not result:
+        clothing_names = (
+            "shirt", "t-shirt", "tee", "jacket", "coat", "hoodie", "sweater",
+            "dress", "skirt", "pants", "jeans", "shorts", "trousers", "suit",
+            "blazer", "vest", "cardigan", "tank top", "top", "blouse",
+            "hat", "cap", "beanie", "scarf", "tie", "glove", "gloves",
+            "sock", "socks", "shoe", "shoes", "boot", "boots", "sandal",
+            "sandals", "sneaker", "sneakers"
+        )
+        for name in clothing_names:
+            patches = image_patch.find(name)
+            for p in patches:
+                if p.verify_property(name, "black"):
+                    if not result:
+                        result = p.simple_query("What is the black clothing item called?")
+
+    # Fallback: ask the image directly
+    if not result:
+        result = image_patch.simple_query("What is the black clothing item called?")
+    return result

@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    skier_patches = image_patch.find("skier")
+    # Question assumes only one skier patch
+    if len(skier_patches) == 0:
+        # If no skier is found, query the image directly
+        return image_patch.simple_query("On which side is the skier, the right or the left?")
+    skier_patch = skier_patches[0]
+    if skier_patch.horizontal_center > image_patch.horizontal_center:
+        return "right"
+    else:
+        return "left"

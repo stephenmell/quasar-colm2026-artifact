@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    any_orange = None
+    found = None
+    goggles_patches = None
+    image_patch = None
+    is_orange_here = None
+    name_options = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    goggles_patches = ()
+    name_options = ('goggles', 'goggle', 'swimming goggles', 'ski goggles', 'safety goggles')
+
+    def _for(name, found, goggles_patches, image_patch, name_options, result):
+        found = image_patch.find(name)
+
+        def _if(found, goggles_patches, image_patch, name_options, result):
+            goggles_patches = goggles_patches + found
+            return (found, goggles_patches, image_patch, name_options, result)
+        found, goggles_patches, image_patch, name_options, result = if_stmt(_if, None, len(found) > 0, (found, goggles_patches, image_patch, name_options, result))
+        return (found, goggles_patches, image_patch, name_options, result)
+    found, goggles_patches, image_patch, name_options, result = for_stmt(_for, name_options, (found, goggles_patches, image_patch, name_options, result))
+
+    def _if(any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result):
+        result = image_patch.simple_query('Are there any goggles in the photo that are orange?')
+        return (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result)
+
+    def _else(any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result):
+        any_orange = False
+
+        def _for(goggles_patch, any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result):
+            is_orange_here = False
+
+            def _for(name, any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result):
+
+                def _if(any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result):
+                    is_orange_here = True
+                    return (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result)
+                any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result = if_stmt(_if, None, goggles_patch.verify_property(name, 'orange'), (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result))
+                return (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result)
+            any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result = for_stmt(_for, name_options, (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result))
+
+            def _if(any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result):
+                any_orange = True
+                return (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result)
+            any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result = if_stmt(_if, None, is_orange_here, (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result))
+            return (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result)
+        any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result = for_stmt(_for, goggles_patches, (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result))
+
+        def _if(any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result):
+            result = 'yes'
+            return (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result)
+        any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result = if_stmt(_if, None, any_orange, (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result))
+        return (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result)
+    any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result = if_stmt(_if, _else, len(goggles_patches) == 0, (any_orange, found, goggles_patches, image_patch, is_orange_here, name_options, result))
+    return result

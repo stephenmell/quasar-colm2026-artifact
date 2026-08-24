@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cabinet_patches = image_patch.find("cabinet")
+    # Question assumes one cabinet patch
+    if len(cabinet_patches) == 0:
+        # If no cabinet is found, query the image directly
+        return image_patch.simple_query("Is there any blanket to the right of the cabinet?")
+    cabinet_patch = cabinet_patches[0]
+    blanket_patches = image_patch.find("blanket")
+    if len(blanket_patches) == 0:
+        return "no"
+    for blanket_patch in blanket_patches:
+        if blanket_patch.horizontal_center > cabinet_patch.horizontal_center:
+            return "yes"
+    return "no"

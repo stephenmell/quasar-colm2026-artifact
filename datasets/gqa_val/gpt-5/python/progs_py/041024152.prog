@@ -1,0 +1,42 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find relevant objects
+    bicycle_patches = image_patch.find("bicycle")
+    car_patches = image_patch.find("car")
+    truck_patches = image_patch.find("truck")
+
+    # If any key object is missing, ask directly
+    if len(bicycle_patches) == 0 or len(car_patches) == 0 or len(truck_patches) == 0:
+        return image_patch.simple_query("Are the little car that is to the left of the bicycle and the truck both white?")
+
+    # Find the car to the left of a bicycle (prefer a "small/little" car if detectable)
+    target_car = None
+    for bicycle in bicycle_patches:
+        left_cars = [c for c in car_patches if c.horizontal_center < bicycle.horizontal_center]
+        if not left_cars:
+            continue
+
+        # Prefer cars that are "small" or "little" if the property is detectable
+        preferred = []
+        for c in left_cars:
+            is_small = c.verify_property("car", "small")
+            is_little = c.verify_property("car", "little") if not is_small else True
+            if is_small or is_little:
+                preferred.append(c)
+
+        candidates = preferred if len(preferred) > 0 else left_cars
+        # Choose the car closest to the bicycle from the left (rightmost among left-side cars)
+        target_car = sorted(candidates, key=lambda p: p.horizontal_center, reverse=True)[0]
+        break
+
+    if target_car is None:
+        return image_patch.simple_query("Are the little car that is to the left of the bicycle and the truck both white?")
+
+    # Assume a single relevant truck (pick the first)
+    truck_patch = truck_patches[0]
+
+    car_white = target_car.verify_property("car", "white")
+    truck_white = truck_patch.verify_property("truck", "white")
+
+    return bool_to_yesno(car_white and truck_white)

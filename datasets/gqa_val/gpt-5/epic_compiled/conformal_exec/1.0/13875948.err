@@ -1,0 +1,23 @@
+Stage: other execution error
+Error: int() argument must be a string, a bytes-like object or a real number, not 'AbstractOther'
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "13875948.prog", line 48, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 188, in abstract_if_stmt
+    lvars = else_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "13875948.prog", line 46, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 190, in abstract_if_stmt
+    lvars_t = then_body(*lvars)
+              ^^^^^^^^^^^^^^^^^
+  File "13875948.prog", line 20, in _if
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch.py", line 56, in crop
+    return ImagePatch(WrappedImage(self.cropped_image, self.filename, self.CONTEXT), left, lower, right, upper)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch.py", line 43, in INIT
+    self.left = int(left)
+                ^^^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'AbstractOther'

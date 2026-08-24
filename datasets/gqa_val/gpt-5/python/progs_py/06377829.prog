@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    # contains a spatial relation ("on"), so ask directly
+    image_patch = ImagePatch(image)
+    return image_patch.simple_query("The garbage on the table has what color?")

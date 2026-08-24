@@ -1,0 +1,134 @@
+def execute_command():
+    _ = None
+    chosen = None
+    chosen2 = None
+    chosen3 = None
+    day_events = None
+    delta = None
+    desc_l = None
+    events = None
+    events_lunch = None
+    events_sarah = None
+    found_in_participants = None
+    has_sarah = None
+    hours = None
+    is_lunch = None
+    latest_prev_end = None
+    lunch_event = None
+    minutes = None
+    rem = None
+    result = None
+    seconds_int = None
+    start_of_day = None
+    target_date = None
+    title_l = None
+    total_seconds = None
+    target_date = '2024-05-15'
+    lunch_event = None
+    events = search_calendar_events('lunch with Sarah', target_date)
+
+    def _if(chosen, events, lunch_event, target_date):
+        chosen = None
+
+        def _for(e, chosen, events, lunch_event, target_date):
+
+            def _if(chosen, events, lunch_event, target_date):
+                chosen = e
+                return (chosen, events, lunch_event, target_date)
+            chosen, events, lunch_event, target_date = if_stmt(_if, None, or_expr(chosen is None, e.start_time < chosen.start_time), (chosen, events, lunch_event, target_date))
+            return (chosen, events, lunch_event, target_date)
+        chosen, events, lunch_event, target_date = for_stmt(_for, events, (chosen, events, lunch_event, target_date))
+        lunch_event = chosen
+        return (chosen, events, lunch_event, target_date)
+    chosen, events, lunch_event, target_date = if_stmt(_if, None, len(events) != 0, (chosen, events, lunch_event, target_date))
+
+    def _if(chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l):
+        events_lunch = search_calendar_events('lunch', target_date)
+        chosen2 = None
+
+        def _for(e, chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l):
+            title_l = e.title.lower()
+            desc_l = e.description.lower()
+            has_sarah = or_expr('sarah' in title_l, 'sarah' in desc_l)
+
+            def _if(chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l):
+                found_in_participants = False
+
+                def _for(p, chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l):
+
+                    def _if(chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l):
+                        found_in_participants = True
+                        return (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l)
+                    chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l = if_stmt(_if, None, 'sarah' in p.lower(), (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l))
+                    return (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l)
+                chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l = for_stmt(_for, e.participants, (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l))
+                has_sarah = found_in_participants
+                return (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l)
+            chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l = if_stmt(_if, None, not_expr(has_sarah), (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l))
+
+            def _if(chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l):
+                chosen2 = e
+                return (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l)
+            chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l = if_stmt(_if, None, and_expr(has_sarah, chosen2 is None or e.start_time < chosen2.start_time), (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l))
+            return (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l)
+        chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l = for_stmt(_for, events_lunch, (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l))
+        lunch_event = chosen2
+        return (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l)
+    chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l = if_stmt(_if, None, lunch_event is None, (chosen, chosen2, desc_l, events, events_lunch, found_in_participants, has_sarah, lunch_event, target_date, title_l))
+
+    def _if(chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l):
+        events_sarah = search_calendar_events('Sarah', target_date)
+        chosen3 = None
+
+        def _for(e, chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l):
+            title_l = e.title.lower()
+            desc_l = e.description.lower()
+            is_lunch = or_expr('lunch' in title_l, 'lunch' in desc_l)
+
+            def _if(chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l):
+                chosen3 = e
+                return (chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l)
+            chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l = if_stmt(_if, None, and_expr(is_lunch, chosen3 is None or e.start_time < chosen3.start_time), (chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l))
+            return (chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l)
+        chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l = for_stmt(_for, events_sarah, (chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l))
+        lunch_event = chosen3
+        return (chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l)
+    chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l = if_stmt(_if, None, lunch_event is None, (chosen, chosen2, chosen3, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, lunch_event, target_date, title_l))
+    result = '00:00'
+
+    def _if(_, chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, hours, is_lunch, latest_prev_end, lunch_event, minutes, rem, result, seconds_int, start_of_day, target_date, title_l, total_seconds):
+        day_events = get_day_calendar_events(target_date)
+        latest_prev_end = None
+
+        def _for(ev, chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l):
+
+            def _if(chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l):
+
+                def _if(chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l):
+                    latest_prev_end = ev.end_time
+                    return (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l)
+                chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l = if_stmt(_if, None, or_expr(latest_prev_end is None, ev.end_time > latest_prev_end), (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l))
+                return (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l)
+            chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l = if_stmt(_if, None, and_expr(ev.id_ != lunch_event.id_, ev.end_time <= lunch_event.start_time), (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l))
+            return (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l)
+        chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l = for_stmt(_for, day_events, (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, target_date, title_l))
+
+        def _if(chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l):
+            start_of_day = datetime.combine(date.fromisoformat(target_date), time.fromisoformat('00:00'))
+            latest_prev_end = start_of_day
+            return (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l)
+        chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l = if_stmt(_if, None, latest_prev_end is None, (chosen, chosen2, chosen3, day_events, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l))
+        delta = lunch_event.start_time - latest_prev_end
+        total_seconds = delta.total_seconds()
+
+        def _if(chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l, total_seconds):
+            total_seconds = 0.0
+            return (chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l, total_seconds)
+        chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l, total_seconds = if_stmt(_if, None, total_seconds < 0, (chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, is_lunch, latest_prev_end, lunch_event, result, start_of_day, target_date, title_l, total_seconds))
+        seconds_int = int(total_seconds)
+        hours, rem = divmod(seconds_int, 3600)
+        minutes, _ = divmod(rem, 60)
+        result = '{:02d}:{:02d}'.format(hours, minutes)
+        return (_, chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, hours, is_lunch, latest_prev_end, lunch_event, minutes, rem, result, seconds_int, start_of_day, target_date, title_l, total_seconds)
+    _, chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, hours, is_lunch, latest_prev_end, lunch_event, minutes, rem, result, seconds_int, start_of_day, target_date, title_l, total_seconds = if_stmt(_if, None, lunch_event is not None, (_, chosen, chosen2, chosen3, day_events, delta, desc_l, events, events_lunch, events_sarah, found_in_participants, has_sarah, hours, is_lunch, latest_prev_end, lunch_event, minutes, rem, result, seconds_int, start_of_day, target_date, title_l, total_seconds))
+    return result

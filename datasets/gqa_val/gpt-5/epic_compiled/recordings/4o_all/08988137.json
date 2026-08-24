@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2386662",
+          [
+            0,
+            0,
+            500,
+            334
+          ]
+        ],
+        "Does the urinal next to the toilet look clean or dirty?"
+      ],
+      "It looks clean.",
+      1353079464
+    ]
+  ],
+  "best_text_match": []
+}

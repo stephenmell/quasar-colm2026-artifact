@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    # If no plate is found, ask the image directly
+    if len(plate_patches) == 0:
+        return image_patch.simple_query("What type of furniture is that plate on, a table or a cabinet?")
+    # Use the plate crop to check supporting furniture
+    for plate_patch in plate_patches:
+        if plate_patch.verify_property("plate", "on table"):
+            return "table"
+        if plate_patch.verify_property("plate", "on cabinet"):
+            return "cabinet"
+    # Fallback: choose between options based on the plate context
+    return plate_patches[0].best_text_match(["table", "cabinet"])

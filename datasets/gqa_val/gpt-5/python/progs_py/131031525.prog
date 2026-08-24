@@ -1,0 +1,36 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Helper to check rectangle overlap
+    def overlaps(p1: ImagePatch, p2: ImagePatch)->bool:
+        x_overlap = max(p1.left, p2.left) < min(p1.right, p2.right)
+        y_overlap = max(p1.upper, p2.upper) < min(p1.lower, p2.lower)
+        return x_overlap and y_overlap
+
+    # Find reference objects
+    food_patches = image_patch.find("food")
+    table_patches = image_patch.find("table")
+
+    # If key references are missing, ask directly
+    if len(food_patches) == 0 or len(table_patches) == 0:
+        return image_patch.simple_query("Do you see customers to the right of the food at the table?")
+
+    # Find customers (fallback to persons if "customer" not detected)
+    customer_patches = image_patch.find("customer")
+    if len(customer_patches) == 0:
+        customer_patches = image_patch.find("person")
+    if len(customer_patches) == 0:
+        return "no"
+
+    # Check if any customer is to the right of any food that is on/at a table
+    for food in food_patches:
+        # Ensure the food is at the table by checking overlap
+        is_food_at_table = any(overlaps(food, table) for table in table_patches)
+        if not is_food_at_table:
+            continue
+        # Check for customers to the right of this food
+        for customer in customer_patches:
+            if customer.horizontal_center > food.horizontal_center:
+                return "yes"
+
+    return "no"

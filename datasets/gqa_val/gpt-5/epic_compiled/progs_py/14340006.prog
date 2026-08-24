@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    found_any = False
+
+    object_names = ("trousers", "pants")
+    for object_name in object_names:
+        patches = image_patch.find(object_name)
+        if len(patches) > 0:
+            found_any = True
+            for patch in patches:
+                if patch.verify_property(object_name, "beige"):
+                    result = "yes"
+
+    if not found_any:
+        result = image_patch.simple_query("Are the trousers beige?")
+    return result

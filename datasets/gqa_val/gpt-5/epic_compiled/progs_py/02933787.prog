@@ -1,0 +1,26 @@
+# Are there beds to the right of the nightstand on the left side?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    nightstand_patches = image_patch.find("nightstand")
+    if len(nightstand_patches) == 0:
+        result = image_patch.simple_query("Are there beds to the right of the nightstand on the left side?")
+    else:
+        left_side_nightstands = ()
+        for ns in nightstand_patches:
+            if ns.horizontal_center < image_patch.horizontal_center:
+                left_side_nightstands = left_side_nightstands + (ns,)
+        if len(left_side_nightstands) == 0:
+            result = image_patch.simple_query("Are there beds to the right of the nightstand on the left side?")
+        else:
+            selected_nightstand = left_side_nightstands[0]
+            for ns in left_side_nightstands:
+                if ns.horizontal_center < selected_nightstand.horizontal_center:
+                    selected_nightstand = ns
+            right_area_patch = image_patch.crop(selected_nightstand.right, image_patch.lower, image_patch.right, image_patch.upper)
+            if right_area_patch.exists("bed"):
+                result = "yes"
+            else:
+                result = "no"
+    return result

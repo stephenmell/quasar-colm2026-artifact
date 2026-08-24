@@ -1,0 +1,20 @@
+# Does the bed have the same color as the ground?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bed_patches = image_patch.find("bed")
+    ground_patches = image_patch.find("ground")
+
+    if len(bed_patches) == 0 or len(ground_patches) == 0:
+        result = image_patch.simple_query("Does the bed have the same color as the ground?")
+    else:
+        bed_patch = bed_patches[0]
+        ground_patch = ground_patches[0]
+
+        left = bed_patch.left if bed_patch.left < ground_patch.left else ground_patch.left
+        right = bed_patch.right if bed_patch.right > ground_patch.right else ground_patch.right
+        lower = bed_patch.lower if bed_patch.lower < ground_patch.lower else ground_patch.lower
+        upper = bed_patch.upper if bed_patch.upper > ground_patch.upper else ground_patch.upper
+
+        union_patch = image_patch.crop(left, lower, right, upper)
+        result = union_patch.simple_query("Does the bed have the same color as the ground?")
+    return result

@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    cell_phone_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    cell_phone_patches = image_patch.find('cell phone')
+
+    def _if(cell_phone_patches, image_patch, result):
+        result = image_patch.simple_query('Do you see cell phones there that are large?')
+        return (cell_phone_patches, image_patch, result)
+
+    def _else(cell_phone_patches, image_patch, result):
+        result = 'no'
+
+        def _for(cell_phone_patch, cell_phone_patches, image_patch, result):
+
+            def _if(cell_phone_patches, image_patch, result):
+                result = 'yes'
+                return (cell_phone_patches, image_patch, result)
+            cell_phone_patches, image_patch, result = if_stmt(_if, None, cell_phone_patch.verify_property('cell phone', 'large'), (cell_phone_patches, image_patch, result))
+            return (cell_phone_patches, image_patch, result)
+        cell_phone_patches, image_patch, result = for_stmt(_for, cell_phone_patches, (cell_phone_patches, image_patch, result))
+        return (cell_phone_patches, image_patch, result)
+    cell_phone_patches, image_patch, result = if_stmt(_if, _else, len(cell_phone_patches) == 0, (cell_phone_patches, image_patch, result))
+    return result

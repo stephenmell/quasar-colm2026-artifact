@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    trash_patches = image_patch.find("trash can")
+    if len(trash_patches) == 0:
+        # If no trash can is found, ask directly
+        return image_patch.simple_query("Do you see any guys to the left of the trash can?")
+    # Try multiple synonyms for "guys"
+    guy_patches = image_patch.find("guy")
+    if len(guy_patches) == 0:
+        guy_patches = image_patch.find("man")
+    if len(guy_patches) == 0:
+        guy_patches = image_patch.find("person")
+    if len(guy_patches) == 0:
+        return "no"
+    for trash_patch in trash_patches:
+        for guy_patch in guy_patches:
+            if guy_patch.horizontal_center < trash_patch.horizontal_center:
+                return "yes"
+    return "no"

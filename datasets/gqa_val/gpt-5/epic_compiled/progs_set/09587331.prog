@@ -1,0 +1,30 @@
+def execute_command(image) -> str:
+    candidate_labels = None
+    image_patch = None
+    is_wearing_apron = None
+    result = None
+    subject_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    candidate_labels = ('person', 'man', 'woman', 'chef', 'cook', 'boy', 'girl', 'waiter', 'waitress')
+
+    def _for(label, candidate_labels, image_patch, is_wearing_apron, result, subject_patches):
+        subject_patches = image_patch.find(label)
+
+        def _for(subject_patch, candidate_labels, image_patch, is_wearing_apron, result, subject_patches):
+            is_wearing_apron = subject_patch.simple_query(f'Is the {label} wearing an apron?') == 'yes'
+
+            def _if(candidate_labels, image_patch, is_wearing_apron, result, subject_patches):
+                result = subject_patch.simple_query('Who is wearing an apron?')
+                return (candidate_labels, image_patch, is_wearing_apron, result, subject_patches)
+            candidate_labels, image_patch, is_wearing_apron, result, subject_patches = if_stmt(_if, None, is_wearing_apron, (candidate_labels, image_patch, is_wearing_apron, result, subject_patches))
+            return (candidate_labels, image_patch, is_wearing_apron, result, subject_patches)
+        candidate_labels, image_patch, is_wearing_apron, result, subject_patches = for_stmt(_for, subject_patches, (candidate_labels, image_patch, is_wearing_apron, result, subject_patches))
+        return (candidate_labels, image_patch, is_wearing_apron, result, subject_patches)
+    candidate_labels, image_patch, is_wearing_apron, result, subject_patches = for_stmt(_for, candidate_labels, (candidate_labels, image_patch, is_wearing_apron, result, subject_patches))
+
+    def _if(candidate_labels, image_patch, is_wearing_apron, result, subject_patches):
+        result = image_patch.simple_query('Who is wearing an apron?')
+        return (candidate_labels, image_patch, is_wearing_apron, result, subject_patches)
+    candidate_labels, image_patch, is_wearing_apron, result, subject_patches = if_stmt(_if, None, not_expr(result), (candidate_labels, image_patch, is_wearing_apron, result, subject_patches))
+    return result

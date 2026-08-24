@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    chair_patches = None
+    image_patch = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    table_patches = image_patch.find('table')
+
+    def _if(bag_patches, chair_patches, image_patch, result, table_patches):
+        result = image_patch.simple_query('Is there a bag to the right of the chair on the table?')
+        return (bag_patches, chair_patches, image_patch, result, table_patches)
+
+    def _else(bag_patches, chair_patches, image_patch, result, table_patches):
+
+        def _for(table_patch, bag_patches, chair_patches, image_patch, result, table_patches):
+            chair_patches = table_patch.find('chair')
+            bag_patches = table_patch.find('bag')
+
+            def _if(bag_patches, chair_patches, image_patch, result, table_patches):
+
+                def _for(chair_patch, bag_patches, chair_patches, image_patch, result, table_patches):
+
+                    def _for(bag_patch, bag_patches, chair_patches, image_patch, result, table_patches):
+
+                        def _if(bag_patches, chair_patches, image_patch, result, table_patches):
+                            result = 'yes'
+                            return (bag_patches, chair_patches, image_patch, result, table_patches)
+                        bag_patches, chair_patches, image_patch, result, table_patches = if_stmt(_if, None, bag_patch.horizontal_center > chair_patch.horizontal_center, (bag_patches, chair_patches, image_patch, result, table_patches))
+                        return (bag_patches, chair_patches, image_patch, result, table_patches)
+                    bag_patches, chair_patches, image_patch, result, table_patches = for_stmt(_for, bag_patches, (bag_patches, chair_patches, image_patch, result, table_patches))
+                    return (bag_patches, chair_patches, image_patch, result, table_patches)
+                bag_patches, chair_patches, image_patch, result, table_patches = for_stmt(_for, chair_patches, (bag_patches, chair_patches, image_patch, result, table_patches))
+                return (bag_patches, chair_patches, image_patch, result, table_patches)
+            bag_patches, chair_patches, image_patch, result, table_patches = if_stmt(_if, None, and_expr(len(chair_patches) > 0, len(bag_patches) > 0), (bag_patches, chair_patches, image_patch, result, table_patches))
+            return (bag_patches, chair_patches, image_patch, result, table_patches)
+        bag_patches, chair_patches, image_patch, result, table_patches = for_stmt(_for, table_patches, (bag_patches, chair_patches, image_patch, result, table_patches))
+        return (bag_patches, chair_patches, image_patch, result, table_patches)
+    bag_patches, chair_patches, image_patch, result, table_patches = if_stmt(_if, _else, len(table_patches) == 0, (bag_patches, chair_patches, image_patch, result, table_patches))
+    return result

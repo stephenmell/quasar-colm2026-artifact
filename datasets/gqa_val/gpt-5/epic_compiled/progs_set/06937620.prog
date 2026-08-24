@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    fence_patches = None
+    image_patch = None
+    is_white = None
+    is_wood = None
+    result = None
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find('fence')
+
+    def _if(fence_patches, image_patch, is_white, is_wood, result):
+        result = image_patch.simple_query('Is the white fence made of wood?')
+        return (fence_patches, image_patch, is_white, is_wood, result)
+
+    def _else(fence_patches, image_patch, is_white, is_wood, result):
+        result = 'no'
+
+        def _for(fence_patch, fence_patches, image_patch, is_white, is_wood, result):
+            is_white = fence_patch.verify_property('fence', 'white')
+            is_wood = fence_patch.verify_property('fence', 'wood')
+
+            def _if(fence_patches, image_patch, is_white, is_wood, result):
+                result = 'yes'
+                return (fence_patches, image_patch, is_white, is_wood, result)
+            fence_patches, image_patch, is_white, is_wood, result = if_stmt(_if, None, and_expr(is_white, is_wood), (fence_patches, image_patch, is_white, is_wood, result))
+            return (fence_patches, image_patch, is_white, is_wood, result)
+        fence_patches, image_patch, is_white, is_wood, result = for_stmt(_for, fence_patches, (fence_patches, image_patch, is_white, is_wood, result))
+        return (fence_patches, image_patch, is_white, is_wood, result)
+    fence_patches, image_patch, is_white, is_wood, result = if_stmt(_if, _else, len(fence_patches) == 0, (fence_patches, image_patch, is_white, is_wood, result))
+    return result

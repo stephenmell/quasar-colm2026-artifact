@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    girl_patches = None
+    image_patch = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    girl_patches = image_patch.find('girl')
+
+    def _if(girl_patches, image_patch, man_patches, result):
+        result = image_patch.simple_query('Do you see any men to the left of the girl?')
+        return (girl_patches, image_patch, man_patches, result)
+
+    def _else(girl_patches, image_patch, man_patches, result):
+        man_patches = image_patch.find('man')
+
+        def _if(girl_patches, image_patch, man_patches, result):
+            result = 'no'
+            return (girl_patches, image_patch, man_patches, result)
+
+        def _else(girl_patches, image_patch, man_patches, result):
+            result = 'no'
+
+            def _for(girl_patch, girl_patches, image_patch, man_patches, result):
+
+                def _for(man_patch, girl_patches, image_patch, man_patches, result):
+
+                    def _if(girl_patches, image_patch, man_patches, result):
+                        result = 'yes'
+                        return (girl_patches, image_patch, man_patches, result)
+                    girl_patches, image_patch, man_patches, result = if_stmt(_if, None, man_patch.horizontal_center < girl_patch.horizontal_center, (girl_patches, image_patch, man_patches, result))
+                    return (girl_patches, image_patch, man_patches, result)
+                girl_patches, image_patch, man_patches, result = for_stmt(_for, man_patches, (girl_patches, image_patch, man_patches, result))
+                return (girl_patches, image_patch, man_patches, result)
+            girl_patches, image_patch, man_patches, result = for_stmt(_for, girl_patches, (girl_patches, image_patch, man_patches, result))
+            return (girl_patches, image_patch, man_patches, result)
+        girl_patches, image_patch, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (girl_patches, image_patch, man_patches, result))
+        return (girl_patches, image_patch, man_patches, result)
+    girl_patches, image_patch, man_patches, result = if_stmt(_if, _else, len(girl_patches) == 0, (girl_patches, image_patch, man_patches, result))
+    return result

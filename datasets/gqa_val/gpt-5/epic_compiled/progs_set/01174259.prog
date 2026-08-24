@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    horse_patches = None
+    image_patch = None
+    result = None
+    wagon_patches = None
+    image_patch = ImagePatch(image)
+    horse_patches = image_patch.find('horse')
+
+    def _if(horse_patches, image_patch, result, wagon_patches):
+        result = image_patch.simple_query('Is the horse to the left of a wagon?')
+        return (horse_patches, image_patch, result, wagon_patches)
+
+    def _else(horse_patches, image_patch, result, wagon_patches):
+        result = 'no'
+
+        def _for(horse_patch, horse_patches, image_patch, result, wagon_patches):
+            wagon_patches = image_patch.find('wagon')
+
+            def _for(wagon_patch, horse_patches, image_patch, result, wagon_patches):
+
+                def _if(horse_patches, image_patch, result, wagon_patches):
+                    result = 'yes'
+                    return (horse_patches, image_patch, result, wagon_patches)
+                horse_patches, image_patch, result, wagon_patches = if_stmt(_if, None, horse_patch.horizontal_center < wagon_patch.horizontal_center, (horse_patches, image_patch, result, wagon_patches))
+                return (horse_patches, image_patch, result, wagon_patches)
+            horse_patches, image_patch, result, wagon_patches = for_stmt(_for, wagon_patches, (horse_patches, image_patch, result, wagon_patches))
+            return (horse_patches, image_patch, result, wagon_patches)
+        horse_patches, image_patch, result, wagon_patches = for_stmt(_for, horse_patches, (horse_patches, image_patch, result, wagon_patches))
+        return (horse_patches, image_patch, result, wagon_patches)
+    horse_patches, image_patch, result, wagon_patches = if_stmt(_if, _else, len(horse_patches) == 0, (horse_patches, image_patch, result, wagon_patches))
+    return result

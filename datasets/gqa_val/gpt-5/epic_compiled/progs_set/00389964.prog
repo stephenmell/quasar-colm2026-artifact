@@ -1,0 +1,68 @@
+def execute_command(image) -> str:
+    found_on_table = None
+    image_patch = None
+    inside_horiz = None
+    inside_vert = None
+    is_square = None
+    napkin_patches = None
+    on_table = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    napkin_patches = image_patch.find('napkin')
+    table_patches = image_patch.find('table')
+
+    def _if(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+        result = image_patch.simple_query('Does the napkin on the table look square?')
+        return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+
+    def _else(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+        found_on_table = False
+        is_square = False
+
+        def _for(napkin_patch, found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+            on_table = False
+
+            def _for(table_patch, found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+                inside_horiz = and_expr(napkin_patch.horizontal_center >= table_patch.left, napkin_patch.horizontal_center <= table_patch.right)
+                inside_vert = and_expr(napkin_patch.vertical_center >= table_patch.lower, napkin_patch.vertical_center <= table_patch.upper)
+
+                def _if(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+                    on_table = True
+                    return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+                found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = if_stmt(_if, None, and_expr(inside_horiz, inside_vert), (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+                return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+            found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = for_stmt(_for, table_patches, (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+
+            def _if(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+                found_on_table = True
+
+                def _if(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+                    is_square = True
+                    return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+                found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = if_stmt(_if, None, napkin_patch.verify_property('napkin', 'square'), (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+                return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+            found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = if_stmt(_if, None, on_table, (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+            return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+        found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = for_stmt(_for, napkin_patches, (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+
+        def _if(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+
+            def _if(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+                result = 'yes'
+                return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+
+            def _else(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+                result = 'no'
+                return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+            found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = if_stmt(_if, _else, is_square, (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+            return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+
+        def _else(found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches):
+            result = image_patch.simple_query('Does the napkin on the table look square?')
+            return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+        found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = if_stmt(_if, _else, found_on_table, (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+        return (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches)
+    found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches = if_stmt(_if, _else, or_expr(len(napkin_patches) == 0, len(table_patches) == 0), (found_on_table, image_patch, inside_horiz, inside_vert, is_square, napkin_patches, on_table, result, table_patches))
+    return result

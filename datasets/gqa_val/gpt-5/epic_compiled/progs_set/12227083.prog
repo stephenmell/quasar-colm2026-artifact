@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    area = None
+    found_white = None
+    image_patch = None
+    is_white = None
+    max_area = None
+    result = None
+    selected_patch = None
+    vehicle_patches = None
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find('vehicle')
+
+    def _if(area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches):
+        result = image_patch.simple_query('Which size is the white vehicle, large or small?')
+        return (area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches)
+
+    def _else(area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches):
+        found_white = False
+        selected_patch = None
+        max_area = -1
+
+        def _for(vehicle_patch, area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches):
+            is_white = vehicle_patch.verify_property('vehicle', 'white')
+
+            def _if(area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches):
+                area = vehicle_patch.width * vehicle_patch.height
+
+                def _if(area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches):
+                    max_area = area
+                    selected_patch = vehicle_patch
+                    found_white = True
+                    return (area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches)
+                area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches = if_stmt(_if, None, area > max_area, (area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches))
+                return (area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches)
+            area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches = if_stmt(_if, None, is_white, (area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches))
+            return (area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches)
+        area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches = for_stmt(_for, vehicle_patches, (area, found_white, image_patch, is_white, max_area, selected_patch, vehicle_patches))
+
+        def _if(area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches):
+            result = selected_patch.best_text_match(('large', 'small'))
+            return (area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches)
+
+        def _else(area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches):
+            result = image_patch.simple_query('Which size is the white vehicle, large or small?')
+            return (area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches)
+        area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches = if_stmt(_if, _else, and_expr(found_white, selected_patch is not None), (area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches))
+        return (area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches)
+    area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches = if_stmt(_if, _else, len(vehicle_patches) == 0, (area, found_white, image_patch, is_white, max_area, result, selected_patch, vehicle_patches))
+    return result

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_sitting = None
+    result = None
+    zebra_patches = None
+    image_patch = ImagePatch(image)
+    zebra_patches = image_patch.find('zebra')
+
+    def _if(image_patch, is_sitting, result, zebra_patches):
+        result = image_patch.simple_query('Is there a zebra that is not sitting?')
+        return (image_patch, is_sitting, result, zebra_patches)
+
+    def _else(image_patch, is_sitting, result, zebra_patches):
+        result = 'no'
+
+        def _for(zebra_patch, image_patch, is_sitting, result, zebra_patches):
+            is_sitting = zebra_patch.verify_property('zebra', 'sitting')
+
+            def _if(image_patch, is_sitting, result, zebra_patches):
+                result = 'yes'
+                return (image_patch, is_sitting, result, zebra_patches)
+            image_patch, is_sitting, result, zebra_patches = if_stmt(_if, None, not_expr(is_sitting), (image_patch, is_sitting, result, zebra_patches))
+            return (image_patch, is_sitting, result, zebra_patches)
+        image_patch, is_sitting, result, zebra_patches = for_stmt(_for, zebra_patches, (image_patch, is_sitting, result, zebra_patches))
+        return (image_patch, is_sitting, result, zebra_patches)
+    image_patch, is_sitting, result, zebra_patches = if_stmt(_if, _else, len(zebra_patches) == 0, (image_patch, is_sitting, result, zebra_patches))
+    return result

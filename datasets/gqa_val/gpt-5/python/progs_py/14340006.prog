@@ -1,0 +1,15 @@
+# Are the trousers beige?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    trousers_patches = image_patch.find("trousers")
+    # Try a common synonym if not found
+    if len(trousers_patches) == 0:
+        trousers_patches = image_patch.find("pants")
+    # If no trousers/pants are found, query the image directly
+    if len(trousers_patches) == 0:
+        return image_patch.simple_query("Are the trousers beige?")
+    # Check color property on found patches
+    for trousers_patch in trousers_patches:
+        if trousers_patch.verify_property("trousers", "beige") or trousers_patch.verify_property("pants", "beige"):
+            return "yes"
+    return "no"

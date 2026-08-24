@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    toaster_patches = image_patch.find("toaster")
+    if len(toaster_patches) == 0:
+        result = image_patch.simple_query("Which type of appliance is to the right of the toaster?")
+    else:
+        toaster_patch = toaster_patches[0]
+        right_area_patch = image_patch.crop(toaster_patch.right, toaster_patch.lower, image_patch.right, toaster_patch.upper)
+        appliance_patches = right_area_patch.find("appliance")
+        if len(appliance_patches) == 0:
+            result = right_area_patch.simple_query("Which type of appliance is to the right of the toaster?")
+            if not result:
+                result = right_area_patch.best_text_match(("microwave", "oven", "refrigerator", "stove", "coffee maker", "blender"))
+        else:
+            result = appliance_patches[0].simple_query("What type of appliance is this?")
+            if not result:
+                result = right_area_patch.simple_query("Which type of appliance is to the right of the toaster?")
+    return result

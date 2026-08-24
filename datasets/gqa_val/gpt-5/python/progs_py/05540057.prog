@@ -1,0 +1,28 @@
+# Are there any children to the left of the red spear?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find red spear(s)
+    red_spear_patches = image_patch.find("red spear")
+    if len(red_spear_patches) == 0:
+        # Try finding spears and verify red color
+        spear_patches = image_patch.find("spear")
+        for spear_patch in spear_patches:
+            if spear_patch.verify_property("spear", "red"):
+                red_spear_patches.append(spear_patch)
+
+    # If no red spear is confidently detected, ask directly
+    if len(red_spear_patches) == 0:
+        return image_patch.simple_query("Are there any children to the left of the red spear?")
+
+    # Find children
+    child_patches = image_patch.find("child") + image_patch.find("children")
+    if len(child_patches) == 0:
+        return "no"
+
+    # Check if any child is to the left of any red spear
+    for spear_patch in red_spear_patches:
+        for child_patch in child_patches:
+            if child_patch.horizontal_center < spear_patch.horizontal_center:
+                return "yes"
+    return "no"

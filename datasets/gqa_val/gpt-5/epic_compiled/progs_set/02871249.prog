@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    current_height = None
+    image_patch = None
+    ladder_patches = None
+    max_height = None
+    result = None
+    tallest_patch = None
+    image_patch = ImagePatch(image)
+    ladder_patches = image_patch.find('ladder')
+
+    def _if(current_height, image_patch, ladder_patches, max_height, result, tallest_patch):
+        result = image_patch.simple_query('What is the height of the ladder?')
+        return (current_height, image_patch, ladder_patches, max_height, result, tallest_patch)
+
+    def _else(current_height, image_patch, ladder_patches, max_height, result, tallest_patch):
+        tallest_patch = ladder_patches[0]
+        max_height = -1
+
+        def _for(ladder_patch, current_height, image_patch, ladder_patches, max_height, tallest_patch):
+            current_height = ladder_patch.height
+
+            def _if(current_height, image_patch, ladder_patches, max_height, tallest_patch):
+                max_height = current_height
+                tallest_patch = ladder_patch
+                return (current_height, image_patch, ladder_patches, max_height, tallest_patch)
+            current_height, image_patch, ladder_patches, max_height, tallest_patch = if_stmt(_if, None, current_height > max_height, (current_height, image_patch, ladder_patches, max_height, tallest_patch))
+            return (current_height, image_patch, ladder_patches, max_height, tallest_patch)
+        current_height, image_patch, ladder_patches, max_height, tallest_patch = for_stmt(_for, ladder_patches, (current_height, image_patch, ladder_patches, max_height, tallest_patch))
+        result = tallest_patch.simple_query('What is the height of the ladder?')
+        return (current_height, image_patch, ladder_patches, max_height, result, tallest_patch)
+    current_height, image_patch, ladder_patches, max_height, result, tallest_patch = if_stmt(_if, _else, len(ladder_patches) == 0, (current_height, image_patch, ladder_patches, max_height, result, tallest_patch))
+    return result

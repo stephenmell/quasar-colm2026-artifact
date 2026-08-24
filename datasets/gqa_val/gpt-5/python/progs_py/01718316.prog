@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    house_patches = image_patch.find("house")
+    # Question assumes only one house patch
+    if len(house_patches) == 0:
+        # If no house is found, query the image directly
+        return image_patch.simple_query("Is there an umbrella to the left of the house?")
+    house_patch = house_patches[0]
+    umbrella_patches = image_patch.find("umbrella")
+    if len(umbrella_patches) == 0:
+        return "no"
+    for umbrella_patch in umbrella_patches:
+        if umbrella_patch.horizontal_center < house_patch.horizontal_center:
+            return "yes"
+    return "no"

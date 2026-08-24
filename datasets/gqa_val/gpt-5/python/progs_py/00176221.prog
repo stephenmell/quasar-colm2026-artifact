@@ -1,0 +1,23 @@
+# Is there either a computer or a phone that is not white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    computer_patches = image_patch.find("computer")
+    phone_patches = image_patch.find("phone")
+
+    found_any = False
+
+    for comp_patch in computer_patches:
+        found_any = True
+        if not comp_patch.verify_property("computer", "white"):
+            return "yes"
+
+    for phone_patch in phone_patches:
+        found_any = True
+        if not phone_patch.verify_property("phone", "white"):
+            return "yes"
+
+    if not found_any:
+        return image_patch.simple_query("Is there either a computer or a phone that is not white?")
+
+    return "no"

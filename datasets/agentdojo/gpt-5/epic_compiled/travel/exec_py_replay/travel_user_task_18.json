@@ -1,0 +1,5 @@
+{
+  "result": "{'recommended_restaurant_name': 'New Asiaway', 'recommended_restaurant_rating': 4.6, 'recommended_restaurant_price_per_person': 30.0, 'recommended_restaurant_sample_reviews': ['Authentic Chinese cuisine with a modern twist', 'Fresh ingredients and flavorful sauces', 'Attentive and knowledgeable staff', 'Great ambiance and stylish decor', 'The restaurant has a great selection of wines and the food was delicious'], 'recommended_car_rental_company': 'Paris Rent-a-Car', 'recommended_car_rental_daily_price': 45.0, 'car_rental_options_under_budget': ['Paris Rent-a-Car']}",
+  "time_ns": 13500934654,
+  "utility": true
+}

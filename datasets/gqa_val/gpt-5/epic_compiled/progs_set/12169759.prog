@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    appliance_patches = None
+    bed_patches = None
+    image_patch = None
+    result = None
+    right_side_appliance = None
+    right_side_x = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    appliance_patches = image_patch.find('appliance')
+
+    def _if(appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x):
+        result = image_patch.simple_query('Is there a bed to the left of the appliance on the right side of the image?')
+        return (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x)
+
+    def _else(appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x):
+        right_side_appliance = None
+        right_side_x = 0.0
+
+        def _for(appliance_patch, appliance_patches, image_patch, result, right_side_appliance, right_side_x):
+
+            def _if(appliance_patches, image_patch, result, right_side_appliance, right_side_x):
+
+                def _if(appliance_patches, image_patch, result, right_side_appliance, right_side_x):
+                    right_side_appliance = appliance_patch
+                    right_side_x = appliance_patch.horizontal_center
+                    return (appliance_patches, image_patch, result, right_side_appliance, right_side_x)
+                appliance_patches, image_patch, result, right_side_appliance, right_side_x = if_stmt(_if, None, or_expr(right_side_appliance is None, appliance_patch.horizontal_center > right_side_x), (appliance_patches, image_patch, result, right_side_appliance, right_side_x))
+                return (appliance_patches, image_patch, result, right_side_appliance, right_side_x)
+            appliance_patches, image_patch, result, right_side_appliance, right_side_x = if_stmt(_if, None, appliance_patch.horizontal_center >= image_patch.horizontal_center, (appliance_patches, image_patch, result, right_side_appliance, right_side_x))
+            return (appliance_patches, image_patch, result, right_side_appliance, right_side_x)
+        appliance_patches, image_patch, result, right_side_appliance, right_side_x = for_stmt(_for, appliance_patches, (appliance_patches, image_patch, result, right_side_appliance, right_side_x))
+
+        def _if(appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x):
+            result = image_patch.simple_query('Is there a bed to the left of the appliance on the right side of the image?')
+            return (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x)
+
+        def _else(appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x):
+            bed_patches = image_patch.find('bed')
+
+            def _if(appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x):
+
+                def _for(bed_patch, appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x):
+
+                    def _if(appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x):
+                        result = 'yes'
+                        return (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x)
+                    appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x = if_stmt(_if, None, bed_patch.horizontal_center < right_side_appliance.horizontal_center, (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x))
+                    return (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x)
+                appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x = for_stmt(_for, bed_patches, (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x))
+                return (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x)
+            appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x = if_stmt(_if, None, len(bed_patches) > 0, (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x))
+            return (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x)
+        appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x = if_stmt(_if, _else, right_side_appliance is None, (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x))
+        return (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x)
+    appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x = if_stmt(_if, _else, len(appliance_patches) == 0, (appliance_patches, bed_patches, image_patch, result, right_side_appliance, right_side_x))
+    return result

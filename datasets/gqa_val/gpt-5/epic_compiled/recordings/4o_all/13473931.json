@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2411400",
+          [
+            0,
+            0,
+            500,
+            288
+          ]
+        ],
+        "What is the color of the food that is on the vegetable?"
+      ],
+      "Dark brown.",
+      926750883
+    ]
+  ],
+  "best_text_match": []
+}

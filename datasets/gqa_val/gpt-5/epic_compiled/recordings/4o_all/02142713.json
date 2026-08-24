@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2317347",
+          [
+            0,
+            0,
+            500,
+            299
+          ]
+        ],
+        "What meat is on top of the food with the pineapple?"
+      ],
+      "Ham.",
+      1081286048
+    ]
+  ],
+  "best_text_match": []
+}

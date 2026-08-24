@@ -1,0 +1,8 @@
+# Do you see any bowls?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_bowl_singular = image_patch.exists("bowl")
+    has_bowl_plural = image_patch.exists("bowls")
+    has_any_bowls = has_bowl_singular or has_bowl_plural
+    result = bool_to_yesno(has_any_bowls)
+    return result

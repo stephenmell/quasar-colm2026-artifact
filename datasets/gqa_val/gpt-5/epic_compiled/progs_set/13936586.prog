@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    any_non_brown = None
+    door_patches = None
+    image_patch = None
+    is_brown = None
+    result = None
+    image_patch = ImagePatch(image)
+    door_patches = image_patch.find('door')
+
+    def _if(any_non_brown, door_patches, image_patch, is_brown, result):
+        result = image_patch.simple_query('Do you see any doors in this photo that are not brown?')
+        return (any_non_brown, door_patches, image_patch, is_brown, result)
+
+    def _else(any_non_brown, door_patches, image_patch, is_brown, result):
+        any_non_brown = False
+
+        def _for(door_patch, any_non_brown, door_patches, image_patch, is_brown):
+            is_brown = door_patch.verify_property('door', 'brown')
+
+            def _if(any_non_brown, door_patches, image_patch, is_brown):
+                any_non_brown = True
+                return (any_non_brown, door_patches, image_patch, is_brown)
+            any_non_brown, door_patches, image_patch, is_brown = if_stmt(_if, None, not_expr(is_brown), (any_non_brown, door_patches, image_patch, is_brown))
+            return (any_non_brown, door_patches, image_patch, is_brown)
+        any_non_brown, door_patches, image_patch, is_brown = for_stmt(_for, door_patches, (any_non_brown, door_patches, image_patch, is_brown))
+        result = bool_to_yesno(any_non_brown)
+        return (any_non_brown, door_patches, image_patch, is_brown, result)
+    any_non_brown, door_patches, image_patch, is_brown, result = if_stmt(_if, _else, len(door_patches) == 0, (any_non_brown, door_patches, image_patch, is_brown, result))
+    return result

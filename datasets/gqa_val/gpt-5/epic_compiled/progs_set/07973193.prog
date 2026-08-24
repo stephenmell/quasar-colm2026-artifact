@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_paved = None
+    is_rough = None
+    result = None
+    road_patches = None
+    image_patch = ImagePatch(image)
+    road_patches = image_patch.find('road')
+
+    def _if(image_patch, is_paved, is_rough, result, road_patches):
+        result = image_patch.simple_query('Is the road rough and paved?')
+        return (image_patch, is_paved, is_rough, result, road_patches)
+
+    def _else(image_patch, is_paved, is_rough, result, road_patches):
+        result = 'no'
+
+        def _for(road_patch, image_patch, is_paved, is_rough, result, road_patches):
+            is_rough = road_patch.verify_property('road', 'rough')
+            is_paved = road_patch.verify_property('road', 'paved')
+
+            def _if(image_patch, is_paved, is_rough, result, road_patches):
+                result = 'yes'
+                return (image_patch, is_paved, is_rough, result, road_patches)
+            image_patch, is_paved, is_rough, result, road_patches = if_stmt(_if, None, and_expr(is_rough, is_paved), (image_patch, is_paved, is_rough, result, road_patches))
+            return (image_patch, is_paved, is_rough, result, road_patches)
+        image_patch, is_paved, is_rough, result, road_patches = for_stmt(_for, road_patches, (image_patch, is_paved, is_rough, result, road_patches))
+        return (image_patch, is_paved, is_rough, result, road_patches)
+    image_patch, is_paved, is_rough, result, road_patches = if_stmt(_if, _else, len(road_patches) == 0, (image_patch, is_paved, is_rough, result, road_patches))
+    return result

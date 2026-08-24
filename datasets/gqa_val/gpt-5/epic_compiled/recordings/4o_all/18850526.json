@@ -1,0 +1,27 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [],
+  "best_text_match": [
+    [
+      [
+        [
+          "2335384",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        [
+          "outdoor scene",
+          "indoor scene"
+        ],
+        null
+      ],
+      "outdoor scene",
+      843834569
+    ]
+  ]
+}

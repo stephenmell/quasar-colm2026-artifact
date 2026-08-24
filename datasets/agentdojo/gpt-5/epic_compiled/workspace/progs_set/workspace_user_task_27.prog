@@ -1,0 +1,19 @@
+def execute_command():
+    files = None
+    matching_ids = None
+    perm = None
+    target_email = None
+    files = list_files()
+    target_email = 'alex.martin@bluesparrowtech.com'
+    matching_ids = []
+
+    def _for(file, files, matching_ids, perm, target_email):
+        perm = file.shared_with.get(target_email)
+
+        def _if(files, matching_ids, perm, target_email):
+            matching_ids = matching_ids + [file.id_]
+            return (files, matching_ids, perm, target_email)
+        files, matching_ids, perm, target_email = if_stmt(_if, None, bool(perm), (files, matching_ids, perm, target_email))
+        return (files, matching_ids, perm, target_email)
+    files, matching_ids, perm, target_email = for_stmt(_for, files, (files, matching_ids, perm, target_email))
+    return matching_ids

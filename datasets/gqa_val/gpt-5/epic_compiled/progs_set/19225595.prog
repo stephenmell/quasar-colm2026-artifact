@@ -1,0 +1,70 @@
+def execute_command(image) -> str:
+    appliance_patches = None
+    blue_bowl_patch = None
+    bowl_patches = None
+    image_patch = None
+    is_blue = None
+    leftmost_x = None
+    result = None
+    right_area_patch = None
+    target_appliance_patch = None
+    image_patch = ImagePatch(image)
+    result = None
+    bowl_patches = image_patch.find('bowl')
+    blue_bowl_patch = None
+
+    def _for(bowl_patch, blue_bowl_patch, bowl_patches, image_patch, is_blue, result):
+        is_blue = bowl_patch.verify_property('bowl', 'blue')
+
+        def _if(blue_bowl_patch, bowl_patches, image_patch, is_blue, result):
+            blue_bowl_patch = bowl_patch
+            return (blue_bowl_patch, bowl_patches, image_patch, is_blue, result)
+        blue_bowl_patch, bowl_patches, image_patch, is_blue, result = if_stmt(_if, None, and_expr(is_blue, blue_bowl_patch is None), (blue_bowl_patch, bowl_patches, image_patch, is_blue, result))
+        return (blue_bowl_patch, bowl_patches, image_patch, is_blue, result)
+    blue_bowl_patch, bowl_patches, image_patch, is_blue, result = for_stmt(_for, bowl_patches, (blue_bowl_patch, bowl_patches, image_patch, is_blue, result))
+
+    def _if(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+        result = image_patch.simple_query('What is the name of the appliance to the right of the blue bowl?')
+        return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+
+    def _else(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+        right_area_patch = image_patch.crop(blue_bowl_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+        appliance_patches = right_area_patch.find('appliance')
+
+        def _if(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+            result = right_area_patch.simple_query('What is the name of the appliance?')
+            return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+
+        def _else(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+            target_appliance_patch = None
+            leftmost_x = None
+
+            def _for(appliance_patch, appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+
+                def _if(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+                    target_appliance_patch = appliance_patch
+                    leftmost_x = appliance_patch.horizontal_center
+                    return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+
+                def _else(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+
+                    def _if(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+                        target_appliance_patch = appliance_patch
+                        leftmost_x = appliance_patch.horizontal_center
+                        return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+                    appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch = if_stmt(_if, None, appliance_patch.horizontal_center < leftmost_x, (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch))
+                    return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+                appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch = if_stmt(_if, _else, target_appliance_patch is None, (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch))
+                return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+            appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch = for_stmt(_for, appliance_patches, (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch))
+            result = target_appliance_patch.simple_query('What is the name of the appliance?')
+            return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+        appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch = if_stmt(_if, _else, len(appliance_patches) == 0, (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch))
+        return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+    appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch = if_stmt(_if, _else, blue_bowl_patch is None, (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch))
+
+    def _if(appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch):
+        result = image_patch.simple_query('What is the name of the appliance to the right of the blue bowl?')
+        return (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch)
+    appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch = if_stmt(_if, None, not_expr(result), (appliance_patches, blue_bowl_patch, bowl_patches, image_patch, is_blue, leftmost_x, result, right_area_patch, target_appliance_patch))
+    return result

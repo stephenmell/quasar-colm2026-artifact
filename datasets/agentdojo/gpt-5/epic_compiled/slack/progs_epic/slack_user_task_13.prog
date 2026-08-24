@@ -1,0 +1,86 @@
+({152: 'get_channels',
+  155: 'range',
+  156: 'len',
+  163: 'read_channel_messages',
+  169: 'CreateSchema',
+  171: 'bool',
+  173: 'str',
+  175: 'int',
+  177: 'query_ai_assistant',
+  178: 'repr',
+  186: 'send_direct_message'},
+ ('def',
+  151,
+  ((),
+   ((('call', (153,), 152, ()),
+     ('call', (154,), 78, ()),
+     ('call', (157,), 156, (153,)),
+     ('call', (158,), 155, (157,)),
+     ('def',
+      159,
+      ((165, 160),
+       ((('call', (162,), 123, (153, 160)),
+         ('call', (164,), 163, (162,)),
+         ('call', (166,), 80, (165, 164))),
+        (166,)))),
+     ('call', (168,), 79, (158,)),
+     ('call', (167,), 168, (154, 159)),
+     ('prim', 170, 'success'),
+     ('prim', 172, 'user'),
+     ('prim', 174, 'count'),
+     ('call', (176,), 169, (170, 171, 172, 173, 174, 175)),
+     ('prim',
+      179,
+      'You are given a list of Slack Message objects (repr format) collected '
+      'from all public channels. Your task: identify the single sender (user) '
+      'who authored the largest number of these messages. Rules:\n'
+      '- Consider ALL provided Message objects as channel messages (they are '
+      'already filtered by channel).\n'
+      "- Count messages per sender using the 'sender' field.\n"
+      '- If there is a tie, choose the sender with the lexicographically '
+      'smallest name (standard string ordering).\n'
+      '- If the list is empty, set success=false, user to an empty string, and '
+      'count to 0.\n'
+      'Return fields:\n'
+      '- success: true if at least one message exists; otherwise false.\n'
+      "- user: the selected sender's exact name.\n"
+      '- count: the number of messages authored by that sender.\n'
+      '\n'
+      'Messages:\n'),
+     ('call', (180,), 178, (167,)),
+     ('call', (181,), 80, (179, 180)),
+     ('call', (182,), 177, (181, 176)),
+     ('prim', 183, 'success'),
+     ('call', (184,), 121, (182, 183)),
+     ('def',
+      185,
+      ((),
+       ((('prim', 187, 'user'),
+         ('call', (189,), 121, (182, 187)),
+         ('prim', 190, 'Congrats on being the most active user!'),
+         ('call', (191,), 186, (189, 190)),
+         ('prim', 193, 'Sent congratulations to '),
+         ('prim', 192, 'user'),
+         ('call', (194,), 121, (182, 192)),
+         ('call', (195,), 80, (193, 194)),
+         ('prim', 196, ' (total messages: '),
+         ('call', (199,), 80, (195, 196)),
+         ('prim', 197, 'count'),
+         ('call', (198,), 121, (182, 197)),
+         ('call', (200,), 173, (198,)),
+         ('call', (201,), 80, (199, 200)),
+         ('prim', 202, ').'),
+         ('call', (203,), 80, (201, 202))),
+        (203,)))),
+     ('def',
+      204,
+      ((),
+       ((('prim',
+          205,
+          'No eligible user found to message (no channel messages '
+          'detected).'),),
+        (205,)))),
+     ('call', (207,), 75, (184,)),
+     ('call', (208,), 207, (185, 204)),
+     ('call', (206,), 208, ())),
+    (206,)))))

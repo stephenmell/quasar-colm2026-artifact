@@ -1,0 +1,59 @@
+def execute_command(image) -> str:
+    best_distance = None
+    distance = None
+    image_patch = None
+    mug_patches = None
+    person_patches = None
+    result = None
+    selected_person = None
+    image_patch = ImagePatch(image)
+    result = ''
+    mug_patches = image_patch.find('mug')
+
+    def _if(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+        result = image_patch.simple_query('What is the person to the left of the mug doing, reading or waiting?')
+        return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+
+    def _else(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+        person_patches = image_patch.find('person')
+
+        def _if(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+            result = image_patch.simple_query('What is the person to the left of the mug doing, reading or waiting?')
+            return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+
+        def _else(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+            selected_person = None
+            best_distance = None
+
+            def _for(mug_patch, best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+
+                def _for(person_patch, best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+
+                    def _if(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+                        distance = mug_patch.horizontal_center - person_patch.horizontal_center
+
+                        def _if(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+                            best_distance = distance
+                            selected_person = person_patch
+                            return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+                        best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person = if_stmt(_if, None, or_expr(best_distance is None, distance < best_distance), (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person))
+                        return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+                    best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person = if_stmt(_if, None, person_patch.horizontal_center < mug_patch.horizontal_center, (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person))
+                    return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+                best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person = for_stmt(_for, person_patches, (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person))
+                return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+            best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person = for_stmt(_for, mug_patches, (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person))
+
+            def _if(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+                result = image_patch.simple_query('What is the person to the left of the mug doing, reading or waiting?')
+                return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+
+            def _else(best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person):
+                result = selected_person.best_text_match(('reading', 'waiting'))
+                return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+            best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person = if_stmt(_if, _else, selected_person is None, (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person))
+            return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+        best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person = if_stmt(_if, _else, len(person_patches) == 0, (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person))
+        return (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person)
+    best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person = if_stmt(_if, _else, len(mug_patches) == 0, (best_distance, distance, image_patch, mug_patches, person_patches, result, selected_person))
+    return result

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2376437",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "What is the mirror on?"
+      ],
+      "The mirror is mounted on the wall.",
+      1490840431
+    ]
+  ],
+  "best_text_match": []
+}

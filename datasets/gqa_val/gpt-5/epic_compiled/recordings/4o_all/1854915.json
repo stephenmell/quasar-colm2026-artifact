@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2411812",
+          [
+            0,
+            0,
+            500,
+            282
+          ]
+        ],
+        "device"
+      ],
+      [],
+      9385479898
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2411812",
+          [
+            0,
+            0,
+            500,
+            282
+          ]
+        ],
+        "Are there any bottles to the right of the black device?"
+      ],
+      "No.",
+      1255097628
+    ]
+  ],
+  "best_text_match": []
+}

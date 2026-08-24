@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_bench = image_patch.exists("bench")
+    is_cage = image_patch.exists("cage")
+    return bool_to_yesno(is_bench or is_cage)

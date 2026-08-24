@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    coat_patches = image_patch.find("coat")
+    if len(coat_patches) == 0:
+        result = image_patch.simple_query("Does the coat have blue color?")
+    else:
+        result = bool_to_yesno(coat_patches[0].verify_property("coat", "blue"))
+    return result

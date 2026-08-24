@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "no",
+      "There is a metallic clock.",
+      "yes",
+      "There are no metallic trash cans."
+    ]
+  },
+  "time_ns": 38104417296
+}

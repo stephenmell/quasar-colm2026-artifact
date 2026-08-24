@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lady_patches = image_patch.find("lady")
+    if len(lady_patches) == 0:
+        # Fallback in case the detector uses "woman" instead of "lady"
+        lady_patches = image_patch.find("woman")
+    if len(lady_patches) == 0:
+        # If no lady/woman is found, query directly
+        return image_patch.simple_query("Is the lady on the right?")
+    lady_patch = lady_patches[0]
+    return "yes" if lady_patch.horizontal_center > image_patch.horizontal_center else "no"

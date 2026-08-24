@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shelf_patches = image_patch.find("shelf")
+    table_patches = image_patch.find("table")
+
+    if len(shelf_patches) == 0 and len(table_patches) == 0:
+        result = image_patch.simple_query("Which kind of furniture is brown, the shelf or the table?")
+    else:
+        shelf_brown = False
+        for shelf_patch in shelf_patches:
+            if shelf_patch.verify_property("shelf", "brown"):
+                shelf_brown = True
+
+        table_brown = False
+        for table_patch in table_patches:
+            if table_patch.verify_property("table", "brown"):
+                table_brown = True
+
+        if shelf_brown and not table_brown:
+            result = "shelf"
+        elif table_brown and not shelf_brown:
+            result = "table"
+        else:
+            result = image_patch.simple_query("Which kind of furniture is brown, the shelf or the table?")
+    return result

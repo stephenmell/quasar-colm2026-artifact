@@ -1,0 +1,12 @@
+# Is the mirror large?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    mirror_patches = image_patch.find("mirror")
+    if len(mirror_patches) == 0:
+        result = image_patch.simple_query("Is the mirror large?")
+    else:
+        result = "no"
+        for mirror_patch in mirror_patches:
+            if mirror_patch.verify_property("mirror", "large"):
+                result = "yes"
+    return result

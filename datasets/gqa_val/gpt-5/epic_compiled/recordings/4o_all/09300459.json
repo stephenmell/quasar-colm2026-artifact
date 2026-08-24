@@ -1,0 +1,27 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [],
+  "best_text_match": [
+    [
+      [
+        [
+          "2340989",
+          [
+            0,
+            0,
+            500,
+            315
+          ]
+        ],
+        [
+          "city",
+          "village"
+        ],
+        null
+      ],
+      "city",
+      1116802626
+    ]
+  ]
+}

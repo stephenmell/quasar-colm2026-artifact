@@ -1,0 +1,15 @@
+# Is the gate small and wooden?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    gate_patches = image_patch.find("gate")
+
+    if len(gate_patches) == 0:
+        result = image_patch.simple_query("Is the gate small and wooden?")
+    else:
+        result = "no"
+        for gate_patch in gate_patches:
+            is_small = gate_patch.verify_property("gate", "small")
+            is_wooden = gate_patch.verify_property("gate", "wooden")
+            if is_small and is_wooden:
+                result = "yes"
+    return result

@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Check for black traffic lights
+    is_black_traffic_light = False
+    traffic_light_patches = image_patch.find("traffic light")
+    for tl_patch in traffic_light_patches:
+        if tl_patch.verify_property("traffic light", "black"):
+            is_black_traffic_light = True
+            break
+    # Check for any traffic signs
+    is_traffic_sign = image_patch.exists("traffic sign")
+    return bool_to_yesno(is_black_traffic_light or is_traffic_sign)

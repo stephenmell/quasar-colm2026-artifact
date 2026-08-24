@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find("pillow")
+    couch_patches = image_patch.find("couch")
+
+    if len(pillow_patches) == 0 or len(couch_patches) == 0:
+        result = image_patch.simple_query("Is the pillow to the right of a couch?")
+    else:
+        result = "no"
+        for pillow_patch in pillow_patches:
+            for couch_patch in couch_patches:
+                if pillow_patch.horizontal_center > couch_patch.horizontal_center:
+                    result = "yes"
+    return result

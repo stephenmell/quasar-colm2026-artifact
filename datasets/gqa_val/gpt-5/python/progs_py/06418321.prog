@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tv_patches = image_patch.find("television")
+    # Question assumes only one television patch
+    if len(tv_patches) == 0:
+        # If no television is found, query the image directly
+        return image_patch.simple_query("On which side of the picture is the television?")
+    tv_patch = tv_patches[0]
+    if tv_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

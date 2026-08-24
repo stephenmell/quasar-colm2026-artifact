@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    hair_patches = None
+    image_patch = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    hair_patches = image_patch.find('hair')
+
+    def _if(hair_patches, image_patch, person_patches, result):
+        person_patches = image_patch.find('person')
+
+        def _if(hair_patches, image_patch, person_patches, result):
+            result = image_patch.simple_query('Is the hair brown or blond?')
+            return (hair_patches, image_patch, person_patches, result)
+
+        def _else(hair_patches, image_patch, person_patches, result):
+            result = person_patches[0].best_text_match(('brown', 'blond'))
+            return (hair_patches, image_patch, person_patches, result)
+        hair_patches, image_patch, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (hair_patches, image_patch, person_patches, result))
+        return (hair_patches, image_patch, person_patches, result)
+
+    def _else(hair_patches, image_patch, person_patches, result):
+        result = hair_patches[0].best_text_match(('brown', 'blond'))
+        return (hair_patches, image_patch, person_patches, result)
+    hair_patches, image_patch, person_patches, result = if_stmt(_if, _else, len(hair_patches) == 0, (hair_patches, image_patch, person_patches, result))
+    return result

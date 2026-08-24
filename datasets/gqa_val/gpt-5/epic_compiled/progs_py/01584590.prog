@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pedestrian_patches = image_patch.find("pedestrian")
+    if len(pedestrian_patches) == 0:
+        pedestrian_patches = image_patch.find("person")
+    if len(pedestrian_patches) == 0:
+        result = image_patch.simple_query("Are the pedestrians on the right side?")
+    else:
+        total_center = 0.0
+        count = 0
+        for ped_patch in pedestrian_patches:
+            total_center = total_center + ped_patch.horizontal_center
+            count = count + 1
+        average_center = image_patch.horizontal_center
+        if count != 0:
+            average_center = total_center / count
+        if average_center > image_patch.horizontal_center:
+            result = "yes"
+        else:
+            result = "no"
+    return result

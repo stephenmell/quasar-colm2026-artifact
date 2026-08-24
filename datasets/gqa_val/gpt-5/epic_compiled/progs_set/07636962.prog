@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_gray = None
+    question = None
+    result = None
+    selected_patch = None
+    sweater_patches = None
+    image_patch = ImagePatch(image)
+    sweater_patches = image_patch.find('sweater')
+    question = 'How long is the gray sweater?'
+
+    def _if(image_patch, is_gray, question, result, selected_patch, sweater_patches):
+        result = image_patch.simple_query(question)
+        return (image_patch, is_gray, question, result, selected_patch, sweater_patches)
+
+    def _else(image_patch, is_gray, question, result, selected_patch, sweater_patches):
+        selected_patch = None
+
+        def _for(sweater_patch, image_patch, is_gray, question, selected_patch, sweater_patches):
+            is_gray = sweater_patch.verify_property('sweater', 'gray')
+
+            def _if(image_patch, is_gray, question, selected_patch, sweater_patches):
+                selected_patch = sweater_patch
+                return (image_patch, is_gray, question, selected_patch, sweater_patches)
+            image_patch, is_gray, question, selected_patch, sweater_patches = if_stmt(_if, None, and_expr(is_gray, selected_patch is None), (image_patch, is_gray, question, selected_patch, sweater_patches))
+            return (image_patch, is_gray, question, selected_patch, sweater_patches)
+        image_patch, is_gray, question, selected_patch, sweater_patches = for_stmt(_for, sweater_patches, (image_patch, is_gray, question, selected_patch, sweater_patches))
+
+        def _if(image_patch, is_gray, question, selected_patch, sweater_patches):
+            selected_patch = sweater_patches[0]
+            return (image_patch, is_gray, question, selected_patch, sweater_patches)
+        image_patch, is_gray, question, selected_patch, sweater_patches = if_stmt(_if, None, not_expr(selected_patch), (image_patch, is_gray, question, selected_patch, sweater_patches))
+        result = selected_patch.best_text_match(('long', 'short'))
+        return (image_patch, is_gray, question, result, selected_patch, sweater_patches)
+    image_patch, is_gray, question, result, selected_patch, sweater_patches = if_stmt(_if, _else, len(sweater_patches) == 0, (image_patch, is_gray, question, result, selected_patch, sweater_patches))
+    return result

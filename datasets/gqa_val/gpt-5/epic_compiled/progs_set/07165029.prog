@@ -1,0 +1,132 @@
+def execute_command(image) -> str:
+    all_signal_pairs = None
+    area = None
+    best_area = None
+    best_train = None
+    chosen_signal = None
+    dist = None
+    found_signals = None
+    gray_signal_pairs = None
+    image_patch = None
+    is_gray = None
+    large_train_candidates = None
+    min_dist = None
+    question = None
+    result = None
+    selected_train = None
+    signal_names = None
+    sname = None
+    source_trains = None
+    spatch = None
+    train_patches = None
+    image_patch = ImagePatch(image)
+    question = 'Is the large train to the right of the signal light that looks gray?'
+    result = 'no'
+    train_patches = image_patch.find('train')
+
+    def _if(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+        result = image_patch.simple_query(question)
+        return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+
+    def _else(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+        large_train_candidates = ()
+
+        def _for(tpatch, image_patch, large_train_candidates, question, result, train_patches):
+
+            def _if(image_patch, large_train_candidates, question, result, train_patches):
+                large_train_candidates = large_train_candidates + (tpatch,)
+                return (image_patch, large_train_candidates, question, result, train_patches)
+            image_patch, large_train_candidates, question, result, train_patches = if_stmt(_if, None, tpatch.verify_property('train', 'large'), (image_patch, large_train_candidates, question, result, train_patches))
+            return (image_patch, large_train_candidates, question, result, train_patches)
+        image_patch, large_train_candidates, question, result, train_patches = for_stmt(_for, train_patches, (image_patch, large_train_candidates, question, result, train_patches))
+        selected_train = None
+
+        def _if(area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches):
+            selected_train = large_train_candidates[0]
+            return (area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches)
+
+        def _else(area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches):
+            source_trains = large_train_candidates if len(large_train_candidates) > 0 else train_patches
+            best_area = -1
+            best_train = None
+
+            def _for(tpatch, area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches):
+                area = tpatch.width * tpatch.height
+
+                def _if(area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches):
+                    best_area = area
+                    best_train = tpatch
+                    return (area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches)
+                area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches = if_stmt(_if, None, area > best_area, (area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches))
+                return (area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches)
+            area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches = for_stmt(_for, source_trains, (area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches))
+            selected_train = best_train
+            return (area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches)
+        area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches = if_stmt(_if, _else, len(large_train_candidates) == 1, (area, best_area, best_train, image_patch, large_train_candidates, question, result, selected_train, source_trains, train_patches))
+        signal_names = ('signal light', 'traffic light', 'signal', 'light', 'railroad signal')
+        all_signal_pairs = ()
+
+        def _for(sname, all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches):
+            found_signals = image_patch.find(sname)
+
+            def _for(spatch, all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches):
+                all_signal_pairs = all_signal_pairs + ((spatch, sname),)
+                return (all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches)
+            all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches = for_stmt(_for, found_signals, (all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches))
+            return (all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches)
+        all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches = for_stmt(_for, signal_names, (all_signal_pairs, area, best_area, best_train, found_signals, image_patch, large_train_candidates, question, result, selected_train, signal_names, source_trains, train_patches))
+
+        def _if(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+            result = image_patch.simple_query(question)
+            return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+
+        def _else(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+            gray_signal_pairs = ()
+
+            def _for(pair, all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                spatch = pair[0]
+                sname = pair[1]
+                is_gray = or_expr(spatch.verify_property(sname, 'gray'), spatch.verify_property(sname, 'grey'))
+
+                def _if(all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                    gray_signal_pairs = gray_signal_pairs + (pair,)
+                    return (all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+                all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = if_stmt(_if, None, is_gray, (all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+                return (all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+            all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = for_stmt(_for, all_signal_pairs, (all_signal_pairs, area, best_area, best_train, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+
+            def _if(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                result = image_patch.simple_query(question)
+                return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+
+            def _else(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                chosen_signal = gray_signal_pairs[0][0]
+                min_dist = abs(selected_train.horizontal_center - chosen_signal.horizontal_center)
+
+                def _for(pair, all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                    spatch = pair[0]
+                    dist = abs(selected_train.horizontal_center - spatch.horizontal_center)
+
+                    def _if(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                        min_dist = dist
+                        chosen_signal = spatch
+                        return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+                    all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = if_stmt(_if, None, dist < min_dist, (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+                    return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+                all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = for_stmt(_for, gray_signal_pairs, (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+
+                def _if(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                    result = 'yes'
+                    return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+
+                def _else(all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches):
+                    result = 'no'
+                    return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+                all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = if_stmt(_if, _else, selected_train.horizontal_center > chosen_signal.horizontal_center, (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+                return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+            all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = if_stmt(_if, _else, len(gray_signal_pairs) == 0, (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+            return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+        all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = if_stmt(_if, _else, len(all_signal_pairs) == 0, (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+        return (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches)
+    all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches = if_stmt(_if, _else, len(train_patches) == 0, (all_signal_pairs, area, best_area, best_train, chosen_signal, dist, found_signals, gray_signal_pairs, image_patch, is_gray, large_train_candidates, min_dist, question, result, selected_train, signal_names, sname, source_trains, spatch, train_patches))
+    return result

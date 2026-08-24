@@ -1,0 +1,39 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    keyboard_patches = image_patch.find("keyboard")
+    # If no keyboard is found, ask directly
+    if len(keyboard_patches) == 0:
+        return image_patch.simple_query("What kind of device is to the right of the keyboard on the left?")
+    # Pick the leftmost keyboard
+    left_keyboard = min(keyboard_patches, key=lambda k: k.left)
+    # Crop the region to the right of the left keyboard
+    left = int(left_keyboard.right)
+    lower = 0
+    right = int(image_patch.right)
+    upper = int(image_patch.upper)
+    if left >= right:
+        return image_patch.simple_query("What kind of device is to the right of the keyboard on the left?")
+    right_region = image_patch.crop(left, lower, right, upper)
+
+    # If we can directly detect a "device", ask about it
+    device_patches = right_region.find("device")
+    if len(device_patches) > 0:
+        # Choose the device closest to the keyboard edge
+        closest_device = min(device_patches, key=lambda p: p.left)
+        return closest_device.simple_query("What kind of device is this?")
+
+    # Try common device types likely to be to the right of a keyboard
+    common_devices = [
+        "mouse", "computer mouse", "wireless mouse",
+        "phone", "cell phone", "mobile phone", "smartphone",
+        "tablet", "monitor", "screen", "speaker", "printer",
+        "laptop", "computer", "calculator", "remote", "remote control",
+        "router", "modem", "headphones", "trackpad"
+    ]
+    for name in common_devices:
+        patches = right_region.find(name)
+        if len(patches) > 0:
+            return patches[0].simple_query("What kind of device is this?")
+
+    # Fallback: ask within the cropped region
+    return right_region.simple_query("What kind of device is to the right of the keyboard on the left?")

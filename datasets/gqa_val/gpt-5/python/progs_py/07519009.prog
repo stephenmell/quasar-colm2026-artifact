@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fork_patches = image_patch.find("fork")
+    if len(fork_patches) == 0:
+        return image_patch.simple_query("Are there any metallic forks?")
+    is_metallic = any(
+        any(fp.verify_property("fork", prop) for prop in ["metallic", "metal", "silver", "steel", "stainless steel"])
+        for fp in fork_patches
+    )
+    return bool_to_yesno(is_metallic)

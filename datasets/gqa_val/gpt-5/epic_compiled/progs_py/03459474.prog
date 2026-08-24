@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find("sky")
+    if len(sky_patches) == 0:
+        result = image_patch.best_text_match(("sunny", "cloudy"))
+    else:
+        result = sky_patches[0].best_text_match(("sunny", "cloudy"))
+    return result

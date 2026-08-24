@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find tents
+    tent_patches = image_patch.find("tent")
+    have_tent = len(tent_patches) > 0
+
+    # Gather whether any vehicle-type object exists
+    vehicle_types = ("vehicle", "car", "truck", "bus", "van", "motorcycle", "bicycle")
+    have_any_vehicle = False
+    for vtype in vehicle_types:
+        if len(image_patch.find(vtype)) > 0:
+            have_any_vehicle = True
+
+    if have_tent and have_any_vehicle:
+        for vtype in vehicle_types:
+            vpatches = image_patch.find(vtype)
+            for vpatch in vpatches:
+                is_blue = vpatch.verify_property(vtype, "blue")
+                if is_blue:
+                    for tpatch in tent_patches:
+                        if vpatch.horizontal_center < tpatch.horizontal_center:
+                            result = "yes"
+    else:
+        result = image_patch.simple_query("Is the blue vehicle to the left of a tent?")
+    return result

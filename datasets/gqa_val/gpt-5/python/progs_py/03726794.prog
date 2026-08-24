@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try to find a "wood table" directly
+    wood_table_patches = image_patch.find("wood table")
+
+    # If not found, find tables and filter by wood/wooden property
+    if len(wood_table_patches) == 0:
+        table_patches = image_patch.find("table")
+        wood_table_patches = []
+        for table_patch in table_patches:
+            if table_patch.verify_property("table", "wood") or table_patch.verify_property("table", "wooden"):
+                wood_table_patches.append(table_patch)
+
+    # If we still can't localize the wood table, ask directly
+    if len(wood_table_patches) == 0:
+        return image_patch.simple_query("Is the wood table to the right of a curtain?")
+
+    curtain_patches = image_patch.find("curtain")
+    # If we can't localize the curtain, ask directly
+    if len(curtain_patches) == 0:
+        return image_patch.simple_query("Is the wood table to the right of a curtain?")
+
+    # Check spatial relation: table to the right of any curtain
+    for table_patch in wood_table_patches:
+        for curtain_patch in curtain_patches:
+            if table_patch.horizontal_center > curtain_patch.horizontal_center:
+                return "yes"
+    return "no"

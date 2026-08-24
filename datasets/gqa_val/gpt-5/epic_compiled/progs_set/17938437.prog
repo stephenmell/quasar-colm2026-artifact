@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    beach_patches = None
+    field_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+
+    def _if(field_patches, image_patch, result):
+        field_patches = image_patch.find('field')
+
+        def _for(field_patch, field_patches, image_patch, result):
+
+            def _if(field_patches, image_patch, result):
+                result = 'yes'
+                return (field_patches, image_patch, result)
+            field_patches, image_patch, result = if_stmt(_if, None, field_patch.verify_property('field', 'brown'), (field_patches, image_patch, result))
+            return (field_patches, image_patch, result)
+        field_patches, image_patch, result = for_stmt(_for, field_patches, (field_patches, image_patch, result))
+        return (field_patches, image_patch, result)
+    field_patches, image_patch, result = if_stmt(_if, None, image_patch.exists('field'), (field_patches, image_patch, result))
+
+    def _if(beach_patches, field_patches, image_patch, result):
+        beach_patches = image_patch.find('beach')
+
+        def _for(beach_patch, beach_patches, field_patches, image_patch, result):
+
+            def _if(beach_patches, field_patches, image_patch, result):
+                result = 'yes'
+                return (beach_patches, field_patches, image_patch, result)
+            beach_patches, field_patches, image_patch, result = if_stmt(_if, None, beach_patch.verify_property('beach', 'brown'), (beach_patches, field_patches, image_patch, result))
+            return (beach_patches, field_patches, image_patch, result)
+        beach_patches, field_patches, image_patch, result = for_stmt(_for, beach_patches, (beach_patches, field_patches, image_patch, result))
+        return (beach_patches, field_patches, image_patch, result)
+    beach_patches, field_patches, image_patch, result = if_stmt(_if, None, image_patch.exists('beach'), (beach_patches, field_patches, image_patch, result))
+    return result

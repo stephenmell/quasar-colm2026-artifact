@@ -1,0 +1,8 @@
+def execute_command(image) -> str:
+    has_clock = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_clock = image_patch.exists('clock')
+    result = bool_to_yesno(has_clock)
+    return result

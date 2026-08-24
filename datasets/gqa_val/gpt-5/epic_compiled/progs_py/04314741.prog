@@ -1,0 +1,13 @@
+# Are there any windows that are not blue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    window_patches = image_patch.find("window")
+    if len(window_patches) == 0:
+        result = image_patch.simple_query("Are there any windows that are not blue?")
+    else:
+        result = "no"
+        for window_patch in window_patches:
+            is_blue = window_patch.verify_property("window", "blue")
+            if not is_blue:
+                result = "yes"
+    return result

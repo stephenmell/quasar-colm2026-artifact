@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    dish_drainer_patches = None
+    faucet_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    dish_drainer_patches = image_patch.find('dish drainer')
+
+    def _if(dish_drainer_patches, faucet_patches, image_patch, result):
+        result = image_patch.simple_query('Do you see any faucets to the left of the dish drainer?')
+        return (dish_drainer_patches, faucet_patches, image_patch, result)
+
+    def _else(dish_drainer_patches, faucet_patches, image_patch, result):
+        faucet_patches = image_patch.find('faucet')
+
+        def _if(dish_drainer_patches, faucet_patches, image_patch, result):
+            result = 'no'
+            return (dish_drainer_patches, faucet_patches, image_patch, result)
+
+        def _else(dish_drainer_patches, faucet_patches, image_patch, result):
+            result = 'no'
+
+            def _for(drainer_patch, dish_drainer_patches, faucet_patches, image_patch, result):
+
+                def _for(faucet_patch, dish_drainer_patches, faucet_patches, image_patch, result):
+
+                    def _if(dish_drainer_patches, faucet_patches, image_patch, result):
+                        result = 'yes'
+                        return (dish_drainer_patches, faucet_patches, image_patch, result)
+                    dish_drainer_patches, faucet_patches, image_patch, result = if_stmt(_if, None, faucet_patch.horizontal_center < drainer_patch.horizontal_center, (dish_drainer_patches, faucet_patches, image_patch, result))
+                    return (dish_drainer_patches, faucet_patches, image_patch, result)
+                dish_drainer_patches, faucet_patches, image_patch, result = for_stmt(_for, faucet_patches, (dish_drainer_patches, faucet_patches, image_patch, result))
+                return (dish_drainer_patches, faucet_patches, image_patch, result)
+            dish_drainer_patches, faucet_patches, image_patch, result = for_stmt(_for, dish_drainer_patches, (dish_drainer_patches, faucet_patches, image_patch, result))
+            return (dish_drainer_patches, faucet_patches, image_patch, result)
+        dish_drainer_patches, faucet_patches, image_patch, result = if_stmt(_if, _else, len(faucet_patches) == 0, (dish_drainer_patches, faucet_patches, image_patch, result))
+        return (dish_drainer_patches, faucet_patches, image_patch, result)
+    dish_drainer_patches, faucet_patches, image_patch, result = if_stmt(_if, _else, len(dish_drainer_patches) == 0, (dish_drainer_patches, faucet_patches, image_patch, result))
+    return result

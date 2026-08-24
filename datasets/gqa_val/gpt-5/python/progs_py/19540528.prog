@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ladder_patches = image_patch.find("ladder")
+    # If no ladder is found, ask directly since it involves a spatial relation
+    if len(ladder_patches) == 0:
+        return image_patch.simple_query("What is the appliance to the left of the ladder?")
+    ladder_patch = ladder_patches[0]
+
+    appliance_patches = image_patch.find("appliance")
+    if len(appliance_patches) == 0:
+        return image_patch.simple_query("What is the appliance to the left of the ladder?")
+
+    # Filter appliances that are to the left of the ladder
+    left_appliances = [a for a in appliance_patches if a.horizontal_center < ladder_patch.horizontal_center]
+    if len(left_appliances) == 0:
+        return image_patch.simple_query("What is the appliance to the left of the ladder?")
+
+    # Choose the closest appliance to the left (max x while still left of ladder)
+    left_appliances.sort(key=lambda a: ladder_patch.horizontal_center - a.horizontal_center)
+    target_appliance = left_appliances[0]
+
+    # Identify the appliance
+    return target_appliance.simple_query()

@@ -1,0 +1,12 @@
+# Does the mouse look blue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    mouse_patches = image_patch.find("mouse")
+    if len(mouse_patches) == 0:
+        result = image_patch.simple_query("Does the mouse look blue?")
+    else:
+        result = "no"
+        for mouse_patch in mouse_patches:
+            if mouse_patch.verify_property("mouse", "blue"):
+                result = "yes"
+    return result

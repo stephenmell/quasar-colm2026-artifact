@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    found_any = None
+    has_metal = None
+    image_patch = None
+    obj_exists = None
+    obj_patches = None
+    object_types = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found_any = False
+    object_types = ('spatula', 'plate')
+
+    def _for(obj, found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result):
+        obj_exists = image_patch.exists(obj)
+
+        def _if(found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result):
+            found_any = True
+            obj_patches = image_patch.find(obj)
+
+            def _for(obj_patch, found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result):
+                has_metal = obj_patch.verify_property(obj, 'metal')
+
+                def _if(found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result):
+                    has_metal = obj_patch.verify_property(obj, 'made of metal')
+                    return (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result)
+                found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result = if_stmt(_if, None, not_expr(has_metal), (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result))
+
+                def _if(found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result):
+                    result = 'yes'
+                    return (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result)
+                found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result = if_stmt(_if, None, has_metal, (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result))
+                return (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result)
+            found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result = for_stmt(_for, obj_patches, (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result))
+            return (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result)
+        found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result = if_stmt(_if, None, obj_exists, (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result))
+        return (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result)
+    found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result = for_stmt(_for, object_types, (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result))
+
+    def _if(found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result):
+        result = image_patch.simple_query('Do you see either spatulas or plates that are made of metal?')
+        return (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result)
+    found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result = if_stmt(_if, None, not_expr(found_any), (found_any, has_metal, image_patch, obj_exists, obj_patches, object_types, result))
+    return result

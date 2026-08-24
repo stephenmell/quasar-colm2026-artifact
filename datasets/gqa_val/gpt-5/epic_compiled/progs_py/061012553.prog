@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    kitchen_indicators = ("kitchen", "stove", "oven", "refrigerator", "fridge", "microwave", "kitchen sink", "sink", "kitchen cabinet", "cabinet", "countertop", "kitchen counter", "dishwasher")
+    is_kitchen = False
+    for indicator in kitchen_indicators:
+        exists_here = image_patch.exists(indicator)
+        if exists_here:
+            is_kitchen = True
+    if is_kitchen:
+        result = "yes"
+    else:
+        scene_options = ("kitchen", "bathroom", "bedroom", "living room", "dining room", "outdoors", "office", "store", "restaurant", "garage", "hallway", "classroom")
+        best_scene = image_patch.best_text_match(scene_options)
+        if best_scene == "kitchen":
+            result = "yes"
+        else:
+            yn = image_patch.best_text_match(("yes", "no"))
+            if yn == "yes":
+                result = "yes"
+            elif yn == "no":
+                result = "no"
+            else:
+                result = "no"
+    return result

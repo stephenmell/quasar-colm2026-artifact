@@ -1,0 +1,24 @@
+# Are the people different genders?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+
+    if len(person_patches) < 2:
+        result = image_patch.simple_query("Are the people different genders?")
+    else:
+        found_male = False
+        found_female = False
+        for person_patch in person_patches:
+            gender = person_patch.best_text_match(("male", "female"))
+            if gender == "male":
+                if not found_male:
+                    found_male = True
+            else:
+                if gender == "female":
+                    if not found_female:
+                        found_female = True
+        if found_male and found_female:
+            result = "yes"
+        else:
+            result = "no"
+    return result

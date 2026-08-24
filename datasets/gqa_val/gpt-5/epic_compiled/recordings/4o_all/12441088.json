@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2341708",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "What is the muffin on?"
+      ],
+      "The muffin is on a green plate.",
+      1608165173
+    ]
+  ],
+  "best_text_match": []
+}

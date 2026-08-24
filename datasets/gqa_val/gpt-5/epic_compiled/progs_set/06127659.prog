@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    chopstick_names = None
+    chopsticks_exists = None
+    image_patch = None
+    knife_exists = None
+    result = None
+    image_patch = ImagePatch(image)
+    knife_exists = or_expr(image_patch.exists('knife'), image_patch.exists('knives'))
+    chopstick_names = ('chopstick', 'chopsticks', 'chop stick', 'chop sticks')
+    chopsticks_exists = False
+
+    def _for(name, chopstick_names, chopsticks_exists, image_patch, knife_exists):
+
+        def _if(chopstick_names, chopsticks_exists, image_patch, knife_exists):
+            chopsticks_exists = True
+            return (chopstick_names, chopsticks_exists, image_patch, knife_exists)
+
+        def _else(chopstick_names, chopsticks_exists, image_patch, knife_exists):
+            chopsticks_exists = chopsticks_exists
+            return (chopstick_names, chopsticks_exists, image_patch, knife_exists)
+        chopstick_names, chopsticks_exists, image_patch, knife_exists = if_stmt(_if, _else, image_patch.exists(name), (chopstick_names, chopsticks_exists, image_patch, knife_exists))
+        return (chopstick_names, chopsticks_exists, image_patch, knife_exists)
+    chopstick_names, chopsticks_exists, image_patch, knife_exists = for_stmt(_for, chopstick_names, (chopstick_names, chopsticks_exists, image_patch, knife_exists))
+    result = bool_to_yesno(and_expr(knife_exists, chopsticks_exists))
+    return result

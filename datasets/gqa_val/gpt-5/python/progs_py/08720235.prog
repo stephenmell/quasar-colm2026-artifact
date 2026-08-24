@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find("car")
+    # Question assumes at least one car
+    if len(car_patches) == 0:
+        # If no car is found, query the image directly
+        return image_patch.simple_query("Do you see any trucks to the right of the car?")
+    truck_patches = image_patch.find("truck")
+    if len(truck_patches) == 0:
+        return "no"
+    for car_patch in car_patches:
+        for truck_patch in truck_patches:
+            if truck_patch.horizontal_center > car_patch.horizontal_center:
+                return "yes"
+    return "no"

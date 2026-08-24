@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    road_patches = image_patch.find("road")
+    if len(road_patches) == 0:
+        # If no road is found, query the image directly
+        return image_patch.simple_query("Is the road rough and paved?")
+    for road_patch in road_patches:
+        is_rough = road_patch.verify_property("road", "rough")
+        is_paved = road_patch.verify_property("road", "paved")
+        if is_rough and is_paved:
+            return "yes"
+    return "no"

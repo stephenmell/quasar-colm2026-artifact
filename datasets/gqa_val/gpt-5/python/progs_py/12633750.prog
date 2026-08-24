@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    coat_patches = image_patch.find("coat")
+    # If no coat is found, query the image directly
+    if len(coat_patches) == 0:
+        return image_patch.simple_query("Are there coats that are not dry?")
+    for coat_patch in coat_patches:
+        if not coat_patch.verify_property("coat", "dry"):
+            return "yes"
+    return "no"

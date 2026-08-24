@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for orange fences
+    if image_patch.exists("fence"):
+        fence_patches = image_patch.find("fence")
+        for fence_patch in fence_patches:
+            if fence_patch.verify_property("fence", "orange"):
+                result = "yes"
+
+    # Check for orange umbrellas
+    if image_patch.exists("umbrella"):
+        umbrella_patches = image_patch.find("umbrella")
+        for umbrella_patch in umbrella_patches:
+            if umbrella_patch.verify_property("umbrella", "orange"):
+                result = "yes"
+
+    return result

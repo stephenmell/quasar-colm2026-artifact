@@ -1,0 +1,19 @@
+# Are there any white umbrellas or cars in the photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for white umbrellas
+    umbrella_exists = image_patch.exists("umbrella")
+    if umbrella_exists:
+        umbrella_patches = image_patch.find("umbrella")
+        for umbrella_patch in umbrella_patches:
+            if umbrella_patch.verify_property("umbrella", "white"):
+                result = "yes"
+
+    # Check for any cars (any color)
+    car_exists = image_patch.exists("car")
+    if car_exists:
+        result = "yes"
+
+    return result

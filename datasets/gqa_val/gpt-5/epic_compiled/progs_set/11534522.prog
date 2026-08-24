@@ -1,0 +1,61 @@
+def execute_command(image) -> str:
+    behind_answer = None
+    dog_patches = None
+    image_patch = None
+    is_blue = None
+    is_dog_on_blanket = None
+    on_blanket_answer = None
+    result = None
+    water_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    dog_patches = image_patch.find('dog')
+
+    def _if(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+        result = image_patch.simple_query('Is the blue water behind the dog on the blanket?')
+        return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+
+    def _else(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+        water_patches = image_patch.find('water')
+
+        def _if(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+            result = image_patch.simple_query('Is the blue water behind the dog on the blanket?')
+            return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+
+        def _else(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+            result = 'no'
+
+            def _for(dog_patch, behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+                on_blanket_answer = dog_patch.simple_query('Is the dog on the blanket?')
+                is_dog_on_blanket = on_blanket_answer == 'yes'
+
+                def _if(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+
+                    def _for(water_patch, behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+                        is_blue = water_patch.verify_property('water', 'blue')
+
+                        def _if(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+                            behind_answer = image_patch.simple_query('Is the blue water behind the dog?')
+
+                            def _if(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+                                result = 'yes'
+                                return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+                            behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = if_stmt(_if, None, behind_answer == 'yes', (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+                            return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+                        behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = if_stmt(_if, None, is_blue, (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+                        return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+                    behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = for_stmt(_for, water_patches, (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+                    return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+                behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = if_stmt(_if, None, is_dog_on_blanket, (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+                return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+            behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = for_stmt(_for, dog_patches, (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+            return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+        behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = if_stmt(_if, _else, len(water_patches) == 0, (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+        return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+    behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = if_stmt(_if, _else, len(dog_patches) == 0, (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+
+    def _if(behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches):
+        result = image_patch.simple_query('Is the blue water behind the dog on the blanket?')
+        return (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches)
+    behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches = if_stmt(_if, None, not_expr(result), (behind_answer, dog_patches, image_patch, is_blue, is_dog_on_blanket, on_blanket_answer, result, water_patches))
+    return result

@@ -1,0 +1,5 @@
+{
+  "result": "{'electric_car_company': {'name': None, 'rating': -1.0, 'cost_for_3_days': None}, 'suv_company': {'name': None, 'rating': -1.0, 'cost_for_3_days': None}}",
+  "time_ns": 1028460195,
+  "utility": false
+}

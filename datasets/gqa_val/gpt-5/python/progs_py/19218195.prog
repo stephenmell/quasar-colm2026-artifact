@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find tomatoes
+    tomato_patches = image_patch.find("tomato")
+    if len(tomato_patches) == 0:
+        tomato_patches = image_patch.find("tomatoes")
+
+    # Find veggies (try a few synonyms)
+    veggie_patches = image_patch.find("veggies")
+    if len(veggie_patches) == 0:
+        veggie_patches = image_patch.find("vegetable")
+    if len(veggie_patches) == 0:
+        veggie_patches = image_patch.find("veggie")
+
+    # If we can't find either object, ask directly
+    if len(tomato_patches) == 0 or len(veggie_patches) == 0:
+        return image_patch.simple_query("Do the veggies to the right of the tomatoes have green color?")
+
+    # Consider veggies to the right of the rightmost tomato
+    rightmost_tomato_center = max(t.horizontal_center for t in tomato_patches)
+
+    for veg in veggie_patches:
+        if veg.horizontal_center > rightmost_tomato_center:
+            # Check if the veggie has green color
+            if (veg.verify_property("veggies", "green") or
+                veg.verify_property("vegetable", "green") or
+                veg.verify_property("veggie", "green") or
+                veg.verify_property("veggies", "green color") or
+                veg.verify_property("vegetable", "green color") or
+                veg.verify_property("veggie", "green color")):
+                return "yes"
+    return "no"

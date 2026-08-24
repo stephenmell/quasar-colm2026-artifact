@@ -1,0 +1,11 @@
+# Do you see pliers or umbrellas?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_pliers = image_patch.exists("pliers")
+    if not has_pliers:
+        has_pliers = image_patch.exists("plier")
+    has_umbrella = image_patch.exists("umbrella")
+    if not has_umbrella:
+        has_umbrella = image_patch.exists("umbrellas")
+    result = bool_to_yesno(has_pliers or has_umbrella)
+    return result

@@ -1,0 +1,40 @@
+# What kind of vehicle is the same color as the rope?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    rope_patches = image_patch.find("rope")
+
+    if len(rope_patches) == 0:
+        result = image_patch.simple_query("What kind of vehicle is the same color as the rope?")
+    else:
+        # Determine the rope's color
+        color_options = ("red", "blue", "green", "yellow", "black", "white", "gray", "brown", "orange", "pink", "purple", "silver", "gold")
+        rope_color = rope_patches[0].best_text_match(color_options)
+
+        result = None
+
+        # Try generic vehicle first
+        vehicle_patches = image_patch.find("vehicle")
+        if len(vehicle_patches) > 0:
+            for vehicle_patch in vehicle_patches:
+                is_same_color = vehicle_patch.verify_property("vehicle", rope_color)
+                if is_same_color:
+                    answer = vehicle_patch.simple_query("What kind of vehicle is this?")
+                    if answer:
+                        result = answer
+
+        # If no generic vehicle match, try specific vehicle types
+        if not result:
+            vehicle_types = ("car", "bus", "truck", "van", "motorcycle", "bicycle", "bike", "train", "boat", "airplane", "scooter", "taxi", "tram")
+            for vtype in vehicle_types:
+                vtype_patches = image_patch.find(vtype)
+                for vtype_patch in vtype_patches:
+                    if vtype_patch.verify_property(vtype, rope_color):
+                        # Ask the patch for its specific type
+                        vtype_name = vtype_patch.simple_query("What kind of vehicle is this?")
+                        if vtype_name:
+                            result = vtype_name
+
+        # Final fallback: ask directly
+        if not result:
+            result = image_patch.simple_query("What kind of vehicle is the same color as the rope?")
+    return result

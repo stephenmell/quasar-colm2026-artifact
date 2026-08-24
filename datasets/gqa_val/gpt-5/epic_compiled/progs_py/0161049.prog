@@ -1,0 +1,39 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    utensil_patches = image_patch.find("utensil")
+
+    if len(utensil_patches) < 2:
+        result = image_patch.simple_query("Do you see bowls to the right of the utensil that is to the right of the utensil?")
+    else:
+        # Find the leftmost utensil
+        leftmost_utensil = utensil_patches[0]
+        for utensil_patch in utensil_patches:
+            if utensil_patch.horizontal_center < leftmost_utensil.horizontal_center:
+                leftmost_utensil = utensil_patch
+
+        # Find the utensil immediately to the right of the leftmost one (closest utensil to its right)
+        right_of_leftmost = None
+        min_delta = None
+        for utensil_patch in utensil_patches:
+            if utensil_patch.horizontal_center > leftmost_utensil.horizontal_center:
+                delta = utensil_patch.horizontal_center - leftmost_utensil.horizontal_center
+                if min_delta is None or delta < min_delta:
+                    right_of_leftmost = utensil_patch
+                    min_delta = delta
+
+        # If for some reason we didn't find such a utensil (e.g., identical centers), fall back to the rightmost utensil
+        if right_of_leftmost is None:
+            right_of_leftmost = utensil_patches[0]
+            for utensil_patch in utensil_patches:
+                if utensil_patch.horizontal_center > right_of_leftmost.horizontal_center:
+                    right_of_leftmost = utensil_patch
+
+        bowl_patches = image_patch.find("bowl")
+        if len(bowl_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for bowl_patch in bowl_patches:
+                if bowl_patch.horizontal_center > right_of_leftmost.horizontal_center:
+                    result = "yes"
+    return result

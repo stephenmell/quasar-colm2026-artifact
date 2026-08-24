@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find chairs and filter to empty chairs
+    chair_patches = image_patch.find("chair")
+    empty_chair_patches = []
+    for chair_patch in chair_patches:
+        if chair_patch.verify_property("chair", "empty"):
+            empty_chair_patches.append(chair_patch)
+    # If we can't locate an empty chair explicitly, ask directly
+    if len(empty_chair_patches) == 0:
+        return image_patch.simple_query("Is the computer to the right of the empty chair?")
+    # Find computers
+    computer_patches = image_patch.find("computer")
+    if len(computer_patches) == 0:
+        return "no"
+    # Check relative horizontal positions
+    for computer_patch in computer_patches:
+        for empty_chair_patch in empty_chair_patches:
+            if computer_patch.horizontal_center > empty_chair_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    clock_patches = None
+    image_patch = None
+    is_orange = None
+    result = None
+    image_patch = ImagePatch(image)
+    clock_patches = image_patch.find('clock')
+
+    def _if(clock_patches, image_patch, is_orange, result):
+        result = image_patch.simple_query('Does the clock look orange?')
+        return (clock_patches, image_patch, is_orange, result)
+
+    def _else(clock_patches, image_patch, is_orange, result):
+        is_orange = False
+
+        def _for(clock_patch, clock_patches, image_patch, is_orange):
+
+            def _if(clock_patches, image_patch, is_orange):
+                is_orange = True
+                return (clock_patches, image_patch, is_orange)
+            clock_patches, image_patch, is_orange = if_stmt(_if, None, clock_patch.verify_property('clock', 'orange'), (clock_patches, image_patch, is_orange))
+            return (clock_patches, image_patch, is_orange)
+        clock_patches, image_patch, is_orange = for_stmt(_for, clock_patches, (clock_patches, image_patch, is_orange))
+        result = bool_to_yesno(is_orange)
+        return (clock_patches, image_patch, is_orange, result)
+    clock_patches, image_patch, is_orange, result = if_stmt(_if, _else, len(clock_patches) == 0, (clock_patches, image_patch, is_orange, result))
+    return result

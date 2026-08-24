@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        # If no woman is found, query the image directly
+        return image_patch.simple_query("What drink is to the left of the woman?")
+    woman_patch = woman_patches[0]
+
+    # Collect possible drink-related objects
+    candidate_classes = [
+        "drink", "bottle", "cup", "glass", "can", "mug",
+        "wine glass", "beer bottle", "coffee cup", "teacup", "soda can"
+    ]
+    drink_patches = []
+    for cls in candidate_classes:
+        drink_patches.extend(image_patch.find(cls))
+
+    if len(drink_patches) == 0:
+        return image_patch.simple_query("What drink is to the left of the woman?")
+
+    # Filter to those left of the woman
+    left_of_woman = [p for p in drink_patches if p.horizontal_center < woman_patch.horizontal_center]
+    if len(left_of_woman) == 0:
+        return image_patch.simple_query("What drink is to the left of the woman?")
+
+    # Choose the one closest to the woman (rightmost among those left of her)
+    chosen = max(left_of_woman, key=lambda p: p.horizontal_center)
+
+    # Ask what drink it is
+    return chosen.simple_query("What drink is this?")

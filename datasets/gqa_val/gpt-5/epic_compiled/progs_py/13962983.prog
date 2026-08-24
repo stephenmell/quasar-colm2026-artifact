@@ -1,0 +1,21 @@
+# Are the shoes brown or white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shoe_patches = image_patch.find("shoe")
+    if len(shoe_patches) == 0:
+        result = image_patch.simple_query("Are the shoes brown or white?")
+    else:
+        brown_count = 0
+        white_count = 0
+        for shoe_patch in shoe_patches:
+            color = shoe_patch.best_text_match(("brown", "white"))
+            if color == "brown":
+                brown_count = brown_count + 1
+            else:
+                if color == "white":
+                    white_count = white_count + 1
+        if brown_count >= white_count:
+            result = "brown"
+        else:
+            result = "white"
+    return result

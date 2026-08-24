@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(image_patch, man_patches, result):
+        result = image_patch.simple_query('Does the man wear a coat?')
+        return (image_patch, man_patches, result)
+
+    def _else(image_patch, man_patches, result):
+        result = 'no'
+
+        def _for(man_patch, image_patch, man_patches, result):
+
+            def _if(image_patch, man_patches, result):
+                result = 'yes'
+                return (image_patch, man_patches, result)
+            image_patch, man_patches, result = if_stmt(_if, None, man_patch.simple_query('Is the man wearing a coat?') == 'yes', (image_patch, man_patches, result))
+            return (image_patch, man_patches, result)
+        image_patch, man_patches, result = for_stmt(_for, man_patches, (image_patch, man_patches, result))
+        return (image_patch, man_patches, result)
+    image_patch, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (image_patch, man_patches, result))
+    return result

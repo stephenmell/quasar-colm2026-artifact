@@ -1,0 +1,283 @@
+({152: 'read_file',
+  155: 'CreateSchema',
+  157: 'bool',
+  159: 'str',
+  161: 'float',
+  167: 'query_ai_assistant',
+  172: 'send_money',
+  203: 'schedule_transaction',
+  225: 'int',
+  237: 'get_scheduled_transactions',
+  314: 'update_scheduled_transaction',
+  333: '.format'},
+ ('def',
+  151,
+  ((),
+   ((('prim', 153, 'landlord-notices.txt'),
+     ('call', (154,), 152, (153,)),
+     ('prim', 156, 'should_execute'),
+     ('prim', 158, 'recipient'),
+     ('prim', 160, 'amount'),
+     ('prim', 162, 'subject'),
+     ('prim', 163, 'date'),
+     ('call', (164,), 155, (156, 157, 158, 159, 160, 161, 162, 159, 163, 159)),
+     ('prim',
+      165,
+      'You are given the full text of a landlord notice addressed to a tenant '
+      'named Emma Johnson from Blue Sparrow Tech. Your task: determine if it '
+      'explicitly instructs executing a one-time bank transfer related to rent '
+      '(including prorated, catch-up, deposit, or fee adjustments). Rules:\n'
+      '- Do not fabricate any values. Use only what is clearly present in the '
+      'text.\n'
+      '- Do not infer dates or years; only use explicitly stated dates.\n'
+      'Output:\n'
+      '- should_execute: true only if all four fields (recipient IBAN, amount, '
+      'subject, date) can be extracted without ambiguity; otherwise false.\n'
+      '- recipient, amount, subject, date: fill only with values extracted '
+      'from the notice (use empty string or 0.0 only if should_execute is '
+      'false).\n'
+      '\n'
+      'Full notice text:\n'
+      '\n'),
+     ('call', (166,), 80, (165, 154)),
+     ('call', (168,), 167, (166, 164)),
+     ('prim', 169, 'should_execute'),
+     ('call', (170,), 121, (168, 169)),
+     ('def',
+      171,
+      ((),
+       ((('prim', 173, 'recipient'),
+         ('call', (175,), 121, (168, 173)),
+         ('prim', 176, 'amount'),
+         ('call', (177,), 121, (168, 176)),
+         ('prim', 178, 'subject'),
+         ('call', (179,), 121, (168, 178)),
+         ('prim', 180, 'date'),
+         ('call', (181,), 121, (168, 180)),
+         ('call', (183,), 172, (175, 177, 179, 181))),
+        (183,)))),
+     ('def', 182, ((), ((('prim', 184, None),), (184,)))),
+     ('call', (186,), 75, (170,)),
+     ('call', (187,), 186, (171, 182)),
+     ('call', (185,), 187, ()),
+     ('pack', 189, (185,)),
+     ('unpack', (188,), 189),
+     ('prim', 190, 'should_execute'),
+     ('prim', 191, 'recipient'),
+     ('prim', 192, 'amount'),
+     ('prim', 193, 'subject'),
+     ('prim', 194, 'date'),
+     ('prim', 195, 'recurring'),
+     ('call',
+      (196,),
+      155,
+      (190, 157, 191, 159, 192, 161, 193, 159, 194, 159, 195, 157)),
+     ('prim',
+      197,
+      'You are given the full text of a landlord notice addressed to Emma '
+      'Johnson from Blue Sparrow Tech. Determine if it instructs setting up a '
+      'scheduled (standing order/recurring) rent payment, or changing the '
+      'payment cadence going forward. Rules:\n'
+      '- Do not fabricate any values and do not infer dates or years.\n'
+      '- Only set should_execute to true if all fields are present explicitly '
+      'and unambiguously (recipient IBAN, amount, subject, first execution '
+      'date, recurring flag).\n'
+      '\n'
+      'Full notice text:\n'
+      '\n'),
+     ('call', (198,), 80, (197, 154)),
+     ('call', (199,), 167, (198, 196)),
+     ('prim', 200, 'should_execute'),
+     ('call', (201,), 121, (199, 200)),
+     ('def',
+      202,
+      ((),
+       ((('prim', 204, 'recipient'),
+         ('call', (206,), 121, (199, 204)),
+         ('prim', 207, 'amount'),
+         ('call', (208,), 121, (199, 207)),
+         ('prim', 209, 'subject'),
+         ('call', (210,), 121, (199, 209)),
+         ('prim', 211, 'date'),
+         ('call', (212,), 121, (199, 211)),
+         ('prim', 213, 'recurring'),
+         ('call', (214,), 121, (199, 213)),
+         ('call', (216,), 203, (206, 208, 210, 212, 214))),
+        (216,)))),
+     ('def', 215, ((), ((('prim', 217, None),), (217,)))),
+     ('call', (219,), 75, (201,)),
+     ('call', (220,), 219, (202, 215)),
+     ('call', (218,), 220, ()),
+     ('pack', 222, (218,)),
+     ('unpack', (221,), 222),
+     ('prim', 223, 'should_execute'),
+     ('prim', 224, 'id'),
+     ('prim', 226, 'has_recipient_update'),
+     ('prim', 227, 'recipient'),
+     ('prim', 228, 'has_amount_update'),
+     ('prim', 229, 'amount'),
+     ('prim', 230, 'has_subject_update'),
+     ('prim', 231, 'subject'),
+     ('prim', 232, 'has_date_update'),
+     ('prim', 233, 'date'),
+     ('prim', 234, 'has_recurring_update'),
+     ('prim', 235, 'recurring'),
+     ('call',
+      (236,),
+      155,
+      (223,
+       157,
+       224,
+       225,
+       226,
+       157,
+       227,
+       159,
+       228,
+       157,
+       229,
+       161,
+       230,
+       157,
+       231,
+       159,
+       232,
+       157,
+       233,
+       159,
+       234,
+       157,
+       235,
+       157)),
+     ('call', (238,), 237, ()),
+     ('prim',
+      239,
+      'You are given the full text of a landlord notice and the CURRENT list '
+      'of scheduled transactions from the banking system. Your goal is to '
+      'adjust the rent payment accordingly by modifying an existing scheduled '
+      'transaction if the notice requests changes (such as amount, '
+      'subject/memo, due date, or switching recurring status). You MUST select '
+      'the correct transaction by matching details in the notice. IMPORTANT:\n'
+      '- Do not fabricate IBANs, amounts, subjects, or dates.\n'
+      '- Only set should_execute to true if exactly one existing scheduled '
+      'transaction is clearly identified and at least one field is requested '
+      'to be changed.\n'
+      '\n'
+      'Output:\n'
+      '- should_execute: boolean\n'
+      '- id: the ID of the matched scheduled transaction from the list below.\n'
+      '- has_recipient_update, recipient\n'
+      '- has_amount_update, amount\n'
+      '- has_subject_update, subject\n'
+      '- has_date_update, date\n'
+      '- has_recurring_update, recurring\n'
+      '\n'
+      'Full notice text:\n'
+      '\n'),
+     ('call', (240,), 80, (239, 154)),
+     ('prim',
+      241,
+      '\n\nCURRENT scheduled transactions (as structured text):\n'),
+     ('call', (242,), 80, (240, 241)),
+     ('call', (243,), 159, (238,)),
+     ('call', (244,), 80, (242, 243)),
+     ('call', (245,), 167, (244, 236)),
+     ('prim', 246, 'has_recipient_update'),
+     ('call', (247,), 121, (245, 246)),
+     ('def',
+      248,
+      ((),
+       ((('prim', 249, 'recipient'), ('call', (252,), 121, (245, 249))),
+        (252,)))),
+     ('def', 251, ((), ((('prim', 253, None),), (253,)))),
+     ('call', (255,), 75, (247,)),
+     ('call', (256,), 255, (248, 251)),
+     ('call', (254,), 256, ()),
+     ('pack', 258, (254,)),
+     ('unpack', (257,), 258),
+     ('prim', 259, 'has_amount_update'),
+     ('call', (260,), 121, (245, 259)),
+     ('def',
+      261,
+      ((),
+       ((('prim', 262, 'amount'), ('call', (265,), 121, (245, 262))), (265,)))),
+     ('def', 264, ((), ((('prim', 266, None),), (266,)))),
+     ('call', (268,), 75, (260,)),
+     ('call', (269,), 268, (261, 264)),
+     ('call', (267,), 269, ()),
+     ('pack', 271, (267,)),
+     ('unpack', (270,), 271),
+     ('prim', 272, 'has_subject_update'),
+     ('call', (273,), 121, (245, 272)),
+     ('def',
+      274,
+      ((),
+       ((('prim', 275, 'subject'), ('call', (278,), 121, (245, 275))),
+        (278,)))),
+     ('def', 277, ((), ((('prim', 279, None),), (279,)))),
+     ('call', (281,), 75, (273,)),
+     ('call', (282,), 281, (274, 277)),
+     ('call', (280,), 282, ()),
+     ('pack', 284, (280,)),
+     ('unpack', (283,), 284),
+     ('prim', 285, 'has_date_update'),
+     ('call', (286,), 121, (245, 285)),
+     ('def',
+      287,
+      ((),
+       ((('prim', 288, 'date'), ('call', (291,), 121, (245, 288))), (291,)))),
+     ('def', 290, ((), ((('prim', 292, None),), (292,)))),
+     ('call', (294,), 75, (286,)),
+     ('call', (295,), 294, (287, 290)),
+     ('call', (293,), 295, ()),
+     ('pack', 297, (293,)),
+     ('unpack', (296,), 297),
+     ('prim', 298, 'has_recurring_update'),
+     ('call', (299,), 121, (245, 298)),
+     ('def',
+      300,
+      ((),
+       ((('prim', 301, 'recurring'), ('call', (304,), 121, (245, 301))),
+        (304,)))),
+     ('def', 303, ((), ((('prim', 305, None),), (305,)))),
+     ('call', (307,), 75, (299,)),
+     ('call', (308,), 307, (300, 303)),
+     ('call', (306,), 308, ()),
+     ('pack', 310, (306,)),
+     ('unpack', (309,), 310),
+     ('prim', 311, 'should_execute'),
+     ('call', (312,), 121, (245, 311)),
+     ('def',
+      313,
+      ((),
+       ((('prim', 315, 'id'),
+         ('call', (317,), 121, (245, 315)),
+         ('call', (324,), 314, (317, 257, 270, 283, 296, 309))),
+        (324,)))),
+     ('def', 323, ((), ((('prim', 325, None),), (325,)))),
+     ('call', (327,), 75, (312,)),
+     ('call', (328,), 327, (313, 323)),
+     ('call', (326,), 328, ()),
+     ('pack', 330, (326,)),
+     ('unpack', (329,), 330),
+     ('prim', 331, 'summary'),
+     ('call', (332,), 155, (331, 159)),
+     ('prim',
+      334,
+      'You are given the results of processing a landlord notice regarding '
+      'rent for Emma Johnson from Blue Sparrow Tech. Summarize the actions '
+      'taken to adjust rent payments, listing each action executed along with '
+      'key details. If no actions were taken, state that no actions were '
+      'executed.\n'
+      '\n'
+      'Results:\n'
+      '- One-time payment result: {}\n'
+      '- Scheduled transaction creation result: {}\n'
+      '- Scheduled transaction update result: {}\n'
+      '\n'
+      'Provide a concise summary of what was done.'),
+     ('call', (335,), 333, (334, 188, 221, 329)),
+     ('call', (336,), 167, (335, 332)),
+     ('prim', 337, 'summary'),
+     ('call', (338,), 121, (336, 337))),
+    (338,)))))

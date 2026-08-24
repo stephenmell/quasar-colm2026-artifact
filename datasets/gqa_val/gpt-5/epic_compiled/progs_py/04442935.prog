@@ -1,0 +1,39 @@
+# Is the refrigerator to the right or to the left of the drawer that looks white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    refrigerator_patches = image_patch.find("refrigerator")
+    drawer_patches = image_patch.find("drawer")
+
+    white_drawer_patches = ()
+    i = 0
+    while i < len(drawer_patches):
+        current_drawer = drawer_patches[i]
+        if current_drawer.verify_property("drawer", "white"):
+            white_drawer_patches = white_drawer_patches + (current_drawer,)
+        i = i + 1
+
+    if len(refrigerator_patches) == 0 or len(white_drawer_patches) == 0:
+        result = image_patch.simple_query("Is the refrigerator to the right or to the left of the drawer that looks white?")
+    else:
+        min_distance = None
+        best_side = None
+        r = 0
+        while r < len(refrigerator_patches):
+            refrigerator_patch = refrigerator_patches[r]
+            d = 0
+            while d < len(white_drawer_patches):
+                drawer_patch = white_drawer_patches[d]
+                distance = abs(refrigerator_patch.horizontal_center - drawer_patch.horizontal_center)
+                if (min_distance is None) or (distance < min_distance):
+                    min_distance = distance
+                    if refrigerator_patch.horizontal_center > drawer_patch.horizontal_center:
+                        best_side = "right"
+                    else:
+                        best_side = "left"
+                d = d + 1
+            r = r + 1
+        if best_side:
+            result = best_side
+        else:
+            result = image_patch.simple_query("Is the refrigerator to the right or to the left of the drawer that looks white?")
+    return result

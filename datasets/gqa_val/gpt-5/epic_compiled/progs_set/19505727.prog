@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_wearing_shirt = None
+    man_patches = None
+    racket_patches = None
+    result = None
+    right_area_patch = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    racket_patches = image_patch.find('tennis racket')
+
+    def _if(image_patch, racket_patches, result):
+        racket_patches = image_patch.find('racket')
+        return (image_patch, racket_patches, result)
+    image_patch, racket_patches, result = if_stmt(_if, None, len(racket_patches) == 0, (image_patch, racket_patches, result))
+
+    def _if(image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch):
+        result = image_patch.simple_query('Is the man to the right of the tennis racket wearing a shirt?')
+        return (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch)
+
+    def _else(image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch):
+
+        def _for(racket_patch, image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch):
+            right_area_patch = image_patch.crop(racket_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            man_patches = right_area_patch.find('man')
+
+            def _if(image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch):
+
+                def _for(man_patch, image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch):
+                    is_wearing_shirt = man_patch.simple_query('Is the man wearing a shirt?') == 'yes'
+
+                    def _if(image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch):
+                        result = 'yes'
+                        return (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch)
+                    image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch = if_stmt(_if, None, is_wearing_shirt, (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch))
+                    return (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch)
+                image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch = for_stmt(_for, man_patches, (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch))
+                return (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch)
+            image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch = if_stmt(_if, None, len(man_patches) > 0, (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch))
+            return (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch)
+        image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch = for_stmt(_for, racket_patches, (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch))
+        return (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch)
+    image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch = if_stmt(_if, _else, len(racket_patches) == 0, (image_patch, is_wearing_shirt, man_patches, racket_patches, result, right_area_patch))
+    return result

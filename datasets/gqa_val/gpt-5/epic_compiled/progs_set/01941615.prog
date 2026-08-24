@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    bus_patches = None
+    image_patch = None
+    result = None
+    rightmost_bus = None
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find('bus')
+
+    def _if(bus_patches, image_patch, result, rightmost_bus):
+        result = image_patch.simple_query('How does the bus to the right of the other bus look, purple or white?')
+        return (bus_patches, image_patch, result, rightmost_bus)
+
+    def _else(bus_patches, image_patch, result, rightmost_bus):
+        rightmost_bus = bus_patches[0]
+
+        def _for(current_bus, bus_patches, image_patch, rightmost_bus):
+
+            def _if(bus_patches, image_patch, rightmost_bus):
+                rightmost_bus = current_bus
+                return (bus_patches, image_patch, rightmost_bus)
+            bus_patches, image_patch, rightmost_bus = if_stmt(_if, None, current_bus.horizontal_center > rightmost_bus.horizontal_center, (bus_patches, image_patch, rightmost_bus))
+            return (bus_patches, image_patch, rightmost_bus)
+        bus_patches, image_patch, rightmost_bus = for_stmt(_for, bus_patches, (bus_patches, image_patch, rightmost_bus))
+        result = rightmost_bus.best_text_match(('purple', 'white'))
+        return (bus_patches, image_patch, result, rightmost_bus)
+    bus_patches, image_patch, result, rightmost_bus = if_stmt(_if, _else, len(bus_patches) < 2, (bus_patches, image_patch, result, rightmost_bus))
+    return result

@@ -1,0 +1,2 @@
+class IllegalMutationException(Exception):
+    pass

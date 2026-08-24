@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, query the image directly (relation present)
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Is there a bag to the left of the person that is wearing a jacket?")
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return "no"
+    # Check each person to see if they are wearing a jacket, then look for any bag to their left
+    for person_patch in person_patches:
+        is_wearing_jacket = (person_patch.simple_query("Is the person wearing a jacket?") == "yes")
+        if not is_wearing_jacket:
+            continue
+        for bag_patch in bag_patches:
+            if bag_patch.horizontal_center < person_patch.horizontal_center:
+                return "yes"
+    return "no"

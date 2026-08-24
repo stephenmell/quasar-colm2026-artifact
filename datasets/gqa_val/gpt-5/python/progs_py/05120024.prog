@@ -1,0 +1,39 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find people (use "person" as fallback)
+    people_patches = image_patch.find("people")
+    if len(people_patches) == 0:
+        people_patches = image_patch.find("person")
+
+    # Find men (use "men" as fallback)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        man_patches = image_patch.find("men")
+
+    # If required objects aren't detected, ask directly
+    if len(people_patches) == 0 or len(man_patches) == 0:
+        return image_patch.simple_query("Are there guys to the right of the man who is to the right of the people?")
+
+    # Determine a reference x-position for the people (rightmost center among people patches)
+    people_rightmost_x = max(p.horizontal_center for p in people_patches)
+
+    # Find the man who is to the right of the people
+    men_right_of_people = [m for m in man_patches if m.horizontal_center > people_rightmost_x]
+    if len(men_right_of_people) == 0:
+        return "no"
+
+    # Choose the rightmost such man as the anchor
+    anchor_man = max(men_right_of_people, key=lambda m: m.horizontal_center)
+
+    # Check if there are other men ("guys") to the right of the anchor man
+    guys_to_right = [m for m in man_patches if m.horizontal_center > anchor_man.horizontal_center]
+    if len(guys_to_right) > 0:
+        return "yes"
+
+    # Fallback: try explicit "guy" label if available
+    guy_patches = image_patch.find("guy")
+    if any(g.horizontal_center > anchor_man.horizontal_center for g in guy_patches):
+        return "yes"
+
+    return "no"

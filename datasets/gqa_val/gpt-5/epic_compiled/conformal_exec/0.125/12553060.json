@@ -1,0 +1,12 @@
+{
+  "result": {
+    "_possibilities": [
+      null,
+      "Brown",
+      "Red",
+      "Other colors",
+      "Black"
+    ]
+  },
+  "time_ns": 15154847416
+}

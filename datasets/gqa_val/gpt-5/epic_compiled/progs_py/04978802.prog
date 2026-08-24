@@ -1,0 +1,19 @@
+# Does the keyboard to the left of the mouse have small size?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    keyboard_patches = image_patch.find("keyboard")
+    mouse_patches = image_patch.find("mouse")
+
+    if len(keyboard_patches) == 0 or len(mouse_patches) == 0:
+        result = image_patch.simple_query("Does the keyboard to the left of the mouse have small size?")
+    else:
+        result = "no"
+        for keyboard_patch in keyboard_patches:
+            is_left_of_any_mouse = False
+            for mouse_patch in mouse_patches:
+                if keyboard_patch.horizontal_center < mouse_patch.horizontal_center:
+                    is_left_of_any_mouse = True
+            if is_left_of_any_mouse:
+                if keyboard_patch.verify_property("keyboard", "small"):
+                    result = "yes"
+    return result

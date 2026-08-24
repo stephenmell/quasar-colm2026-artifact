@@ -1,0 +1,66 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find the rectangular plate
+    rectangular_plate_patch = None
+    rectangular_plate_patches = image_patch.find("rectangular plate")
+    if len(rectangular_plate_patches) > 0:
+        rectangular_plate_patch = rectangular_plate_patches[0]
+    else:
+        plate_patches_for_rect = image_patch.find("plate")
+        for plate_patch in plate_patches_for_rect:
+            if plate_patch.verify_property("plate", "rectangular"):
+                if rectangular_plate_patch is None:
+                    rectangular_plate_patch = plate_patch
+
+    rectangular_white = False
+    if rectangular_plate_patch is not None:
+        if rectangular_plate_patch.verify_property("plate", "white") or rectangular_plate_patch.verify_property("rectangular plate", "white"):
+            rectangular_white = True
+
+    # Find the coffee cup (fallbacks to cup/mug)
+    cup_patches = image_patch.find("coffee cup")
+    if len(cup_patches) == 0:
+        cup_patches = image_patch.find("cup")
+    if len(cup_patches) == 0:
+        cup_patches = image_patch.find("mug")
+
+    cup_patch = None
+    if len(cup_patches) > 0:
+        cup_patch = cup_patches[0]
+
+    # Find the plate to the right of the coffee cup (choose the nearest to the right)
+    selected_right_plate = None
+    if cup_patch is not None:
+        candidate_plates = image_patch.find("plate")
+        min_delta = None
+        for plate_patch in candidate_plates:
+            if plate_patch.horizontal_center > cup_patch.horizontal_center:
+                delta = plate_patch.horizontal_center - cup_patch.horizontal_center
+                if min_delta is None:
+                    min_delta = delta
+                    selected_right_plate = plate_patch
+                else:
+                    if delta < min_delta:
+                        min_delta = delta
+                        selected_right_plate = plate_patch
+
+    right_plate_white = False
+    if selected_right_plate is not None:
+        if selected_right_plate.verify_property("plate", "white"):
+            right_plate_white = True
+
+    if rectangular_white and right_plate_white:
+        result = "yes"
+    else:
+        need_fallback = False
+        if rectangular_plate_patch is None:
+            need_fallback = True
+        if cup_patch is None:
+            need_fallback = True
+        if selected_right_plate is None:
+            need_fallback = True
+        if need_fallback:
+            result = image_patch.simple_query("Do the rectangular plate and the plate to the right of the coffee cup both have white color?")
+    return result

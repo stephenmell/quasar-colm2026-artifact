@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find("curtain")
+    # Identify the curtain that is on the right (rightmost curtain)
+    if len(curtain_patches) == 0:
+        # If no curtain is found, query the image directly
+        return image_patch.simple_query("Is there a bed to the right of the curtain that is on the right?")
+    rightmost_curtain = max(curtain_patches, key=lambda p: p.horizontal_center)
+
+    bed_patches = image_patch.find("bed")
+    if len(bed_patches) == 0:
+        return "no"
+
+    for bed_patch in bed_patches:
+        if bed_patch.horizontal_center > rightmost_curtain.horizontal_center:
+            return "yes"
+    return "no"

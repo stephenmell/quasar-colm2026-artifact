@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no people are found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Are there locomotives to the left of the people that are waiting?")
+    # Filter to people that are waiting
+    waiting_people = []
+    for person_patch in person_patches:
+        if person_patch.simple_query("Is the person waiting?") == "yes":
+            waiting_people.append(person_patch)
+    # If we can't confirm any waiting people, ask directly
+    if len(waiting_people) == 0:
+        return image_patch.simple_query("Are there locomotives to the left of the people that are waiting?")
+    # Find locomotives (fallback to trains if none)
+    locomotive_patches = image_patch.find("locomotive")
+    if len(locomotive_patches) == 0:
+        locomotive_patches = image_patch.find("train")
+        if len(locomotive_patches) == 0:
+            return "no"
+    # Check if any locomotive is to the left of any waiting person
+    for person in waiting_people:
+        for loco in locomotive_patches:
+            if loco.horizontal_center < person.horizontal_center:
+                return "yes"
+    return "no"

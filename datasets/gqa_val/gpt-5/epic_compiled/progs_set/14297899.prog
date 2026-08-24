@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    remote_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    remote_patches = image_patch.find('remote control')
+
+    def _if(image_patch, remote_patches, result):
+        result = image_patch.simple_query('Are there any white remote controls?')
+        return (image_patch, remote_patches, result)
+
+    def _else(image_patch, remote_patches, result):
+        result = 'no'
+
+        def _for(remote_patch, image_patch, remote_patches, result):
+
+            def _if(image_patch, remote_patches, result):
+                result = 'yes'
+                return (image_patch, remote_patches, result)
+            image_patch, remote_patches, result = if_stmt(_if, None, remote_patch.verify_property('remote control', 'white'), (image_patch, remote_patches, result))
+            return (image_patch, remote_patches, result)
+        image_patch, remote_patches, result = for_stmt(_for, remote_patches, (image_patch, remote_patches, result))
+        return (image_patch, remote_patches, result)
+    image_patch, remote_patches, result = if_stmt(_if, _else, len(remote_patches) == 0, (image_patch, remote_patches, result))
+    return result

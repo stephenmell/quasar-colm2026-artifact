@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find("umbrella")
+    boat_patches = image_patch.find("boat")
+    # If we can't reliably detect either object, ask directly
+    if len(umbrella_patches) == 0 or len(boat_patches) == 0:
+        return image_patch.simple_query("Does the umbrella to the left of the boats look blue?")
+    # Compute the leftmost (minimum) horizontal center among the boats
+    min_boat_center = min(bp.horizontal_center for bp in boat_patches)
+    # Select umbrellas that are to the left of all boats
+    left_umbrellas = [up for up in umbrella_patches if up.horizontal_center < min_boat_center]
+    if len(left_umbrellas) == 0:
+        return "no"
+    # If any qualifying umbrella looks blue, answer yes
+    for up in left_umbrellas:
+        if up.verify_property("umbrella", "blue"):
+            return "yes"
+    return "no"

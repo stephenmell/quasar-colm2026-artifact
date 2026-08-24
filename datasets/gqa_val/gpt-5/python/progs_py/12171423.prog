@@ -1,0 +1,17 @@
+# Is there a soap to the left of the soda can that is to the left of the pot?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    soap_patches = image_patch.find("soap")
+    # Question assumes at least one soap patch
+    if len(soap_patches) == 0:
+        # If no soap is found, query the image directly
+        return image_patch.simple_query("Is there a soap to the left of the soda can that is to the left of the pot?")
+    soda_patches = image_patch.find("soda can")
+    pot_patches = image_patch.find("pot")
+    for pot_patch in pot_patches:
+        for soda_patch in soda_patches:
+            if soda_patch.horizontal_center < pot_patch.horizontal_center:
+                for soap_patch in soap_patches:
+                    if soap_patch.horizontal_center < soda_patch.horizontal_center:
+                        return "yes"
+    return "no"

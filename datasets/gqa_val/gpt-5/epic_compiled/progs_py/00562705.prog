@@ -1,0 +1,12 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    belt_patches = image_patch.find("belt")
+    if len(belt_patches) == 0:
+        result = image_patch.simple_query("Does the belt have brown color?")
+    else:
+        result = "no"
+        for belt_patch in belt_patches:
+            if belt_patch.verify_property("belt", "brown"):
+                result = "yes"
+    return result

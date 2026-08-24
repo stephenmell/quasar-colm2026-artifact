@@ -1,0 +1,37 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # Question assumes a specific man's glasses
+    if len(man_patches) == 0:
+        # If no man is found, ask directly
+        return image_patch.simple_query("Is there any beer to the left of the glasses the man is wearing?")
+    man_patch = man_patches[0]
+
+    # Find the glasses the man is wearing (use global coords to compare later)
+    glasses_patches = image_patch.find("glasses")
+    if len(glasses_patches) == 0:
+        # Fallback to sunglasses
+        glasses_patches = image_patch.find("sunglasses")
+
+    # Keep only glasses whose center lies within the man's bounds
+    glasses_on_man = []
+    for g in glasses_patches:
+        if (man_patch.left <= g.horizontal_center <= man_patch.right and
+            man_patch.lower <= g.vertical_center <= man_patch.upper):
+            glasses_on_man.append(g)
+
+    if len(glasses_on_man) == 0:
+        # If we can't localize the man's glasses, ask directly
+        return image_patch.simple_query("Is there any beer to the left of the glasses the man is wearing?")
+
+    # Use the average center of the detected glasses on the man
+    glasses_center_x = sum(g.horizontal_center for g in glasses_on_man) / len(glasses_on_man)
+
+    beer_patches = image_patch.find("beer")
+    if len(beer_patches) == 0:
+        return "no"
+
+    for beer_patch in beer_patches:
+        if beer_patch.horizontal_center < glasses_center_x:
+            return "yes"
+    return "no"

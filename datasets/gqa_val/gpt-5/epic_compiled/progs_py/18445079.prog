@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ball_types = (
+        "ball",
+        "tennis ball",
+        "soccer ball",
+        "basketball",
+        "football",
+        "baseball",
+        "volleyball",
+        "golf ball",
+        "beach ball",
+        "bowling ball",
+        "softball",
+        "rugby ball",
+        "handball"
+    )
+    any_ball = False
+    for ball_name in ball_types:
+        exists_ball = image_patch.exists(ball_name)
+        if exists_ball:
+            any_ball = True
+    result = bool_to_yesno(any_ball)
+    return result

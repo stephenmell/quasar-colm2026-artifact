@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find the orange cup directly
+    orange_cup_patches = image_patch.find("orange cup")
+    if len(orange_cup_patches) == 0:
+        # Fallback: find cups, then check which are orange
+        cup_patches = image_patch.find("cup")
+        if len(cup_patches) == 0:
+            # If no cups are found, ask directly
+            return image_patch.simple_query("Is the orange cup on the left?")
+        orange_cup_patches = [cp for cp in cup_patches if cp.verify_property("cup", "orange")]
+        if len(orange_cup_patches) == 0:
+            # If no orange cup is found among cups, ask directly
+            return image_patch.simple_query("Is the orange cup on the left?")
+    # Check if any orange cup is on the left half of the image
+    for oc in orange_cup_patches:
+        if oc.horizontal_center < image_patch.horizontal_center:
+            return "yes"
+    return "no"

@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    answer = None
+    image_patch = None
+    result = None
+    sandwich_patches = None
+    image_patch = ImagePatch(image)
+    sandwich_patches = image_patch.find('sandwich')
+    result = None
+
+    def _if(answer, image_patch, result, sandwich_patches):
+        result = image_patch.simple_query('Who is eating the sandwich?')
+        return (answer, image_patch, result, sandwich_patches)
+
+    def _else(answer, image_patch, result, sandwich_patches):
+
+        def _for(sandwich_patch, answer, image_patch, result, sandwich_patches):
+
+            def _if(answer, image_patch, result, sandwich_patches):
+                answer = sandwich_patch.simple_query('Who is eating the sandwich?')
+
+                def _if(answer, image_patch, result, sandwich_patches):
+                    result = answer
+                    return (answer, image_patch, result, sandwich_patches)
+                answer, image_patch, result, sandwich_patches = if_stmt(_if, None, answer, (answer, image_patch, result, sandwich_patches))
+                return (answer, image_patch, result, sandwich_patches)
+            answer, image_patch, result, sandwich_patches = if_stmt(_if, None, not_expr(result), (answer, image_patch, result, sandwich_patches))
+            return (answer, image_patch, result, sandwich_patches)
+        answer, image_patch, result, sandwich_patches = for_stmt(_for, sandwich_patches, (answer, image_patch, result, sandwich_patches))
+
+        def _if(answer, image_patch, result, sandwich_patches):
+            result = image_patch.simple_query('Who is eating the sandwich?')
+            return (answer, image_patch, result, sandwich_patches)
+        answer, image_patch, result, sandwich_patches = if_stmt(_if, None, not_expr(result), (answer, image_patch, result, sandwich_patches))
+        return (answer, image_patch, result, sandwich_patches)
+    answer, image_patch, result, sandwich_patches = if_stmt(_if, _else, len(sandwich_patches) == 0, (answer, image_patch, result, sandwich_patches))
+    return result

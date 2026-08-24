@@ -1,0 +1,40 @@
+# Where in this photo is the book of the shelf, in the bottom or in the top?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find("book")
+    result = None
+
+    if len(book_patches) == 0:
+        result = image_patch.simple_query("Where in this photo is the book on the shelf, in the bottom or in the top?")
+    else:
+        shelf_patches = image_patch.find("shelf")
+        chosen_patch = book_patches[0]
+
+        if len(shelf_patches) == 0:
+            pass
+        else:
+            shelf_patch = shelf_patches[0]
+            best_overlap = -1
+            for book_patch in book_patches:
+                left_max = book_patch.left if book_patch.left > shelf_patch.left else shelf_patch.left
+                right_min = book_patch.right if book_patch.right < shelf_patch.right else shelf_patch.right
+                width_overlap = right_min - left_max
+                if width_overlap < 0:
+                    width_overlap = 0
+
+                lower_max = book_patch.lower if book_patch.lower > shelf_patch.lower else shelf_patch.lower
+                upper_min = book_patch.upper if book_patch.upper < shelf_patch.upper else shelf_patch.upper
+                height_overlap = upper_min - lower_max
+                if height_overlap < 0:
+                    height_overlap = 0
+
+                overlap_area = width_overlap * height_overlap
+                if overlap_area > best_overlap:
+                    best_overlap = overlap_area
+                    chosen_patch = book_patch
+
+        if chosen_patch.vertical_center < image_patch.vertical_center:
+            result = "bottom"
+        else:
+            result = "top"
+    return result

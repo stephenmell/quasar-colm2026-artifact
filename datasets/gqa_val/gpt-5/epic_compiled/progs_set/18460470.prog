@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_black = None
+    result = None
+    tray_patches = None
+    image_patch = ImagePatch(image)
+    tray_patches = image_patch.find('tray')
+
+    def _if(image_patch, tray_patches):
+        tray_patches = image_patch.find('trays')
+        return (image_patch, tray_patches)
+    image_patch, tray_patches = if_stmt(_if, None, len(tray_patches) == 0, (image_patch, tray_patches))
+
+    def _if(image_patch, is_black, result, tray_patches):
+        result = image_patch.simple_query('Do the trays look black?')
+        return (image_patch, is_black, result, tray_patches)
+
+    def _else(image_patch, is_black, result, tray_patches):
+        is_black = False
+
+        def _for(tray_patch, image_patch, is_black, tray_patches):
+
+            def _if(image_patch, is_black, tray_patches):
+                is_black = True
+                return (image_patch, is_black, tray_patches)
+            image_patch, is_black, tray_patches = if_stmt(_if, None, tray_patch.verify_property('tray', 'black'), (image_patch, is_black, tray_patches))
+            return (image_patch, is_black, tray_patches)
+        image_patch, is_black, tray_patches = for_stmt(_for, tray_patches, (image_patch, is_black, tray_patches))
+        result = bool_to_yesno(is_black)
+        return (image_patch, is_black, result, tray_patches)
+    image_patch, is_black, result, tray_patches = if_stmt(_if, _else, len(tray_patches) == 0, (image_patch, is_black, result, tray_patches))
+    return result

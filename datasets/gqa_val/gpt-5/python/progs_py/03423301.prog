@@ -1,0 +1,7 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    snow_patches = image_patch.find("snow")
+    if len(snow_patches) == 0:
+        return image_patch.simple_query("Does that snow look white?")
+    is_white = any(p.verify_property("snow", "white") for p in snow_patches)
+    return bool_to_yesno(is_white)

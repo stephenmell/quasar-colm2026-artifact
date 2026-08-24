@@ -1,0 +1,58 @@
+def execute_command(image) -> str:
+    girl_patches = None
+    image_patch = None
+    is_holding_corn = None
+    kid_patches = None
+    question = None
+    result = None
+    target_kid_patch = None
+    image_patch = ImagePatch(image)
+    question = 'Are there any girls to the right of the kid that is holding the corn?'
+    result = 'no'
+    kid_patches = image_patch.find('kid')
+
+    def _if(girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+        result = image_patch.simple_query(question)
+        return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+
+    def _else(girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+        target_kid_patch = None
+
+        def _for(kid_patch, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+            is_holding_corn = kid_patch.simple_query('Is the kid holding the corn?') == 'yes'
+
+            def _if(image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+                target_kid_patch = kid_patch
+                return (image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+            image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch = if_stmt(_if, None, is_holding_corn, (image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch))
+            return (image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+        image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch = for_stmt(_for, kid_patches, (image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch))
+
+        def _if(girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+            result = image_patch.simple_query(question)
+            return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+
+        def _else(girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+            girl_patches = image_patch.find('girl')
+
+            def _if(girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+                result = 'no'
+                return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+
+            def _else(girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+
+                def _for(girl_patch, girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+
+                    def _if(girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch):
+                        result = 'yes'
+                        return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+                    girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch = if_stmt(_if, None, girl_patch.horizontal_center > target_kid_patch.horizontal_center, (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch))
+                    return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+                girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch = for_stmt(_for, girl_patches, (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch))
+                return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+            girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch = if_stmt(_if, _else, len(girl_patches) == 0, (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch))
+            return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+        girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch = if_stmt(_if, _else, target_kid_patch is None, (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch))
+        return (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch)
+    girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch = if_stmt(_if, _else, len(kid_patches) == 0, (girl_patches, image_patch, is_holding_corn, kid_patches, question, result, target_kid_patch))
+    return result

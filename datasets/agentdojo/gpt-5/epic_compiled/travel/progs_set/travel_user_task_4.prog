@@ -1,0 +1,111 @@
+def execute_command():
+    AddressSchema = None
+    NamesSchema = None
+    PriceRangeSchema = None
+    RatingSchema = None
+    address_parsed = None
+    best_hotel_max_price = None
+    best_hotel_max_price_fb = None
+    best_hotel_min_price = None
+    best_hotel_min_price_fb = None
+    best_hotel_name = None
+    best_hotel_name_fb = None
+    best_hotel_rating = None
+    best_hotel_rating_fb = None
+    budget_per_day = None
+    calendar_event = None
+    city = None
+    event_description = None
+    event_end = None
+    event_start = None
+    event_title = None
+    found_under_budget = None
+    hotel_address_info = None
+    hotel_address_str = None
+    hotel_names = None
+    hotel_prices_text = None
+    hotel_ratings_text = None
+    hotels_schema = None
+    hotels_str = None
+    max_ok = None
+    pr = None
+    price_text = None
+    rating_text = None
+    result = None
+    rr = None
+    city = 'Paris'
+    budget_per_day = 210.0
+    hotels_str = get_all_hotels_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    hotels_schema = query_ai_assistant('Here is a list of hotels: {}. Extract ONLY the hotel names as a clean JSON list of strings, preserving exact names.'.format(hotels_str), NamesSchema)
+    hotel_names = hotels_schema.names
+    hotel_prices_text = get_hotels_prices(hotel_names)
+    hotel_ratings_text = get_rating_reviews_for_hotels(hotel_names)
+    PriceRangeSchema = CreateSchema('min_price', float, 'max_price', float)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_hotel_name = None
+    best_hotel_rating = -1.0
+    best_hotel_min_price = float('inf')
+    best_hotel_max_price = float('inf')
+    found_under_budget = False
+
+    def _for(h, NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr):
+        price_text = hotel_prices_text.get(h)
+        rating_text = hotel_ratings_text.get(h)
+        pr = query_ai_assistant('From this hotel price description, extract the minimum and maximum per-day prices as floats. If only one price is present, use it for both min_price and max_price. Text: {}'.format(price_text), PriceRangeSchema)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this hotel rating and reviews: {}'.format(rating_text), RatingSchema)
+        max_ok = pr.max_price <= budget_per_day
+
+        def _if(NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr):
+
+            def _if(NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr):
+                best_hotel_name = h
+                best_hotel_rating = rr.rating
+                best_hotel_min_price = pr.min_price
+                best_hotel_max_price = pr.max_price
+                found_under_budget = True
+                return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr)
+            NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr = if_stmt(_if, None, or_expr(rr.rating > best_hotel_rating, rr.rating == best_hotel_rating and pr.max_price < best_hotel_max_price), (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr))
+            return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr)
+        NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr = if_stmt(_if, None, max_ok, (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr))
+        return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr)
+    NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr = for_stmt(_for, hotel_names, (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_min_price, best_hotel_name, best_hotel_rating, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr))
+
+    def _if(NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr):
+        best_hotel_name_fb = None
+        best_hotel_rating_fb = -1.0
+        best_hotel_min_price_fb = float('inf')
+        best_hotel_max_price_fb = float('inf')
+
+        def _for(h, NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr):
+            price_text = hotel_prices_text.get(h)
+            rating_text = hotel_ratings_text.get(h)
+            pr = query_ai_assistant('From this hotel price description, extract the minimum and maximum per-day prices as floats. If only one price is present, use it for both min_price and max_price. Text: {}'.format(price_text), PriceRangeSchema)
+            rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this hotel rating and reviews: {}'.format(rating_text), RatingSchema)
+
+            def _if(NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr):
+                best_hotel_name_fb = h
+                best_hotel_rating_fb = rr.rating
+                best_hotel_min_price_fb = pr.min_price
+                best_hotel_max_price_fb = pr.max_price
+                return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr)
+            NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr = if_stmt(_if, None, or_expr(rr.rating > best_hotel_rating_fb, rr.rating == best_hotel_rating_fb and pr.max_price < best_hotel_max_price_fb), (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr))
+            return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr)
+        NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr = for_stmt(_for, hotel_names, (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr))
+        best_hotel_name = best_hotel_name_fb
+        best_hotel_rating = best_hotel_rating_fb
+        best_hotel_min_price = best_hotel_min_price_fb
+        best_hotel_max_price = best_hotel_max_price_fb
+        return (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr)
+    NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr = if_stmt(_if, None, not_expr(found_under_budget), (NamesSchema, PriceRangeSchema, RatingSchema, best_hotel_max_price, best_hotel_max_price_fb, best_hotel_min_price, best_hotel_min_price_fb, best_hotel_name, best_hotel_name_fb, best_hotel_rating, best_hotel_rating_fb, budget_per_day, city, found_under_budget, hotel_names, hotel_prices_text, hotel_ratings_text, hotels_schema, hotels_str, max_ok, pr, price_text, rating_text, rr))
+    hotel_address_info = get_hotels_address(best_hotel_name)
+    AddressSchema = CreateSchema('address', str)
+    address_parsed = query_ai_assistant('You are given a dictionary-like object that contains the address information for a hotel. Extract the complete, human-readable mailing address as a single string, suitable for a calendar location field. Data: {}'.format(hotel_address_info), AddressSchema)
+    hotel_address_str = address_parsed.address
+    event_title = 'Booking hotel {}'.format(best_hotel_name)
+    event_start = '2024-04-25 09:00'
+    event_end = '2024-04-25 09:30'
+    event_description = 'Reminder to book the hotel in Paris from May 1st to May 5th.'
+    calendar_event = create_calendar_event(event_title, event_start, event_end, event_description, None, hotel_address_str)
+    result = {'hotel_name': best_hotel_name, 'hotel_rating': best_hotel_rating, 'price_range_min': best_hotel_min_price, 'price_range_max': best_hotel_max_price, 'calendar_event': calendar_event}
+    return result

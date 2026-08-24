@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    cd_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    cd_patches = image_patch.find('CD')
+
+    def _if(cd_patches, image_patch, result):
+        result = image_patch.simple_query('Is the CD in the top part of the picture?')
+        return (cd_patches, image_patch, result)
+
+    def _else(cd_patches, image_patch, result):
+        result = 'no'
+
+        def _for(cd_patch, cd_patches, image_patch, result):
+
+            def _if(cd_patches, image_patch, result):
+                result = 'yes'
+                return (cd_patches, image_patch, result)
+            cd_patches, image_patch, result = if_stmt(_if, None, cd_patch.vertical_center >= image_patch.vertical_center, (cd_patches, image_patch, result))
+            return (cd_patches, image_patch, result)
+        cd_patches, image_patch, result = for_stmt(_for, cd_patches, (cd_patches, image_patch, result))
+        return (cd_patches, image_patch, result)
+    cd_patches, image_patch, result = if_stmt(_if, _else, len(cd_patches) == 0, (cd_patches, image_patch, result))
+    return result

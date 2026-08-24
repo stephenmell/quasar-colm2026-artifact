@@ -1,0 +1,12 @@
+# Does the hair look blond?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    hair_patches = image_patch.find("hair")
+    # If no hair is found, query the image directly
+    if len(hair_patches) == 0:
+        return image_patch.simple_query("Does the hair look blond?")
+    # If any detected hair patch looks blond, answer yes
+    for hair_patch in hair_patches:
+        if hair_patch.verify_property("hair", "blond") or hair_patch.verify_property("hair", "blonde"):
+            return "yes"
+    return "no"

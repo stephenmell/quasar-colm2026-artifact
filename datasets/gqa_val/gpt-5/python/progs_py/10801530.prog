@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Are there any rackets to the left of the person that sits on the seat?")
+    racket_patches = image_patch.find("racket")
+    if len(racket_patches) == 0:
+        return "no"
+    # Check for any person who is sitting on the seat
+    for person_patch in person_patches:
+        is_sitting_on_seat = (person_patch.simple_query("Is the person sitting on the seat?") == "yes")
+        if not is_sitting_on_seat:
+            continue
+        # If so, check if any racket is to the left of that person
+        for racket_patch in racket_patches:
+            if racket_patch.horizontal_center < person_patch.horizontal_center:
+                return "yes"
+    return "no"

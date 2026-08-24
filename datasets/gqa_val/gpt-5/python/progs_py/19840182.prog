@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    desk_patches = image_patch.find("desk")
+    # If no desk is found, query the image directly
+    if len(desk_patches) == 0:
+        return image_patch.simple_query("Do you see black desks there?")
+    # Check if any found desk is black
+    for desk_patch in desk_patches:
+        if desk_patch.verify_property("desk", "black"):
+            return "yes"
+    return "no"

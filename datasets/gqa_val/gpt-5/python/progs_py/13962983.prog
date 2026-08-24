@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shoe_patches = image_patch.find("shoe")
+    # If no shoe is found, query the image directly
+    if len(shoe_patches) == 0:
+        return image_patch.simple_query("Are the shoes brown or white?")
+    options = ["brown", "white"]
+    # If multiple shoes, vote across patches
+    votes = {opt: 0 for opt in options}
+    for shoe_patch in shoe_patches:
+        pred = shoe_patch.best_text_match(options)
+        if pred in votes:
+            votes[pred] += 1
+    if votes["brown"] > votes["white"]:
+        return "brown"
+    if votes["white"] > votes["brown"]:
+        return "white"
+    # Tie-breaker: use the first shoe's best match
+    return shoe_patches[0].best_text_match(options)

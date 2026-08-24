@@ -1,0 +1,38 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    fence_patches = image_patch.find("fence")
+    if len(fence_patches) == 0:
+        result = image_patch.simple_query("What is the name of the animal to the right of the fence on the left side?")
+    else:
+        leftmost_fence = fence_patches[0]
+        for fence in fence_patches:
+            if fence.horizontal_center < leftmost_fence.horizontal_center:
+                leftmost_fence = fence
+
+        animal_patches = image_patch.find("animal")
+        selected_animal = None
+        selected_center = None
+        for animal in animal_patches:
+            if animal.horizontal_center > leftmost_fence.horizontal_center:
+                if selected_animal is None:
+                    selected_animal = animal
+                    selected_center = animal.horizontal_center
+                else:
+                    if animal.horizontal_center < selected_center:
+                        selected_animal = animal
+                        selected_center = animal.horizontal_center
+
+        if selected_animal is not None:
+            result = selected_animal.simple_query("What is the name of the animal?")
+        else:
+            if leftmost_fence.right < image_patch.right:
+                right_area_patch = image_patch.crop(leftmost_fence.right, image_patch.lower, image_patch.right, image_patch.upper)
+                result = right_area_patch.simple_query("What is the name of the animal?")
+            else:
+                result = image_patch.simple_query("What is the name of the animal to the right of the fence on the left side?")
+
+    if not result:
+        result = image_patch.simple_query("What is the name of the animal to the right of the fence on the left side?")
+    return result

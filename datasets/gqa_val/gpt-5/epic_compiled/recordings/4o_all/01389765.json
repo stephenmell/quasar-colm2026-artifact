@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2364527",
+          [
+            0,
+            0,
+            500,
+            500
+          ]
+        ],
+        "What is on the table?"
+      ],
+      "A plate of sandwiches and small desserts.",
+      1457501353
+    ]
+  ],
+  "best_text_match": []
+}

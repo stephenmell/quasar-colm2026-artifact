@@ -1,0 +1,16 @@
+# What color is that hair?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    hair_patches = image_patch.find("hair")
+
+    if len(hair_patches) == 0:
+        result = image_patch.simple_query("What color is that hair?")
+    else:
+        result = None
+        for hair_patch in hair_patches:
+            answer = hair_patch.simple_query("What color is the hair?")
+            if answer:
+                result = answer
+        if not result:
+            result = hair_patches[0].best_text_match(("black", "brown", "blond", "blonde", "gray", "grey", "red", "white", "pink", "blue", "green", "purple", "orange"))
+    return result

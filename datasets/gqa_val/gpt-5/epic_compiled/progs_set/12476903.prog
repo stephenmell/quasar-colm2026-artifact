@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    device_patches = None
+    image_patch = None
+    is_black = None
+    is_left = None
+    result = None
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find('device')
+
+    def _if(device_patches, image_patch, is_black, is_left, result):
+        result = image_patch.simple_query('Is the black device on the left of the photo?')
+        return (device_patches, image_patch, is_black, is_left, result)
+
+    def _else(device_patches, image_patch, is_black, is_left, result):
+        result = 'no'
+
+        def _for(device_patch, device_patches, image_patch, is_black, is_left, result):
+            is_black = device_patch.verify_property('device', 'black')
+            is_left = device_patch.horizontal_center < image_patch.horizontal_center
+
+            def _if(device_patches, image_patch, is_black, is_left, result):
+                result = 'yes'
+                return (device_patches, image_patch, is_black, is_left, result)
+            device_patches, image_patch, is_black, is_left, result = if_stmt(_if, None, and_expr(is_black, is_left), (device_patches, image_patch, is_black, is_left, result))
+            return (device_patches, image_patch, is_black, is_left, result)
+        device_patches, image_patch, is_black, is_left, result = for_stmt(_for, device_patches, (device_patches, image_patch, is_black, is_left, result))
+        return (device_patches, image_patch, is_black, is_left, result)
+    device_patches, image_patch, is_black, is_left, result = if_stmt(_if, _else, len(device_patches) == 0, (device_patches, image_patch, is_black, is_left, result))
+    return result

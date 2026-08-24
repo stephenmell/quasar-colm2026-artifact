@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find("train")
+    # If no train is found, ask directly
+    if len(train_patches) == 0:
+        return image_patch.simple_query("Is the large train to the right of the signal light that looks gray?")
+
+    # Filter for large trains
+    large_trains = [tp for tp in train_patches if tp.verify_property("train", "large")]
+    if len(large_trains) == 0:
+        return "no"
+
+    # Find signal lights and filter for gray ones
+    signal_patches = image_patch.find("signal light")
+    if len(signal_patches) == 0:
+        return "no"
+    gray_signals = [sp for sp in signal_patches if sp.verify_property("signal light", "gray")]
+    if len(gray_signals) == 0:
+        return "no"
+
+    # Check if any large train is to the right of any gray signal light
+    for train_patch in large_trains:
+        for signal_patch in gray_signals:
+            if train_patch.horizontal_center > signal_patch.horizontal_center:
+                return "yes"
+    return "no"

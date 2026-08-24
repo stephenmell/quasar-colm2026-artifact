@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    car_patches = None
+    gray_car_found = None
+    image_patch = None
+    result = None
+    tractor_patches = None
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find('car')
+
+    def _if(car_patches, gray_car_found, image_patch, result, tractor_patches):
+        result = image_patch.simple_query('Is there a tractor to the right of the gray car?')
+        return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+
+    def _else(car_patches, gray_car_found, image_patch, result, tractor_patches):
+        tractor_patches = image_patch.find('tractor')
+
+        def _if(car_patches, gray_car_found, image_patch, result, tractor_patches):
+            result = 'no'
+            return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+
+        def _else(car_patches, gray_car_found, image_patch, result, tractor_patches):
+            result = 'no'
+            gray_car_found = False
+
+            def _for(car_patch, car_patches, gray_car_found, image_patch, result, tractor_patches):
+
+                def _if(car_patches, gray_car_found, image_patch, result, tractor_patches):
+                    gray_car_found = True
+
+                    def _for(tractor_patch, car_patches, gray_car_found, image_patch, result, tractor_patches):
+
+                        def _if(car_patches, gray_car_found, image_patch, result, tractor_patches):
+                            result = 'yes'
+                            return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+                        car_patches, gray_car_found, image_patch, result, tractor_patches = if_stmt(_if, None, tractor_patch.horizontal_center > car_patch.horizontal_center, (car_patches, gray_car_found, image_patch, result, tractor_patches))
+                        return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+                    car_patches, gray_car_found, image_patch, result, tractor_patches = for_stmt(_for, tractor_patches, (car_patches, gray_car_found, image_patch, result, tractor_patches))
+                    return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+                car_patches, gray_car_found, image_patch, result, tractor_patches = if_stmt(_if, None, car_patch.verify_property('car', 'gray'), (car_patches, gray_car_found, image_patch, result, tractor_patches))
+                return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+            car_patches, gray_car_found, image_patch, result, tractor_patches = for_stmt(_for, car_patches, (car_patches, gray_car_found, image_patch, result, tractor_patches))
+
+            def _if(car_patches, gray_car_found, image_patch, result, tractor_patches):
+                result = image_patch.simple_query('Is there a tractor to the right of the gray car?')
+                return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+            car_patches, gray_car_found, image_patch, result, tractor_patches = if_stmt(_if, None, not_expr(gray_car_found), (car_patches, gray_car_found, image_patch, result, tractor_patches))
+            return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+        car_patches, gray_car_found, image_patch, result, tractor_patches = if_stmt(_if, _else, len(tractor_patches) == 0, (car_patches, gray_car_found, image_patch, result, tractor_patches))
+        return (car_patches, gray_car_found, image_patch, result, tractor_patches)
+    car_patches, gray_car_found, image_patch, result, tractor_patches = if_stmt(_if, _else, len(car_patches) == 0, (car_patches, gray_car_found, image_patch, result, tractor_patches))
+    return result

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    towel_exists = None
+    towel_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    towel_exists = image_patch.exists('towel')
+
+    def _if(image_patch, result, towel_exists, towel_patches):
+        towel_patches = image_patch.find('towel')
+
+        def _for(towel_patch, image_patch, result, towel_exists, towel_patches):
+
+            def _if(image_patch, result, towel_exists, towel_patches):
+                result = 'yes'
+                return (image_patch, result, towel_exists, towel_patches)
+            image_patch, result, towel_exists, towel_patches = if_stmt(_if, None, towel_patch.verify_property('towel', 'white'), (image_patch, result, towel_exists, towel_patches))
+            return (image_patch, result, towel_exists, towel_patches)
+        image_patch, result, towel_exists, towel_patches = for_stmt(_for, towel_patches, (image_patch, result, towel_exists, towel_patches))
+        return (image_patch, result, towel_exists, towel_patches)
+
+    def _else(image_patch, result, towel_exists, towel_patches):
+        result = image_patch.simple_query('Are there white towels in this image?')
+        return (image_patch, result, towel_exists, towel_patches)
+    image_patch, result, towel_exists, towel_patches = if_stmt(_if, _else, towel_exists, (image_patch, result, towel_exists, towel_patches))
+    return result

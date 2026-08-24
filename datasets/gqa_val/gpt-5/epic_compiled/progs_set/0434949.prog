@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_cabinet = None
+    has_cheese = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_cabinet = image_patch.exists('cabinet')
+    has_cheese = image_patch.exists('cheese')
+    result = bool_to_yesno(or_expr(has_cabinet, has_cheese))
+    return result

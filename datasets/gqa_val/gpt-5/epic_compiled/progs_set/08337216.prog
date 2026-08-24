@@ -1,0 +1,48 @@
+def execute_command(image) -> str:
+    image_patch = None
+    knee_pad_patches = None
+    result = None
+    right_area_patch = None
+    rightmost_right = None
+    image_patch = ImagePatch(image)
+    result = None
+    knee_pad_patches = image_patch.find('knee pad')
+
+    def _if(image_patch, knee_pad_patches, result):
+        knee_pad_patches = image_patch.find('knee pads')
+        return (image_patch, knee_pad_patches, result)
+    image_patch, knee_pad_patches, result = if_stmt(_if, None, len(knee_pad_patches) == 0, (image_patch, knee_pad_patches, result))
+
+    def _if(image_patch, knee_pad_patches, result, right_area_patch, rightmost_right):
+        result = image_patch.simple_query('What are the people to the right of the knee pads wearing?')
+        return (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right)
+
+    def _else(image_patch, knee_pad_patches, result, right_area_patch, rightmost_right):
+        rightmost_right = knee_pad_patches[0].right
+
+        def _for(kp, image_patch, knee_pad_patches, result, rightmost_right):
+
+            def _if(image_patch, knee_pad_patches, result, rightmost_right):
+                rightmost_right = kp.right
+                return (image_patch, knee_pad_patches, result, rightmost_right)
+            image_patch, knee_pad_patches, result, rightmost_right = if_stmt(_if, None, kp.right > rightmost_right, (image_patch, knee_pad_patches, result, rightmost_right))
+            return (image_patch, knee_pad_patches, result, rightmost_right)
+        image_patch, knee_pad_patches, result, rightmost_right = for_stmt(_for, knee_pad_patches, (image_patch, knee_pad_patches, result, rightmost_right))
+
+        def _if(image_patch, knee_pad_patches, result, right_area_patch, rightmost_right):
+            right_area_patch = image_patch.crop(rightmost_right, image_patch.lower, image_patch.right, image_patch.upper)
+            result = right_area_patch.simple_query('What are the people wearing?')
+            return (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right)
+
+        def _else(image_patch, knee_pad_patches, result, right_area_patch, rightmost_right):
+            result = image_patch.simple_query('What are the people to the right of the knee pads wearing?')
+            return (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right)
+        image_patch, knee_pad_patches, result, right_area_patch, rightmost_right = if_stmt(_if, _else, rightmost_right < image_patch.right, (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right))
+        return (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right)
+    image_patch, knee_pad_patches, result, right_area_patch, rightmost_right = if_stmt(_if, _else, len(knee_pad_patches) == 0, (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right))
+
+    def _if(image_patch, knee_pad_patches, result, right_area_patch, rightmost_right):
+        result = image_patch.simple_query('What are the people to the right of the knee pads wearing?')
+        return (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right)
+    image_patch, knee_pad_patches, result, right_area_patch, rightmost_right = if_stmt(_if, None, not_expr(result), (image_patch, knee_pad_patches, result, right_area_patch, rightmost_right))
+    return result

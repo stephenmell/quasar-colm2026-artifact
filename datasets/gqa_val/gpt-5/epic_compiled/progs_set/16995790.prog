@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    answer = None
+    candidate_patches = None
+    child_patches = None
+    girl_patches = None
+    image_patch = None
+    kid_patches = None
+    result = None
+    young_girl_patches = None
+    image_patch = ImagePatch(image)
+    young_girl_patches = image_patch.find('young girl')
+    girl_patches = image_patch.find('girl')
+    child_patches = image_patch.find('child')
+    kid_patches = image_patch.find('kid')
+    candidate_patches = young_girl_patches + girl_patches + child_patches + kid_patches
+
+    def _if(answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches):
+        result = image_patch.simple_query('Is the young girl hitting a frisbee?')
+        return (answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches)
+
+    def _else(answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches):
+        result = 'no'
+
+        def _for(candidate, answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches):
+            answer = candidate.simple_query('Is the young girl hitting a frisbee?')
+
+            def _if(answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches):
+                result = 'yes'
+                return (answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches)
+            answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches = if_stmt(_if, None, answer == 'yes', (answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches))
+            return (answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches)
+        answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches = for_stmt(_for, candidate_patches, (answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches))
+        return (answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches)
+    answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches = if_stmt(_if, _else, len(candidate_patches) == 0, (answer, candidate_patches, child_patches, girl_patches, image_patch, kid_patches, result, young_girl_patches))
+    return result

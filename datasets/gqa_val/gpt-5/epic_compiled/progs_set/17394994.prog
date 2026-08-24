@@ -1,0 +1,42 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_black = None
+    is_closed = None
+    left_of_any_tent = None
+    result = None
+    tent_patches = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find('umbrella')
+    tent_patches = image_patch.find('tent')
+
+    def _if(image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches):
+        result = image_patch.simple_query('Is the umbrella to the left of the tent closed and black?')
+        return (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches)
+
+    def _else(image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches):
+        result = 'no'
+
+        def _for(umbrella_patch, image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches):
+            is_closed = umbrella_patch.verify_property('umbrella', 'closed')
+            is_black = umbrella_patch.verify_property('umbrella', 'black')
+            left_of_any_tent = False
+
+            def _for(tent_patch, image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches):
+
+                def _if(image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches):
+                    left_of_any_tent = True
+                    return (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches)
+                image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches = if_stmt(_if, None, umbrella_patch.horizontal_center < tent_patch.horizontal_center, (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches))
+                return (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches)
+            image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches = for_stmt(_for, tent_patches, (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches))
+
+            def _if(image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches):
+                result = 'yes'
+                return (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches)
+            image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches = if_stmt(_if, None, and_expr(left_of_any_tent, and_expr(is_closed, is_black)), (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches))
+            return (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches)
+        image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches = for_stmt(_for, umbrella_patches, (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches))
+        return (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches)
+    image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches = if_stmt(_if, _else, or_expr(len(umbrella_patches) == 0, len(tent_patches) == 0), (image_patch, is_black, is_closed, left_of_any_tent, result, tent_patches, umbrella_patches))
+    return result

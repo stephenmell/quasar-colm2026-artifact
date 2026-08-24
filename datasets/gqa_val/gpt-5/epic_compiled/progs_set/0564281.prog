@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    colors = None
+    hat_color = None
+    hat_patches = None
+    house_color = None
+    house_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    hat_patches = image_patch.find('hat')
+    house_patches = image_patch.find('house')
+    result = None
+
+    def _if(colors, hat_color, hat_patches, house_color, house_patches, image_patch, result):
+        result = image_patch.simple_query('Is the color of the hat different than the house?')
+        return (colors, hat_color, hat_patches, house_color, house_patches, image_patch, result)
+
+    def _else(colors, hat_color, hat_patches, house_color, house_patches, image_patch, result):
+        colors = ('red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'brown', 'black', 'white', 'gray', 'gold', 'silver', 'beige', 'tan', 'teal', 'maroon', 'navy')
+        hat_color = hat_patches[0].best_text_match(colors)
+        house_color = house_patches[0].best_text_match(colors)
+        result = bool_to_yesno(hat_color != house_color)
+        return (colors, hat_color, hat_patches, house_color, house_patches, image_patch, result)
+    colors, hat_color, hat_patches, house_color, house_patches, image_patch, result = if_stmt(_if, _else, or_expr(len(hat_patches) == 0, len(house_patches) == 0), (colors, hat_color, hat_patches, house_color, house_patches, image_patch, result))
+    return result

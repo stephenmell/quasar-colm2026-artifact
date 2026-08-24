@@ -1,0 +1,8 @@
+({77: 'ImagePatch', 79: '.simple_query'},
+ ('def',
+  75,
+  ((76,),
+   ((('call', (78,), 77, (76,)),
+     ('prim', 80, 'Is the sign in front of the house red and octagonal?'),
+     ('call', (81,), 79, (78, 80))),
+    (81,)))))

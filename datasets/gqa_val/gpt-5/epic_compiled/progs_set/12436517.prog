@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    book_patches = None
+    image_patch = None
+    monitor_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    monitor_patches = image_patch.find('monitor')
+
+    def _if(book_patches, image_patch, monitor_patches, result):
+        result = image_patch.simple_query('Is the monitor to the right of books?')
+        return (book_patches, image_patch, monitor_patches, result)
+
+    def _else(book_patches, image_patch, monitor_patches, result):
+        book_patches = image_patch.find('book')
+
+        def _if(book_patches, image_patch, monitor_patches):
+            book_patches = image_patch.find('books')
+            return (book_patches, image_patch, monitor_patches)
+        book_patches, image_patch, monitor_patches = if_stmt(_if, None, len(book_patches) == 0, (book_patches, image_patch, monitor_patches))
+
+        def _if(book_patches, image_patch, monitor_patches, result):
+            result = 'no'
+            return (book_patches, image_patch, monitor_patches, result)
+
+        def _else(book_patches, image_patch, monitor_patches, result):
+            result = 'no'
+
+            def _for(monitor_patch, book_patches, image_patch, monitor_patches, result):
+
+                def _for(book_patch, book_patches, image_patch, monitor_patches, result):
+
+                    def _if(book_patches, image_patch, monitor_patches, result):
+                        result = 'yes'
+                        return (book_patches, image_patch, monitor_patches, result)
+                    book_patches, image_patch, monitor_patches, result = if_stmt(_if, None, monitor_patch.horizontal_center > book_patch.horizontal_center, (book_patches, image_patch, monitor_patches, result))
+                    return (book_patches, image_patch, monitor_patches, result)
+                book_patches, image_patch, monitor_patches, result = for_stmt(_for, book_patches, (book_patches, image_patch, monitor_patches, result))
+                return (book_patches, image_patch, monitor_patches, result)
+            book_patches, image_patch, monitor_patches, result = for_stmt(_for, monitor_patches, (book_patches, image_patch, monitor_patches, result))
+            return (book_patches, image_patch, monitor_patches, result)
+        book_patches, image_patch, monitor_patches, result = if_stmt(_if, _else, len(book_patches) == 0, (book_patches, image_patch, monitor_patches, result))
+        return (book_patches, image_patch, monitor_patches, result)
+    book_patches, image_patch, monitor_patches, result = if_stmt(_if, _else, len(monitor_patches) == 0, (book_patches, image_patch, monitor_patches, result))
+    return result

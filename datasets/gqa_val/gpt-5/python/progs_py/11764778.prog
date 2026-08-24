@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Do you see any purses to the right of the person in the middle?")
+    # Find the person closest to the center of the image (the "middle" person)
+    def dist2(patch):
+        dx = patch.horizontal_center - image_patch.horizontal_center
+        dy = patch.vertical_center - image_patch.vertical_center
+        return dx*dx + dy*dy
+    middle_person = min(person_patches, key=dist2)
+    # Look for purses (and handbags as a common synonym)
+    purse_patches = image_patch.find("purse")
+    handbag_patches = image_patch.find("handbag")
+    all_purses = purse_patches + handbag_patches
+    if len(all_purses) == 0:
+        return "no"
+    # Check if any purse is to the right of the middle person
+    for purse in all_purses:
+        if purse.horizontal_center > middle_person.horizontal_center:
+            return "yes"
+    return "no"

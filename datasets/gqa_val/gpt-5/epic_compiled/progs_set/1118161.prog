@@ -1,0 +1,14 @@
+def execute_command(image) -> str:
+    cake_plural = None
+    cake_singular = None
+    image_patch = None
+    result = None
+    strawberry_plural = None
+    strawberry_singular = None
+    image_patch = ImagePatch(image)
+    strawberry_singular = image_patch.exists('strawberry')
+    strawberry_plural = image_patch.exists('strawberries')
+    cake_singular = image_patch.exists('cake')
+    cake_plural = image_patch.exists('cakes')
+    result = bool_to_yesno(and_expr(strawberry_singular or strawberry_plural, cake_singular or cake_plural))
+    return result

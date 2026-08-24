@@ -1,0 +1,74 @@
+def execute_command():
+    ChosenEventSchema = None
+    candidates = None
+    chosen = None
+    events = None
+    events_info = None
+    i = None
+    j = None
+    k = None
+    matching_event = None
+    participants_list = None
+    participants_to_add = None
+    result = None
+    title_cmp = None
+    updated_event = None
+    events = search_calendar_events('Introductory meeting', '2024-05-15')
+    candidates = events
+
+    def _if(candidates, events):
+        candidates = get_day_calendar_events('2024-05-15')
+        return (candidates, events)
+    candidates, events = if_stmt(_if, None, len(candidates) == 0, (candidates, events))
+    matching_event = None
+    i = 0
+
+    def _for(e, candidates, events, i, matching_event, title_cmp):
+        title_cmp = e.title.strip().lower()
+
+        def _if(candidates, events, i, matching_event, title_cmp):
+            matching_event = e
+            return (candidates, events, i, matching_event, title_cmp)
+        candidates, events, i, matching_event, title_cmp = if_stmt(_if, None, and_expr(title_cmp == 'introductory meeting', matching_event is None), (candidates, events, i, matching_event, title_cmp))
+        i = i + 1
+        return (candidates, events, i, matching_event, title_cmp)
+    candidates, events, i, matching_event, title_cmp = for_stmt(_for, candidates, (candidates, events, i, matching_event, title_cmp))
+
+    def _if(ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp):
+        events_info = ''
+        j = 0
+
+        def _for(ev, candidates, events, events_info, i, j, matching_event, title_cmp):
+            events_info = events_info + 'ID: {}; Title: {}; Start: {}; End: {}. '.format(ev.id_, ev.title, ev.start_time.isoformat(), ev.end_time.isoformat())
+            j = j + 1
+            return (candidates, events, events_info, i, j, matching_event, title_cmp)
+        candidates, events, events_info, i, j, matching_event, title_cmp = for_stmt(_for, candidates, (candidates, events, events_info, i, j, matching_event, title_cmp))
+        ChosenEventSchema = CreateSchema('chosen_event_id', str)
+        chosen = query_ai_assistant("From the following events that occur on 2024-05-15, select the single event that corresponds to the meeting titled exactly 'Introductory meeting'. If an exact title match exists, choose it. If there are multiple exact matches, choose the one that seems most appropriate for an introductory meeting. If there is no suitable match, return an empty string. Events: {}".format(events_info), ChosenEventSchema)
+        k = 0
+
+        def _for(ev, ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp):
+
+            def _if(ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp):
+                matching_event = ev
+                return (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp)
+            ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp = if_stmt(_if, None, and_expr(ev.id_ == chosen.chosen_event_id, matching_event is None), (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp))
+            k = k + 1
+            return (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp)
+        ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp = for_stmt(_for, candidates, (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp))
+        return (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp)
+    ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp = if_stmt(_if, None, and_expr(matching_event is None, len(candidates) != 0), (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, title_cmp))
+    result = ''
+
+    def _if(ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, participants_list, participants_to_add, result, title_cmp, updated_event):
+        result = "Could not find the 'Introductory meeting' event on 2024-05-15."
+        return (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, participants_list, participants_to_add, result, title_cmp, updated_event)
+
+    def _else(ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, participants_list, participants_to_add, result, title_cmp, updated_event):
+        participants_to_add = ['john.doe@clientcorp.com', 'maria.garcia@bluesparrowtech.com']
+        updated_event = add_calendar_event_participants(matching_event.id_, participants_to_add)
+        participants_list = ', '.join(updated_event.participants)
+        result = "Added participants john.doe@clientcorp.com, maria.garcia@bluesparrowtech.com to the event 'Introductory meeting' on 2024-05-15. Event ID: {}. Participants now: {}.".format(updated_event.id_, participants_list)
+        return (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, participants_list, participants_to_add, result, title_cmp, updated_event)
+    ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, participants_list, participants_to_add, result, title_cmp, updated_event = if_stmt(_if, _else, matching_event is None, (ChosenEventSchema, candidates, chosen, events, events_info, i, j, k, matching_event, participants_list, participants_to_add, result, title_cmp, updated_event))
+    return result

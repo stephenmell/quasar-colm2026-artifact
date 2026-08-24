@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    tennis_ball_exists = None
+    traffic_light_exists = None
+    traffic_lights = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    traffic_light_exists = image_patch.exists('traffic light')
+
+    def _if(image_patch, result, traffic_light_exists, traffic_lights):
+        traffic_lights = image_patch.find('traffic light')
+
+        def _for(tl_patch, image_patch, result, traffic_light_exists, traffic_lights):
+
+            def _if(image_patch, result, traffic_light_exists, traffic_lights):
+                result = 'yes'
+                return (image_patch, result, traffic_light_exists, traffic_lights)
+            image_patch, result, traffic_light_exists, traffic_lights = if_stmt(_if, None, tl_patch.verify_property('traffic light', 'yellow'), (image_patch, result, traffic_light_exists, traffic_lights))
+            return (image_patch, result, traffic_light_exists, traffic_lights)
+        image_patch, result, traffic_light_exists, traffic_lights = for_stmt(_for, traffic_lights, (image_patch, result, traffic_light_exists, traffic_lights))
+        return (image_patch, result, traffic_light_exists, traffic_lights)
+    image_patch, result, traffic_light_exists, traffic_lights = if_stmt(_if, None, traffic_light_exists, (image_patch, result, traffic_light_exists, traffic_lights))
+    tennis_ball_exists = image_patch.exists('tennis ball')
+
+    def _if(image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights):
+        result = 'yes'
+        return (image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights)
+    image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights = if_stmt(_if, None, tennis_ball_exists, (image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights))
+
+    def _if(image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights):
+        result = image_patch.simple_query('Do you see yellow traffic lights or tennis balls?')
+        return (image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights)
+    image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights = if_stmt(_if, None, result == 'no', (image_patch, result, tennis_ball_exists, traffic_light_exists, traffic_lights))
+    return result

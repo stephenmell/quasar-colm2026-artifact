@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("Is the man to the right of the animal in the center?")
+    else:
+        # Find the animal closest to the center of the image
+        center_x = image_patch.horizontal_center
+        center_y = image_patch.vertical_center
+        closest_animal = None
+        closest_dist = None
+
+        for animal_patch in animal_patches:
+            dx = animal_patch.horizontal_center - center_x
+            dy = animal_patch.vertical_center - center_y
+            dist_sq = dx * dx + dy * dy
+            if closest_dist is None or dist_sq < closest_dist:
+                closest_dist = dist_sq
+                closest_animal = animal_patch
+
+        man_patches = image_patch.find("man")
+        if len(man_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for man_patch in man_patches:
+                if man_patch.horizontal_center > closest_animal.horizontal_center:
+                    result = "yes"
+    return result

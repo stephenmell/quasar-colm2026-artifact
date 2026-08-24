@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_cloudy = None
+    result = None
+    sky_patches = None
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find('sky')
+
+    def _if(image_patch, is_cloudy, result, sky_patches):
+        result = image_patch.simple_query('Is it cloudy?')
+        return (image_patch, is_cloudy, result, sky_patches)
+
+    def _else(image_patch, is_cloudy, result, sky_patches):
+        result = 'no'
+
+        def _for(sky_patch, image_patch, is_cloudy, result, sky_patches):
+            is_cloudy = or_expr(sky_patch.verify_property('sky', 'cloudy'), sky_patch.exists('cloud'))
+
+            def _if(image_patch, is_cloudy, result, sky_patches):
+                result = 'yes'
+                return (image_patch, is_cloudy, result, sky_patches)
+            image_patch, is_cloudy, result, sky_patches = if_stmt(_if, None, is_cloudy, (image_patch, is_cloudy, result, sky_patches))
+            return (image_patch, is_cloudy, result, sky_patches)
+        image_patch, is_cloudy, result, sky_patches = for_stmt(_for, sky_patches, (image_patch, is_cloudy, result, sky_patches))
+        return (image_patch, is_cloudy, result, sky_patches)
+    image_patch, is_cloudy, result, sky_patches = if_stmt(_if, _else, len(sky_patches) == 0, (image_patch, is_cloudy, result, sky_patches))
+    return result

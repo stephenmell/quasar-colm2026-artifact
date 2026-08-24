@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    area = None
+    bicycle_patch = None
+    bicycle_patches = None
+    car_patches = None
+    car_white = None
+    image_patch = None
+    is_left_of_bicycle = None
+    result = None
+    selected_car_patch = None
+    smallest_area = None
+    truck_patches = None
+    truck_white = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    car_patches = image_patch.find('car')
+    bicycle_patches = image_patch.find('bicycle')
+    truck_patches = image_patch.find('truck')
+
+    def _if(area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white):
+        result = image_patch.simple_query('Are the little car that is to the left of the bicycle and the truck both white?')
+        return (area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white)
+
+    def _else(area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white):
+        bicycle_patch = bicycle_patches[0]
+        selected_car_patch = None
+        smallest_area = None
+
+        def _for(car_patch, area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches):
+            is_left_of_bicycle = car_patch.horizontal_center < bicycle_patch.horizontal_center
+
+            def _if(area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches):
+                area = car_patch.width * car_patch.height
+
+                def _if(area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches):
+                    smallest_area = area
+                    selected_car_patch = car_patch
+                    return (area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches)
+                area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches = if_stmt(_if, None, or_expr(smallest_area is None, area < smallest_area), (area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches))
+                return (area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches)
+            area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches = if_stmt(_if, None, is_left_of_bicycle, (area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches))
+            return (area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches)
+        area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches = for_stmt(_for, car_patches, (area, bicycle_patch, bicycle_patches, car_patches, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches))
+
+        def _if(area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white):
+            result = image_patch.simple_query('Are the little car that is to the left of the bicycle and the truck both white?')
+            return (area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white)
+
+        def _else(area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white):
+            car_white = selected_car_patch.verify_property('car', 'white')
+            truck_white = truck_patches[0].verify_property('truck', 'white')
+            result = bool_to_yesno(and_expr(car_white, truck_white))
+            return (area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white)
+        area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white = if_stmt(_if, _else, selected_car_patch is None, (area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white))
+        return (area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white)
+    area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white = if_stmt(_if, _else, or_expr(len(car_patches) == 0, or_expr(len(bicycle_patches) == 0, len(truck_patches) == 0)), (area, bicycle_patch, bicycle_patches, car_patches, car_white, image_patch, is_left_of_bicycle, result, selected_car_patch, smallest_area, truck_patches, truck_white))
+    return result

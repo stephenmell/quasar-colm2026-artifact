@@ -1,0 +1,7 @@
+# Are there pictures or traffic lights in the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_picture = image_patch.exists("picture") or image_patch.exists("pictures")
+    is_traffic_light = image_patch.exists("traffic light") or image_patch.exists("traffic lights")
+    result = bool_to_yesno(is_picture or is_traffic_light)
+    return result

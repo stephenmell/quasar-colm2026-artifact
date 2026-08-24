@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    # If no plate is found, ask directly
+    if len(plate_patches) == 0:
+        return image_patch.simple_query("Is there a fork on the plate?")
+    fork_patches = image_patch.find("fork")
+    if len(fork_patches) == 0:
+        return "no"
+
+    def center_in(patch, container):
+        return (container.left <= patch.horizontal_center <= container.right and
+                container.lower <= patch.vertical_center <= container.upper)
+
+    def overlaps(a, b):
+        left = max(a.left, b.left)
+        right = min(a.right, b.right)
+        lower = max(a.lower, b.lower)
+        upper = min(a.upper, b.upper)
+        return right > left and upper > lower
+
+    for plate in plate_patches:
+        for fork in fork_patches:
+            if center_in(fork, plate) or overlaps(fork, plate):
+                return "yes"
+
+    # Fallback: ask directly if spatial check didn't confirm
+    return image_patch.simple_query("Is there a fork on the plate?")

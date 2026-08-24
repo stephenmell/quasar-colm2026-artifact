@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chocolate_patches = image_patch.find("chocolate")
+    # Question assumes only one chocolate patch
+    if len(chocolate_patches) == 0:
+        # If no chocolate is found, query the image directly
+        return image_patch.simple_query("Is the chocolate on the right side of the photo?")
+    for chocolate_patch in chocolate_patches:
+        if chocolate_patch.horizontal_center > image_patch.horizontal_center:
+            return "yes"
+    return "no"

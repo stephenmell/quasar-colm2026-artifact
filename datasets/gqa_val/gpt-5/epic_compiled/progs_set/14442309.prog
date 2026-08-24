@@ -1,0 +1,64 @@
+def execute_command(image) -> str:
+    bird_patches = None
+    giraffe_patches = None
+    image_patch = None
+    result = None
+    selected_bird = None
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find('bird')
+
+    def _if(bird_patches, giraffe_patches, image_patch, result, selected_bird):
+        result = image_patch.simple_query('Is there a giraffe to the left of the bird on the right side?')
+        return (bird_patches, giraffe_patches, image_patch, result, selected_bird)
+
+    def _else(bird_patches, giraffe_patches, image_patch, result, selected_bird):
+        selected_bird = None
+
+        def _for(bird_patch, bird_patches, image_patch, selected_bird):
+
+            def _if(bird_patches, image_patch, selected_bird):
+
+                def _if(bird_patches, image_patch, selected_bird):
+                    selected_bird = bird_patch
+                    return (bird_patches, image_patch, selected_bird)
+                bird_patches, image_patch, selected_bird = if_stmt(_if, None, or_expr(selected_bird is None, bird_patch.horizontal_center > selected_bird.horizontal_center), (bird_patches, image_patch, selected_bird))
+                return (bird_patches, image_patch, selected_bird)
+            bird_patches, image_patch, selected_bird = if_stmt(_if, None, bird_patch.horizontal_center > image_patch.horizontal_center, (bird_patches, image_patch, selected_bird))
+            return (bird_patches, image_patch, selected_bird)
+        bird_patches, image_patch, selected_bird = for_stmt(_for, bird_patches, (bird_patches, image_patch, selected_bird))
+
+        def _if(bird_patches, image_patch, selected_bird):
+            selected_bird = bird_patches[0]
+
+            def _for(bird_patch, bird_patches, image_patch, selected_bird):
+
+                def _if(bird_patches, image_patch, selected_bird):
+                    selected_bird = bird_patch
+                    return (bird_patches, image_patch, selected_bird)
+                bird_patches, image_patch, selected_bird = if_stmt(_if, None, bird_patch.horizontal_center > selected_bird.horizontal_center, (bird_patches, image_patch, selected_bird))
+                return (bird_patches, image_patch, selected_bird)
+            bird_patches, image_patch, selected_bird = for_stmt(_for, bird_patches, (bird_patches, image_patch, selected_bird))
+            return (bird_patches, image_patch, selected_bird)
+        bird_patches, image_patch, selected_bird = if_stmt(_if, None, selected_bird is None, (bird_patches, image_patch, selected_bird))
+        giraffe_patches = image_patch.find('giraffe')
+
+        def _if(bird_patches, giraffe_patches, image_patch, result, selected_bird):
+            result = 'no'
+            return (bird_patches, giraffe_patches, image_patch, result, selected_bird)
+
+        def _else(bird_patches, giraffe_patches, image_patch, result, selected_bird):
+            result = 'no'
+
+            def _for(giraffe_patch, bird_patches, giraffe_patches, image_patch, result, selected_bird):
+
+                def _if(bird_patches, giraffe_patches, image_patch, result, selected_bird):
+                    result = 'yes'
+                    return (bird_patches, giraffe_patches, image_patch, result, selected_bird)
+                bird_patches, giraffe_patches, image_patch, result, selected_bird = if_stmt(_if, None, giraffe_patch.horizontal_center < selected_bird.horizontal_center, (bird_patches, giraffe_patches, image_patch, result, selected_bird))
+                return (bird_patches, giraffe_patches, image_patch, result, selected_bird)
+            bird_patches, giraffe_patches, image_patch, result, selected_bird = for_stmt(_for, giraffe_patches, (bird_patches, giraffe_patches, image_patch, result, selected_bird))
+            return (bird_patches, giraffe_patches, image_patch, result, selected_bird)
+        bird_patches, giraffe_patches, image_patch, result, selected_bird = if_stmt(_if, _else, len(giraffe_patches) == 0, (bird_patches, giraffe_patches, image_patch, result, selected_bird))
+        return (bird_patches, giraffe_patches, image_patch, result, selected_bird)
+    bird_patches, giraffe_patches, image_patch, result, selected_bird = if_stmt(_if, _else, len(bird_patches) == 0, (bird_patches, giraffe_patches, image_patch, result, selected_bird))
+    return result

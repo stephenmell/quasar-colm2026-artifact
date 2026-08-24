@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    knife_patches = image_patch.find("knife")
+    # Question assumes one knife patch
+    if len(knife_patches) == 0:
+        # If no knife is found, query the image directly
+        return image_patch.simple_query("Are there saucers to the right of the knife?")
+    saucer_patches = image_patch.find("saucer")
+    if len(saucer_patches) == 0:
+        return "no"
+    for saucer_patch in saucer_patches:
+        for knife_patch in knife_patches:
+            if saucer_patch.horizontal_center > knife_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,7 @@
+# Are there either bicycles or boxes?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_bicycle = image_patch.exists("bicycle")
+    has_box = image_patch.exists("box")
+    result = bool_to_yesno(has_bicycle or has_box)
+    return result

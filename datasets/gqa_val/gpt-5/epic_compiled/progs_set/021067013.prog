@@ -1,0 +1,64 @@
+def execute_command(image) -> str:
+    any_green_grass = None
+    field_patches = None
+    grass_patches = None
+    grassy_and_green = None
+    image_patch = None
+    is_grassy = None
+    is_green = None
+    result = None
+    image_patch = ImagePatch(image)
+    field_patches = image_patch.find('field')
+
+    def _if(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result):
+        result = image_patch.simple_query('Does the field look grassy and green?')
+        return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result)
+
+    def _else(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result):
+        grassy_and_green = False
+
+        def _for(field_patch, field_patches, grassy_and_green, image_patch, is_grassy, is_green):
+            is_grassy = field_patch.verify_property('field', 'grassy')
+            is_green = field_patch.verify_property('field', 'green')
+
+            def _if(field_patches, grassy_and_green, image_patch, is_grassy, is_green):
+                grassy_and_green = True
+                return (field_patches, grassy_and_green, image_patch, is_grassy, is_green)
+            field_patches, grassy_and_green, image_patch, is_grassy, is_green = if_stmt(_if, None, and_expr(is_grassy, is_green), (field_patches, grassy_and_green, image_patch, is_grassy, is_green))
+            return (field_patches, grassy_and_green, image_patch, is_grassy, is_green)
+        field_patches, grassy_and_green, image_patch, is_grassy, is_green = for_stmt(_for, field_patches, (field_patches, grassy_and_green, image_patch, is_grassy, is_green))
+
+        def _if(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result):
+            result = bool_to_yesno(True)
+            return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result)
+
+        def _else(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result):
+            grass_patches = image_patch.find('grass')
+            any_green_grass = False
+
+            def _if(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green):
+
+                def _for(grass_patch, any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green):
+
+                    def _if(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green):
+                        any_green_grass = True
+                        return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green)
+                    any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green = if_stmt(_if, None, grass_patch.verify_property('grass', 'green'), (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green))
+                    return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green)
+                any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green = for_stmt(_for, grass_patches, (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green))
+                return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green)
+            any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green = if_stmt(_if, None, len(grass_patches) > 0, (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green))
+
+            def _if(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result):
+                result = 'yes'
+                return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result)
+
+            def _else(any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result):
+                result = image_patch.simple_query('Does the field look grassy and green?')
+                return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result)
+            any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result = if_stmt(_if, _else, any_green_grass, (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result))
+            return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result)
+        any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result = if_stmt(_if, _else, grassy_and_green, (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result))
+        return (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result)
+    any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result = if_stmt(_if, _else, len(field_patches) == 0, (any_green_grass, field_patches, grass_patches, grassy_and_green, image_patch, is_grassy, is_green, result))
+    return result

@@ -1,0 +1,94 @@
+def execute_command():
+    GroceryDisambiguationSchema = None
+    IngredientsSchema = None
+    RecipePresenceSchema = None
+    addition_block = None
+    day = None
+    grocery_candidates = None
+    grocery_file = None
+    ingredients = None
+    ingredients_text = None
+    is_gl = None
+    new_file = None
+    presence = None
+    recipe_file = None
+    recipe_files = None
+    result = None
+    updated_file = None
+    recipe_files = search_files_by_filename('recipe-collection.docx')
+
+    def _if(recipe_files):
+        recipe_files = search_files('Chocolate Chip Cookies')
+        return (recipe_files,)
+    recipe_files, = if_stmt(_if, None, len(recipe_files) == 0, (recipe_files,))
+
+    def _if(recipe_files):
+        recipe_files = search_files('recipe-collection')
+        return (recipe_files,)
+    recipe_files, = if_stmt(_if, None, len(recipe_files) == 0, (recipe_files,))
+    recipe_file = None
+
+    def _if(RecipePresenceSchema, presence, recipe_file, recipe_files):
+        RecipePresenceSchema = CreateSchema('has_chocolate_chip_cookies', bool)
+
+        def _for(f, RecipePresenceSchema, presence, recipe_file, recipe_files):
+            presence = query_ai_assistant("Determine if this document contains a recipe for Chocolate Chip Cookies. Consider minor title variations like 'Chocolate Chip Cookie' or pluralization. Respond with True only if the recipe is clearly present. Filename: {}. Content: {}".format(f.filename, f.content), RecipePresenceSchema)
+
+            def _if(RecipePresenceSchema, presence, recipe_file, recipe_files):
+                recipe_file = f
+                return (RecipePresenceSchema, presence, recipe_file, recipe_files)
+            RecipePresenceSchema, presence, recipe_file, recipe_files = if_stmt(_if, None, and_expr(presence.has_chocolate_chip_cookies, recipe_file is None), (RecipePresenceSchema, presence, recipe_file, recipe_files))
+            return (RecipePresenceSchema, presence, recipe_file, recipe_files)
+        RecipePresenceSchema, presence, recipe_file, recipe_files = for_stmt(_for, recipe_files, (RecipePresenceSchema, presence, recipe_file, recipe_files))
+        return (RecipePresenceSchema, presence, recipe_file, recipe_files)
+    RecipePresenceSchema, presence, recipe_file, recipe_files = if_stmt(_if, None, len(recipe_files) != 0, (RecipePresenceSchema, presence, recipe_file, recipe_files))
+    result = "I couldn't find the 'Chocolate Chip Cookies' recipe in your files, so I wasn't able to add its ingredients to your grocery list."
+    ingredients_text = ''
+
+    def _if(GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file):
+        IngredientsSchema = CreateSchema('ingredients', str)
+        ingredients = query_ai_assistant('From the following document, extract the complete list of ingredients for the Chocolate Chip Cookies recipe only. Return a clean list, one item per line, including quantities and units if available. Do not include instructions or other recipes. Content: {}'.format(recipe_file.content), IngredientsSchema)
+        ingredients_text = ingredients.ingredients
+        grocery_candidates = search_files_by_filename('grocery list')
+
+        def _if(IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result):
+            grocery_candidates = search_files_by_filename('groceries')
+            return (IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result)
+        IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result = if_stmt(_if, None, len(grocery_candidates) == 0, (IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result))
+
+        def _if(IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result):
+            grocery_candidates = search_files('grocery')
+            return (IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result)
+        IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result = if_stmt(_if, None, len(grocery_candidates) == 0, (IngredientsSchema, RecipePresenceSchema, grocery_candidates, ingredients, ingredients_text, presence, recipe_file, recipe_files, result))
+        grocery_file = None
+
+        def _if(GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result):
+            GroceryDisambiguationSchema = CreateSchema('is_grocery_list', bool)
+
+            def _for(gf, GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result):
+                is_gl = query_ai_assistant('Decide if this file is a grocery/shopping list intended to store items to buy. Consider filename and content. Respond True only if it is clearly a grocery list. Filename: {}. Content: {}'.format(gf.filename, gf.content), GroceryDisambiguationSchema)
+
+                def _if(GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result):
+                    grocery_file = gf
+                    return (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result)
+                GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result = if_stmt(_if, None, and_expr(is_gl.is_grocery_list, grocery_file is None), (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result))
+                return (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result)
+            GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result = for_stmt(_for, grocery_candidates, (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result))
+            return (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result)
+        GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result = if_stmt(_if, None, len(grocery_candidates) != 0, (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, presence, recipe_file, recipe_files, result))
+        day = get_current_day()
+        addition_block = 'Added on {}\nChocolate Chip Cookies — Ingredients:\n{}\n'.format(day, ingredients_text)
+
+        def _if(GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file):
+            updated_file = append_to_file(grocery_file.id_, addition_block)
+            result = "I've added the Chocolate Chip Cookies ingredients to your existing grocery list file '{}' on {}.\nItems added:\n{}".format(updated_file.filename, day, ingredients_text)
+            return (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file)
+
+        def _else(GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file):
+            new_file = create_file('Grocery List.txt', 'Grocery List\n\n{}'.format(addition_block))
+            result = "I couldn't locate an existing grocery list, so I created a new one named '{}' and added the Chocolate Chip Cookies ingredients on {}.\nItems added:\n{}".format(new_file.filename, day, ingredients_text)
+            return (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file)
+        GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file = if_stmt(_if, _else, grocery_file is not None, (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file))
+        return (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file)
+    GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file = if_stmt(_if, None, recipe_file is not None, (GroceryDisambiguationSchema, IngredientsSchema, RecipePresenceSchema, addition_block, day, grocery_candidates, grocery_file, ingredients, ingredients_text, is_gl, new_file, presence, recipe_file, recipe_files, result, updated_file))
+    return result

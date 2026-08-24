@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cap_patches = image_patch.find("cap")
+
+    if len(cap_patches) == 0:
+        result = image_patch.simple_query("Who is wearing the cap?")
+    else:
+        result = None
+        for cap_patch in cap_patches:
+            is_worn = (cap_patch.simple_query("Is the cap being worn?") == "yes")
+            if is_worn:
+                result = cap_patch.simple_query("Who is wearing the cap?")
+        if not result:
+            result = image_patch.simple_query("Who is wearing the cap?")
+    return result

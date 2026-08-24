@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    crosswalk_patches = image_patch.find("crosswalk")
+
+    # If we can't detect either object, fall back to asking directly
+    if len(man_patches) == 0 or len(crosswalk_patches) == 0:
+        return image_patch.simple_query("Are there men on the crosswalk?")
+
+    # Check if any man's center lies within any crosswalk's bounding box
+    for man in man_patches:
+        for crosswalk in crosswalk_patches:
+            if (crosswalk.left <= man.horizontal_center <= crosswalk.right and
+                crosswalk.lower <= man.vertical_center <= crosswalk.upper):
+                return "yes"
+    return "no"

@@ -1,0 +1,13 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_wetsuit = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_wetsuit = image_patch.exists('wetsuit')
+
+    def _if(image_patch, is_wetsuit):
+        is_wetsuit = or_expr(image_patch.exists('wetsuits'), or_expr(image_patch.exists('wet suit'), image_patch.exists('wet suits')))
+        return (image_patch, is_wetsuit)
+    image_patch, is_wetsuit = if_stmt(_if, None, not_expr(is_wetsuit), (image_patch, is_wetsuit))
+    result = bool_to_yesno(is_wetsuit)
+    return result

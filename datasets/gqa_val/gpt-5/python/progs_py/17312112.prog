@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    elephant_patches = image_patch.find("elephant")
+    if len(elephant_patches) == 0:
+        # If no elephant is found, query the image directly
+        return image_patch.simple_query("Is there an elephant that is small?")
+    for elephant_patch in elephant_patches:
+        if elephant_patch.verify_property("elephant", "small"):
+            return "yes"
+    return "no"

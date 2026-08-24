@@ -1,0 +1,5 @@
+{
+  "result": "{'restaurant_name': 'New Israeli Restaurant', 'restaurant_address': '123 Rue de Rivoli, 75001 Paris, France', 'calendar_event': CalendarEvent(id_='2', title='Dinner at New Israeli Restaurant', description='Reminder to book a table at New Israeli Restaurant.', start_time=datetime.datetime(2026, 10, 15, 9, 0), end_time=datetime.datetime(2026, 10, 15, 9, 30), location='123 Rue de Rivoli, 75001 Paris, France', participants=['emma.johnson@bluesparrowtech.com'], all_day=False, status=confirmed)}",
+  "time_ns": 2692965675,
+  "utility": false
+}

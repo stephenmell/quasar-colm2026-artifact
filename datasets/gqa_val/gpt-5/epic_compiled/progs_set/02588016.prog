@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    image_patch = None
+    person_patches = None
+    result = None
+    right_area_patch = None
+    selected_person_patch = None
+    wallet_patch = None
+    wallet_patches = None
+    image_patch = ImagePatch(image)
+    wallet_patches = image_patch.find('wallet')
+
+    def _if(image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches):
+        result = image_patch.simple_query('What is the person that is to the right of the wallet doing?')
+        return (image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches)
+
+    def _else(image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches):
+        wallet_patch = wallet_patches[0]
+        person_patches = image_patch.find('person')
+        selected_person_patch = None
+
+        def _for(person_patch, image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches):
+
+            def _if(image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches):
+                selected_person_patch = person_patch
+                return (image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches)
+            image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches = if_stmt(_if, None, person_patch.horizontal_center > wallet_patch.horizontal_center, (image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches))
+            return (image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches)
+        image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches = for_stmt(_for, person_patches, (image_patch, person_patches, selected_person_patch, wallet_patch, wallet_patches))
+
+        def _if(image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches):
+            result = selected_person_patch.simple_query('What is the person doing?')
+            return (image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches)
+
+        def _else(image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches):
+            right_area_patch = image_patch.crop(wallet_patch.right, wallet_patch.lower, image_patch.right, wallet_patch.upper)
+            result = right_area_patch.simple_query('What is the person doing?')
+            return (image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches)
+        image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches = if_stmt(_if, _else, selected_person_patch, (image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches))
+        return (image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches)
+    image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches = if_stmt(_if, _else, len(wallet_patches) == 0, (image_patch, person_patches, result, right_area_patch, selected_person_patch, wallet_patch, wallet_patches))
+    return result

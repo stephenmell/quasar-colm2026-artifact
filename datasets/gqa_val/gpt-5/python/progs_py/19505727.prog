@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    racket_patches = image_patch.find("tennis racket")
+    # If no tennis racket is found, ask directly
+    if len(racket_patches) == 0:
+        return image_patch.simple_query("Is the man to the right of the tennis racket wearing a shirt?")
+    man_patches = image_patch.find("man")
+    # If no man is found, then there can't be a man to the right of the racket
+    if len(man_patches) == 0:
+        return "no"
+    # Check if any man is to the right of any tennis racket and wearing a shirt
+    for racket_patch in racket_patches:
+        for man_patch in man_patches:
+            if man_patch.horizontal_center > racket_patch.horizontal_center:
+                if man_patch.simple_query("Is the man wearing a shirt?") == "yes":
+                    return "yes"
+    return "no"

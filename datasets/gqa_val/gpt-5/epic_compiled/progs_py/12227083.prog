@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find("vehicle")
+
+    if len(vehicle_patches) == 0:
+        result = image_patch.simple_query("Which size is the white vehicle, large or small?")
+    else:
+        found_white = False
+        selected_patch = None
+        max_area = -1
+        for vehicle_patch in vehicle_patches:
+            is_white = vehicle_patch.verify_property("vehicle", "white")
+            if is_white:
+                area = vehicle_patch.width * vehicle_patch.height
+                if area > max_area:
+                    max_area = area
+                    selected_patch = vehicle_patch
+                    found_white = True
+        if found_white and selected_patch is not None:
+            result = selected_patch.best_text_match(("large", "small"))
+        else:
+            result = image_patch.simple_query("Which size is the white vehicle, large or small?")
+    return result

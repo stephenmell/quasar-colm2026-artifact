@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, the green bottle looks tall",
+      "No, the green bottle does not look tall",
+      "yes",
+      "no"
+    ]
+  },
+  "time_ns": 14357933546
+}

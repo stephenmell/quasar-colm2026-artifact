@@ -1,0 +1,61 @@
+({421: 'context',
+  428: 'llm_query',
+  435: '.join',
+  441: 'return_result',
+  442: '.strip'},
+ ('def',
+  419,
+  ((),
+   ((('call', (420,), -1, ()),
+     ('def',
+      422,
+      ((430, 423),
+       ((('prim',
+          424,
+          'You will be given one document. Identify any rock band(s) mentioned '
+          'and extract details, but ONLY include bands whose formation year is '
+          '1999. For each qualifying band, provide a compact entry starting '
+          "with 'CANDIDATE:' and include: Band Name; Formation Year; Origin "
+          'Country; Country Area in km² (approx); Is area between 700 and 800 '
+          'inclusive (Yes/No); Style notes, specifically whether it blends '
+          "folk music with modern rock (Yes/No + short note); Bass guitarist's "
+          "name as of 16 December 2023; Bassist's date of birth; Bassist's "
+          "zodiac sign; Is bassist's sign Cancer (Yes/No). Include short "
+          'supporting quotes from the document where applicable. Keep each '
+          'candidate to 5-8 lines total. If the document contains no band '
+          'formed in 1999, output nothing.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (425,), 80, (424, 423)),
+         ('prim', 426, '\nEND_DOCUMENT'),
+         ('call', (427,), 80, (425, 426)),
+         ('call', (429,), 428, (427,)),
+         ('call', (431,), -1, (429,)),
+         ('call', (432,), 80, (430, 431))),
+        (432,)))),
+     ('call', (434,), 79, (421,)),
+     ('call', (433,), 434, (420, 422)),
+     ('prim', 436, '\n\n===== NEXT DOCUMENT =====\n\n'),
+     ('call', (437,), 435, (436, 433)),
+     ('prim',
+      438,
+      'From the following candidate entries (already filtered to bands formed '
+      'in 1999), select the single band that satisfies ALL of the following:\n'
+      "- The band's origin country has land area between 700 and 800 km² "
+      '(inclusive).\n'
+      '- The band blends or combines elements of folk music with modern rock '
+      'in its style.\n'
+      "- The band's bass guitarist (as of 16 December 2023) has zodiac sign "
+      'Cancer.\n'
+      '\n'
+      'If multiple candidates fit, choose the best documented match. If no '
+      'candidates fully match, propose one band from your broader knowledge '
+      'that does. IMPORTANT: Return ONLY the exact band name, with no extra '
+      'words or punctuation.\n'
+      '\n'
+      'CANDIDATES:\n'),
+     ('call', (439,), 80, (438, 437)),
+     ('call', (440,), 428, (439,)),
+     ('call', (443,), 442, (440,)),
+     ('call', (444,), 441, (443,))),
+    (444,)))))

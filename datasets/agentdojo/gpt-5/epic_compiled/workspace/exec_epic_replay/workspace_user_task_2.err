@@ -1,0 +1,44 @@
+Stage: semantics.reduce_graph_opportunistic
+Error: combine() argument 1 must be datetime.date, not tuple
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper_artifact/run_agentdojo.py", line 330, in main
+    epic_exec_trace = tuple(semantics.reduce_graph_opportunistic(epic_term))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 152, in reduce_graph_opportunistic
+    g = reduce_term(f, "bfs", False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 145, in reduce_term
+    return asyncio.get_event_loop().run_until_complete(reduce_term_async(e, tree_policy, blocking_async))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 125, in reduce_term_async
+    new_ops, toucheds = await graph_step(s, ident)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 197, in graph_step
+    return await graph_step_call(s, ident)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 216, in graph_step_call
+    return await graph_step_call_prim(s, call_name, outps, call_ident, call_f, inps, prim_idents[0], prim_idents[1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 239, in graph_step_call_prim
+    prim_res : Union[Body, Coroutine[Body, typing.Any, typing.Any]] = cast(f_obj)(*inp_objs)
+                                                                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/custom_translator.py", line 153, in __call__
+    return wrap(self._wrapper(*args, **kwargs))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/custom_translator.py", line 270, in wrapped
+    return (("prim", prim_var, function(*args, **kwargs)),), (prim_var,)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/tools/suite_common.py", line 78, in inner
+    return getattr(c, name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/custom_translator.py", line 153, in __call__
+    return wrap(self._wrapper(*args, **kwargs))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/custom_translator.py", line 270, in wrapped
+    return (("prim", prim_var, function(*args, **kwargs)),), (prim_var,)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: combine() argument 1 must be datetime.date, not tuple

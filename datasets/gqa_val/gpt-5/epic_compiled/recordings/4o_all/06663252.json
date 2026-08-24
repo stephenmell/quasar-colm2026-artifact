@@ -1,0 +1,47 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2335798",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "box"
+      ],
+      [
+        [
+          374,
+          286,
+          446,
+          375
+        ]
+      ],
+      13954281448
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2335798",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "What is the drink to the left of the box in the bottom part of the image?"
+      ],
+      "It appears to be a glass of water.",
+      1687762399
+    ]
+  ],
+  "best_text_match": []
+}

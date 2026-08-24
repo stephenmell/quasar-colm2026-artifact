@@ -1,0 +1,5 @@
+{
+  "result": "{'restaurant': {'name': 'Le Baratin', 'rating': 4.8, 'address': '3 Rue Jouye-Rouve, 75020 Paris, France', 'price_per_person_estimate': 30.0}, 'hotel': {'name': 'Good Night', 'rating': 5.0, 'address': '15 Rue Cler, 75007 Paris, France', 'min_price_per_night': 240.0, 'max_price_per_night': 400.0}, 'budget': {'total_budget': 500.0, 'estimated_total_min_cost': 300.0, 'within_budget': True, 'budget_remaining_if_within': 200.0, 'over_budget_by_if_any': 0.0}, 'notes': 'Selected a top-rated French cuisine restaurant suitable for both lunch and dinner, and a highly-rated hotel that fits the remaining budget based on minimum price whenever possible.'}",
+  "time_ns": 7422614446,
+  "utility": true
+}

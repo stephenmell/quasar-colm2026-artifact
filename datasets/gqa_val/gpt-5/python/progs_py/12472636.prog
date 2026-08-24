@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find("chair")
+    pillow_patches = image_patch.find("pillow")
+    mirror_patches = image_patch.find("mirror")
+
+    # If any key objects are missing, ask directly
+    if len(chair_patches) == 0 or len(pillow_patches) == 0 or len(mirror_patches) == 0:
+        return image_patch.simple_query("Do you see mirrors to the right of the pillow on the chair?")
+
+    for chair in chair_patches:
+        # Determine vertical bounds safely
+        vmin = min(chair.lower, chair.upper)
+        vmax = max(chair.lower, chair.upper)
+        for pillow in pillow_patches:
+            # Check if the pillow is on the chair (inside chair bbox)
+            if (chair.left <= pillow.horizontal_center <= chair.right) and (vmin <= pillow.vertical_center <= vmax):
+                # Check for any mirror to the right of this pillow
+                for mirror in mirror_patches:
+                    if mirror.horizontal_center > pillow.horizontal_center:
+                        return "yes"
+    return "no"

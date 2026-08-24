@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    bus_patches = None
+    carrying_man_patch = None
+    image_patch = None
+    is_carrying = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+        result = image_patch.simple_query('Is the bus to the right of the man that is carrying a backpack?')
+        return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+
+    def _else(bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+        carrying_man_patch = None
+
+        def _for(man_patch, carrying_man_patch, image_patch, is_carrying, man_patches):
+            is_carrying = man_patch.simple_query('Is the man carrying a backpack?') == 'yes'
+
+            def _if(carrying_man_patch, image_patch, is_carrying, man_patches):
+                carrying_man_patch = man_patch
+                return (carrying_man_patch, image_patch, is_carrying, man_patches)
+            carrying_man_patch, image_patch, is_carrying, man_patches = if_stmt(_if, None, and_expr(is_carrying, carrying_man_patch is None), (carrying_man_patch, image_patch, is_carrying, man_patches))
+            return (carrying_man_patch, image_patch, is_carrying, man_patches)
+        carrying_man_patch, image_patch, is_carrying, man_patches = for_stmt(_for, man_patches, (carrying_man_patch, image_patch, is_carrying, man_patches))
+
+        def _if(bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+            result = image_patch.simple_query('Is the bus to the right of the man that is carrying a backpack?')
+            return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+
+        def _else(bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+            bus_patches = image_patch.find('bus')
+
+            def _if(bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+                result = 'no'
+                return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+
+            def _else(bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+                result = 'no'
+
+                def _for(bus_patch, bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+
+                    def _if(bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result):
+                        result = 'yes'
+                        return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+                    bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result = if_stmt(_if, None, bus_patch.horizontal_center > carrying_man_patch.horizontal_center, (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result))
+                    return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+                bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result = for_stmt(_for, bus_patches, (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result))
+                return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+            bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result = if_stmt(_if, _else, len(bus_patches) == 0, (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result))
+            return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+        bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result = if_stmt(_if, _else, carrying_man_patch is None, (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result))
+        return (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result)
+    bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (bus_patches, carrying_man_patch, image_patch, is_carrying, man_patches, result))
+    return result

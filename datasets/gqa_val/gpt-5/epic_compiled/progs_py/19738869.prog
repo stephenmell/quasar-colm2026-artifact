@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_door = image_patch.exists("door")
+    is_car = image_patch.exists("car")
+    result = bool_to_yesno(is_door and is_car)
+    return result

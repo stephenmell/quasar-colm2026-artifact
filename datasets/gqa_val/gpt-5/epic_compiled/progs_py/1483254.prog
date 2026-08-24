@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    post_patches = image_patch.find("post")
+    bike_patches = image_patch.find("bike") + image_patch.find("bicycle")
+
+    if len(post_patches) == 0 or len(bike_patches) == 0:
+        result = image_patch.simple_query("Is the color of the post different than the bike?")
+    else:
+        color_options = ("red", "blue", "green", "yellow", "black", "white", "gray", "brown", "orange", "purple", "pink", "silver", "gold")
+        for post_patch in post_patches:
+            post_color = post_patch.best_text_match(color_options)
+            for bike_patch in bike_patches:
+                bike_color = bike_patch.best_text_match(color_options)
+                if bike_color != post_color:
+                    result = "yes"
+    return result

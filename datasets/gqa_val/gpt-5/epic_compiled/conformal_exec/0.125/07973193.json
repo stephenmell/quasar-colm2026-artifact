@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "The road is rough.",
+      "no",
+      "yes",
+      "The road is paved."
+    ]
+  },
+  "time_ns": 7936416159
+}

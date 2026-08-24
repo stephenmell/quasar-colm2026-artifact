@@ -1,0 +1,159 @@
+def execute_command():
+    DinnerOpenSchema = None
+    LunchOpenSchema = None
+    NamesSchema = None
+    RatingSchema = None
+    best_dinner_name = None
+    best_dinner_price_per_person = None
+    best_dinner_rating = None
+    best_lunch_name = None
+    best_lunch_price_per_person = None
+    best_lunch_rating = None
+    c = None
+    candidate_chinese = None
+    candidate_french = None
+    chinese_restaurants = None
+    city = None
+    cuisines = None
+    dinner_candidates = None
+    dinner_open_chinese = None
+    dinner_schema = None
+    french_restaurants = None
+    hours_text = None
+    lunch_candidates = None
+    lunch_open_french = None
+    lunch_schema = None
+    opening_hours_chinese = None
+    opening_hours_french = None
+    price_pp = None
+    restaurant_names = None
+    restaurant_prices_d = None
+    restaurant_prices_l = None
+    restaurant_ratings_text_d = None
+    restaurant_ratings_text_l = None
+    restaurants_schema = None
+    restaurants_str = None
+    result = None
+    rr = None
+    rtext = None
+    city = 'Paris'
+    restaurants_str = get_all_restaurants_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    restaurants_schema = query_ai_assistant('Here is a list of restaurants: {}. Extract ONLY the restaurant names as a clean JSON list of strings, preserving exact names.'.format(restaurants_str), NamesSchema)
+    restaurant_names = restaurants_schema.names
+    cuisines = get_cuisine_type_for_restaurants(restaurant_names)
+    french_restaurants = []
+
+    def _for(r, NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str):
+        c = cuisines.get(r)
+
+        def _if(NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str):
+            french_restaurants = french_restaurants + [r]
+            return (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str)
+        NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, c.find('French') != -1, (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str))
+        return (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str)
+    NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str = for_stmt(_for, restaurant_names, (NamesSchema, c, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str))
+    candidate_french = restaurant_names
+
+    def _if(NamesSchema, c, candidate_french, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str):
+        candidate_french = french_restaurants
+        return (NamesSchema, c, candidate_french, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str)
+    NamesSchema, c, candidate_french, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, len(french_restaurants) != 0, (NamesSchema, c, candidate_french, city, cuisines, french_restaurants, restaurant_names, restaurants_schema, restaurants_str))
+    opening_hours_french = check_restaurant_opening_hours(candidate_french)
+    LunchOpenSchema = CreateSchema('open_for_lunch', bool)
+    lunch_open_french = []
+
+    def _for(r, LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str):
+        hours_text = opening_hours_french.get(r)
+        lunch_schema = query_ai_assistant('Given this restaurant opening hours string: {}. Determine if the restaurant is generally open for lunch hours (around 12:00-15:00) on most days. Respond with open_for_lunch True if open during lunch most days, else False.'.format(hours_text), LunchOpenSchema)
+
+        def _if(LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str):
+            lunch_open_french = lunch_open_french + [r]
+            return (LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str)
+        LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, lunch_schema.open_for_lunch, (LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str))
+        return (LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str)
+    LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str = for_stmt(_for, candidate_french, (LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str))
+    lunch_candidates = candidate_french
+
+    def _if(LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str):
+        lunch_candidates = lunch_open_french
+        return (LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str)
+    LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str = if_stmt(_if, None, len(lunch_open_french) != 0, (LunchOpenSchema, NamesSchema, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, restaurant_names, restaurants_schema, restaurants_str))
+    restaurant_ratings_text_l = get_rating_reviews_for_restaurants(lunch_candidates)
+    restaurant_prices_l = get_price_for_restaurants(lunch_candidates)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_lunch_name = None
+    best_lunch_rating = -1.0
+    best_lunch_price_per_person = float('inf')
+
+    def _for(r, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+        rtext = restaurant_ratings_text_l.get(r)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this restaurant rating and reviews: {}'.format(rtext), RatingSchema)
+        price_pp = restaurant_prices_l.get(r)
+
+        def _if(LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+            best_lunch_name = r
+            best_lunch_rating = rr.rating
+            best_lunch_price_per_person = price_pp
+            return (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+        LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = if_stmt(_if, None, or_expr(rr.rating > best_lunch_rating, rr.rating == best_lunch_rating and price_pp < best_lunch_price_per_person), (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+        return (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+    LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = for_stmt(_for, lunch_candidates, (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+    chinese_restaurants = []
+
+    def _for(r, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+        c = cuisines.get(r)
+
+        def _if(LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+            chinese_restaurants = chinese_restaurants + [r]
+            return (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+        LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = if_stmt(_if, None, c.find('Chinese') != -1, (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+        return (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+    LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = for_stmt(_for, restaurant_names, (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+    candidate_chinese = restaurant_names
+
+    def _if(LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+        candidate_chinese = chinese_restaurants
+        return (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+    LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = if_stmt(_if, None, len(chinese_restaurants) != 0, (LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+    opening_hours_chinese = check_restaurant_opening_hours(candidate_chinese)
+    DinnerOpenSchema = CreateSchema('open_for_dinner', bool)
+    dinner_open_chinese = []
+
+    def _for(r, DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+        hours_text = opening_hours_chinese.get(r)
+        dinner_schema = query_ai_assistant('Given this restaurant opening hours string: {}. Determine if the restaurant is generally open for dinner hours (around 19:00-22:00) on most days. Respond with open_for_dinner True if open during dinner most days, else False.'.format(hours_text), DinnerOpenSchema)
+
+        def _if(DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+            dinner_open_chinese = dinner_open_chinese + [r]
+            return (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+        DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = if_stmt(_if, None, dinner_schema.open_for_dinner, (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+        return (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+    DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = for_stmt(_for, candidate_chinese, (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+    dinner_candidates = candidate_chinese
+
+    def _if(DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+        dinner_candidates = dinner_open_chinese
+        return (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+    DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = if_stmt(_if, None, len(dinner_open_chinese) != 0, (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_l, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+    restaurant_ratings_text_d = get_rating_reviews_for_restaurants(dinner_candidates)
+    restaurant_prices_d = get_price_for_restaurants(dinner_candidates)
+    best_dinner_name = None
+    best_dinner_rating = -1.0
+    best_dinner_price_per_person = float('inf')
+
+    def _for(r, DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+        rtext = restaurant_ratings_text_d.get(r)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this restaurant rating and reviews: {}'.format(rtext), RatingSchema)
+        price_pp = restaurant_prices_d.get(r)
+
+        def _if(DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext):
+            best_dinner_name = r
+            best_dinner_rating = rr.rating
+            best_dinner_price_per_person = price_pp
+            return (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+        DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = if_stmt(_if, None, or_expr(rr.rating > best_dinner_rating, rr.rating == best_dinner_rating and price_pp < best_dinner_price_per_person), (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+        return (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext)
+    DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext = for_stmt(_for, dinner_candidates, (DinnerOpenSchema, LunchOpenSchema, NamesSchema, RatingSchema, best_dinner_name, best_dinner_price_per_person, best_dinner_rating, best_lunch_name, best_lunch_price_per_person, best_lunch_rating, c, candidate_chinese, candidate_french, chinese_restaurants, city, cuisines, dinner_candidates, dinner_open_chinese, dinner_schema, french_restaurants, hours_text, lunch_candidates, lunch_open_french, lunch_schema, opening_hours_chinese, opening_hours_french, price_pp, restaurant_names, restaurant_prices_d, restaurant_prices_l, restaurant_ratings_text_d, restaurant_ratings_text_l, restaurants_schema, restaurants_str, rr, rtext))
+    result = {'lunch_restaurant_name': best_lunch_name, 'lunch_price_per_person': best_lunch_price_per_person, 'dinner_restaurant_name': best_dinner_name, 'dinner_price_per_person': best_dinner_price_per_person}
+    return result

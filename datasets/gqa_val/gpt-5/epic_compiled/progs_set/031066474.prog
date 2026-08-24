@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    furniture_patches = None
+    image_patch = None
+    is_decorative = None
+    result = None
+    image_patch = ImagePatch(image)
+    furniture_patches = image_patch.find('furniture')
+
+    def _if(furniture_patches, image_patch, is_decorative, result):
+        result = image_patch.simple_query('What type of furniture is not decorative?')
+        return (furniture_patches, image_patch, is_decorative, result)
+
+    def _else(furniture_patches, image_patch, is_decorative, result):
+        result = None
+
+        def _for(furniture_patch, furniture_patches, image_patch, is_decorative, result):
+            is_decorative = furniture_patch.verify_property('furniture', 'decorative')
+
+            def _if(furniture_patches, image_patch, is_decorative, result):
+                result = furniture_patch.simple_query('What type of furniture is this?')
+                return (furniture_patches, image_patch, is_decorative, result)
+            furniture_patches, image_patch, is_decorative, result = if_stmt(_if, None, and_expr(not is_decorative, not result), (furniture_patches, image_patch, is_decorative, result))
+            return (furniture_patches, image_patch, is_decorative, result)
+        furniture_patches, image_patch, is_decorative, result = for_stmt(_for, furniture_patches, (furniture_patches, image_patch, is_decorative, result))
+
+        def _if(furniture_patches, image_patch, is_decorative, result):
+            result = image_patch.simple_query('What type of furniture is not decorative?')
+            return (furniture_patches, image_patch, is_decorative, result)
+        furniture_patches, image_patch, is_decorative, result = if_stmt(_if, None, not_expr(result), (furniture_patches, image_patch, is_decorative, result))
+        return (furniture_patches, image_patch, is_decorative, result)
+    furniture_patches, image_patch, is_decorative, result = if_stmt(_if, _else, len(furniture_patches) == 0, (furniture_patches, image_patch, is_decorative, result))
+    return result

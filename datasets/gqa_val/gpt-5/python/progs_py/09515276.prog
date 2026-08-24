@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    # If no woman is found, ask the image directly
+    if len(woman_patches) == 0:
+        return image_patch.simple_query("What color does the t-shirt the woman is wearing have?")
+    for woman_patch in woman_patches:
+        # Try to find the t-shirt (or similar) within the woman's patch
+        for name in ["t-shirt", "t shirt", "tshirt", "tee shirt", "shirt", "top"]:
+            clothing_patches = woman_patch.find(name)
+            if len(clothing_patches) > 0:
+                # Ask the color on the clothing patch
+                if name in ["shirt", "top"]:
+                    return clothing_patches[0].simple_query("What color is the shirt?")
+                else:
+                    return clothing_patches[0].simple_query("What color is the t-shirt?")
+        # If no explicit clothing patch found, ask within the woman's crop
+        answer = woman_patch.simple_query("What color does the t-shirt the woman is wearing have?")
+        if answer:
+            return answer
+    # Fallback: ask the whole image
+    return image_patch.simple_query("What color does the t-shirt the woman is wearing have?")

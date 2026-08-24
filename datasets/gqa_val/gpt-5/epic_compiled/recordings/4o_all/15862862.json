@@ -1,0 +1,129 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2331576",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "person"
+      ],
+      [
+        [
+          55,
+          25,
+          270,
+          333
+        ],
+        [
+          36,
+          253,
+          63,
+          299
+        ],
+        [
+          481,
+          223,
+          492,
+          238
+        ],
+        [
+          329,
+          81,
+          500,
+          332
+        ]
+      ],
+      7165698559
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2331576",
+          [
+            55,
+            25,
+            270,
+            333
+          ]
+        ],
+        "Is the person wearing a mask?"
+      ],
+      "Yes.",
+      845331724
+    ],
+    [
+      [
+        [
+          "2331576",
+          [
+            36,
+            253,
+            63,
+            299
+          ]
+        ],
+        "Is the person wearing a mask?"
+      ],
+      "I can't tell if the person is wearing a mask.",
+      1025877891
+    ],
+    [
+      [
+        [
+          "2331576",
+          [
+            481,
+            223,
+            492,
+            238
+          ]
+        ],
+        "Is the person wearing a mask?"
+      ],
+      "I don't know.",
+      1986038457
+    ],
+    [
+      [
+        [
+          "2331576",
+          [
+            329,
+            81,
+            500,
+            332
+          ]
+        ],
+        "Is the person wearing a mask?"
+      ],
+      "No.",
+      644549869
+    ],
+    [
+      [
+        [
+          "2331576",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "Do you see people to the right of the person that is wearing a mask?"
+      ],
+      "Yes.",
+      1112935954
+    ]
+  ],
+  "best_text_match": []
+}

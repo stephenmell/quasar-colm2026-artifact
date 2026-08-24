@@ -1,0 +1,8 @@
+def execute_command(image) -> str:
+    has_chimney = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_chimney = image_patch.exists('chimney')
+    result = bool_to_yesno(has_chimney)
+    return result

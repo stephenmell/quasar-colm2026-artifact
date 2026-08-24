@@ -1,0 +1,72 @@
+def execute_command(image) -> str:
+    door_patches = None
+    found_match = None
+    image_patch = None
+    is_metal = None
+    is_open = None
+    is_silver = None
+    metal_door_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    metal_door_patches = image_patch.find('metal door')
+
+    def _if(door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+        door_patches = image_patch.find('door')
+
+        def _if(door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+            result = image_patch.simple_query('Does the metal door look open and silver?')
+            return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+
+        def _else(door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+            found_match = False
+
+            def _for(door_patch, door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+                is_metal = door_patch.verify_property('door', 'metal')
+                is_open = door_patch.verify_property('door', 'open')
+                is_silver = door_patch.verify_property('door', 'silver')
+
+                def _if(door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+                    found_match = True
+                    return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+                door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result = if_stmt(_if, None, and_expr(is_metal, and_expr(is_open, is_silver)), (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result))
+                return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+            door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result = for_stmt(_for, door_patches, (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result))
+
+            def _if(door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+                result = 'yes'
+                return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+
+            def _else(door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+                result = 'no'
+                return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+            door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result = if_stmt(_if, _else, found_match, (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result))
+            return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+        door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result = if_stmt(_if, _else, len(door_patches) == 0, (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result))
+        return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+
+    def _else(door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result):
+        found_match = False
+
+        def _for(md_patch, found_match, image_patch, is_open, is_silver, metal_door_patches, result):
+            is_open = md_patch.verify_property('metal door', 'open')
+            is_silver = md_patch.verify_property('metal door', 'silver')
+
+            def _if(found_match, image_patch, is_open, is_silver, metal_door_patches, result):
+                found_match = True
+                return (found_match, image_patch, is_open, is_silver, metal_door_patches, result)
+            found_match, image_patch, is_open, is_silver, metal_door_patches, result = if_stmt(_if, None, and_expr(is_open, is_silver), (found_match, image_patch, is_open, is_silver, metal_door_patches, result))
+            return (found_match, image_patch, is_open, is_silver, metal_door_patches, result)
+        found_match, image_patch, is_open, is_silver, metal_door_patches, result = for_stmt(_for, metal_door_patches, (found_match, image_patch, is_open, is_silver, metal_door_patches, result))
+
+        def _if(found_match, image_patch, is_open, is_silver, metal_door_patches, result):
+            result = 'yes'
+            return (found_match, image_patch, is_open, is_silver, metal_door_patches, result)
+
+        def _else(found_match, image_patch, is_open, is_silver, metal_door_patches, result):
+            result = 'no'
+            return (found_match, image_patch, is_open, is_silver, metal_door_patches, result)
+        found_match, image_patch, is_open, is_silver, metal_door_patches, result = if_stmt(_if, _else, found_match, (found_match, image_patch, is_open, is_silver, metal_door_patches, result))
+        return (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result)
+    door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result = if_stmt(_if, _else, len(metal_door_patches) == 0, (door_patches, found_match, image_patch, is_metal, is_open, is_silver, metal_door_patches, result))
+    return result

@@ -1,0 +1,99 @@
+({1730: 'context', 1733: 'llm_query', 1744: '.join', 1752: 'return_result'},
+ ('def',
+  1728,
+  ((),
+   ((('call', (1729,), -1, ()),
+     ('def',
+      1731,
+      ((1739, 1732),
+       ((('prim',
+          1734,
+          'You are given a document. Your task is to find candidate answers '
+          'for this user query:\n'
+          '\n'
+          'QUERY: "Provide the name of a game developed by a software company '
+          'named after an amphibian, yet the company had a different name in '
+          'the early 1990s when it was first established. The game was '
+          'published in the early 1990s in November on DOS and is '
+          'single-player shareware. Exactly three people are credited for the '
+          'game, and two of them share the same family name."\n'
+          '\n'
+          'INSTRUCTIONS:\n'
+          '- Read the document below. Extract any games and companies that '
+          'could satisfy all or part of the query.\n'
+          '- For each candidate game found in this document, list:\n'
+          '  - Title\n'
+          '  - Developer (and note if the developer name is amphibian-themed, '
+          'and what its earlier name was when first established in the early '
+          '1990s)\n'
+          '  - Publisher (if relevant)\n'
+          '  - Release month and year (specifically check if it’s November in '
+          'the early 1990s)\n'
+          '  - Platform(s) (verify DOS)\n'
+          '  - Game modes (verify single-player only)\n'
+          '  - Business model (verify shareware)\n'
+          '  - Credits: list the credited people; explicitly state if there '
+          'are exactly three and whether two share the same family name\n'
+          '  - Quotes: include verbatim lines from the document that support '
+          'the details (release date, platform, mode, shareware, credits, '
+          'developer name and its earlier name)\n'
+          '  - Assessment: Does this candidate match ALL constraints? If not, '
+          'which constraints are missing?\n'
+          '- If the document includes information about companies named after '
+          'amphibians (frog, toad, salamander, newt, axolotl, caecilian) that '
+          'had a different name at establishment in the early 1990s, list them '
+          'with their old and new names and dates, with quotes.\n'
+          '- If the document does not contain relevant info, say "No '
+          'candidates in this document."\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1735,), 80, (1734, 1732)),
+         ('prim', 1736, '\nEND_DOCUMENT'),
+         ('call', (1737,), 80, (1735, 1736)),
+         ('call', (1738,), 1733, (1737,)),
+         ('call', (1740,), -1, (1738,)),
+         ('call', (1741,), 80, (1739, 1740))),
+        (1741,)))),
+     ('call', (1743,), 79, (1730,)),
+     ('call', (1742,), 1743, (1729, 1731)),
+     ('prim',
+      1746,
+      'You will receive extracted notes from multiple documents. Your goal is '
+      'to answer the original query as precisely as possible.\n'
+      '\n'
+      'ORIGINAL QUERY:\n'
+      '"Provide the name of a game developed by a software company named after '
+      'an amphibian, yet the company had a different name in the early 1990s '
+      'when it was first established. The game was published in the early '
+      '1990s in November on DOS and is single-player shareware. Exactly three '
+      'people are credited for the game, and two of them share the same family '
+      'name."\n'
+      '\n'
+      'NOTES FROM DOCUMENTS:\n'),
+     ('prim', 1745, '\n\n-----\n\n'),
+     ('call', (1747,), 1744, (1745, 1742)),
+     ('call', (1748,), 80, (1746, 1747)),
+     ('prim',
+      1749,
+      '\n'
+      '\n'
+      'TASK:\n'
+      '- From the candidates, choose the single best match that satisfies ALL '
+      'constraints. Use the quotes provided to verify each requirement:\n'
+      '  1) Developer is a company named after an amphibian, and that company '
+      'had a different name in the early 1990s when it was first established '
+      '(state both names).\n'
+      '  2) The game was released in November in the early 1990s.\n'
+      '  3) Platform includes DOS.\n'
+      '  4) Single-player only.\n'
+      '  5) Shareware business model.\n'
+      '  6) Exactly three credited people, with two sharing the same family '
+      'name.\n'
+      '- If multiple candidates seem close, prefer the one with explicit '
+      'quoted evidence fulfilling all constraints.\n'
+      '- Output ONLY the exact title of the correct game, with no extra words, '
+      'punctuation, or explanations.'),
+     ('call', (1750,), 80, (1748, 1749)),
+     ('call', (1751,), 1733, (1750,)),
+     ('call', (1753,), 1752, (1751,))),
+    (1753,)))))

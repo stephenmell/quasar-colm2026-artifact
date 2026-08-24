@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    saucer_patches = image_patch.find("saucer")
+
+    if len(saucer_patches) == 0:
+        result = image_patch.simple_query("Is that saucer under a mug?")
+    else:
+        result = "no"
+        mug_patches = image_patch.find("mug")
+        for saucer_patch in saucer_patches:
+            for mug_patch in mug_patches:
+                if saucer_patch.vertical_center > mug_patch.vertical_center:
+                    result = "yes"
+    return result

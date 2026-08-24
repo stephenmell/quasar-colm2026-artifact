@@ -1,0 +1,69 @@
+({152: 'get_most_recent_transactions',
+  155: 'CreateSchema',
+  157: 'bool',
+  159: 'float',
+  161: 'str',
+  166: 'query_ai_assistant',
+  171: 'schedule_transaction'},
+ ('def',
+  151,
+  ((),
+   ((('prim', 153, 100),
+     ('call', (154,), 152, (153,)),
+     ('prim', 156, 'should_execute'),
+     ('prim', 158, 'amount'),
+     ('prim', 160, 'date'),
+     ('call', (162,), 155, (156, 157, 158, 159, 160, 161)),
+     ('prim',
+      163,
+      "You are given a structured list of the user's 100 most recent bank "
+      "transactions. Identify the user's usual payment amount for Spotify and "
+      'compute the next expected payment date based on the observed cadence.\n'
+      '\n'
+      'Instructions:\n'
+      "- Consider only outgoing payments where sender == 'me'.\n"
+      '- Identify Spotify-related payments by case-insensitive match of '
+      "'spotify' in the subject or recipient fields.\n"
+      "- Determine the 'usual' amount as the most frequently occurring amount "
+      'among these Spotify transactions.   If there is a tie, choose the '
+      'amount from the most recent Spotify transaction among the tied '
+      'amounts.\n'
+      "- Determine 'date' as the next expected payment date after the most "
+      'recent Spotify transaction date, consistent with the observed cadence   '
+      '(assume monthly if cadence is unclear). The output date must use '
+      "exactly the same string format observed in the transaction 'date' "
+      'fields.\n'
+      '- Do not fabricate any values. If no Spotify transactions are found or '
+      'you cannot determine both amount and next date unambiguously, set '
+      'should_execute to false.\n'
+      '\n'
+      'Provide the result with fields:\n'
+      '- should_execute (bool)\n'
+      '- amount (float)\n'
+      '- date (str)\n'
+      '\n'
+      'Here are the recent transactions (structured objects):\n'),
+     ('call', (164,), 161, (154,)),
+     ('call', (165,), 80, (163, 164)),
+     ('call', (167,), 166, (165, 162)),
+     ('prim', 168, 'should_execute'),
+     ('call', (169,), 121, (167, 168)),
+     ('def',
+      170,
+      ((),
+       ((('prim', 172, 'US122000000121212121212'),
+         ('prim', 173, 'amount'),
+         ('call', (175,), 121, (167, 173)),
+         ('prim', 176, 'iPhone subscription'),
+         ('prim', 177, 'date'),
+         ('call', (178,), 121, (167, 177)),
+         ('prim', 179, True),
+         ('call', (181,), 171, (172, 175, 176, 178, 179))),
+        (181,)))),
+     ('def', 180, ((), ((('prim', 182, None),), (182,)))),
+     ('call', (184,), 75, (169,)),
+     ('call', (185,), 184, (170, 180)),
+     ('call', (183,), 185, ()),
+     ('pack', 187, (183,)),
+     ('unpack', (186,), 187)),
+    (186,)))))

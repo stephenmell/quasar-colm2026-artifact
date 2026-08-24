@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    racket_patches = image_patch.find("racket")
+    if len(racket_patches) == 0:
+        result = image_patch.simple_query("Do you see any players to the right of the ball that is to the right of the racket?")
+    else:
+        ball_patches = image_patch.find("ball")
+        if len(ball_patches) == 0:
+            result = "no"
+        else:
+            player_patches = image_patch.find("player")
+            considered_player_patches = player_patches
+            if len(considered_player_patches) == 0:
+                considered_player_patches = image_patch.find("person")
+
+            if len(considered_player_patches) == 0:
+                result = "no"
+            else:
+                for ball_patch in ball_patches:
+                    ball_right_of_any_racket = False
+                    for racket_patch in racket_patches:
+                        if ball_patch.horizontal_center > racket_patch.horizontal_center:
+                            ball_right_of_any_racket = True
+                    if ball_right_of_any_racket:
+                        for player_patch in considered_player_patches:
+                            if player_patch.horizontal_center > ball_patch.horizontal_center:
+                                result = "yes"
+    return result

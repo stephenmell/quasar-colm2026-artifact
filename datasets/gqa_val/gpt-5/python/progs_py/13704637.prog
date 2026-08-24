@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    boy_patches = image_patch.find("boy")
+    # If no boy is found, ask directly
+    if len(boy_patches) == 0:
+        return image_patch.simple_query("Of which color are the goggles of the boy?")
+    # Search for goggles within each boy patch
+    for boy_patch in boy_patches:
+        goggles_patches = boy_patch.find("goggles")
+        if len(goggles_patches) > 0:
+            # Ask the color focused on the goggles
+            return goggles_patches[0].simple_query("What color are the goggles?")
+    # Fallbacks if goggles not detected within boy crop
+    goggles_patches = image_patch.find("goggles")
+    if len(goggles_patches) > 0:
+        return goggles_patches[0].simple_query("Of which color are the goggles of the boy?")
+    return image_patch.simple_query("Of which color are the goggles of the boy?")

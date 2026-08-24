@@ -1,0 +1,30 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    ski_patches = None
+    image_patch = ImagePatch(image)
+    ski_patches = image_patch.find('ski')
+
+    def _if(image_patch, ski_patches):
+        ski_patches = image_patch.find('skis')
+        return (image_patch, ski_patches)
+    image_patch, ski_patches = if_stmt(_if, None, len(ski_patches) == 0, (image_patch, ski_patches))
+
+    def _if(image_patch, result, ski_patches):
+        result = image_patch.simple_query('Are there orange skis in the image?')
+        return (image_patch, result, ski_patches)
+
+    def _else(image_patch, result, ski_patches):
+        result = 'no'
+
+        def _for(ski_patch, image_patch, result, ski_patches):
+
+            def _if(image_patch, result, ski_patches):
+                result = 'yes'
+                return (image_patch, result, ski_patches)
+            image_patch, result, ski_patches = if_stmt(_if, None, ski_patch.verify_property('ski', 'orange'), (image_patch, result, ski_patches))
+            return (image_patch, result, ski_patches)
+        image_patch, result, ski_patches = for_stmt(_for, ski_patches, (image_patch, result, ski_patches))
+        return (image_patch, result, ski_patches)
+    image_patch, result, ski_patches = if_stmt(_if, _else, len(ski_patches) == 0, (image_patch, result, ski_patches))
+    return result

@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    saucer_patches = image_patch.find("saucer")
+    if len(saucer_patches) == 0:
+        result = image_patch.simple_query("Is the white saucer in the top part of the image?")
+    else:
+        result = "no"
+        for saucer_patch in saucer_patches:
+            is_white = saucer_patch.verify_property("saucer", "white")
+            if is_white:
+                if saucer_patch.vertical_center >= image_patch.vertical_center:
+                    result = "yes"
+    return result

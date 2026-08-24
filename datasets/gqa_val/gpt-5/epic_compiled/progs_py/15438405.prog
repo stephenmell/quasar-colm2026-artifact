@@ -1,0 +1,13 @@
+# Which place is it?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+    questions = ("Which place is it?", "What place is this?", "Where is this?", "What is this place?")
+    for q in questions:
+        if not result:
+            answer = image_patch.simple_query(q)
+            if answer:
+                result = answer
+    if not result:
+        result = image_patch.simple_query("Which place is it?")
+    return result

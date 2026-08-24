@@ -1,0 +1,48 @@
+def execute_command():
+    FeedbackScoresSummarySchema = None
+    RelevanceSchema = None
+    extraction = None
+    files = None
+    relevance = None
+    result = None
+    target_file = None
+    files = search_files_by_filename('feedback.xlsx')
+
+    def _if(files):
+        files = search_files('feedback')
+        return (files,)
+    files, = if_stmt(_if, None, len(files) == 0, (files,))
+    result = "I couldn't find any file likely containing the requested feedback."
+    target_file = None
+
+    def _for(f, files, result, target_file):
+
+        def _if(files, result, target_file):
+            target_file = f
+            return (files, result, target_file)
+        files, result, target_file = if_stmt(_if, None, and_expr(target_file is None, f.filename.lower() == 'feedback.xlsx'), (files, result, target_file))
+        return (files, result, target_file)
+    files, result, target_file = for_stmt(_for, files, (files, result, target_file))
+
+    def _if(RelevanceSchema, files, relevance, result, target_file):
+        RelevanceSchema = CreateSchema('is_relevant', bool)
+
+        def _for(f, RelevanceSchema, files, relevance, result, target_file):
+            relevance = query_ai_assistant('You are given a file and must decide if it likely contains user feedback entries with numeric scores and mentions any of these names: Olivia Smith, Mia Anderson, Mason Thompson. Reply true if yes, false otherwise. Filename: {}. Content: {}'.format(f.filename, f.content), RelevanceSchema)
+
+            def _if(RelevanceSchema, files, relevance, result, target_file):
+                target_file = f
+                return (RelevanceSchema, files, relevance, result, target_file)
+            RelevanceSchema, files, relevance, result, target_file = if_stmt(_if, None, and_expr(relevance.is_relevant, target_file is None), (RelevanceSchema, files, relevance, result, target_file))
+            return (RelevanceSchema, files, relevance, result, target_file)
+        RelevanceSchema, files, relevance, result, target_file = for_stmt(_for, files, (RelevanceSchema, files, relevance, result, target_file))
+        return (RelevanceSchema, files, relevance, result, target_file)
+    RelevanceSchema, files, relevance, result, target_file = if_stmt(_if, None, and_expr(target_file is None, len(files) != 0), (RelevanceSchema, files, relevance, result, target_file))
+
+    def _if(FeedbackScoresSummarySchema, RelevanceSchema, extraction, files, relevance, result, target_file):
+        FeedbackScoresSummarySchema = CreateSchema('summary', str)
+        extraction = query_ai_assistant("From the following file content, extract the numeric score that each of these users gave in the feedback: Olivia Smith, Mia Anderson, and Mason Thompson. Rules: - Only extract a numeric rating/score clearly associated with the user. - If multiple scores per user appear, use the overall score; if no overall score is explicit, use the most prominent rating mentioned for that user. - If a user is not present, write 'No score found for <name>'. Return a concise, three-line summary in this exact format:\nOlivia Smith: <score or No score found for Olivia Smith>\nMia Anderson: <score or No score found for Mia Anderson>\nMason Thompson: <score or No score found for Mason Thompson>\nFile name: {}. File content: {}".format(target_file.filename, target_file.content), FeedbackScoresSummarySchema)
+        result = extraction.summary
+        return (FeedbackScoresSummarySchema, RelevanceSchema, extraction, files, relevance, result, target_file)
+    FeedbackScoresSummarySchema, RelevanceSchema, extraction, files, relevance, result, target_file = if_stmt(_if, None, target_file is not None, (FeedbackScoresSummarySchema, RelevanceSchema, extraction, files, relevance, result, target_file))
+    return result

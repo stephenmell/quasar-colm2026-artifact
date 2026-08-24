@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    color_options = None
+    image_patch = None
+    result = None
+    suit_patches = None
+    image_patch = ImagePatch(image)
+    suit_patches = image_patch.find('suit')
+
+    def _if(color_options, image_patch, result, suit_patches):
+        result = image_patch.simple_query('What color does the suit have?')
+        return (color_options, image_patch, result, suit_patches)
+
+    def _else(color_options, image_patch, result, suit_patches):
+        color_options = ('black', 'white', 'gray', 'blue', 'brown', 'red', 'green', 'yellow', 'orange', 'pink', 'purple', 'beige')
+        result = None
+
+        def _for(suit_patch, color_options, image_patch, result, suit_patches):
+
+            def _if(color_options, image_patch, result, suit_patches):
+                result = suit_patch.best_text_match(color_options)
+                return (color_options, image_patch, result, suit_patches)
+            color_options, image_patch, result, suit_patches = if_stmt(_if, None, not_expr(result), (color_options, image_patch, result, suit_patches))
+            return (color_options, image_patch, result, suit_patches)
+        color_options, image_patch, result, suit_patches = for_stmt(_for, suit_patches, (color_options, image_patch, result, suit_patches))
+
+        def _if(color_options, image_patch, result, suit_patches):
+            result = image_patch.simple_query('What color does the suit have?')
+            return (color_options, image_patch, result, suit_patches)
+        color_options, image_patch, result, suit_patches = if_stmt(_if, None, not_expr(result), (color_options, image_patch, result, suit_patches))
+        return (color_options, image_patch, result, suit_patches)
+    color_options, image_patch, result, suit_patches = if_stmt(_if, _else, len(suit_patches) == 0, (color_options, image_patch, result, suit_patches))
+    return result

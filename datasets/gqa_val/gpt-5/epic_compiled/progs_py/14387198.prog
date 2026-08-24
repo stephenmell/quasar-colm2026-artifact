@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find SUVs (try both lowercase and uppercase just in case)
+    suv_patches = image_patch.find("suv")
+    if len(suv_patches) == 0:
+        suv_patches = image_patch.find("SUV")
+
+    if len(suv_patches) == 0:
+        # If no SUV is found, ask directly due to relational complexity
+        result = image_patch.simple_query("Are there people to the right of the animals that are to the right of the SUV?")
+    else:
+        animal_patches = image_patch.find("animal")
+        person_patches = image_patch.find("person")
+
+        for suv_patch in suv_patches:
+            for animal_patch in animal_patches:
+                if animal_patch.horizontal_center > suv_patch.horizontal_center:
+                    for person_patch in person_patches:
+                        if person_patch.horizontal_center > animal_patch.horizontal_center:
+                            result = "yes"
+    return result

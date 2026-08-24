@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    frisbee_exists = None
+    frisbee_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    frisbee_exists = image_patch.exists('frisbee')
+
+    def _if(frisbee_exists, frisbee_patches, image_patch, result):
+        frisbee_patches = image_patch.find('frisbee')
+
+        def _for(frisbee_patch, frisbee_exists, frisbee_patches, image_patch, result):
+
+            def _if(frisbee_exists, frisbee_patches, image_patch, result):
+                result = 'yes'
+                return (frisbee_exists, frisbee_patches, image_patch, result)
+            frisbee_exists, frisbee_patches, image_patch, result = if_stmt(_if, None, frisbee_patch.verify_property('frisbee', 'blue'), (frisbee_exists, frisbee_patches, image_patch, result))
+            return (frisbee_exists, frisbee_patches, image_patch, result)
+        frisbee_exists, frisbee_patches, image_patch, result = for_stmt(_for, frisbee_patches, (frisbee_exists, frisbee_patches, image_patch, result))
+        return (frisbee_exists, frisbee_patches, image_patch, result)
+
+    def _else(frisbee_exists, frisbee_patches, image_patch, result):
+        result = image_patch.simple_query('Are there frisbees in this image that are blue?')
+        return (frisbee_exists, frisbee_patches, image_patch, result)
+    frisbee_exists, frisbee_patches, image_patch, result = if_stmt(_if, _else, frisbee_exists, (frisbee_exists, frisbee_patches, image_patch, result))
+    return result

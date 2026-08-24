@@ -1,0 +1,15 @@
+# Are the clouds small?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cloud_patches = image_patch.find("cloud")
+
+    if len(cloud_patches) == 0:
+        result = image_patch.simple_query("Are the clouds small?")
+    else:
+        all_small = True
+        for cloud_patch in cloud_patches:
+            is_small = cloud_patch.verify_property("cloud", "small")
+            if not is_small:
+                all_small = False
+        result = bool_to_yesno(all_small)
+    return result

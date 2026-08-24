@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    targets = ["ball", "balls", "sports ball"]
+    return bool_to_yesno(any(image_patch.exists(t) for t in targets))

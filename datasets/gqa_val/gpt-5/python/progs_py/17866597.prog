@@ -1,0 +1,40 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find("book")
+    if len(book_patches) == 0:
+        # If no book is found, query the image directly
+        return image_patch.simple_query("Where in this photo is the book of the shelf, in the bottom or in the top?")
+    
+    # Try to pick the book that is on/near a shelf
+    shelf_patches = image_patch.find("shelf")
+    selected_book = None
+
+    if len(shelf_patches) > 0:
+        # Prefer a book whose bbox intersects a shelf bbox
+        for b in book_patches:
+            for s in shelf_patches:
+                if (b.right > s.left and b.left < s.right and b.upper > s.lower and b.lower < s.upper):
+                    selected_book = b
+                    break
+            if selected_book is not None:
+                break
+
+        # If none intersect, pick the one closest (vertically) to any shelf
+        if selected_book is None:
+            best_b = None
+            best_dist = None
+            for b in book_patches:
+                dist = min(abs(b.vertical_center - s.vertical_center) for s in shelf_patches)
+                if best_dist is None or dist < best_dist:
+                    best_dist = dist
+                    best_b = b
+            selected_book = best_b
+    else:
+        # No shelf found; default to the first book
+        selected_book = book_patches[0]
+
+    # Determine position relative to the image center (follow pattern used above)
+    if selected_book.vertical_center < image_patch.vertical_center:
+        return "bottom"
+    else:
+        return "top"

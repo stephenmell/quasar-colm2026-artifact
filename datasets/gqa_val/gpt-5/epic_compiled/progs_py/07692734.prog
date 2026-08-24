@@ -1,0 +1,12 @@
+# Is the ground sandy?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ground_patches = image_patch.find("ground")
+    if len(ground_patches) == 0:
+        result = image_patch.simple_query("Is the ground sandy?")
+    else:
+        result = "no"
+        for ground_patch in ground_patches:
+            if ground_patch.verify_property("ground", "sandy"):
+                result = "yes"
+    return result

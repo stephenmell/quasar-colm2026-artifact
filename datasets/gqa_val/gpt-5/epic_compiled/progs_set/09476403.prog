@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    giraffe_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    giraffe_patches = image_patch.find('giraffe')
+
+    def _if(giraffe_patches, image_patch, result):
+        result = image_patch.simple_query('Is there a giraffe in the photo that is brown?')
+        return (giraffe_patches, image_patch, result)
+
+    def _else(giraffe_patches, image_patch, result):
+
+        def _for(giraffe_patch, giraffe_patches, image_patch, result):
+
+            def _if(giraffe_patches, image_patch, result):
+                result = 'yes'
+                return (giraffe_patches, image_patch, result)
+            giraffe_patches, image_patch, result = if_stmt(_if, None, giraffe_patch.verify_property('giraffe', 'brown'), (giraffe_patches, image_patch, result))
+            return (giraffe_patches, image_patch, result)
+        giraffe_patches, image_patch, result = for_stmt(_for, giraffe_patches, (giraffe_patches, image_patch, result))
+        return (giraffe_patches, image_patch, result)
+    giraffe_patches, image_patch, result = if_stmt(_if, _else, len(giraffe_patches) == 0, (giraffe_patches, image_patch, result))
+    return result

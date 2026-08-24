@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    pancake_patches = None
+    pot_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pot_patches = image_patch.find('pot')
+
+    def _if(image_patch, pancake_patches, pot_patches, result):
+        result = image_patch.simple_query('Do you see a pancake to the right of the pot?')
+        return (image_patch, pancake_patches, pot_patches, result)
+
+    def _else(image_patch, pancake_patches, pot_patches, result):
+        pancake_patches = image_patch.find('pancake')
+
+        def _if(image_patch, pancake_patches, pot_patches, result):
+            result = 'no'
+            return (image_patch, pancake_patches, pot_patches, result)
+
+        def _else(image_patch, pancake_patches, pot_patches, result):
+            result = 'no'
+
+            def _for(pot_patch, image_patch, pancake_patches, pot_patches, result):
+
+                def _for(pancake_patch, image_patch, pancake_patches, pot_patches, result):
+
+                    def _if(image_patch, pancake_patches, pot_patches, result):
+                        result = 'yes'
+                        return (image_patch, pancake_patches, pot_patches, result)
+                    image_patch, pancake_patches, pot_patches, result = if_stmt(_if, None, pancake_patch.horizontal_center > pot_patch.horizontal_center, (image_patch, pancake_patches, pot_patches, result))
+                    return (image_patch, pancake_patches, pot_patches, result)
+                image_patch, pancake_patches, pot_patches, result = for_stmt(_for, pancake_patches, (image_patch, pancake_patches, pot_patches, result))
+                return (image_patch, pancake_patches, pot_patches, result)
+            image_patch, pancake_patches, pot_patches, result = for_stmt(_for, pot_patches, (image_patch, pancake_patches, pot_patches, result))
+            return (image_patch, pancake_patches, pot_patches, result)
+        image_patch, pancake_patches, pot_patches, result = if_stmt(_if, _else, len(pancake_patches) == 0, (image_patch, pancake_patches, pot_patches, result))
+        return (image_patch, pancake_patches, pot_patches, result)
+    image_patch, pancake_patches, pot_patches, result = if_stmt(_if, _else, len(pot_patches) == 0, (image_patch, pancake_patches, pot_patches, result))
+    return result

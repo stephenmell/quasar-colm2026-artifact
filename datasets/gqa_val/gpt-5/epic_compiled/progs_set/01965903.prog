@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    any_found = None
+    image_patch = None
+    object_names = None
+    patches = None
+    result = None
+    white_found = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    object_names = ('letters', 'letter')
+    any_found = False
+
+    def _for(name, any_found, image_patch, object_names, result):
+
+        def _if(any_found, image_patch, object_names, result):
+            any_found = True
+            return (any_found, image_patch, object_names, result)
+        any_found, image_patch, object_names, result = if_stmt(_if, None, image_patch.exists(name), (any_found, image_patch, object_names, result))
+        return (any_found, image_patch, object_names, result)
+    any_found, image_patch, object_names, result = for_stmt(_for, object_names, (any_found, image_patch, object_names, result))
+
+    def _if(any_found, image_patch, object_names, patches, result, white_found):
+        result = image_patch.simple_query('Are there white letters?')
+        return (any_found, image_patch, object_names, patches, result, white_found)
+
+    def _else(any_found, image_patch, object_names, patches, result, white_found):
+        white_found = False
+
+        def _for(name, any_found, image_patch, object_names, patches, result, white_found):
+            patches = image_patch.find(name)
+
+            def _for(patch, any_found, image_patch, object_names, patches, result, white_found):
+
+                def _if(any_found, image_patch, object_names, patches, result, white_found):
+                    white_found = True
+                    return (any_found, image_patch, object_names, patches, result, white_found)
+                any_found, image_patch, object_names, patches, result, white_found = if_stmt(_if, None, patch.verify_property(name, 'white'), (any_found, image_patch, object_names, patches, result, white_found))
+                return (any_found, image_patch, object_names, patches, result, white_found)
+            any_found, image_patch, object_names, patches, result, white_found = for_stmt(_for, patches, (any_found, image_patch, object_names, patches, result, white_found))
+            return (any_found, image_patch, object_names, patches, result, white_found)
+        any_found, image_patch, object_names, patches, result, white_found = for_stmt(_for, object_names, (any_found, image_patch, object_names, patches, result, white_found))
+        result = bool_to_yesno(white_found)
+        return (any_found, image_patch, object_names, patches, result, white_found)
+    any_found, image_patch, object_names, patches, result, white_found = if_stmt(_if, _else, not_expr(any_found), (any_found, image_patch, object_names, patches, result, white_found))
+    return result

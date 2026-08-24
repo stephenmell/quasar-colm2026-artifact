@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_blender = image_patch.exists("blender")
+    is_toaster = image_patch.exists("toaster")
+    return bool_to_yesno(is_blender or is_toaster)

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2350857",
+          [
+            0,
+            0,
+            500,
+            280
+          ]
+        ],
+        "What is on the sign?"
+      ],
+      "5041",
+      1588785239
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,34 @@
+def execute_command():
+    SummarySchema = None
+    count = None
+    day = None
+    events = None
+    idx = None
+    noun = None
+    result = None
+    summary_obj = None
+    day = '2024-05-15'
+    events = get_day_calendar_events(day)
+    count = len(events)
+    noun = 'appointment'
+
+    def _if(count, day, events, noun):
+        noun = 'appointments'
+        return (count, day, events, noun)
+    count, day, events, noun = if_stmt(_if, None, count != 1, (count, day, events, noun))
+    result = 'You have {} {} on May 15th, 2024.'.format(count, noun)
+
+    def _if(SummarySchema, count, day, events, idx, noun, result, summary_obj):
+        result = result + '\n\nSummaries of descriptions:'
+        SummarySchema = CreateSchema('summary', str)
+        idx = 1
+
+        def _for(event, SummarySchema, count, day, events, idx, noun, result, summary_obj):
+            summary_obj = query_ai_assistant("Summarize the following calendar event description in one concise sentence (max 25 words). If there is no meaningful description, answer exactly: 'No description provided.' Description: {}".format(event.description), SummarySchema)
+            result = result + '\n{}. {}: {}'.format(idx, event.title, summary_obj.summary)
+            idx = idx + 1
+            return (SummarySchema, count, day, events, idx, noun, result, summary_obj)
+        SummarySchema, count, day, events, idx, noun, result, summary_obj = for_stmt(_for, events, (SummarySchema, count, day, events, idx, noun, result, summary_obj))
+        return (SummarySchema, count, day, events, idx, noun, result, summary_obj)
+    SummarySchema, count, day, events, idx, noun, result, summary_obj = if_stmt(_if, None, count > 0, (SummarySchema, count, day, events, idx, noun, result, summary_obj))
+    return result

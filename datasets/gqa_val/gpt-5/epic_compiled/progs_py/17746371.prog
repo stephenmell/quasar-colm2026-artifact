@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find("book")
+    boy_patches = image_patch.find("boy")
+
+    if len(book_patches) == 0:
+        result = image_patch.simple_query("Are there any boys to the right of the books?")
+    else:
+        if len(boy_patches) == 0:
+            result = "no"
+        else:
+            rightmost_book_edge = None
+            for book_patch in book_patches:
+                if rightmost_book_edge is None:
+                    rightmost_book_edge = book_patch.right
+                else:
+                    if book_patch.right > rightmost_book_edge:
+                        rightmost_book_edge = book_patch.right
+            result = "no"
+            for boy_patch in boy_patches:
+                if boy_patch.horizontal_center > rightmost_book_edge:
+                    result = "yes"
+    return result

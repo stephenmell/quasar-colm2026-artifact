@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    knife_patches = image_patch.find("knife")
+
+    if len(knife_patches) == 0:
+        result = image_patch.simple_query("Is the silver knife on the left?")
+    else:
+        result = None
+        silver_any = False
+        left_any = False
+        for knife_patch in knife_patches:
+            is_silver = knife_patch.verify_property("knife", "silver")
+            if is_silver:
+                silver_any = True
+                if knife_patch.horizontal_center < image_patch.horizontal_center:
+                    left_any = True
+        if silver_any:
+            if left_any:
+                result = "yes"
+            else:
+                result = "no"
+        else:
+            result = image_patch.simple_query("Is the silver knife on the left?")
+    return result

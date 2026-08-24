@@ -1,0 +1,73 @@
+def execute_command(image) -> str:
+    any_found = None
+    clock_patches = None
+    direct_answer = None
+    image_patch = None
+    is_metallic = None
+    is_metallic_trash = None
+    result = None
+    trash_names = None
+    trash_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    any_found = False
+    clock_patches = image_patch.find('clock')
+
+    def _if(any_found, clock_patches, image_patch, is_metallic, result):
+        any_found = True
+
+        def _for(clock_patch, any_found, clock_patches, image_patch, is_metallic, result):
+            is_metallic = clock_patch.verify_property('clock', 'metallic')
+
+            def _if(any_found, clock_patches, image_patch, is_metallic, result):
+
+                def _if(any_found, clock_patches, image_patch, is_metallic, result):
+                    result = 'yes'
+                    return (any_found, clock_patches, image_patch, is_metallic, result)
+                any_found, clock_patches, image_patch, is_metallic, result = if_stmt(_if, None, clock_patch.verify_property('clock', 'metal'), (any_found, clock_patches, image_patch, is_metallic, result))
+                return (any_found, clock_patches, image_patch, is_metallic, result)
+
+            def _else(any_found, clock_patches, image_patch, is_metallic, result):
+                result = 'yes'
+                return (any_found, clock_patches, image_patch, is_metallic, result)
+            any_found, clock_patches, image_patch, is_metallic, result = if_stmt(_if, _else, not_expr(is_metallic), (any_found, clock_patches, image_patch, is_metallic, result))
+            return (any_found, clock_patches, image_patch, is_metallic, result)
+        any_found, clock_patches, image_patch, is_metallic, result = for_stmt(_for, clock_patches, (any_found, clock_patches, image_patch, is_metallic, result))
+        return (any_found, clock_patches, image_patch, is_metallic, result)
+    any_found, clock_patches, image_patch, is_metallic, result = if_stmt(_if, None, len(clock_patches) > 0, (any_found, clock_patches, image_patch, is_metallic, result))
+    trash_names = ('trash can', 'garbage can', 'trash bin', 'waste bin')
+
+    def _for(trash_name, any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches):
+        trash_patches = image_patch.find(trash_name)
+
+        def _if(any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches):
+            any_found = True
+
+            def _for(trash_patch, any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches):
+                is_metallic_trash = trash_patch.verify_property(trash_name, 'metallic')
+
+                def _if(any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches):
+
+                    def _if(any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches):
+                        result = 'yes'
+                        return (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches)
+                    any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches = if_stmt(_if, None, trash_patch.verify_property(trash_name, 'metal'), (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches))
+                    return (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches)
+
+                def _else(any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches):
+                    result = 'yes'
+                    return (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches)
+                any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches = if_stmt(_if, _else, not_expr(is_metallic_trash), (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches))
+                return (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches)
+            any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches = for_stmt(_for, trash_patches, (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches))
+            return (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches)
+        any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches = if_stmt(_if, None, len(trash_patches) > 0, (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches))
+        return (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches)
+    any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches = for_stmt(_for, trash_names, (any_found, clock_patches, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches))
+
+    def _if(any_found, clock_patches, direct_answer, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches):
+        direct_answer = image_patch.simple_query('Are there any clocks or trash cans that are metallic?')
+        result = direct_answer
+        return (any_found, clock_patches, direct_answer, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches)
+    any_found, clock_patches, direct_answer, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches = if_stmt(_if, None, not_expr(any_found), (any_found, clock_patches, direct_answer, image_patch, is_metallic, is_metallic_trash, result, trash_names, trash_patches))
+    return result

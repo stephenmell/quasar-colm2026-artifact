@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # First, try direct gendered categories
+    male_terms = ["man", "boy", "male"]
+    female_terms = ["woman", "girl", "female"]
+
+    male_exists = any(len(image_patch.find(term)) > 0 for term in male_terms)
+    female_exists = any(len(image_patch.find(term)) > 0 for term in female_terms)
+
+    if male_exists or female_exists:
+        return bool_to_yesno(male_exists and female_exists)
+
+    # Fallback: look at detected people and check gender properties within each crop
+    people_patches = image_patch.find("person")
+    if len(people_patches) == 0:
+        # If no people detected, ask directly
+        return image_patch.simple_query("Are the people different genders?")
+
+    male_found = False
+    female_found = False
+    for person_patch in people_patches:
+        if person_patch.verify_property("person", "male") or person_patch.exists("man") or person_patch.exists("boy"):
+            male_found = True
+        if person_patch.verify_property("person", "female") or person_patch.exists("woman") or person_patch.exists("girl"):
+            female_found = True
+        if male_found and female_found:
+            return "yes"
+
+    # If we identified only one gender among people, answer no; otherwise ask directly
+    return bool_to_yesno(male_found and female_found) if (male_found or female_found) else image_patch.simple_query("Are the people different genders?")

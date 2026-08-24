@@ -1,0 +1,22 @@
+# Do you see any green broccoli or lettuce?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    broccoli_exists = image_patch.exists("broccoli")
+    lettuce_exists = image_patch.exists("lettuce")
+
+    if not broccoli_exists and not lettuce_exists:
+        result = image_patch.simple_query("Do you see any green broccoli or lettuce?")
+    else:
+        if broccoli_exists:
+            broccoli_patches = image_patch.find("broccoli")
+            for broccoli_patch in broccoli_patches:
+                if broccoli_patch.verify_property("broccoli", "green"):
+                    result = "yes"
+        if lettuce_exists:
+            lettuce_patches = image_patch.find("lettuce")
+            for lettuce_patch in lettuce_patches:
+                if lettuce_patch.verify_property("lettuce", "green"):
+                    result = "yes"
+    return result

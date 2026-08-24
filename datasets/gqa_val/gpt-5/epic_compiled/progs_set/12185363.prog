@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    table_patch = None
+    table_patches = None
+    toothbrush_patches = None
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find('table')
+
+    def _if(image_patch, result, table_patch, table_patches, toothbrush_patches):
+        result = image_patch.simple_query('Is there a toothbrush to the right of the table?')
+        return (image_patch, result, table_patch, table_patches, toothbrush_patches)
+
+    def _else(image_patch, result, table_patch, table_patches, toothbrush_patches):
+        table_patch = table_patches[0]
+        toothbrush_patches = image_patch.find('toothbrush')
+
+        def _if(image_patch, result, table_patch, table_patches, toothbrush_patches):
+            result = 'no'
+            return (image_patch, result, table_patch, table_patches, toothbrush_patches)
+
+        def _else(image_patch, result, table_patch, table_patches, toothbrush_patches):
+            result = 'no'
+
+            def _for(toothbrush_patch, image_patch, result, table_patch, table_patches, toothbrush_patches):
+
+                def _if(image_patch, result, table_patch, table_patches, toothbrush_patches):
+                    result = 'yes'
+                    return (image_patch, result, table_patch, table_patches, toothbrush_patches)
+                image_patch, result, table_patch, table_patches, toothbrush_patches = if_stmt(_if, None, toothbrush_patch.horizontal_center > table_patch.horizontal_center, (image_patch, result, table_patch, table_patches, toothbrush_patches))
+                return (image_patch, result, table_patch, table_patches, toothbrush_patches)
+            image_patch, result, table_patch, table_patches, toothbrush_patches = for_stmt(_for, toothbrush_patches, (image_patch, result, table_patch, table_patches, toothbrush_patches))
+            return (image_patch, result, table_patch, table_patches, toothbrush_patches)
+        image_patch, result, table_patch, table_patches, toothbrush_patches = if_stmt(_if, _else, len(toothbrush_patches) == 0, (image_patch, result, table_patch, table_patches, toothbrush_patches))
+        return (image_patch, result, table_patch, table_patches, toothbrush_patches)
+    image_patch, result, table_patch, table_patches, toothbrush_patches = if_stmt(_if, _else, len(table_patches) == 0, (image_patch, result, table_patch, table_patches, toothbrush_patches))
+    return result

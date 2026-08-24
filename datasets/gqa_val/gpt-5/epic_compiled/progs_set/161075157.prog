@@ -1,0 +1,95 @@
+def execute_command(image) -> str:
+    best_furn_dist = None
+    best_furn_name = None
+    best_furn_patch = None
+    best_person = None
+    best_person_dist = None
+    coke_patches = None
+    dist = None
+    dist2 = None
+    furn_patches = None
+    furniture_names = None
+    image_patch = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    coke_patches = image_patch.find('coke')
+
+    def _if(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+        result = image_patch.simple_query('What is the piece of furniture to the left of the person that is to the left of the Coke called?')
+        return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+
+    def _else(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+        person_patches = image_patch.find('person')
+        best_person = None
+        best_person_dist = None
+
+        def _for(coke_patch, best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result):
+
+            def _for(person_patch, best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result):
+
+                def _if(best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result):
+                    dist = coke_patch.horizontal_center - person_patch.horizontal_center
+
+                    def _if(best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result):
+                        best_person = person_patch
+                        best_person_dist = dist
+                        return (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result)
+                    best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result = if_stmt(_if, None, or_expr(best_person is None, dist < best_person_dist), (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result))
+                    return (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result)
+                best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result = if_stmt(_if, None, person_patch.horizontal_center < coke_patch.horizontal_center, (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result))
+                return (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result)
+            best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result = for_stmt(_for, person_patches, (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result))
+            return (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result)
+        best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result = for_stmt(_for, coke_patches, (best_person, best_person_dist, coke_patches, dist, image_patch, person_patches, result))
+
+        def _if(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+            result = image_patch.simple_query('What is the piece of furniture to the left of the person that is to the left of the Coke called?')
+            return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+
+        def _else(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+            furniture_names = ('chair', 'table', 'sofa', 'couch', 'desk', 'stool', 'bench', 'bed', 'cabinet', 'dresser', 'shelf', 'counter', 'nightstand', 'end table', 'coffee table', 'bookshelf', 'armchair', 'loveseat', 'ottoman')
+            best_furn_name = None
+            best_furn_patch = None
+            best_furn_dist = None
+
+            def _for(furn_name, best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+                furn_patches = image_patch.find(furn_name)
+
+                def _for(furn_patch, best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+
+                    def _if(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+                        dist2 = best_person.horizontal_center - furn_patch.horizontal_center
+
+                        def _if(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+                            best_furn_patch = furn_patch
+                            best_furn_dist = dist2
+                            best_furn_name = furn_name
+                            return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+                        best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = if_stmt(_if, None, or_expr(best_furn_patch is None, dist2 < best_furn_dist), (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+                        return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+                    best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = if_stmt(_if, None, furn_patch.horizontal_center < best_person.horizontal_center, (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+                    return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+                best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = for_stmt(_for, furn_patches, (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+                return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+            best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = for_stmt(_for, furniture_names, (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+
+            def _if(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+                result = best_furn_name
+                return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+
+            def _else(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+                result = image_patch.simple_query('What is the piece of furniture to the left of the person that is to the left of the Coke called?')
+                return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+            best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = if_stmt(_if, _else, best_furn_name, (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+            return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+        best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = if_stmt(_if, _else, best_person is None, (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+        return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+    best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = if_stmt(_if, _else, len(coke_patches) == 0, (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+
+    def _if(best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result):
+        result = image_patch.simple_query('What is the piece of furniture to the left of the person that is to the left of the Coke called?')
+        return (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result)
+    best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result = if_stmt(_if, None, not_expr(result), (best_furn_dist, best_furn_name, best_furn_patch, best_person, best_person_dist, coke_patches, dist, dist2, furn_patches, furniture_names, image_patch, person_patches, result))
+    return result

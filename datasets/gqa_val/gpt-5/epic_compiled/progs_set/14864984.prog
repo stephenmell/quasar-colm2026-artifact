@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_clocks = None
+    has_letters = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_letters = or_expr(image_patch.exists('letters'), or_expr(image_patch.exists('letter'), image_patch.exists('text')))
+    has_clocks = or_expr(image_patch.exists('clock'), image_patch.exists('clocks'))
+    result = bool_to_yesno(and_expr(has_letters, has_clocks))
+    return result

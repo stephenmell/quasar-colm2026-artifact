@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2388973",
+          [
+            0,
+            0,
+            500,
+            332
+          ]
+        ],
+        "What are the condiments on?"
+      ],
+      "The condiments are on the poached egg.",
+      1040815396
+    ]
+  ],
+  "best_text_match": []
+}

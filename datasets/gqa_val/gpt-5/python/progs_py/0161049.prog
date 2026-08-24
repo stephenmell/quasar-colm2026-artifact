@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    utensil_patches = image_patch.find("utensil")
+    # Need at least two utensils to define "the utensil that is to the right of the utensil"
+    if len(utensil_patches) < 2:
+        return image_patch.simple_query("Do you see bowls to the right of the utensil that is to the right of the utensil?")
+    # Find the utensil that is to the right of another utensil (choose the nearest-right neighbor)
+    selected_utensil = None
+    min_delta = float("inf")
+    for left_u in utensil_patches:
+        for right_u in utensil_patches:
+            if right_u.horizontal_center > left_u.horizontal_center:
+                delta = right_u.horizontal_center - left_u.horizontal_center
+                if delta < min_delta:
+                    min_delta = delta
+                    selected_utensil = right_u
+    if selected_utensil is None:
+        return image_patch.simple_query("Do you see bowls to the right of the utensil that is to the right of the utensil?")
+    bowl_patches = image_patch.find("bowl")
+    if len(bowl_patches) == 0:
+        return "no"
+    for bowl_patch in bowl_patches:
+        if bowl_patch.horizontal_center > selected_utensil.horizontal_center:
+            return "yes"
+    return "no"

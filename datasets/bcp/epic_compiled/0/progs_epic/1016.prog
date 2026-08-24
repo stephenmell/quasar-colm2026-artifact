@@ -1,0 +1,67 @@
+({1547: 'context', 1554: 'llm_query', 1561: '.join', 1569: 'return_result'},
+ ('def',
+  1545,
+  ((),
+   ((('call', (1546,), -1, ()),
+     ('def',
+      1548,
+      ((1556, 1549),
+       ((('prim',
+          1550,
+          'You are given a document. Extract any fungi mentioned that could '
+          'match ALL of the following clues. For each candidate, give a '
+          'compact entry with: Common English name(s) (highlight a two-word '
+          'English name if present), Scientific name, Key morphology '
+          '(especially: raised/scaly cap), Fruiting habit (clusters after '
+          'rainfall), Size (large?), Culinary/market value (highly valued?), '
+          'Medicinal claims (potential antifungal properties?), Who named it '
+          'scientifically (authorship, and whether by a French expert in the '
+          "1980s), Any link between the fungus's non-scientific English name "
+          'and the name of a character in a 1980s film that was said to have '
+          'been inspired by a bronze statuette from the 1970s (provide the '
+          'film title, the character name, and the statuette details), and '
+          'short supporting quotes from the document.\n'
+          'Keep each candidate to 5-10 lines.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1551,), 80, (1550, 1549)),
+         ('prim', 1552, '\nEND_DOCUMENT'),
+         ('call', (1553,), 80, (1551, 1552)),
+         ('call', (1555,), 1554, (1553,)),
+         ('call', (1557,), -1, (1555,)),
+         ('call', (1558,), 80, (1556, 1557))),
+        (1558,)))),
+     ('call', (1560,), 79, (1547,)),
+     ('call', (1559,), 1560, (1546, 1548)),
+     ('prim',
+      1563,
+      'We need to identify a rare/uncommon, large fungus that:\n'
+      '- Typically appears in clusters after rainfall\n'
+      '- Has raised scales on its cap\n'
+      '- Is highly valued\n'
+      '- Was scientifically named (or reclassified) by a French expert in the '
+      '1980s\n'
+      '- Is said to possess potential antifungal properties\n'
+      '- Has a non-scientific English name that is the same as that of a '
+      'character in a film from the 1980s\n'
+      '- The film was said to have been inspired by a bronze statuette made in '
+      'the 1970s\n'
+      '- The answer must be a common two-word English name whose first word '
+      'has three syllables and ends in a vowel.\n'
+      '\n'
+      'Here are extracted candidate notes from the documents:\n'),
+     ('prim', 1562, '\n\n---\n\n'),
+     ('call', (1564,), 1561, (1562, 1559)),
+     ('call', (1565,), 80, (1563, 1564)),
+     ('prim',
+      1566,
+      '\n'
+      '\n'
+      'Task: Choose the single fungus that satisfies ALL constraints. Return '
+      'ONLY the two-word common English name, no explanations, no punctuation, '
+      'no extra words. Confirm internally that the first word has three '
+      'syllables and ends in a vowel.'),
+     ('call', (1567,), 80, (1565, 1566)),
+     ('call', (1568,), 1554, (1567,)),
+     ('call', (1570,), 1569, (1568,))),
+    (1570,)))))

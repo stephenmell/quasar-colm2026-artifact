@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    area = None
+    bag_patches = None
+    image_patch = None
+    max_area = None
+    result = None
+    selected_patch = None
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find('bag')
+
+    def _if(area, bag_patches, image_patch, max_area, result, selected_patch):
+        result = image_patch.simple_query('Which side of the image is the bag on?')
+        return (area, bag_patches, image_patch, max_area, result, selected_patch)
+
+    def _else(area, bag_patches, image_patch, max_area, result, selected_patch):
+        selected_patch = bag_patches[0]
+        max_area = selected_patch.width * selected_patch.height
+
+        def _for(bag_patch, area, bag_patches, image_patch, max_area, selected_patch):
+            area = bag_patch.width * bag_patch.height
+
+            def _if(area, bag_patches, image_patch, max_area, selected_patch):
+                selected_patch = bag_patch
+                max_area = area
+                return (area, bag_patches, image_patch, max_area, selected_patch)
+            area, bag_patches, image_patch, max_area, selected_patch = if_stmt(_if, None, area > max_area, (area, bag_patches, image_patch, max_area, selected_patch))
+            return (area, bag_patches, image_patch, max_area, selected_patch)
+        area, bag_patches, image_patch, max_area, selected_patch = for_stmt(_for, bag_patches, (area, bag_patches, image_patch, max_area, selected_patch))
+
+        def _if(area, bag_patches, image_patch, max_area, result, selected_patch):
+            result = 'left'
+            return (area, bag_patches, image_patch, max_area, result, selected_patch)
+
+        def _else(area, bag_patches, image_patch, max_area, result, selected_patch):
+            result = 'right'
+            return (area, bag_patches, image_patch, max_area, result, selected_patch)
+        area, bag_patches, image_patch, max_area, result, selected_patch = if_stmt(_if, _else, selected_patch.horizontal_center < image_patch.horizontal_center, (area, bag_patches, image_patch, max_area, result, selected_patch))
+        return (area, bag_patches, image_patch, max_area, result, selected_patch)
+    area, bag_patches, image_patch, max_area, result, selected_patch = if_stmt(_if, _else, len(bag_patches) == 0, (area, bag_patches, image_patch, max_area, result, selected_patch))
+    return result

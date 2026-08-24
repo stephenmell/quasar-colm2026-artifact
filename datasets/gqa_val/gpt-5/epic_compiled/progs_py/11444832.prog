@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    mirror_patches = image_patch.find("mirror")
+    if len(mirror_patches) == 0:
+        result = image_patch.simple_query("Do you see any mirrors that are not silver?")
+    else:
+        result = "no"
+        for mirror_patch in mirror_patches:
+            is_silver = mirror_patch.verify_property("mirror", "silver")
+            if not is_silver:
+                result = "yes"
+    return result

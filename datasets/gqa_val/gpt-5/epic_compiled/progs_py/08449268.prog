@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    aircraft_patches = image_patch.find("aircraft")
+    if len(aircraft_patches) == 0:
+        result = image_patch.simple_query("What kind of aircraft is large?")
+    else:
+        result = None
+        for aircraft_patch in aircraft_patches:
+            is_large = aircraft_patch.verify_property("aircraft", "large")
+            if is_large:
+                result = aircraft_patch.simple_query("What kind of aircraft is large?")
+        if not result:
+            result = image_patch.simple_query("What kind of aircraft is large?")
+    return result

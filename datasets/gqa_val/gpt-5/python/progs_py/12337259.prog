@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    # Question assumes only one table patch
+    if len(table_patches) == 0:
+        # If no table is found, query the image directly
+        return image_patch.simple_query("Is the table made of plastic?")
+    return bool_to_yesno(table_patches[0].verify_property("table", "plastic"))

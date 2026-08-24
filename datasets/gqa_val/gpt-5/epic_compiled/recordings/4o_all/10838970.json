@@ -1,0 +1,53 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2396850",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "keyboard"
+      ],
+      [
+        [
+          0,
+          402,
+          85,
+          479
+        ],
+        [
+          0,
+          373,
+          130,
+          487
+        ]
+      ],
+      13340567561
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2396850",
+          [
+            85,
+            402,
+            333,
+            479
+          ]
+        ],
+        "What kind of device is to the right of the keyboard on the left?"
+      ],
+      "It appears to be a laptop.",
+      870241882
+    ]
+  ],
+  "best_text_match": []
+}

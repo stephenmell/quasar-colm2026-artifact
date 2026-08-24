@@ -1,0 +1,21 @@
+def execute_command(image) -> str:
+    any_ball = None
+    ball_types = None
+    exists_ball = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    ball_types = ('ball', 'tennis ball', 'soccer ball', 'basketball', 'football', 'baseball', 'volleyball', 'golf ball', 'beach ball', 'bowling ball', 'softball', 'rugby ball', 'handball')
+    any_ball = False
+
+    def _for(ball_name, any_ball, ball_types, exists_ball, image_patch):
+        exists_ball = image_patch.exists(ball_name)
+
+        def _if(any_ball, ball_types, exists_ball, image_patch):
+            any_ball = True
+            return (any_ball, ball_types, exists_ball, image_patch)
+        any_ball, ball_types, exists_ball, image_patch = if_stmt(_if, None, exists_ball, (any_ball, ball_types, exists_ball, image_patch))
+        return (any_ball, ball_types, exists_ball, image_patch)
+    any_ball, ball_types, exists_ball, image_patch = for_stmt(_for, ball_types, (any_ball, ball_types, exists_ball, image_patch))
+    result = bool_to_yesno(any_ball)
+    return result

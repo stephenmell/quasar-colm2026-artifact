@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    direct_answer = None
+    image_patch = None
+    result = None
+    trash_can_exists = None
+    trash_can_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+
+    def _if(image_patch, result):
+        result = 'yes'
+        return (image_patch, result)
+    image_patch, result = if_stmt(_if, None, image_patch.exists('fence'), (image_patch, result))
+    trash_can_exists = image_patch.exists('trash can')
+
+    def _if(image_patch, result, trash_can_exists, trash_can_patches):
+        trash_can_patches = image_patch.find('trash can')
+
+        def _for(trash_can_patch, image_patch, result, trash_can_exists, trash_can_patches):
+
+            def _if(image_patch, result, trash_can_exists, trash_can_patches):
+                result = 'yes'
+                return (image_patch, result, trash_can_exists, trash_can_patches)
+            image_patch, result, trash_can_exists, trash_can_patches = if_stmt(_if, None, trash_can_patch.verify_property('trash can', 'metal'), (image_patch, result, trash_can_exists, trash_can_patches))
+            return (image_patch, result, trash_can_exists, trash_can_patches)
+        image_patch, result, trash_can_exists, trash_can_patches = for_stmt(_for, trash_can_patches, (image_patch, result, trash_can_exists, trash_can_patches))
+        return (image_patch, result, trash_can_exists, trash_can_patches)
+    image_patch, result, trash_can_exists, trash_can_patches = if_stmt(_if, None, trash_can_exists, (image_patch, result, trash_can_exists, trash_can_patches))
+
+    def _if(direct_answer, image_patch, result, trash_can_exists, trash_can_patches):
+        direct_answer = image_patch.simple_query('Are there metal trash cans or fences?')
+
+        def _if(direct_answer, image_patch, result, trash_can_exists, trash_can_patches):
+            result = 'yes'
+            return (direct_answer, image_patch, result, trash_can_exists, trash_can_patches)
+
+        def _else(direct_answer, image_patch, result, trash_can_exists, trash_can_patches):
+            result = 'no'
+            return (direct_answer, image_patch, result, trash_can_exists, trash_can_patches)
+        direct_answer, image_patch, result, trash_can_exists, trash_can_patches = if_stmt(_if, _else, direct_answer == 'yes', (direct_answer, image_patch, result, trash_can_exists, trash_can_patches))
+        return (direct_answer, image_patch, result, trash_can_exists, trash_can_patches)
+    direct_answer, image_patch, result, trash_can_exists, trash_can_patches = if_stmt(_if, None, result == 'no', (direct_answer, image_patch, result, trash_can_exists, trash_can_patches))
+    return result

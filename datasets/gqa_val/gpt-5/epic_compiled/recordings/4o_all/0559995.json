@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2405831",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "What color does the vehicle near the roof have?"
+      ],
+      "Red.",
+      1070714274
+    ]
+  ],
+  "best_text_match": []
+}

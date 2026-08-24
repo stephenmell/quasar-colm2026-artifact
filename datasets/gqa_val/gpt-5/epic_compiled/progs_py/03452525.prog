@@ -1,0 +1,17 @@
+# Is the lady to the left of a bag?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lady_patches = image_patch.find("lady")
+    if len(lady_patches) == 0:
+        result = image_patch.simple_query("Is the lady to the left of a bag?")
+    else:
+        result = "no"
+        bag_patches = image_patch.find("bag")
+        if len(bag_patches) == 0:
+            result = "no"
+        else:
+            for lady_patch in lady_patches:
+                for bag_patch in bag_patches:
+                    if lady_patch.horizontal_center < bag_patch.horizontal_center:
+                        result = "yes"
+    return result

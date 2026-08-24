@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2371169",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "animal"
+      ],
+      [],
+      13298753608
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2371169",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "What is the brown animal doing?"
+      ],
+      "The brown animal is jumping to catch a frisbee.",
+      1280717944
+    ]
+  ],
+  "best_text_match": []
+}

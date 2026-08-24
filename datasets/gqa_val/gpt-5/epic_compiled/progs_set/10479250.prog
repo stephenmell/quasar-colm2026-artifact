@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    found_safety = None
+    found_tissue = None
+    image_patch = None
+    result = None
+    safety_terms = None
+    tissue_terms = None
+    image_patch = ImagePatch(image)
+    safety_terms = ('safety jacket', 'life jacket', 'safety vest', 'reflective vest', 'high visibility vest', 'hi-vis vest', 'hi vis vest')
+    tissue_terms = ('tissue', 'tissues', 'tissue box', 'kleenex', 'box of tissues')
+    found_safety = False
+
+    def _for(term, found_safety, image_patch, safety_terms, tissue_terms):
+
+        def _if(found_safety, image_patch, safety_terms, tissue_terms):
+            found_safety = True
+            return (found_safety, image_patch, safety_terms, tissue_terms)
+        found_safety, image_patch, safety_terms, tissue_terms = if_stmt(_if, None, image_patch.exists(term), (found_safety, image_patch, safety_terms, tissue_terms))
+        return (found_safety, image_patch, safety_terms, tissue_terms)
+    found_safety, image_patch, safety_terms, tissue_terms = for_stmt(_for, safety_terms, (found_safety, image_patch, safety_terms, tissue_terms))
+    found_tissue = False
+
+    def _for(term, found_safety, found_tissue, image_patch, safety_terms, tissue_terms):
+
+        def _if(found_safety, found_tissue, image_patch, safety_terms, tissue_terms):
+            found_tissue = True
+            return (found_safety, found_tissue, image_patch, safety_terms, tissue_terms)
+        found_safety, found_tissue, image_patch, safety_terms, tissue_terms = if_stmt(_if, None, image_patch.exists(term), (found_safety, found_tissue, image_patch, safety_terms, tissue_terms))
+        return (found_safety, found_tissue, image_patch, safety_terms, tissue_terms)
+    found_safety, found_tissue, image_patch, safety_terms, tissue_terms = for_stmt(_for, tissue_terms, (found_safety, found_tissue, image_patch, safety_terms, tissue_terms))
+    result = bool_to_yesno(or_expr(found_safety, found_tissue))
+    return result

@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    doughnut_patches = None
+    image_patch = None
+    leftmost_man = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(doughnut_patches, image_patch, leftmost_man, man_patches, result):
+        result = image_patch.simple_query('Is the doughnut to the left of the man that is on the left?')
+        return (doughnut_patches, image_patch, leftmost_man, man_patches, result)
+
+    def _else(doughnut_patches, image_patch, leftmost_man, man_patches, result):
+        leftmost_man = man_patches[0]
+
+        def _for(man_patch, image_patch, leftmost_man, man_patches):
+
+            def _if(image_patch, leftmost_man, man_patches):
+                leftmost_man = man_patch
+                return (image_patch, leftmost_man, man_patches)
+            image_patch, leftmost_man, man_patches = if_stmt(_if, None, man_patch.horizontal_center < leftmost_man.horizontal_center, (image_patch, leftmost_man, man_patches))
+            return (image_patch, leftmost_man, man_patches)
+        image_patch, leftmost_man, man_patches = for_stmt(_for, man_patches, (image_patch, leftmost_man, man_patches))
+        doughnut_patches = image_patch.find('doughnut')
+
+        def _if(doughnut_patches, image_patch, leftmost_man, man_patches):
+            doughnut_patches = image_patch.find('donut')
+            return (doughnut_patches, image_patch, leftmost_man, man_patches)
+        doughnut_patches, image_patch, leftmost_man, man_patches = if_stmt(_if, None, len(doughnut_patches) == 0, (doughnut_patches, image_patch, leftmost_man, man_patches))
+
+        def _if(doughnut_patches, image_patch, leftmost_man, man_patches, result):
+            result = 'no'
+            return (doughnut_patches, image_patch, leftmost_man, man_patches, result)
+
+        def _else(doughnut_patches, image_patch, leftmost_man, man_patches, result):
+            result = 'no'
+
+            def _for(doughnut_patch, doughnut_patches, image_patch, leftmost_man, man_patches, result):
+
+                def _if(doughnut_patches, image_patch, leftmost_man, man_patches, result):
+                    result = 'yes'
+                    return (doughnut_patches, image_patch, leftmost_man, man_patches, result)
+                doughnut_patches, image_patch, leftmost_man, man_patches, result = if_stmt(_if, None, doughnut_patch.horizontal_center < leftmost_man.horizontal_center, (doughnut_patches, image_patch, leftmost_man, man_patches, result))
+                return (doughnut_patches, image_patch, leftmost_man, man_patches, result)
+            doughnut_patches, image_patch, leftmost_man, man_patches, result = for_stmt(_for, doughnut_patches, (doughnut_patches, image_patch, leftmost_man, man_patches, result))
+            return (doughnut_patches, image_patch, leftmost_man, man_patches, result)
+        doughnut_patches, image_patch, leftmost_man, man_patches, result = if_stmt(_if, _else, len(doughnut_patches) == 0, (doughnut_patches, image_patch, leftmost_man, man_patches, result))
+        return (doughnut_patches, image_patch, leftmost_man, man_patches, result)
+    doughnut_patches, image_patch, leftmost_man, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (doughnut_patches, image_patch, leftmost_man, man_patches, result))
+    return result

@@ -1,0 +1,100 @@
+({2208: 'context',
+  2218: 'llm_query',
+  2222: 'str',
+  2241: 'return_result',
+  2242: '.strip'},
+ ('def',
+  2205,
+  ((),
+   ((('prim', 2206, ''),
+     ('prim', 2207, 0),
+     ('def',
+      2209,
+      ((2232, 2210),
+       ((('unpack', (2220, 2211), 2232),
+         ('prim', 2212, 1),
+         ('call', (2213,), 80, (2211, 2212)),
+         ('prim',
+          2214,
+          'You are given one document. Extract any information relevant to the '
+          'following story and provide it in a compact, structured way.\n'
+          '\n'
+          'Story we are matching:\n'
+          '- Year: 2019, country: England\n'
+          '- During a match, a home-team player squirted a water bottle at an '
+          'away player, starting a scuffle\n'
+          '- The away team finished with: 6 shots on goal (aka shots on '
+          'target), 4 yellow cards, and 4 corner kicks\n'
+          '- The away player who was squirted was on loan at the away club '
+          'from another club (the parent club)\n'
+          '- That parent club had a European match (UEFA competition) where '
+          'this player featured on the bench\n'
+          '\n'
+          'What to extract (include if present; skip if not in the document):\n'
+          'Candidate:\n'
+          'Player: <name>\n'
+          'Loan club (away team): <club>\n'
+          'Parent club (loaned from): <club>\n'
+          'Match: <date>, <competition>, <home> vs <away>, <venue if stated>\n'
+          'Incident: <1-2 sentences with brief quotes>\n'
+          'Away team stats: <shots on goal/on target, yellow cards, corner '
+          'kicks>\n'
+          'European bench appearance: <parent club> vs <opponent>, '
+          '<competition>, <date> (on bench)\n'
+          'Evidence quotes:\n'
+          '- "<quote 1>"\n'
+          '- "<quote 2>"\n'
+          '\n'
+          'Only output a Candidate block if the document contains at least one '
+          'of: the water-bottle incident, the player identity, the loan/parent '
+          'clubs, or the European bench appearance detail. If it is '
+          'irrelevant, output nothing.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2215,), 80, (2214, 2210)),
+         ('prim', 2216, '\nEND_DOCUMENT'),
+         ('call', (2217,), 80, (2215, 2216)),
+         ('call', (2219,), 2218, (2217,)),
+         ('prim', 2221, '\n---\nDoc#'),
+         ('call', (2223,), 80, (2220, 2221)),
+         ('call', (2224,), 2222, (2213,)),
+         ('call', (2225,), 80, (2223, 2224)),
+         ('prim', 2226, ':\n'),
+         ('call', (2227,), 80, (2225, 2226)),
+         ('call', (2228,), 80, (2227, 2219)),
+         ('pack', 2233, (2228, 2213))),
+        (2233,)))),
+     ('pack', 2234, (2206, 2207)),
+     ('call', (2235,), 79, (2208,)),
+     ('call', (2231,), 2235, (2234, 2209)),
+     ('unpack', (2229, 2230), 2231),
+     ('prim',
+      2236,
+      'You will be given multiple Candidate blocks compiled from various '
+      'documents. Using only those candidates and their evidence quotes, '
+      'answer this:\n'
+      '\n'
+      'Question: What was the name of the team that the bench appearance was '
+      'against? (This refers to the opponent in the European match for the '
+      'parent club of the player involved in the 2019 England match where a '
+      'home player squirted a water bottle at him, starting a scuffle. The '
+      'away team in that match had 6 shots on goal, 4 yellow cards, and 4 '
+      'corner kicks.)\n'
+      '\n'
+      'Instructions:\n'
+      '- Identify the correct player and match if possible.\n'
+      '- Prefer candidates that explicitly mention the water-bottle incident '
+      'and the 2019 England match, and, if available, the away-team stats '
+      'matching 6 shots on goal, 4 yellows, 4 corners.\n'
+      '- Then extract the opponent of the European bench appearance for his '
+      'parent club.\n'
+      "- Output ONLY the opponent team's name, nothing else.\n"
+      '\n'
+      'CANDIDATES:\n'),
+     ('call', (2237,), 80, (2236, 2229)),
+     ('prim', 2238, '\n\nAnswer (opponent team name only):'),
+     ('call', (2239,), 80, (2237, 2238)),
+     ('call', (2240,), 2218, (2239,)),
+     ('call', (2243,), 2242, (2240,)),
+     ('call', (2244,), 2241, (2243,))),
+    (2244,)))))

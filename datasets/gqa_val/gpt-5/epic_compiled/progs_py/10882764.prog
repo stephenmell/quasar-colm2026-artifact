@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    onion_patches = image_patch.find("onion")
+
+    if len(onion_patches) == 0:
+        result = image_patch.simple_query("What vegetable is to the right of the onion?")
+    else:
+        onion_patch = onion_patches[0]
+        vegetable_patches = image_patch.find("vegetable")
+
+        if len(vegetable_patches) == 0:
+            right_area_patch = image_patch.crop(onion_patch.right, onion_patch.lower, image_patch.right, onion_patch.upper)
+            result = right_area_patch.simple_query("What vegetable is to the right of the onion?")
+        else:
+            candidate_patch = None
+            best_dx = None
+            for vegetable_patch in vegetable_patches:
+                is_right = vegetable_patch.horizontal_center > onion_patch.horizontal_center
+                if is_right:
+                    dx = vegetable_patch.horizontal_center - onion_patch.horizontal_center
+                    if best_dx is None:
+                        candidate_patch = vegetable_patch
+                        best_dx = dx
+                    else:
+                        if dx < best_dx:
+                            candidate_patch = vegetable_patch
+                            best_dx = dx
+            if candidate_patch:
+                result = candidate_patch.simple_query("What vegetable is this?")
+            else:
+                right_area_patch = image_patch.crop(onion_patch.right, onion_patch.lower, image_patch.right, onion_patch.upper)
+                result = right_area_patch.simple_query("What vegetable is to the right of the onion?")
+    return result

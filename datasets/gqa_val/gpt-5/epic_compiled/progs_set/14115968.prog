@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_below = None
+    is_horiz_within = None
+    is_under_any_umbrella = None
+    man_patches = None
+    person_patches = None
+    result = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    umbrella_patches = image_patch.find('umbrella')
+    person_patches = image_patch.find('person')
+    man_patches = image_patch.find('man')
+
+    def _if(image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+        result = image_patch.simple_query('Are there any men to the left of the people underneath the umbrella?')
+        return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+
+    def _else(image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+
+        def _for(person_patch, image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+            is_under_any_umbrella = False
+
+            def _for(umbrella_patch, image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+                is_horiz_within = and_expr(person_patch.horizontal_center >= umbrella_patch.left, person_patch.horizontal_center <= umbrella_patch.right)
+                is_below = person_patch.vertical_center < umbrella_patch.lower
+
+                def _if(image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+                    is_under_any_umbrella = True
+                    return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+                image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches = if_stmt(_if, None, and_expr(is_horiz_within, is_below), (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches))
+                return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+            image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches = for_stmt(_for, umbrella_patches, (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches))
+
+            def _if(image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+
+                def _for(man_patch, image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+
+                    def _if(image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches):
+                        result = 'yes'
+                        return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+                    image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches = if_stmt(_if, None, man_patch.horizontal_center < person_patch.horizontal_center, (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches))
+                    return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+                image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches = for_stmt(_for, man_patches, (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches))
+                return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+            image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches = if_stmt(_if, None, is_under_any_umbrella, (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches))
+            return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+        image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches = for_stmt(_for, person_patches, (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches))
+        return (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches)
+    image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches = if_stmt(_if, _else, or_expr(len(umbrella_patches) == 0, or_expr(len(person_patches) == 0, len(man_patches) == 0)), (image_patch, is_below, is_horiz_within, is_under_any_umbrella, man_patches, person_patches, result, umbrella_patches))
+    return result

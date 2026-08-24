@@ -1,0 +1,19 @@
+# Is there any computer to the left of the computer monitor that is to the left of the tissues?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    tissue_patches = image_patch.find("tissues") + image_patch.find("tissue") + image_patch.find("tissue box")
+
+    if len(tissue_patches) == 0:
+        result = image_patch.simple_query("Is there any computer to the left of the computer monitor that is to the left of the tissues?")
+    else:
+        monitor_patches = image_patch.find("computer monitor") + image_patch.find("monitor") + image_patch.find("screen")
+        computer_patches = image_patch.find("computer") + image_patch.find("laptop") + image_patch.find("desktop computer") + image_patch.find("pc")
+        for tissue_patch in tissue_patches:
+            for monitor_patch in monitor_patches:
+                if monitor_patch.horizontal_center < tissue_patch.horizontal_center:
+                    for computer_patch in computer_patches:
+                        if computer_patch.horizontal_center < monitor_patch.horizontal_center:
+                            result = "yes"
+    return result

@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # Question assumes at least one person
+    if len(person_patches) == 0:
+        # If no person is found, query the image directly
+        return image_patch.simple_query("Is the person to the right of a vehicle?")
+    vehicle_patches = image_patch.find("vehicle")
+    if len(vehicle_patches) == 0:
+        return "no"
+    for person_patch in person_patches:
+        for vehicle_patch in vehicle_patches:
+            if person_patch.horizontal_center > vehicle_patch.horizontal_center:
+                return "yes"
+    return "no"

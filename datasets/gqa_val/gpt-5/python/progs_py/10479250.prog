@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_safety_jacket = (
+        image_patch.exists("safety jacket")
+        or image_patch.exists("life jacket")
+        or image_patch.exists("safety vest")
+    )
+    is_tissue = (
+        image_patch.exists("tissue")
+        or image_patch.exists("tissues")
+        or image_patch.exists("napkin")
+        or image_patch.exists("napkins")
+    )
+    return bool_to_yesno(is_safety_jacket or is_tissue)

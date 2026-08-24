@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    all_drawer_patches = None
+    drawer_patches_plural = None
+    drawer_patches_singular = None
+    image_patch = None
+    result = None
+    stove_patches = None
+    image_patch = ImagePatch(image)
+    stove_patches = image_patch.find('stove')
+
+    def _if(all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches):
+        result = image_patch.simple_query('Is the stove to the right of drawers?')
+        return (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches)
+
+    def _else(all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches):
+        drawer_patches_singular = image_patch.find('drawer')
+        drawer_patches_plural = image_patch.find('drawers')
+        all_drawer_patches = drawer_patches_singular + drawer_patches_plural
+
+        def _if(all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches):
+            result = 'no'
+            return (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches)
+
+        def _else(all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches):
+            result = 'no'
+
+            def _for(stove_patch, all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches):
+
+                def _for(drawer_patch, all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches):
+
+                    def _if(all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches):
+                        result = 'yes'
+                        return (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches)
+                    all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches = if_stmt(_if, None, stove_patch.horizontal_center > drawer_patch.horizontal_center, (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches))
+                    return (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches)
+                all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches = for_stmt(_for, all_drawer_patches, (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches))
+                return (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches)
+            all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches = for_stmt(_for, stove_patches, (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches))
+            return (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches)
+        all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches = if_stmt(_if, _else, len(all_drawer_patches) == 0, (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches))
+        return (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches)
+    all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches = if_stmt(_if, _else, len(stove_patches) == 0, (all_drawer_patches, drawer_patches_plural, drawer_patches_singular, image_patch, result, stove_patches))
+    return result

@@ -1,0 +1,33 @@
+# Is the red bus to the left or to the right of the bicycle?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find("bus")
+    bicycle_patches = image_patch.find("bicycle")
+
+    # Filter for red buses using tuples (immutable sequences)
+    red_bus_patches = ()
+    for bus_patch in bus_patches:
+        if bus_patch.verify_property("bus", "red"):
+            red_bus_patches = red_bus_patches + (bus_patch,)
+
+    if len(red_bus_patches) == 0 or len(bicycle_patches) == 0:
+        result = image_patch.simple_query("Is the red bus to the left or to the right of the bicycle?")
+    else:
+        # Choose the closest red bus-bicycle pair by center distance
+        best_bus = None
+        best_bicycle = None
+        best_dist = None
+        for rb in red_bus_patches:
+            for bc in bicycle_patches:
+                dx = rb.horizontal_center - bc.horizontal_center
+                dy = rb.vertical_center - bc.vertical_center
+                dist = dx * dx + dy * dy
+                if (best_dist is None) or (dist < best_dist):
+                    best_dist = dist
+                    best_bus = rb
+                    best_bicycle = bc
+        if best_bus.horizontal_center < best_bicycle.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

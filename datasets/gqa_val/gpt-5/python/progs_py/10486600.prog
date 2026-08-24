@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    van_patches = image_patch.find("van")
+    # Question assumes only one van patch
+    if len(van_patches) == 0:
+        # If no van is found, query the image directly
+        return image_patch.simple_query("On which side of the image is the van?")
+    van_patch = van_patches[0]
+    if van_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

@@ -1,0 +1,56 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2394559",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "bench"
+      ],
+      [],
+      10197486058
+    ],
+    [
+      [
+        [
+          "2394559",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "fence"
+      ],
+      [],
+      13541615585
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2394559",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "Do you see either any benches or fences that are made of wood?"
+      ],
+      "Yes.",
+      809047658
+    ]
+  ],
+  "best_text_match": []
+}

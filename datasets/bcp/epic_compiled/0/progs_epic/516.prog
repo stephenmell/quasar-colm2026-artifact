@@ -1,0 +1,87 @@
+({1001: 'context',
+  1011: 'llm_query',
+  1014: 'str',
+  1030: '.join',
+  1038: 'return_result'},
+ ('def',
+  998,
+  ((),
+   ((('call', (999,), -1, ()),
+     ('prim', 1000, 0),
+     ('def',
+      1002,
+      ((1026, 1003),
+       ((('unpack', (1013, 1004), 1026),
+         ('prim', 1005, 1),
+         ('call', (1006,), 80, (1004, 1005)),
+         ('prim',
+          1007,
+          'You are analyzing one document from a larger corpus to answer a '
+          'concrete query.\n'
+          '\n'
+          'Query:\n'
+          'Give me the name of the school that the below actress was expelled '
+          'from.\n'
+          '\n'
+          'The actress has the following attributes:\n'
+          '- She is both a singer and a songwriter.\n'
+          '- Her stage name begins with the same initial as her first name.\n'
+          '- She is 163 cm tall as of December 2023 and was born between 1995 '
+          'and 2005.\n'
+          '- She originally wanted to become a teacher or a nun.\n'
+          '- She left her home country with her parents when she was a kid.\n'
+          '\n'
+          'Instructions:\n'
+          'From THIS SINGLE DOCUMENT ONLY, do the following:\n'
+          '1) Identify any person(s) described who satisfy ALL or MOST of '
+          'these clues. If none, write: None.\n'
+          '2) For each candidate, extract as structured bullets: full name, '
+          'stage name, birth year, height, whether singer AND songwriter, '
+          'whether an actress, migration detail (left home country with '
+          'parents as a child), any statement about wanting to be a teacher or '
+          'a nun, and any mention of being expelled from a school.\n'
+          '3) If the document states they were expelled, extract the EXACT '
+          'name of the school and quote the sentence(s) where this is stated.\n'
+          '4) Provide concise outputs in the format:\n'
+          'Candidate: <full name> (stage name: <stage name>)\n'
+          'School expelled from: <school name or Unknown>\n'
+          'Evidence quotes: <verbatim quotes from the document proving the '
+          'expulsion and matching clues>\n'
+          '\n'
+          'Document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1008,), 80, (1007, 1003)),
+         ('prim', 1009, '\nEND_DOCUMENT'),
+         ('call', (1010,), 80, (1008, 1009)),
+         ('call', (1012,), 1011, (1010,)),
+         ('prim', 1015, 'Document_'),
+         ('call', (1016,), 1014, (1006,)),
+         ('call', (1017,), 80, (1015, 1016)),
+         ('prim', 1018, ' analysis:\n'),
+         ('call', (1019,), 80, (1017, 1018)),
+         ('call', (1020,), 80, (1019, 1012)),
+         ('call', (1021,), -1, (1020,)),
+         ('call', (1022,), 80, (1013, 1021)),
+         ('pack', 1027, (1022, 1006))),
+        (1027,)))),
+     ('pack', 1028, (999, 1000)),
+     ('call', (1029,), 79, (1001,)),
+     ('call', (1025,), 1029, (1028, 1002)),
+     ('unpack', (1023, 1024), 1025),
+     ('prim', 1032, 'Here are the extractions from all documents:\n'),
+     ('prim', 1031, '\n\n'),
+     ('call', (1033,), 1030, (1031, 1023)),
+     ('call', (1034,), 80, (1032, 1033)),
+     ('prim',
+      1035,
+      '\n'
+      '\n'
+      'Task: Based on the above, determine the single most likely actress '
+      'matching ALL the clues and give ONLY the exact name of the school she '
+      'was expelled from (no extra words, no punctuation, no explanations). If '
+      'multiple schools are listed, choose the one directly tied to the '
+      'candidate who best fits ALL clues. Output only the school name.'),
+     ('call', (1036,), 80, (1034, 1035)),
+     ('call', (1037,), 1011, (1036,)),
+     ('call', (1039,), 1038, (1037,))),
+    (1039,)))))

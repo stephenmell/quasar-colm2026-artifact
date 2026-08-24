@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    toilet_patches = image_patch.find("toilet")
+    if len(toilet_patches) == 0:
+        # If no toilet is found, query the image directly
+        return image_patch.simple_query("Which color is the toilet?")
+    # Choose the most prominent toilet (largest area)
+    largest_toilet = max(toilet_patches, key=lambda p: p.width * p.height)
+    return largest_toilet.simple_query("Which color is the toilet?")

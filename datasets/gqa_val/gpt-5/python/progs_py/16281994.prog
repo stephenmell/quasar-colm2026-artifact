@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Are there any crates to the right of the person that is to the left of the man?")
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Are there any crates to the right of the person that is to the left of the man?")
+    man_patch = man_patches[0]
+    # Find the person to the left of the man (choose the closest one to the man from the left)
+    left_candidates = [p for p in person_patches if p.horizontal_center < man_patch.horizontal_center]
+    if len(left_candidates) == 0:
+        return image_patch.simple_query("Are there any crates to the right of the person that is to the left of the man?")
+    target_person = max(left_candidates, key=lambda p: p.horizontal_center)
+    crate_patches = image_patch.find("crate")
+    if len(crate_patches) == 0:
+        return "no"
+    for crate_patch in crate_patches:
+        if crate_patch.horizontal_center > target_person.horizontal_center:
+            return "yes"
+    return "no"

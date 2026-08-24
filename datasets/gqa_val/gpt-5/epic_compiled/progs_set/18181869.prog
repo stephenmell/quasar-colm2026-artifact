@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    answer = None
+    image_patch = None
+    planter_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    planter_patches = image_patch.find('planter')
+    result = None
+
+    def _if(answer, image_patch, planter_patches, result):
+        result = image_patch.simple_query('What is in the planter that looks brown?')
+        return (answer, image_patch, planter_patches, result)
+
+    def _else(answer, image_patch, planter_patches, result):
+
+        def _for(planter_patch, answer, image_patch, planter_patches, result):
+            answer = planter_patch.simple_query('What is in the planter that looks brown?')
+
+            def _if(answer, image_patch, planter_patches, result):
+
+                def _if(answer, image_patch, planter_patches, result):
+                    result = answer
+                    return (answer, image_patch, planter_patches, result)
+                answer, image_patch, planter_patches, result = if_stmt(_if, None, not_expr(result), (answer, image_patch, planter_patches, result))
+                return (answer, image_patch, planter_patches, result)
+            answer, image_patch, planter_patches, result = if_stmt(_if, None, answer, (answer, image_patch, planter_patches, result))
+            return (answer, image_patch, planter_patches, result)
+        answer, image_patch, planter_patches, result = for_stmt(_for, planter_patches, (answer, image_patch, planter_patches, result))
+
+        def _if(answer, image_patch, planter_patches, result):
+            result = image_patch.simple_query('What is in the planter that looks brown?')
+            return (answer, image_patch, planter_patches, result)
+        answer, image_patch, planter_patches, result = if_stmt(_if, None, not_expr(result), (answer, image_patch, planter_patches, result))
+        return (answer, image_patch, planter_patches, result)
+    answer, image_patch, planter_patches, result = if_stmt(_if, _else, len(planter_patches) == 0, (answer, image_patch, planter_patches, result))
+    return result

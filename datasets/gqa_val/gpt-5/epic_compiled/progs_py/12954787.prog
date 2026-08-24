@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    keyboard_patches = image_patch.find("keyboard")
+    if len(keyboard_patches) == 0:
+        result = image_patch.simple_query("Is there a computer mouse to the left of the keyboard on the left side of the picture?")
+    else:
+        # Find possible mouse objects (cover both "mouse" and "computer mouse")
+        mouse_patches_generic = image_patch.find("mouse")
+        mouse_patches_specific = image_patch.find("computer mouse")
+        all_mouse_patches = mouse_patches_generic + mouse_patches_specific
+
+        # Check for a keyboard on the left side and a mouse to its left
+        for keyboard_patch in keyboard_patches:
+            if keyboard_patch.horizontal_center < image_patch.horizontal_center:
+                for mouse_patch in all_mouse_patches:
+                    if mouse_patch.horizontal_center < keyboard_patch.horizontal_center:
+                        result = "yes"
+    return result

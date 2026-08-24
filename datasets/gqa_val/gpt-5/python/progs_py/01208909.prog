@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find("car")
+    # If no car is found, ask directly
+    if len(car_patches) == 0:
+        return image_patch.simple_query("Is there a tractor to the right of the gray car?")
+    # Filter to gray cars
+    gray_car_patches = [car for car in car_patches if car.verify_property("car", "gray")]
+    if len(gray_car_patches) == 0:
+        return image_patch.simple_query("Is there a tractor to the right of the gray car?")
+    # Find tractors
+    tractor_patches = image_patch.find("tractor")
+    if len(tractor_patches) == 0:
+        return "no"
+    # Check if any tractor is to the right of any gray car
+    for gray_car in gray_car_patches:
+        for tractor in tractor_patches:
+            if tractor.horizontal_center > gray_car.horizontal_center:
+                return "yes"
+    return "no"

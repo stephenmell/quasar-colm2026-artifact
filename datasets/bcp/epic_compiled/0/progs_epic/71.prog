@@ -1,0 +1,62 @@
+({509: 'context', 518: 'llm_query', 525: '.join', 533: 'return_result'},
+ ('def',
+  507,
+  ((),
+   ((('call', (508,), -1, ()),
+     ('def',
+      510,
+      ((520, 511),
+       ((('prim', 512, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (513,), 80, (512, 511)),
+         ('prim', 514, '\nEND_DOCUMENT\n'),
+         ('call', (515,), 80, (513, 514)),
+         ('prim',
+          516,
+          'Task: Does this document mention a water-related structure in '
+          'Ireland that meets ALL of the following? 1) Some sources say it was '
+          'built in the 19th century, while others claim it was built in the '
+          'first half of the 20th century. 2) It was used to help with '
+          'stability (e.g., stabilizing a vessel, harbour, shoreline, or '
+          'structure). 3) There is a local restaurant named after this '
+          'structure in a nearby hotel. If yes, extract details. If not, reply '
+          'exactly with NO_MATCH.\n'
+          'Output format (exact keys):\n'
+          'StructureName: <name>\n'
+          'AlsoKnownAs: <aliases or blank>\n'
+          'Purpose: <how it helps with stability>\n'
+          'BuildDates: <the conflicting dates as stated>\n'
+          'Restaurant: <restaurant name if given>\n'
+          'Hotel: <hotel name if given>\n'
+          'Location: <where in Ireland>\n'
+          'SupportingQuotes:\n'
+          '- "<quote 1>"\n'
+          '- "<quote 2>"'),
+         ('call', (517,), 80, (515, 516)),
+         ('call', (519,), 518, (517,)),
+         ('call', (521,), -1, (519,)),
+         ('call', (522,), 80, (520, 521))),
+        (522,)))),
+     ('call', (524,), 79, (509,)),
+     ('call', (523,), 524, (508, 510)),
+     ('prim', 526, '\n\n'),
+     ('call', (527,), 525, (526, 523)),
+     ('prim',
+      528,
+      'Below are extractions from multiple context documents that may include '
+      'mentions of an Irish water-related structure with conflicting reported '
+      'construction dates (some say 19th century; others say first half of the '
+      '20th century), used to help with stability, and lending its name to a '
+      'local restaurant in a nearby hotel.\n'
+      '\n'
+      'EXTRACTIONS:\n'),
+     ('call', (529,), 80, (528, 527)),
+     ('prim',
+      530,
+      '\n'
+      '\n'
+      'Question: According to these sources, what is the name of this '
+      "structure? Reply with only the structure's name and nothing else."),
+     ('call', (531,), 80, (529, 530)),
+     ('call', (532,), 518, (531,)),
+     ('call', (534,), 533, (532,))),
+    (534,)))))

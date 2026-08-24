@@ -1,0 +1,83 @@
+({2543: 'context',
+  2557: 'llm_query',
+  2564: '.join',
+  2570: 'return_result',
+  2571: '.strip'},
+ ('def',
+  2541,
+  ((),
+   ((('call', (2542,), -1, ()),
+     ('def',
+      2544,
+      ((2559, 2545),
+       ((('prim',
+          2546,
+          'You are given a document. Extract any person(s) who were or became '
+          'President of their country between 1960 and 2000, and evaluate them '
+          'against the following constraints:\n'
+          '1) Became the President of their country between 1960 and 2000.\n'
+          '2) Studied law at one of the oldest universities in their country '
+          '(domestic; identify the university and whether it is among the '
+          'oldest).\n'
+          '3) Got married about 25 years before being elected as President '
+          '(approximately 23–27 years acceptable).\n'
+          '4) Was born in a city whose 2011 population was more than 65,000 '
+          'but less than 130,000 (state the city and whether this holds).\n'
+          '5) Was elected as President in the same year an iconic video game '
+          'debuted (name the year and a plausible iconic game that debuted '
+          'then).\n'
+          '\n'
+          'For each qualifying or potentially qualifying person mentioned in '
+          'this document, provide a compact entry with:\n'
+          '- Name\n'
+          '- Country\n'
+          '- Presidency election year(s) (within 1960–2000)\n'
+          '- Studied law? University (and whether it is one of the oldest '
+          'domestically)\n'
+          '- Marriage year (if given)\n'
+          '- Birth city (and whether the 2011 population is 65k–130k)\n'
+          '- Iconic video game that debuted in the same year as their '
+          'presidential election (give at least one plausible example)\n'
+          '- Does this person meet all constraints? Yes/No\n'
+          '- Key quotes from the document supporting the facts (if available)\n'
+          '\n'
+          "If the document does not mention any such person, say 'No relevant "
+          "person in this document.'\n"
+          'Document:\n'),
+         ('call', (2547,), 118, (2545,)),
+         ('prim', 2548, '\n'),
+         ('def',
+          2554,
+          ((2549, 2550),
+           ((('call', (2551,), 2550, (2549, 2546)),
+             ('call', (2552,), 2550, (2551, 2547)),
+             ('call', (2553,), 2550, (2552, 2548))),
+            (2553,)))),
+         ('prim', 2555, ''),
+         ('call', (2556,), 2554, (2555, 80)),
+         ('call', (2558,), 2557, (2556,)),
+         ('call', (2560,), -1, (2558,)),
+         ('call', (2561,), 80, (2559, 2560))),
+        (2561,)))),
+     ('call', (2563,), 79, (2543,)),
+     ('call', (2562,), 2563, (2542, 2544)),
+     ('prim', 2565, '\n\n-----\n\n'),
+     ('call', (2566,), 2564, (2565, 2562)),
+     ('prim',
+      2567,
+      'We need the first and last name of the single person who satisfies ALL '
+      'of the following: became President between 1960–2000; studied law at '
+      'one of the oldest universities in their country; married about 25 years '
+      'before being elected President; born in a city whose 2011 population '
+      'was >65,000 and <130,000; elected President in the same year an iconic '
+      'video game debuted. Use the extracted notes below. If not decisively '
+      'present, use your general knowledge as needed, but still satisfy all '
+      "constraints. Return ONLY the person's first and last name, with nothing "
+      'else.\n'
+      '\n'
+      'Extracted notes:\n'),
+     ('call', (2568,), 80, (2567, 2566)),
+     ('call', (2569,), 2557, (2568,)),
+     ('call', (2572,), 2571, (2569,)),
+     ('call', (2573,), 2570, (2572,))),
+    (2573,)))))

@@ -1,0 +1,45 @@
+def execute_command():
+    FileDisambiguationSchema = None
+    June13PlanSchema = None
+    PackingListSchema = None
+    disambig = None
+    files = None
+    hawaii_file = None
+    june_13_plan = None
+    packing_file = None
+    packing_list = None
+    result = None
+    files = search_files_by_filename('vacation plans for Hawaii')
+
+    def _if(files):
+        files = search_files('Hawaii')
+        return (files,)
+    files, = if_stmt(_if, None, len(files) == 0, (files,))
+    result = 'No file found containing the vacation plans for Hawaii.'
+
+    def _if(FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result):
+        FileDisambiguationSchema = CreateSchema('is_hawaii_vacation_plan', bool)
+        hawaii_file = None
+
+        def _for(file, FileDisambiguationSchema, disambig, files, hawaii_file, result):
+            disambig = query_ai_assistant('Determine if this file is the main document describing a vacation plan for a trip to Hawaii (itinerary, packing, bookings, or plans). Respond true only if it clearly pertains to vacation plans for Hawaii. Filename: {}. Content: {}'.format(file.filename, file.content), FileDisambiguationSchema)
+
+            def _if(FileDisambiguationSchema, disambig, files, hawaii_file, result):
+                hawaii_file = file
+                return (FileDisambiguationSchema, disambig, files, hawaii_file, result)
+            FileDisambiguationSchema, disambig, files, hawaii_file, result = if_stmt(_if, None, and_expr(disambig.is_hawaii_vacation_plan, hawaii_file is None), (FileDisambiguationSchema, disambig, files, hawaii_file, result))
+            return (FileDisambiguationSchema, disambig, files, hawaii_file, result)
+        FileDisambiguationSchema, disambig, files, hawaii_file, result = for_stmt(_for, files, (FileDisambiguationSchema, disambig, files, hawaii_file, result))
+
+        def _if(FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result):
+            June13PlanSchema = CreateSchema('plan_for_june_13', str)
+            june_13_plan = query_ai_assistant("From the following vacation plan document, extract what is planned specifically for June 13 (regardless of year). If nothing is planned for that date, output exactly: 'No plans found for June 13.'. Document content: {}".format(hawaii_file.content), June13PlanSchema)
+            PackingListSchema = CreateSchema('packing_list', str)
+            packing_list = query_ai_assistant('From the following Hawaii vacation plan document, extract ONLY the packing list (items to bring). Do not include itinerary, dates, budgets, or notes unrelated to packing. If the packing items are scattered, consolidate them into a single clean list, one item per line. Document content: {}'.format(hawaii_file.content), PackingListSchema)
+            packing_file = create_file('hawaii-packing-list.docx', packing_list.packing_list)
+            result = 'I\'ve completed both tasks for you:\n\n1. According to the vacation plans file, on June 13, your plan is: {}.\n\n2. I\'ve created a new file named "hawaii-packing-list.docx" with the packing list based on your Hawaii vacation plans.'.format(june_13_plan.plan_for_june_13)
+            return (FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result)
+        FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result = if_stmt(_if, None, hawaii_file is not None, (FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result))
+        return (FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result)
+    FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result = if_stmt(_if, None, len(files) != 0, (FileDisambiguationSchema, June13PlanSchema, PackingListSchema, disambig, files, hawaii_file, june_13_plan, packing_file, packing_list, result))
+    return result

@@ -1,0 +1,34 @@
+Stage: semantics.reduce_graph_opportunistic
+Error: 'no recorded query_ai_assistant for this (query, schema); the recording is incomplete or the program changed since it was made'
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper_artifact/run_agentdojo.py", line 330, in main
+    epic_exec_trace = tuple(semantics.reduce_graph_opportunistic(epic_term))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 152, in reduce_graph_opportunistic
+    g = reduce_term(f, "bfs", False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 145, in reduce_term
+    return asyncio.get_event_loop().run_until_complete(reduce_term_async(e, tree_policy, blocking_async))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 125, in reduce_term_async
+    new_ops, toucheds = await graph_step(s, ident)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 205, in graph_step
+    return graph_step_task(s, ident)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/epic/graph_semantics.py", line 303, in graph_step_task
+    body = pyfuture.result()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/custom_translator.py", line 262, in wrapped
+    return (("prim", prim_var, await function(*args, **kwargs)),), (prim_var,)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/assistant_replay.py", line 135, in replayed
+    result, elapsed = lookup(query, output_schema)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/assistant_replay.py", line 120, in lookup
+    raise MissingRecording(
+AgentDojo.agentdojo_utils.assistant_replay.MissingRecording: 'no recorded query_ai_assistant for this (query, schema); the recording is incomplete or the program changed since it was made'

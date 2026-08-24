@@ -1,0 +1,42 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    found_blue_bag = None
+    image_patch = None
+    is_blue_plural = None
+    is_blue_single = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    bag_patches = image_patch.find('bag') + image_patch.find('bags')
+    found_blue_bag = False
+
+    def _for(bag_patch, bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result):
+        is_blue_single = bag_patch.verify_property('bag', 'blue')
+        is_blue_plural = bag_patch.verify_property('bags', 'blue')
+
+        def _if(bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result):
+            found_blue_bag = True
+            return (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result)
+        bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result = if_stmt(_if, None, or_expr(is_blue_single, is_blue_plural), (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result))
+        return (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result)
+    bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result = for_stmt(_for, bag_patches, (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result))
+
+    def _if(bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result):
+        result = 'yes'
+        return (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result)
+    bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result = if_stmt(_if, None, found_blue_bag, (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result))
+
+    def _if(bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result):
+
+        def _if(bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result):
+            result = 'yes'
+            return (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result)
+        bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result = if_stmt(_if, None, or_expr(image_patch.exists('coat'), image_patch.exists('coats')), (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result))
+        return (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result)
+    bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result = if_stmt(_if, None, result != 'yes', (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result))
+
+    def _if(bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result):
+        result = image_patch.simple_query('Do you see either blue bags or coats?')
+        return (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result)
+    bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result = if_stmt(_if, None, result == 'no', (bag_patches, found_blue_bag, image_patch, is_blue_plural, is_blue_single, result))
+    return result

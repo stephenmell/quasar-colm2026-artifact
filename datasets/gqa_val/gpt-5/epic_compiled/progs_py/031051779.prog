@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    magazine_patches = image_patch.find("magazine")
+    if len(magazine_patches) == 0:
+        result = image_patch.simple_query("Is the magazine to the right of a book?")
+    else:
+        book_patches = image_patch.find("book")
+        if len(book_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for magazine_patch in magazine_patches:
+                for book_patch in book_patches:
+                    if magazine_patch.horizontal_center > book_patch.horizontal_center:
+                        result = "yes"
+    return result

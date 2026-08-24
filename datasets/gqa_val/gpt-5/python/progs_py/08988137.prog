@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    urinal_patches = image_patch.find("urinal")
+    toilet_patches = image_patch.find("toilet")
+
+    # If we can't localize both objects, ask directly
+    if len(urinal_patches) == 0 or len(toilet_patches) == 0:
+        return image_patch.simple_query("Does the urinal next to the toilet look clean or dirty?")
+
+    # Find the urinal that is closest to any toilet (i.e., "next to" the toilet)
+    best_urinal = None
+    best_dist = float("inf")
+    for u in urinal_patches:
+        ux, uy = u.horizontal_center, u.vertical_center
+        for t in toilet_patches:
+            tx, ty = t.horizontal_center, t.vertical_center
+            d2 = (ux - tx) * (ux - tx) + (uy - ty) * (uy - ty)
+            if d2 < best_dist:
+                best_dist = d2
+                best_urinal = u
+
+    if best_urinal is None:
+        return image_patch.simple_query("Does the urinal next to the toilet look clean or dirty?")
+
+    # Classify the chosen urinal's appearance
+    return best_urinal.best_text_match(["clean", "dirty"])

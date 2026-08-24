@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    street_patches = None
+    image_patch = ImagePatch(image)
+    street_patches = image_patch.find('street')
+
+    def _if(image_patch, result, street_patches):
+        result = image_patch.simple_query('Does the street look unpaved or paved?')
+        return (image_patch, result, street_patches)
+
+    def _else(image_patch, result, street_patches):
+        result = street_patches[0].best_text_match(('unpaved', 'paved'))
+        return (image_patch, result, street_patches)
+    image_patch, result, street_patches = if_stmt(_if, _else, len(street_patches) == 0, (image_patch, result, street_patches))
+    return result

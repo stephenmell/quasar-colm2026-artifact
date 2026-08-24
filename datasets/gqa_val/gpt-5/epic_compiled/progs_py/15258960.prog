@@ -1,0 +1,14 @@
+# Is the nightstand to the right of a radiator?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    nightstand_patches = image_patch.find("nightstand")
+    if len(nightstand_patches) == 0:
+        result = image_patch.simple_query("Is the nightstand to the right of a radiator?")
+    else:
+        result = "no"
+        radiator_patches = image_patch.find("radiator")
+        for nightstand_patch in nightstand_patches:
+            for radiator_patch in radiator_patches:
+                if nightstand_patch.horizontal_center > radiator_patch.horizontal_center:
+                    result = "yes"
+    return result

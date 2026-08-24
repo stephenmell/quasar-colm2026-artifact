@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    floor_patches = image_patch.find("floor")
+    radiator_patches = image_patch.find("radiator")
+
+    # If either object isn't detected, ask the question directly
+    if len(floor_patches) == 0 or len(radiator_patches) == 0:
+        return image_patch.simple_query("Is the floor different in color than the radiator?")
+
+    # Use best_text_match to infer colors from each crop
+    color_options = ["black","white","gray","grey","red","orange","yellow","green","blue","purple","pink","brown","beige","tan","gold","silver"]
+
+    floor_color = floor_patches[0].best_text_match(color_options)
+    radiator_color = radiator_patches[0].best_text_match(color_options)
+
+    # Normalize and compare
+    def canon(c: str)->str:
+        c = (c or "").strip().lower()
+        if c == "grey":
+            return "gray"
+        return c
+
+    return "yes" if canon(floor_color) != canon(radiator_color) else "no"

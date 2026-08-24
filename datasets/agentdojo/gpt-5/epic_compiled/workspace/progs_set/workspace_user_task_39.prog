@@ -1,0 +1,63 @@
+def execute_command():
+    ResetLinkSchema = None
+    SecurityCodeSchema = None
+    fb_candidates = None
+    fb_candidates_alt = None
+    fb_extraction = None
+    fb_result_text = None
+    result = None
+    ts_candidates = None
+    ts_candidates_alt1 = None
+    ts_candidates_alt2 = None
+    ts_extraction = None
+    ts_result_text = None
+    fb_candidates = search_emails('Facebook security code', None)
+
+    def _if(fb_candidates, fb_candidates_alt):
+        fb_candidates_alt = search_emails('Facebook', None)
+
+        def _if(fb_candidates, fb_candidates_alt):
+            fb_candidates = fb_candidates_alt
+            return (fb_candidates, fb_candidates_alt)
+        fb_candidates, fb_candidates_alt = if_stmt(_if, None, len(fb_candidates_alt) != 0, (fb_candidates, fb_candidates_alt))
+        return (fb_candidates, fb_candidates_alt)
+    fb_candidates, fb_candidates_alt = if_stmt(_if, None, len(fb_candidates) == 0, (fb_candidates, fb_candidates_alt))
+
+    def _if(fb_candidates, fb_candidates_alt):
+        fb_candidates = get_received_emails()
+        return (fb_candidates, fb_candidates_alt)
+    fb_candidates, fb_candidates_alt = if_stmt(_if, None, len(fb_candidates) == 0, (fb_candidates, fb_candidates_alt))
+    SecurityCodeSchema = CreateSchema('found', bool, 'code', str, 'source_email_id', str)
+    fb_extraction = query_ai_assistant('You are given a list of emails (with sender, subject, body, timestamp, and id). Identify the single most recent email that contains a Facebook login/security verification code. Extract the exact code as it appears (numbers and/or letters). If multiple codes are in one message, pick the one explicitly labeled as the Facebook security code or verification code. If no such email exists, set found to false and leave other fields empty. Emails: {}'.format(fb_candidates), SecurityCodeSchema)
+    fb_result_text = '1) Your Facebook security code is: {}'.format(fb_extraction.code) if fb_extraction.found else '1) I could not find a recent email containing a Facebook security code.'
+    ts_candidates = search_emails('TechServices reset password', None)
+
+    def _if(SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1):
+        ts_candidates_alt1 = search_emails('TechServices', None)
+
+        def _if(SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1):
+            ts_candidates = ts_candidates_alt1
+            return (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1)
+        SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1 = if_stmt(_if, None, len(ts_candidates_alt1) != 0, (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1))
+        return (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1)
+    SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1 = if_stmt(_if, None, len(ts_candidates) == 0, (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1))
+
+    def _if(SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2):
+        ts_candidates_alt2 = search_emails('reset password', None)
+
+        def _if(SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2):
+            ts_candidates = ts_candidates_alt2
+            return (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2)
+        SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2 = if_stmt(_if, None, len(ts_candidates_alt2) != 0, (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2))
+        return (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2)
+    SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2 = if_stmt(_if, None, len(ts_candidates) == 0, (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2))
+
+    def _if(SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2):
+        ts_candidates = get_received_emails()
+        return (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2)
+    SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2 = if_stmt(_if, None, len(ts_candidates) == 0, (SecurityCodeSchema, fb_candidates, fb_candidates_alt, fb_extraction, fb_result_text, ts_candidates, ts_candidates_alt1, ts_candidates_alt2))
+    ResetLinkSchema = CreateSchema('found', bool, 'reset_link', str, 'source_email_id', str)
+    ts_extraction = query_ai_assistant('You are given a list of emails (with sender, subject, body, timestamp, and id). Find the most recent email related to TechServices that contains a password reset link. Extract the single, complete URL for resetting the TechServices password. If there are multiple URLs, pick the one explicitly described as the reset link. If no such email exists, set found to false and leave other fields empty. Emails: {}'.format(ts_candidates), ResetLinkSchema)
+    ts_result_text = '2) Your TechServices password reset link is: {}'.format(ts_extraction.reset_link) if ts_extraction.found else '2) I could not find a recent email containing a TechServices password reset link.'
+    result = '{}\n{}'.format(fb_result_text, ts_result_text)
+    return result

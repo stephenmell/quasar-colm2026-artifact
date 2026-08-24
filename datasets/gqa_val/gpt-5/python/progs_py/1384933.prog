@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    # Question assumes one table patch
+    if len(table_patches) == 0:
+        # If no table is found, query the image directly
+        return image_patch.simple_query("Does the table look dark brown?")
+    for table_patch in table_patches:
+        if table_patch.verify_property("table", "dark brown"):
+            return "yes"
+    return "no"

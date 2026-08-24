@@ -1,0 +1,31 @@
+# What color is the animal above the box?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("What color is the animal above the box?")
+    else:
+        box_patches = image_patch.find("box")
+        if len(box_patches) == 0:
+            result = image_patch.simple_query("What color is the animal above the box?")
+        else:
+            chosen_animal = None
+            chosen_center = None
+            for animal_patch in animal_patches:
+                is_above_any_box = False
+                for box_patch in box_patches:
+                    if animal_patch.vertical_center < box_patch.vertical_center:
+                        is_above_any_box = True
+                if is_above_any_box:
+                    if chosen_animal is None:
+                        chosen_animal = animal_patch
+                        chosen_center = animal_patch.vertical_center
+                    else:
+                        if animal_patch.vertical_center < chosen_center:
+                            chosen_animal = animal_patch
+                            chosen_center = animal_patch.vertical_center
+            if chosen_animal is None:
+                result = image_patch.simple_query("What color is the animal above the box?")
+            else:
+                result = chosen_animal.simple_query("What color is the animal?")
+    return result

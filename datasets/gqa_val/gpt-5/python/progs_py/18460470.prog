@@ -1,0 +1,12 @@
+# Do the trays look black?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tray_patches = image_patch.find("tray")
+    # If no tray is found, query the image directly
+    if len(tray_patches) == 0:
+        return image_patch.simple_query("Do the trays look black?")
+    # Check that all detected trays look black
+    for tray_patch in tray_patches:
+        if not tray_patch.verify_property("tray", "black"):
+            return "no"
+    return "yes"

@@ -1,0 +1,24 @@
+def execute_command():
+    deleted = None
+    files = None
+    largest_file = None
+    result = None
+    files = list_files()
+    result = 'No files found in the drive. Nothing to delete.'
+
+    def _if(deleted, files, largest_file, result):
+        largest_file = None
+
+        def _for(f, files, largest_file, result):
+
+            def _if(files, largest_file, result):
+                largest_file = f
+                return (files, largest_file, result)
+            files, largest_file, result = if_stmt(_if, None, or_expr(largest_file is None, f.size > largest_file.size), (files, largest_file, result))
+            return (files, largest_file, result)
+        files, largest_file, result = for_stmt(_for, files, (files, largest_file, result))
+        deleted = delete_file(largest_file.id_)
+        result = 'Deleted the largest file: {} (ID: {}, size: {} bytes).'.format(largest_file.filename, largest_file.id_, largest_file.size)
+        return (deleted, files, largest_file, result)
+    deleted, files, largest_file, result = if_stmt(_if, None, len(files) != 0, (deleted, files, largest_file, result))
+    return result

@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = ""
+    mug_patches = image_patch.find("mug")
+    if len(mug_patches) == 0:
+        result = image_patch.simple_query("What is the person to the left of the mug doing, reading or waiting?")
+    else:
+        person_patches = image_patch.find("person")
+        if len(person_patches) == 0:
+            result = image_patch.simple_query("What is the person to the left of the mug doing, reading or waiting?")
+        else:
+            selected_person = None
+            best_distance = None
+            for mug_patch in mug_patches:
+                for person_patch in person_patches:
+                    if person_patch.horizontal_center < mug_patch.horizontal_center:
+                        distance = mug_patch.horizontal_center - person_patch.horizontal_center
+                        if best_distance is None or distance < best_distance:
+                            best_distance = distance
+                            selected_person = person_patch
+            if selected_person is None:
+                result = image_patch.simple_query("What is the person to the left of the mug doing, reading or waiting?")
+            else:
+                result = selected_person.best_text_match(("reading", "waiting"))
+    return result

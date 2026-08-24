@@ -1,0 +1,45 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Try to find a screen (consider common synonyms)
+    screen_patches = image_patch.find("screen") + image_patch.find("tv") + image_patch.find("television") + image_patch.find("monitor") + image_patch.find("display")
+
+    if len(screen_patches) == 0:
+        result = image_patch.simple_query("Are there any people to the left of the cones that are to the left of the screen?")
+    else:
+        screen_patch = screen_patches[0]
+
+        # Find cones (include "traffic cone" as well)
+        cone_patches = image_patch.find("cone") + image_patch.find("traffic cone")
+
+        # Filter cones that are to the left of the screen
+        cones_left_of_screen = ()
+        for cone_patch in cone_patches:
+            if cone_patch.horizontal_center < screen_patch.horizontal_center:
+                cones_left_of_screen = cones_left_of_screen + (cone_patch,)
+
+        if len(cones_left_of_screen) == 0:
+            result = "no"
+        else:
+            # Find people
+            people_patches = image_patch.find("person") + image_patch.find("people")
+
+            any_person_left_of_cone = False
+            for person_patch in people_patches:
+                is_left_of_any_cone = False
+                for cone_patch in cones_left_of_screen:
+                    if person_patch.horizontal_center < cone_patch.horizontal_center:
+                        is_left_of_any_cone = True or is_left_of_any_cone
+                    else:
+                        is_left_of_any_cone = is_left_of_any_cone
+                if is_left_of_any_cone:
+                    any_person_left_of_cone = True or any_person_left_of_cone
+                else:
+                    any_person_left_of_cone = any_person_left_of_cone
+
+            if any_person_left_of_cone:
+                result = "yes"
+            else:
+                result = "no"
+    return result

@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    rect_plate_patches = image_patch.find("rectangular plate")
+    cup_patches = image_patch.find("coffee cup")
+    plate_patches = image_patch.find("plate")
+
+    # If any key object is not found, ask directly
+    if len(rect_plate_patches) == 0 or len(cup_patches) == 0 or len(plate_patches) == 0:
+        return image_patch.simple_query("Do the rectangular plate and the plate to the right of the coffee cup both have white color?")
+
+    rect_plate_patch = rect_plate_patches[0]
+    cup_patch = cup_patches[0]
+
+    # Find the plate to the right of the coffee cup (closest on the right)
+    right_plates = [p for p in plate_patches if p.horizontal_center > cup_patch.horizontal_center]
+    if len(right_plates) == 0:
+        return image_patch.simple_query("Do the rectangular plate and the plate to the right of the coffee cup both have white color?")
+    right_plate_patch = min(right_plates, key=lambda p: p.horizontal_center - cup_patch.horizontal_center)
+
+    is_rect_white = rect_plate_patch.verify_property("rectangular plate", "white")
+    is_right_white = right_plate_patch.verify_property("plate", "white")
+
+    return bool_to_yesno(is_rect_white and is_right_white)

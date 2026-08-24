@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    cookbook_terms = None
+    helmet_terms = None
+    image_patch = None
+    is_cookbook = None
+    is_helmet = None
+    result = None
+    image_patch = ImagePatch(image)
+    cookbook_terms = ('cookbook', 'cook book', 'cookbooks', 'cook books', 'recipe book', 'recipe books')
+    helmet_terms = ('helmet', 'helmets', 'hard hat', 'hard hats')
+    is_cookbook = False
+
+    def _for(term, cookbook_terms, helmet_terms, image_patch, is_cookbook):
+
+        def _if(cookbook_terms, helmet_terms, image_patch, is_cookbook):
+            is_cookbook = True
+            return (cookbook_terms, helmet_terms, image_patch, is_cookbook)
+        cookbook_terms, helmet_terms, image_patch, is_cookbook = if_stmt(_if, None, image_patch.exists(term), (cookbook_terms, helmet_terms, image_patch, is_cookbook))
+        return (cookbook_terms, helmet_terms, image_patch, is_cookbook)
+    cookbook_terms, helmet_terms, image_patch, is_cookbook = for_stmt(_for, cookbook_terms, (cookbook_terms, helmet_terms, image_patch, is_cookbook))
+    is_helmet = False
+
+    def _for(term, cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet):
+
+        def _if(cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet):
+            is_helmet = True
+            return (cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet)
+        cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet = if_stmt(_if, None, image_patch.exists(term), (cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet))
+        return (cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet)
+    cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet = for_stmt(_for, helmet_terms, (cookbook_terms, helmet_terms, image_patch, is_cookbook, is_helmet))
+    result = bool_to_yesno(or_expr(is_cookbook, is_helmet))
+    return result

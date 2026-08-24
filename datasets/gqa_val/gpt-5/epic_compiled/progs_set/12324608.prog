@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    car_patch = None
+    car_patches = None
+    fence_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find('car')
+
+    def _if(car_patch, car_patches, fence_patches, image_patch, result):
+        result = image_patch.simple_query('Is there a fence to the right of the car?')
+        return (car_patch, car_patches, fence_patches, image_patch, result)
+
+    def _else(car_patch, car_patches, fence_patches, image_patch, result):
+        car_patch = car_patches[0]
+        fence_patches = image_patch.find('fence')
+
+        def _if(car_patch, car_patches, fence_patches, image_patch, result):
+            result = 'no'
+            return (car_patch, car_patches, fence_patches, image_patch, result)
+
+        def _else(car_patch, car_patches, fence_patches, image_patch, result):
+            result = 'no'
+
+            def _for(fence_patch, car_patch, car_patches, fence_patches, image_patch, result):
+
+                def _if(car_patch, car_patches, fence_patches, image_patch, result):
+                    result = 'yes'
+                    return (car_patch, car_patches, fence_patches, image_patch, result)
+                car_patch, car_patches, fence_patches, image_patch, result = if_stmt(_if, None, fence_patch.horizontal_center > car_patch.horizontal_center, (car_patch, car_patches, fence_patches, image_patch, result))
+                return (car_patch, car_patches, fence_patches, image_patch, result)
+            car_patch, car_patches, fence_patches, image_patch, result = for_stmt(_for, fence_patches, (car_patch, car_patches, fence_patches, image_patch, result))
+            return (car_patch, car_patches, fence_patches, image_patch, result)
+        car_patch, car_patches, fence_patches, image_patch, result = if_stmt(_if, _else, len(fence_patches) == 0, (car_patch, car_patches, fence_patches, image_patch, result))
+        return (car_patch, car_patches, fence_patches, image_patch, result)
+    car_patch, car_patches, fence_patches, image_patch, result = if_stmt(_if, _else, len(car_patches) == 0, (car_patch, car_patches, fence_patches, image_patch, result))
+    return result

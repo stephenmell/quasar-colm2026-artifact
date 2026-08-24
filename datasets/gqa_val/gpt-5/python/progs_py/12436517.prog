@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    monitor_patches = image_patch.find("monitor")
+    # If no monitor is found, query the image directly
+    if len(monitor_patches) == 0:
+        return image_patch.simple_query("Is the monitor to the right of books?")
+    # Try finding "books" and fallback to "book"
+    books_patches = image_patch.find("books")
+    if len(books_patches) == 0:
+        books_patches = image_patch.find("book")
+    # If no books are found, answer no
+    if len(books_patches) == 0:
+        return "no"
+    for monitor_patch in monitor_patches:
+        for book_patch in books_patches:
+            if monitor_patch.horizontal_center > book_patch.horizontal_center:
+                return "yes"
+    return "no"

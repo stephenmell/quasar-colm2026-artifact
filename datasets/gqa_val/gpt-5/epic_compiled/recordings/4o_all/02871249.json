@@ -1,0 +1,59 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2367328",
+          [
+            0,
+            0,
+            500,
+            376
+          ]
+        ],
+        "ladder"
+      ],
+      [
+        [
+          194,
+          136,
+          217,
+          168
+        ],
+        [
+          193,
+          140,
+          203,
+          168
+        ],
+        [
+          206,
+          137,
+          218,
+          168
+        ]
+      ],
+      14716212069
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2367328",
+          [
+            194,
+            136,
+            217,
+            168
+          ]
+        ],
+        "What is the height of the ladder?"
+      ],
+      "I can't determine the height of the ladder from the image.",
+      1224524224
+    ]
+  ],
+  "best_text_match": []
+}

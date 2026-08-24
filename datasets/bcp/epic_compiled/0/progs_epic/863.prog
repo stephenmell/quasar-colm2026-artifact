@@ -1,0 +1,71 @@
+({974: 'context',
+  977: 'llm_query',
+  988: '.join',
+  994: 'return_result',
+  995: '.strip'},
+ ('def',
+  972,
+  ((),
+   ((('call', (973,), -1, ()),
+     ('def',
+      975,
+      ((983, 976),
+       ((('prim',
+          978,
+          'You are given a single document. Determine if it mentions a woman '
+          'who matches ALL or PART of the following composite biography, and '
+          'extract the strongest candidate(s) with evidence.\n'
+          '\n'
+          'Composite biography to match:\n'
+          '- She holds an MBA AND a separate Master’s degree (two postgraduate '
+          'degrees: one is an MBA, plus another Master’s).\n'
+          '- As of 2023, she was a PhD candidate AND the resident pastor of a '
+          'ministry in West Africa.\n'
+          '- In 2018, she hosted a podcast consisting of six episodes.\n'
+          '- As of 2022, she was married with two children; one child shares '
+          'the same first name as her husband.\n'
+          '- She met her husband while she was an undergraduate student at the '
+          'university.\n'
+          '\n'
+          'Instructions:\n'
+          '- Read the document below.\n'
+          '- If the document mentions any woman who matches at least one of '
+          'these details, list the candidate’s full name.\n'
+          '- Under that name, list which criteria are explicitly satisfied in '
+          'this document, with short direct quotes from the document.\n'
+          '- If the document contains dates, tie the timeline to the criteria '
+          '(e.g., “as of 2023” or “in 2018”).\n'
+          '- If there is no possibly relevant person, output: NO_MATCH.\n'
+          '\n'
+          'Document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (979,), 80, (978, 976)),
+         ('prim', 980, '\nEND_DOCUMENT'),
+         ('call', (981,), 80, (979, 980)),
+         ('call', (982,), 977, (981,)),
+         ('call', (984,), -1, (982,)),
+         ('call', (985,), 80, (983, 984))),
+        (985,)))),
+     ('call', (987,), 79, (974,)),
+     ('call', (986,), 987, (973, 975)),
+     ('prim', 989, '\n\n'),
+     ('call', (990,), 988, (989, 986)),
+     ('prim',
+      991,
+      'From the extracted candidates and evidence below, identify the single '
+      'woman who best satisfies ALL of the composite biography details. Prefer '
+      'a candidate who matches every point exactly (MBA and another Master’s; '
+      'as of 2023 a PhD candidate and resident pastor of a ministry in West '
+      'Africa; in 2018 hosted a six-episode podcast; as of 2022 married with '
+      'two children with one child sharing the husband’s first name; met her '
+      'husband while an undergraduate).\n'
+      '\n'
+      'Only output the person’s full name, and nothing else. If uncertain, '
+      'output Unknown.\n'
+      '\n'
+      'Evidence:\n'),
+     ('call', (992,), 80, (991, 990)),
+     ('call', (993,), 977, (992,)),
+     ('call', (996,), 995, (993,)),
+     ('call', (997,), 994, (996,))),
+    (997,)))))

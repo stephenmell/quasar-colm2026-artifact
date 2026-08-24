@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    clothing_patches = image_patch.find("clothing")
+    # If no clothing is found, ask directly
+    if len(clothing_patches) == 0:
+        return image_patch.simple_query("What is the black clothing item called?")
+    # Look for a black clothing item among detected clothing patches
+    for clothing_patch in clothing_patches:
+        if clothing_patch.verify_property("clothing", "black"):
+            return clothing_patch.simple_query("What is the clothing item called?")
+    # If none of the detected clothing items are verified as black, ask directly
+    return image_patch.simple_query("What is the black clothing item called?")

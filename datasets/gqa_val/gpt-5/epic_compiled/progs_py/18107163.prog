@@ -1,0 +1,18 @@
+# Are there any televisions or remote controls?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tv_terms = ("television", "tv", "monitor", "screen")
+    remote_terms = ("remote control", "remote")
+
+    tv_found = False
+    for term in tv_terms:
+        if image_patch.exists(term):
+            tv_found = True
+
+    remote_found = False
+    for term in remote_terms:
+        if image_patch.exists(term):
+            remote_found = True
+
+    result = bool_to_yesno(tv_found or remote_found)
+    return result

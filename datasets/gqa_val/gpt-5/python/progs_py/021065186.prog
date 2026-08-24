@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # If no man is found, ask directly
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Are there women to the left of the man that is reading a paper?")
+    # Find the man who is reading a paper
+    reading_man_patch = None
+    for man_patch in man_patches:
+        if man_patch.simple_query("Is the man reading a paper?") == "yes":
+            reading_man_patch = man_patch
+            break
+    # If no man is reading a paper, answer no
+    if reading_man_patch is None:
+        return "no"
+    # Look for women to the left of that man
+    women_patches = image_patch.find("woman")
+    if len(women_patches) == 0:
+        return "no"
+    for woman_patch in women_patches:
+        if woman_patch.horizontal_center < reading_man_patch.horizontal_center:
+            return "yes"
+    return "no"

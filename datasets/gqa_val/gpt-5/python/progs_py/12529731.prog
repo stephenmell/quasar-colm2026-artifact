@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try both singular and plural for robustness
+    candy_patches = image_patch.find("candy")
+    if len(candy_patches) == 0:
+        candy_patches = image_patch.find("candies")
+    # If no candies are found, ask directly
+    if len(candy_patches) == 0:
+        return image_patch.simple_query("Are the candies to the right of the scissors?")
+    scissors_patches = image_patch.find("scissors")
+    # If no scissors are found, answer no
+    if len(scissors_patches) == 0:
+        return "no"
+    # Check if any candy is to the right of any scissors
+    for candy_patch in candy_patches:
+        for scissors_patch in scissors_patches:
+            if candy_patch.horizontal_center > scissors_patch.horizontal_center:
+                return "yes"
+    return "no"

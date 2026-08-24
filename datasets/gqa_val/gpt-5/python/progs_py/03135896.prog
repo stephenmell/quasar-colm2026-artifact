@@ -1,0 +1,15 @@
+# Who is eating the sandwich?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find the person who is eating a sandwich
+    candidate_patches = []
+    for label in ["person", "man", "woman", "boy", "girl"]:
+        candidate_patches.extend(image_patch.find(label))
+    if len(candidate_patches) == 0:
+        # If no people are found, ask the whole image directly
+        return image_patch.simple_query("Who is eating the sandwich?")
+    for person_patch in candidate_patches:
+        if person_patch.simple_query("Is the person eating a sandwich?") == "yes":
+            return person_patch.simple_query("Who is eating the sandwich?")
+    # If we couldn't determine from person patches, ask directly
+    return image_patch.simple_query("Who is eating the sandwich?")

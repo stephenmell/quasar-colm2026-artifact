@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    image_patch = None
+    is_orange = None
+    result = None
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find('chair')
+
+    def _if(chair_patches, image_patch, is_orange, result):
+        result = image_patch.simple_query('Is there a chair that is not orange?')
+        return (chair_patches, image_patch, is_orange, result)
+
+    def _else(chair_patches, image_patch, is_orange, result):
+        result = 'no'
+
+        def _for(chair_patch, chair_patches, image_patch, is_orange, result):
+            is_orange = chair_patch.verify_property('chair', 'orange')
+
+            def _if(chair_patches, image_patch, is_orange, result):
+                result = 'yes'
+                return (chair_patches, image_patch, is_orange, result)
+            chair_patches, image_patch, is_orange, result = if_stmt(_if, None, not_expr(is_orange), (chair_patches, image_patch, is_orange, result))
+            return (chair_patches, image_patch, is_orange, result)
+        chair_patches, image_patch, is_orange, result = for_stmt(_for, chair_patches, (chair_patches, image_patch, is_orange, result))
+        return (chair_patches, image_patch, is_orange, result)
+    chair_patches, image_patch, is_orange, result = if_stmt(_if, _else, len(chair_patches) == 0, (chair_patches, image_patch, is_orange, result))
+    return result

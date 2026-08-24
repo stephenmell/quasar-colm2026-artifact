@@ -1,0 +1,24 @@
+def execute_command(image) -> str:
+    faucet_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    faucet_patches = image_patch.find('faucet')
+
+    def _if(faucet_patches, image_patch, result):
+        result = image_patch.simple_query('In which part of the picture is the faucet, the bottom or the top?')
+        return (faucet_patches, image_patch, result)
+
+    def _else(faucet_patches, image_patch, result):
+
+        def _if(faucet_patches, image_patch, result):
+            result = 'bottom'
+            return (faucet_patches, image_patch, result)
+
+        def _else(faucet_patches, image_patch, result):
+            result = 'top'
+            return (faucet_patches, image_patch, result)
+        faucet_patches, image_patch, result = if_stmt(_if, _else, faucet_patches[0].vertical_center < image_patch.vertical_center, (faucet_patches, image_patch, result))
+        return (faucet_patches, image_patch, result)
+    faucet_patches, image_patch, result = if_stmt(_if, _else, len(faucet_patches) == 0, (faucet_patches, image_patch, result))
+    return result

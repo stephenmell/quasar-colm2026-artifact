@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, the shirt looks long.",
+      "No, the shirt does not look long.",
+      "yes",
+      "no"
+    ]
+  },
+  "time_ns": 7367430938
+}

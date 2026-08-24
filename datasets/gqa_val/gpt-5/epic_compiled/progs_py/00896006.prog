@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find("tree")
+    if len(tree_patches) == 0:
+        result = image_patch.simple_query("Are the trees short?")
+    else:
+        all_short = True
+        for tree_patch in tree_patches:
+            is_short = tree_patch.verify_property("tree", "short")
+            if not is_short:
+                all_short = False
+        result = bool_to_yesno(all_short)
+    return result

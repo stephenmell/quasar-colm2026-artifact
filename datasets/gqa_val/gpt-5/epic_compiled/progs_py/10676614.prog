@@ -1,0 +1,22 @@
+# Do you see cars or doors that are gray?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for gray cars
+    car_exists = image_patch.exists("car")
+    if car_exists:
+        car_patches = image_patch.find("car")
+        for car_patch in car_patches:
+            if car_patch.verify_property("car", "gray"):
+                result = "yes"
+
+    # Check for gray doors
+    door_exists = image_patch.exists("door")
+    if door_exists:
+        door_patches = image_patch.find("door")
+        for door_patch in door_patches:
+            if door_patch.verify_property("door", "gray"):
+                result = "yes"
+
+    return result

@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, the gate is small and wooden.",
+      "no",
+      "yes",
+      "No, the gate is not small and wooden."
+    ]
+  },
+  "time_ns": 9440420538
+}

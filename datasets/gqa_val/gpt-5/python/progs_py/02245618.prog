@@ -1,0 +1,19 @@
+# Are there any safety jackets in the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try detecting common synonyms directly
+    synonyms = [
+        "safety jacket",
+        "life jacket",
+        "safety vest",
+        "life vest",
+        "reflective vest",
+        "high-visibility vest",
+        "high visibility vest",
+        "hi-vis vest",
+    ]
+    for term in synonyms:
+        if image_patch.exists(term):
+            return "yes"
+    # Fallback: ask the question directly
+    return image_patch.simple_query("Are there any safety jackets in the image?")

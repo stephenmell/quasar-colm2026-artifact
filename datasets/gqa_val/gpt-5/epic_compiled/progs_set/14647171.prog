@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    blanket_patches = None
+    cabinet_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    cabinet_patches = image_patch.find('cabinet')
+
+    def _if(blanket_patches, cabinet_patches, image_patch, result):
+        result = image_patch.simple_query('Is there any blanket to the right of the cabinet?')
+        return (blanket_patches, cabinet_patches, image_patch, result)
+
+    def _else(blanket_patches, cabinet_patches, image_patch, result):
+        blanket_patches = image_patch.find('blanket')
+
+        def _if(blanket_patches, cabinet_patches, image_patch, result):
+            result = 'no'
+            return (blanket_patches, cabinet_patches, image_patch, result)
+
+        def _else(blanket_patches, cabinet_patches, image_patch, result):
+            result = 'no'
+
+            def _for(cabinet_patch, blanket_patches, cabinet_patches, image_patch, result):
+
+                def _for(blanket_patch, blanket_patches, cabinet_patches, image_patch, result):
+
+                    def _if(blanket_patches, cabinet_patches, image_patch, result):
+                        result = 'yes'
+                        return (blanket_patches, cabinet_patches, image_patch, result)
+                    blanket_patches, cabinet_patches, image_patch, result = if_stmt(_if, None, blanket_patch.horizontal_center > cabinet_patch.horizontal_center, (blanket_patches, cabinet_patches, image_patch, result))
+                    return (blanket_patches, cabinet_patches, image_patch, result)
+                blanket_patches, cabinet_patches, image_patch, result = for_stmt(_for, blanket_patches, (blanket_patches, cabinet_patches, image_patch, result))
+                return (blanket_patches, cabinet_patches, image_patch, result)
+            blanket_patches, cabinet_patches, image_patch, result = for_stmt(_for, cabinet_patches, (blanket_patches, cabinet_patches, image_patch, result))
+            return (blanket_patches, cabinet_patches, image_patch, result)
+        blanket_patches, cabinet_patches, image_patch, result = if_stmt(_if, _else, len(blanket_patches) == 0, (blanket_patches, cabinet_patches, image_patch, result))
+        return (blanket_patches, cabinet_patches, image_patch, result)
+    blanket_patches, cabinet_patches, image_patch, result = if_stmt(_if, _else, len(cabinet_patches) == 0, (blanket_patches, cabinet_patches, image_patch, result))
+    return result

@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    found_white = None
+    image_patch = None
+    is_large = None
+    is_white = None
+    large_white = None
+    result = None
+    vehicle_exists = None
+    vehicle_patches = None
+    image_patch = ImagePatch(image)
+    vehicle_exists = image_patch.exists('vehicle')
+
+    def _if(found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches):
+        result = image_patch.simple_query('Does the white vehicle look large?')
+        return (found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches)
+
+    def _else(found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches):
+        vehicle_patches = image_patch.find('vehicle')
+        found_white = False
+        large_white = False
+
+        def _for(vehicle_patch, found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches):
+            is_white = vehicle_patch.verify_property('vehicle', 'white')
+            found_white = or_expr(found_white, is_white)
+            is_large = vehicle_patch.verify_property('vehicle', 'large')
+
+            def _if(found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches):
+                large_white = or_expr(True, large_white)
+                return (found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches)
+            found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches = if_stmt(_if, None, and_expr(is_white, is_large), (found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches))
+            return (found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches)
+        found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches = for_stmt(_for, vehicle_patches, (found_white, image_patch, is_large, is_white, large_white, vehicle_exists, vehicle_patches))
+
+        def _if(found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches):
+            result = bool_to_yesno(large_white)
+            return (found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches)
+
+        def _else(found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches):
+            result = image_patch.simple_query('Does the white vehicle look large?')
+            return (found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches)
+        found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches = if_stmt(_if, _else, found_white, (found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches))
+        return (found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches)
+    found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches = if_stmt(_if, _else, not_expr(vehicle_exists), (found_white, image_patch, is_large, is_white, large_white, result, vehicle_exists, vehicle_patches))
+    return result

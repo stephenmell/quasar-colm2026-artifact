@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    bottom_patch = None
+    bottom_top = None
+    image_patch = None
+    keyboard_patches = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    bottom_top = int(image_patch.vertical_center)
+    bottom_patch = image_patch.crop(image_patch.left, bottom_top, image_patch.right, image_patch.upper)
+    plate_patches = bottom_patch.find('plate')
+    keyboard_patches = bottom_patch.find('keyboard')
+
+    def _if(bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result):
+        result = bottom_patch.simple_query('Is the plate to the left of the keyboard?')
+        return (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result)
+
+    def _else(bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result):
+        result = 'no'
+
+        def _for(plate_patch, bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result):
+
+            def _for(keyboard_patch, bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result):
+
+                def _if(bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result):
+                    result = 'yes'
+                    return (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result)
+                bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result = if_stmt(_if, None, plate_patch.horizontal_center < keyboard_patch.horizontal_center, (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result))
+                return (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result)
+            bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result = for_stmt(_for, keyboard_patches, (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result))
+            return (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result)
+        bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result = for_stmt(_for, plate_patches, (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result))
+        return (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result)
+    bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result = if_stmt(_if, _else, or_expr(len(plate_patches) == 0, len(keyboard_patches) == 0), (bottom_patch, bottom_top, image_patch, keyboard_patches, plate_patches, result))
+    return result

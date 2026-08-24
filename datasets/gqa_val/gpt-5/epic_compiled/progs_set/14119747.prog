@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    lamb_patches = None
+    monkey_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    lamb_patches = image_patch.find('lamb')
+
+    def _if(image_patch, lamb_patches, monkey_patches, result):
+        result = image_patch.simple_query('Is there any monkey to the right of the lamb?')
+        return (image_patch, lamb_patches, monkey_patches, result)
+
+    def _else(image_patch, lamb_patches, monkey_patches, result):
+        monkey_patches = image_patch.find('monkey')
+
+        def _if(image_patch, lamb_patches, monkey_patches, result):
+            result = 'no'
+            return (image_patch, lamb_patches, monkey_patches, result)
+
+        def _else(image_patch, lamb_patches, monkey_patches, result):
+            result = 'no'
+
+            def _for(lamb_patch, image_patch, lamb_patches, monkey_patches, result):
+
+                def _for(monkey_patch, image_patch, lamb_patches, monkey_patches, result):
+
+                    def _if(image_patch, lamb_patches, monkey_patches, result):
+                        result = 'yes'
+                        return (image_patch, lamb_patches, monkey_patches, result)
+                    image_patch, lamb_patches, monkey_patches, result = if_stmt(_if, None, monkey_patch.horizontal_center > lamb_patch.horizontal_center, (image_patch, lamb_patches, monkey_patches, result))
+                    return (image_patch, lamb_patches, monkey_patches, result)
+                image_patch, lamb_patches, monkey_patches, result = for_stmt(_for, monkey_patches, (image_patch, lamb_patches, monkey_patches, result))
+                return (image_patch, lamb_patches, monkey_patches, result)
+            image_patch, lamb_patches, monkey_patches, result = for_stmt(_for, lamb_patches, (image_patch, lamb_patches, monkey_patches, result))
+            return (image_patch, lamb_patches, monkey_patches, result)
+        image_patch, lamb_patches, monkey_patches, result = if_stmt(_if, _else, len(monkey_patches) == 0, (image_patch, lamb_patches, monkey_patches, result))
+        return (image_patch, lamb_patches, monkey_patches, result)
+    image_patch, lamb_patches, monkey_patches, result = if_stmt(_if, _else, len(lamb_patches) == 0, (image_patch, lamb_patches, monkey_patches, result))
+    return result

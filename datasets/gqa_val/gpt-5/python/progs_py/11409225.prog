@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return image_patch.simple_query("Are there men to the right of the bag that is to the left of the TV stand?")
+    tv_stand_patches = image_patch.find("TV stand")
+    if len(tv_stand_patches) == 0:
+        return image_patch.simple_query("Are there men to the right of the bag that is to the left of the TV stand?")
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return "no"
+    for bag_patch in bag_patches:
+        # Check if this bag is to the left of any TV stand
+        is_left_of_tv = any(bag_patch.horizontal_center < tv_patch.horizontal_center for tv_patch in tv_stand_patches)
+        if not is_left_of_tv:
+            continue
+        # Now check if any man is to the right of this bag
+        for man_patch in man_patches:
+            if man_patch.horizontal_center > bag_patch.horizontal_center:
+                return "yes"
+    return "no"

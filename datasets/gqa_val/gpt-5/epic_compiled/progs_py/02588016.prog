@@ -1,0 +1,22 @@
+# What is the person that is to the right of the wallet doing?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    wallet_patches = image_patch.find("wallet")
+
+    if len(wallet_patches) == 0:
+        result = image_patch.simple_query("What is the person that is to the right of the wallet doing?")
+    else:
+        wallet_patch = wallet_patches[0]
+        person_patches = image_patch.find("person")
+        selected_person_patch = None
+
+        for person_patch in person_patches:
+            if person_patch.horizontal_center > wallet_patch.horizontal_center:
+                selected_person_patch = person_patch
+
+        if selected_person_patch:
+            result = selected_person_patch.simple_query("What is the person doing?")
+        else:
+            right_area_patch = image_patch.crop(wallet_patch.right, wallet_patch.lower, image_patch.right, wallet_patch.upper)
+            result = right_area_patch.simple_query("What is the person doing?")
+    return result

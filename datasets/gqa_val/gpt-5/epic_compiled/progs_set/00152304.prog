@@ -1,0 +1,83 @@
+def execute_command(image) -> str:
+    bag_like_names = None
+    bag_patches = None
+    found = None
+    has_right = None
+    idx = None
+    image_patch = None
+    left_woman = None
+    leftmost_index = None
+    leftmost_x = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+    result = 'no'
+
+    def _if(bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+        result = image_patch.simple_query('Do you see bags to the right of the woman on the left?')
+        return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+
+    def _else(bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+        leftmost_index = 0
+        leftmost_x = None
+        idx = 0
+
+        def _for(wp, idx, image_patch, leftmost_index, leftmost_x, result, woman_patches):
+
+            def _if(idx, image_patch, leftmost_index, leftmost_x, result, woman_patches):
+                leftmost_x = wp.horizontal_center
+                leftmost_index = idx
+                return (idx, image_patch, leftmost_index, leftmost_x, result, woman_patches)
+
+            def _else(idx, image_patch, leftmost_index, leftmost_x, result, woman_patches):
+
+                def _if(idx, image_patch, leftmost_index, leftmost_x, result, woman_patches):
+                    leftmost_x = wp.horizontal_center
+                    leftmost_index = idx
+                    return (idx, image_patch, leftmost_index, leftmost_x, result, woman_patches)
+                idx, image_patch, leftmost_index, leftmost_x, result, woman_patches = if_stmt(_if, None, wp.horizontal_center < leftmost_x, (idx, image_patch, leftmost_index, leftmost_x, result, woman_patches))
+                return (idx, image_patch, leftmost_index, leftmost_x, result, woman_patches)
+            idx, image_patch, leftmost_index, leftmost_x, result, woman_patches = if_stmt(_if, _else, leftmost_x is None, (idx, image_patch, leftmost_index, leftmost_x, result, woman_patches))
+            idx = idx + 1
+            return (idx, image_patch, leftmost_index, leftmost_x, result, woman_patches)
+        idx, image_patch, leftmost_index, leftmost_x, result, woman_patches = for_stmt(_for, woman_patches, (idx, image_patch, leftmost_index, leftmost_x, result, woman_patches))
+        left_woman = woman_patches[leftmost_index]
+        bag_like_names = ('bag', 'backpack', 'handbag', 'purse', 'shopping bag', 'paper bag', 'plastic bag', 'luggage')
+        bag_patches = ()
+
+        def _for(name, bag_like_names, bag_patches, found, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+            found = image_patch.find(name)
+            bag_patches = bag_patches + found
+            return (bag_like_names, bag_patches, found, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+        bag_like_names, bag_patches, found, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches = for_stmt(_for, bag_like_names, (bag_like_names, bag_patches, found, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches))
+
+        def _if(bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+            result = 'no'
+            return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+
+        def _else(bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+            has_right = False
+
+            def _for(bag_patch, bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+
+                def _if(bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+                    has_right = True
+                    return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+                bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches = if_stmt(_if, None, bag_patch.horizontal_center > left_woman.horizontal_center, (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches))
+                return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+            bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches = for_stmt(_for, bag_patches, (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches))
+
+            def _if(bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+                result = 'yes'
+                return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+
+            def _else(bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches):
+                result = 'no'
+                return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+            bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches = if_stmt(_if, _else, has_right, (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches))
+            return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+        bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches = if_stmt(_if, _else, len(bag_patches) == 0, (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches))
+        return (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches)
+    bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (bag_like_names, bag_patches, found, has_right, idx, image_patch, left_woman, leftmost_index, leftmost_x, result, woman_patches))
+    return result

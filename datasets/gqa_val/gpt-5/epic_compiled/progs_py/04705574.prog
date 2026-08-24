@@ -1,0 +1,41 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find tea kettle
+    kettle_patches = image_patch.find("tea kettle")
+    if len(kettle_patches) == 0:
+        kettle_patches = image_patch.find("kettle")
+
+    # Aggregate possible appliance patches
+    appliance_patches = ()
+    appliance_names = ("appliance", "stove", "oven", "microwave", "stovetop", "cooktop", "range", "stove top")
+    for name in appliance_names:
+        found = image_patch.find(name)
+        if len(found) > 0:
+            appliance_patches = appliance_patches + found
+
+    # Aggregate garbage bin patches with common synonyms
+    garbage_patches = ()
+    garbage_names = ("garbage bin", "trash can", "trash bin", "garbage can", "bin", "rubbish bin", "waste bin", "trash")
+    for name in garbage_names:
+        found = image_patch.find(name)
+        if len(found) > 0:
+            garbage_patches = garbage_patches + found
+
+    # If we are missing any key object, ask directly
+    if len(kettle_patches) == 0 or len(appliance_patches) == 0 or len(garbage_patches) == 0:
+        result = image_patch.simple_query("Is the garbage bin to the left of the appliance the tea kettle is on?")
+    else:
+        # Check if any garbage bin is to the left of the appliance that the tea kettle is on
+        for kettle_patch in kettle_patches:
+            for appliance_patch in appliance_patches:
+                # Heuristic for "on": kettle above and horizontally within appliance bounds
+                is_on = (kettle_patch.vertical_center < appliance_patch.vertical_center and
+                         kettle_patch.horizontal_center > appliance_patch.left and
+                         kettle_patch.horizontal_center < appliance_patch.right)
+                if is_on:
+                    for garbage_patch in garbage_patches:
+                        if garbage_patch.horizontal_center < appliance_patch.horizontal_center:
+                            result = "yes"
+    return result

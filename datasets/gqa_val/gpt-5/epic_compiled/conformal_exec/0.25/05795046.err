@@ -1,0 +1,34 @@
+Stage: other execution error
+Error: _parse_yesno_confidence() parse error: [{'answer': 'Yes, it is a pot.', 'score': 0.85}, {'answer': 'No, it is not a pot.', 'score': 0.15}]
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "05795046.prog", line 18, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 169, in abstract_for_loop
+    return concrete_for_loop(for_body, l, lvars)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 156, in concrete_for_loop
+    lvars = for_body(x, *lvars)
+            ^^^^^^^^^^^^^^^^^^^
+  File "05795046.prog", line 16, in _for
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch.py", line 67, in exists
+    return self.CONTEXT.METHODS.exists(self, object_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/eval/run_utils.py", line 42, in wrapper
+    return asyncio.get_event_loop().run_until_complete(function(*args, **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch_conformal.py", line 198, in exists
+    score = await _abstract_exists_get_patch_score(object_name, patch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch_conformal.py", line 184, in _abstract_exists_get_patch_score
+    return _parse_yesno_confidence(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch_conformal.py", line 167, in _parse_yesno_confidence
+    assert yes_score + no_score == 1, f"_parse_yesno_confidence() parse error: {response}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: _parse_yesno_confidence() parse error: [{'answer': 'Yes, it is a pot.', 'score': 0.85}, {'answer': 'No, it is not a pot.', 'score': 0.15}]

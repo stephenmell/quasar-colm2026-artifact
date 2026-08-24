@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ski_patches = image_patch.find("ski")
+    # Need at least two skis to resolve "the ski to the right of the other ski"
+    if len(ski_patches) < 2:
+        return image_patch.simple_query("Does the ski to the right of the other ski have short length?")
+    # Select the ski that is to the right of the other(s)
+    right_ski = max(ski_patches, key=lambda p: p.horizontal_center)
+    # Check if it has short length
+    if right_ski.verify_property("ski", "short length"):
+        return "yes"
+    return bool_to_yesno(right_ski.verify_property("ski", "short"))

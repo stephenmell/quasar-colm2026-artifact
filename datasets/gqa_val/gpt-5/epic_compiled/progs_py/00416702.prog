@@ -1,0 +1,41 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find("bird")
+    if len(bird_patches) == 0:
+        result = image_patch.simple_query("Do the flowers near the bird look green?")
+    else:
+        result = "no"
+        for bird_patch in bird_patches:
+            pad_x = int(0.15 * image_patch.width)
+            pad_y = int(0.15 * image_patch.height)
+
+            left = bird_patch.left - pad_x
+            if left < image_patch.left:
+                left = image_patch.left
+
+            lower = bird_patch.lower - pad_y
+            if lower < image_patch.lower:
+                lower = image_patch.lower
+
+            right = bird_patch.right + pad_x
+            if right > image_patch.right:
+                right = image_patch.right
+
+            upper = bird_patch.upper + pad_y
+            if upper > image_patch.upper:
+                upper = image_patch.upper
+
+            near_patch = image_patch.crop(left, lower, right, upper)
+
+            flower_patches = near_patch.find("flower")
+            if len(flower_patches) == 0:
+                flower_patches = near_patch.find("flowers")
+
+            green_found = False
+            if len(flower_patches) > 0:
+                for flower_patch in flower_patches:
+                    if flower_patch.verify_property("flower", "green") or flower_patch.verify_property("flowers", "green"):
+                        green_found = True
+            if green_found:
+                result = "yes"
+    return result

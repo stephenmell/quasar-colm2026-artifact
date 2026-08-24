@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2354712",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "salad"
+      ],
+      [],
+      15597204974
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2354712",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Is the red salad in the top of the picture?"
+      ],
+      "No.",
+      2790233179
+    ]
+  ],
+  "best_text_match": []
+}

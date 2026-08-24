@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    field_patches = image_patch.find("field")
+    # Question assumes at least one field patch
+    if len(field_patches) == 0:
+        # If no field is found, query the image directly
+        return image_patch.simple_query("Does the field look grassy and green?")
+    for field_patch in field_patches:
+        is_green = field_patch.verify_property("field", "green")
+        is_grassy = field_patch.verify_property("field", "grassy")
+        if is_green and is_grassy:
+            return "yes"
+    return "no"

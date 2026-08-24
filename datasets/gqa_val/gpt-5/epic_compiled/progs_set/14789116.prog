@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    chocolate_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    chocolate_patches = image_patch.find('chocolate')
+
+    def _if(chocolate_patches, image_patch, result):
+        result = image_patch.simple_query('Is the chocolate on the right side of the photo?')
+        return (chocolate_patches, image_patch, result)
+
+    def _else(chocolate_patches, image_patch, result):
+        result = 'no'
+
+        def _for(chocolate_patch, chocolate_patches, image_patch, result):
+
+            def _if(chocolate_patches, image_patch, result):
+                result = 'yes'
+                return (chocolate_patches, image_patch, result)
+            chocolate_patches, image_patch, result = if_stmt(_if, None, chocolate_patch.horizontal_center > image_patch.horizontal_center, (chocolate_patches, image_patch, result))
+            return (chocolate_patches, image_patch, result)
+        chocolate_patches, image_patch, result = for_stmt(_for, chocolate_patches, (chocolate_patches, image_patch, result))
+        return (chocolate_patches, image_patch, result)
+    chocolate_patches, image_patch, result = if_stmt(_if, _else, len(chocolate_patches) == 0, (chocolate_patches, image_patch, result))
+    return result

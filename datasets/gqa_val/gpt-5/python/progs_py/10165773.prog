@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # If no man is found, query the image directly
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Is there any food to the left of the man with the necktie?")
+
+    # Find the man wearing a necktie
+    necktie_man_patch = None
+    for man_patch in man_patches:
+        if man_patch.simple_query("Is the man wearing a necktie?") == "yes":
+            necktie_man_patch = man_patch
+            break
+
+    # If no man with a necktie is found, ask directly
+    if necktie_man_patch is None:
+        return image_patch.simple_query("Is there any food to the left of the man with the necktie?")
+
+    # Look for food patches and check if any are to the left of the necktie man
+    food_patches = image_patch.find("food")
+    if len(food_patches) == 0:
+        return "no"
+
+    for food_patch in food_patches:
+        if food_patch.horizontal_center < necktie_man_patch.horizontal_center:
+            return "yes"
+    return "no"

@@ -1,0 +1,17 @@
+def execute_command(image) -> str:
+    exists_now = None
+    found = None
+    image_patch = None
+    result = None
+    synonyms = None
+    image_patch = ImagePatch(image)
+    synonyms = ('shelf', 'shelves', 'bookshelf', 'bookcase', 'shelving')
+    found = False
+
+    def _for(name, exists_now, found, image_patch, synonyms):
+        exists_now = image_patch.exists(name)
+        found = or_expr(found, exists_now)
+        return (exists_now, found, image_patch, synonyms)
+    exists_now, found, image_patch, synonyms = for_stmt(_for, synonyms, (exists_now, found, image_patch, synonyms))
+    result = bool_to_yesno(found)
+    return result

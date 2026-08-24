@@ -1,0 +1,9 @@
+# What is the chain attached to?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chain_patches = image_patch.find("chain")
+    if len(chain_patches) == 0:
+        result = image_patch.simple_query("What is the chain attached to?")
+    else:
+        result = chain_patches[0].simple_query("What is the chain attached to?")
+    return result

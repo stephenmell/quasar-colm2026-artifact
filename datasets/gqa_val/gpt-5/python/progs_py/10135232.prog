@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try to find the floor with a few likely synonyms
+    candidates = [
+        "checkered floor",
+        "checkerboard floor",
+        "floor tiles",
+        "tile floor",
+        "tiles",
+        "floor",
+    ]
+
+    for name in candidates:
+        patches = image_patch.find(name)
+        if len(patches) > 0:
+            # Prefer a patch that is recognized as checkered
+            for p in patches:
+                try:
+                    if p.verify_property(name, "checkered"):
+                        return p.best_text_match(["brown", "white"])
+                except Exception:
+                    pass
+            # If none explicitly checkered, use the first found patch
+            return patches[0].best_text_match(["brown", "white"])
+
+    # If we couldn't find a floor, ask directly
+    return image_patch.simple_query("Is the checkered floor brown or white?")

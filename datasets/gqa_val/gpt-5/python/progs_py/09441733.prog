@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cup_patches = image_patch.find("cup")
+    # Question assumes one cup patch
+    if len(cup_patches) == 0:
+        # If no cup is found, query the image directly
+        return image_patch.simple_query("Is the cup in the top of the picture?")
+    for cup_patch in cup_patches:
+        # Based on convention used above: larger vertical_center => closer to top
+        if cup_patch.vertical_center > image_patch.vertical_center:
+            return "yes"
+    return "no"

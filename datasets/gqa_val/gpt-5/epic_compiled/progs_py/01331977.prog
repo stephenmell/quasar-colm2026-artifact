@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    bottle_exists = image_patch.exists("bottle")
+    plate_exists = image_patch.exists("plate")
+
+    if not bottle_exists and not plate_exists:
+        result = image_patch.simple_query("Is there any bottle or plate that is not empty?")
+    else:
+        if bottle_exists:
+            bottle_patches = image_patch.find("bottle")
+            for bottle_patch in bottle_patches:
+                is_empty_bottle = bottle_patch.verify_property("bottle", "empty")
+                if not is_empty_bottle:
+                    result = "yes"
+        if plate_exists:
+            plate_patches = image_patch.find("plate")
+            for plate_patch in plate_patches:
+                is_empty_plate = plate_patch.verify_property("plate", "empty")
+                if not is_empty_plate:
+                    result = "yes"
+    return result

@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    any_non_orange = None
+    image_patch = None
+    is_orange = None
+    result = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find('umbrella')
+
+    def _if(any_non_orange, image_patch, is_orange, result, umbrella_patches):
+        result = image_patch.simple_query('Are there umbrellas in the scene that are not orange?')
+        return (any_non_orange, image_patch, is_orange, result, umbrella_patches)
+
+    def _else(any_non_orange, image_patch, is_orange, result, umbrella_patches):
+        any_non_orange = False
+
+        def _for(umbrella_patch, any_non_orange, image_patch, is_orange, umbrella_patches):
+            is_orange = umbrella_patch.verify_property('umbrella', 'orange')
+
+            def _if(any_non_orange, image_patch, is_orange, umbrella_patches):
+                any_non_orange = True
+                return (any_non_orange, image_patch, is_orange, umbrella_patches)
+            any_non_orange, image_patch, is_orange, umbrella_patches = if_stmt(_if, None, not_expr(is_orange), (any_non_orange, image_patch, is_orange, umbrella_patches))
+            return (any_non_orange, image_patch, is_orange, umbrella_patches)
+        any_non_orange, image_patch, is_orange, umbrella_patches = for_stmt(_for, umbrella_patches, (any_non_orange, image_patch, is_orange, umbrella_patches))
+        result = bool_to_yesno(any_non_orange)
+        return (any_non_orange, image_patch, is_orange, result, umbrella_patches)
+    any_non_orange, image_patch, is_orange, result, umbrella_patches = if_stmt(_if, _else, len(umbrella_patches) == 0, (any_non_orange, image_patch, is_orange, result, umbrella_patches))
+    return result

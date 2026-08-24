@@ -1,0 +1,100 @@
+({2576: 'context', 2583: 'llm_query', 2604: 'return_result'},
+ ('def',
+  2574,
+  ((),
+   ((('call', (2575,), -1, ()),
+     ('def',
+      2577,
+      ((2585, 2578),
+       ((('prim', 2579, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (2580,), 80, (2579, 2578)),
+         ('prim',
+          2581,
+          '\n'
+          'END_DOCUMENT\n'
+          'Task: Determine if this document mentions or describes a musical '
+          'act (an individual) that matches any of the following clues. For '
+          'any candidate(s) with at least one match, output a compact report '
+          'for that candidate with fields and brief quotes from the document '
+          'for evidence. If the document is not relevant, output nothing.\n'
+          'Clues to check:\n'
+          '- Wrote their first original song by age 17.\n'
+          '- Has a song whose title exactly matches the name of a play written '
+          'in the late 1500s (e.g., Shakespeare/Marlowe: Romeo and Juliet, A '
+          "Midsummer Night's Dream, The Merchant of Venice, Much Ado About "
+          'Nothing, As You Like It, The Two Gentlemen of Verona, Henry IV, '
+          'etc.).\n'
+          '- Sold only about 300 copies of their debut single in the 1970s.\n'
+          '- Worked in the music department for a video game released in 2011 '
+          '(name the game if mentioned).\n'
+          '- Married, in the 1970s, a spouse who is a music producer, '
+          'arranger, and keyboard player (name the spouse if mentioned).\n'
+          '- That spouse was an uncredited cast member in a 1983 film in which '
+          'the musician appears in a picture (identify the film if '
+          'mentioned).\n'
+          '- Released their first number-one album in 1976 (specify album and '
+          'chart/country if mentioned).\n'
+          'For each candidate that matches any clue, provide:\n'
+          '- Candidate: [stage/performing name]\n'
+          '- Birth name: [if in doc]\n'
+          '- Spouse info: [name, occupation, marriage year]\n'
+          '- Early songwriting evidence: [quote]\n'
+          '- Debut single + sales: [quote]\n'
+          '- Song matching late-1500s play: [song title, play name, quote]\n'
+          '- 2011 video game music dept: [game title, quote]\n'
+          '- 1983 film/uncredited spouse + appears-in-picture: [film title, '
+          'quote]\n'
+          '- First #1 album in 1976: [album, chart, quote]\n'
+          'Only include candidates with at least one of the above supported by '
+          'the document, and keep each report concise with minimal but '
+          'sufficient quotes.'),
+         ('call', (2582,), 80, (2580, 2581)),
+         ('call', (2584,), 2583, (2582,)),
+         ('call', (2586,), -1, (2584,)),
+         ('call', (2587,), 80, (2585, 2586))),
+        (2587,)))),
+     ('call', (2589,), 79, (2576,)),
+     ('call', (2588,), 2589, (2575, 2577)),
+     ('prim', 2590, ''),
+     ('def',
+      2591,
+      ((2593, 2592),
+       ((('call', (2594,), 80, (2593, 2592)),
+         ('prim', 2595, '\n\n'),
+         ('call', (2596,), 80, (2594, 2595))),
+        (2596,)))),
+     ('call', (2598,), 79, (2588,)),
+     ('call', (2597,), 2598, (2590, 2591)),
+     ('prim',
+      2599,
+      'We need to identify a single musical act (an individual performer) '
+      'whose birth name is being asked. The correct person must satisfy ALL of '
+      'the following:\n'
+      '- Wrote their first original song by age 17.\n'
+      '- Has a song whose title exactly matches the name of a play written in '
+      'the late 1500s (e.g., Shakespeare/Marlowe titles such as Romeo and '
+      "Juliet, A Midsummer Night's Dream, Much Ado About Nothing, The Merchant "
+      'of Venice, As You Like It, The Two Gentlemen of Verona, Henry IV, '
+      'etc.).\n'
+      '- Sold only about 300 copies of their debut single in the 1970s.\n'
+      '- Worked in the music department for a video game released in 2011.\n'
+      '- Married, in the 1970s, a spouse who is a music producer, arranger, '
+      'and keyboard player.\n'
+      '- That spouse was an uncredited cast member in a 1983 film in which the '
+      'musician appears in a picture.\n'
+      '- Released their first number-one album in 1976.\n'
+      '\n'
+      'Here are extractions from the context documents:\n'),
+     ('call', (2600,), 80, (2599, 2597)),
+     ('prim',
+      2601,
+      '\n'
+      'Based only on the information above, select the single best-matching '
+      'candidate who satisfies all of the listed points and provide their '
+      'birth name. If more than one candidate appears, choose the one that '
+      'fully satisfies all conditions. Output only the birth name, with no '
+      'additional text.'),
+     ('call', (2602,), 80, (2600, 2601)),
+     ('call', (2603,), 2583, (2602,)),
+     ('call', (2605,), 2604, (2603,))),
+    (2605,)))))

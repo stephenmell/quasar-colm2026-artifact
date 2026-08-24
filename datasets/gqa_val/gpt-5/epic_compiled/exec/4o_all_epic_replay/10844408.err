@@ -1,0 +1,35 @@
+Stage: semantics.reduce_graph_opportunistic
+Error: (('2401710', (4, 0, 496, 131)), 'cloud')
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 264, in main
+    epic_exec_result = tuple(semantics.reduce_graph_opportunistic(epic_final))[-1]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 152, in reduce_graph_opportunistic
+    g = reduce_term(f, "bfs", False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 145, in reduce_term
+    return asyncio.get_event_loop().run_until_complete(reduce_term_async(e, tree_policy, blocking_async))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 125, in reduce_term_async
+    new_ops, toucheds = await graph_step(s, ident)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 205, in graph_step
+    return graph_step_task(s, ident)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 303, in graph_step_task
+    body = pyfuture.result()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 245, in wrapped
+    return (("prim", prim_var, await function(*args, **kwargs)),), (prim_var,)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch_local.py", line 117, in exists
+    patches = await self.CONTEXT.CALL.find(self, object_name)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch_replay.py", line 13, in find
+    bbs, t = self.CONTEXT.MODEL_OUTPUTS["find"][(imgpatch.info(self), object_name)]
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: (('2401710', (4, 0, 496, 131)), 'cloud')

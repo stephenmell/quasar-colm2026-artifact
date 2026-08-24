@@ -1,0 +1,23 @@
+# Are there any vans to the left of the person that is reflected in the mirror?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    mirror_patches = image_patch.find("mirror")
+    if len(mirror_patches) == 0:
+        result = image_patch.simple_query("Are there any vans to the left of the person that is reflected in the mirror?")
+    else:
+        has_reflected_person = False
+        van_patches = image_patch.find("van")
+        for mirror_patch in mirror_patches:
+            person_patches = mirror_patch.find("person")
+            if len(person_patches) > 0:
+                has_reflected_person = True
+            for person_patch in person_patches:
+                person_abs_center = mirror_patch.left + person_patch.horizontal_center
+                for van_patch in van_patches:
+                    if van_patch.horizontal_center < person_abs_center:
+                        result = "yes"
+        if not has_reflected_person:
+            result = image_patch.simple_query("Are there any vans to the left of the person that is reflected in the mirror?")
+    return result

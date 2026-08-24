@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bowl_patches = image_patch.find("bowl")
+    # Question assumes only one bowl patch
+    if len(bowl_patches) == 0:
+        # If no bowl is found, query the image directly
+        return image_patch.simple_query("Which side is the bowl on?")
+    bowl_patch = bowl_patches[0]
+    if bowl_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

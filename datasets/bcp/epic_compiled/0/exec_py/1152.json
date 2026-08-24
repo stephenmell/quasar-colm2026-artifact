@@ -1,0 +1,6 @@
+{
+  "result": "Poet: Rachel McKibbens\nFirstTwoLines: A child came up to me in the park and asked for a cigarette. Her eyes were startled cats, her voice, a chandelier.\nIn that poem, what does the child ask the speaker for in the first two lines? a cigarette",
+  "time_ns": 347470654407,
+  "correct": false,
+  "ground_truth": "Cigarette"
+}

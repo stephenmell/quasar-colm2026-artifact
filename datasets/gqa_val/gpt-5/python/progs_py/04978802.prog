@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    mouse_patches = image_patch.find("mouse")
+    if len(mouse_patches) == 0:
+        return image_patch.simple_query("Does the keyboard to the left of the mouse have small size?")
+    keyboard_patches = image_patch.find("keyboard")
+    if len(keyboard_patches) == 0:
+        return image_patch.simple_query("Does the keyboard to the left of the mouse have small size?")
+    found_left = False
+    for keyboard_patch in keyboard_patches:
+        for mouse_patch in mouse_patches:
+            if keyboard_patch.horizontal_center < mouse_patch.horizontal_center:
+                found_left = True
+                is_small = (
+                    keyboard_patch.verify_property("keyboard", "small")
+                    or keyboard_patch.verify_property("keyboard", "small size")
+                )
+                if is_small:
+                    return "yes"
+    return "no"

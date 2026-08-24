@@ -1,0 +1,35 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    bread_patches = image_patch.find("bread")
+    # If no bread is found, ask the question directly
+    if len(bread_patches) == 0:
+        return image_patch.simple_query("Do you see an umbrella to the left of the bag that is on top of the bread?")
+
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return "no"
+
+    umbrella_patches = image_patch.find("umbrella")
+    if len(umbrella_patches) == 0:
+        return "no"
+
+    # Find any bag that is on top of any bread (above and roughly overlapping horizontally)
+    candidate_bags = []
+    for bread in bread_patches:
+        for bag in bag_patches:
+            is_above = bag.vertical_center < bread.vertical_center
+            overlaps_horizontally = not (bag.right <= bread.left or bag.left >= bread.right)
+            if is_above and overlaps_horizontally:
+                candidate_bags.append(bag)
+
+    if len(candidate_bags) == 0:
+        return "no"
+
+    # Check if any umbrella is to the left of any qualifying bag
+    for bag in candidate_bags:
+        for umbrella in umbrella_patches:
+            if umbrella.horizontal_center < bag.horizontal_center:
+                return "yes"
+
+    return "no"

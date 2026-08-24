@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    truck_patches = image_patch.find("truck")
+    house_patches = image_patch.find("house")
+
+    result = "no"
+
+    if len(truck_patches) == 0 or len(house_patches) == 0:
+        result = image_patch.simple_query("Is the color of the truck different than the house?")
+    else:
+        colors = ("white", "black", "gray", "grey", "red", "blue", "green", "yellow", "orange",
+                  "brown", "purple", "pink", "gold", "silver", "beige", "tan", "maroon",
+                  "teal", "cyan", "magenta", "navy", "violet")
+        compared_any = False
+        for truck_patch in truck_patches:
+            truck_color = truck_patch.best_text_match(colors)
+            for house_patch in house_patches:
+                house_color = house_patch.best_text_match(colors)
+                if truck_color and house_color:
+                    compared_any = True
+                    if truck_color == "grey":
+                        truck_color = "gray"
+                    if house_color == "grey":
+                        house_color = "gray"
+                    if truck_color != house_color:
+                        result = "yes"
+        if not compared_any:
+            result = image_patch.simple_query("Is the color of the truck different than the house?")
+    return result

@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find("bus")
+    # If no bus is found, ask directly
+    if len(bus_patches) == 0:
+        return image_patch.simple_query("Is the white bus in the top of the image?")
+    # Filter to white buses
+    white_bus_patches = []
+    for bus_patch in bus_patches:
+        if bus_patch.verify_property("bus", "white"):
+            white_bus_patches.append(bus_patch)
+    # If no white bus detected, ask directly
+    if len(white_bus_patches) == 0:
+        return image_patch.simple_query("Is the white bus in the top of the image?")
+    # Check if any white bus is in the top half of the image
+    for white_bus_patch in white_bus_patches:
+        if white_bus_patch.vertical_center < image_patch.vertical_center:
+            return "yes"
+    return "no"

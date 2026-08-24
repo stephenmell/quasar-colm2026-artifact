@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    blanket_patches = image_patch.find("blanket")
+    if len(blanket_patches) == 0:
+        return image_patch.simple_query("What animal is to the left of the blanket that looks pink and brown?")
+    target_blanket = None
+    for blanket_patch in blanket_patches:
+        if blanket_patch.verify_property("blanket", "pink and brown"):
+            target_blanket = blanket_patch
+            break
+    if target_blanket is None:
+        return image_patch.simple_query("What animal is to the left of the blanket that looks pink and brown?")
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        return image_patch.simple_query("What animal is to the left of the blanket that looks pink and brown?")
+    left_animals = [a for a in animal_patches if a.horizontal_center < target_blanket.horizontal_center]
+    if len(left_animals) == 0:
+        return image_patch.simple_query("What animal is to the left of the blanket that looks pink and brown?")
+    left_animals.sort(key=lambda a: target_blanket.horizontal_center - a.horizontal_center)
+    chosen_animal = left_animals[0]
+    return chosen_animal.simple_query("What animal is to the left of the blanket that looks pink and brown?")

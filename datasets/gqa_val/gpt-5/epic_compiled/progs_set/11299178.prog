@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    answer = None
+    image_patch = None
+    phone_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    phone_patches = image_patch.find('phone')
+    woman_patches = image_patch.find('woman')
+
+    def _if(answer, image_patch, phone_patches, result, woman_patches):
+        result = image_patch.simple_query('Is the woman that is to the right of the phone sitting on a bench?')
+        return (answer, image_patch, phone_patches, result, woman_patches)
+
+    def _else(answer, image_patch, phone_patches, result, woman_patches):
+        result = 'no'
+
+        def _for(phone_patch, answer, image_patch, phone_patches, result, woman_patches):
+
+            def _for(woman_patch, answer, image_patch, phone_patches, result, woman_patches):
+
+                def _if(answer, image_patch, phone_patches, result, woman_patches):
+                    answer = woman_patch.simple_query('Is the woman sitting on a bench?')
+
+                    def _if(answer, image_patch, phone_patches, result, woman_patches):
+                        result = 'yes'
+                        return (answer, image_patch, phone_patches, result, woman_patches)
+                    answer, image_patch, phone_patches, result, woman_patches = if_stmt(_if, None, answer == 'yes', (answer, image_patch, phone_patches, result, woman_patches))
+                    return (answer, image_patch, phone_patches, result, woman_patches)
+                answer, image_patch, phone_patches, result, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center > phone_patch.horizontal_center, (answer, image_patch, phone_patches, result, woman_patches))
+                return (answer, image_patch, phone_patches, result, woman_patches)
+            answer, image_patch, phone_patches, result, woman_patches = for_stmt(_for, woman_patches, (answer, image_patch, phone_patches, result, woman_patches))
+            return (answer, image_patch, phone_patches, result, woman_patches)
+        answer, image_patch, phone_patches, result, woman_patches = for_stmt(_for, phone_patches, (answer, image_patch, phone_patches, result, woman_patches))
+        return (answer, image_patch, phone_patches, result, woman_patches)
+    answer, image_patch, phone_patches, result, woman_patches = if_stmt(_if, _else, or_expr(len(phone_patches) == 0, len(woman_patches) == 0), (answer, image_patch, phone_patches, result, woman_patches))
+    return result

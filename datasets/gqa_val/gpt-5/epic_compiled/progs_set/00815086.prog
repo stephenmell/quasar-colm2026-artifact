@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find('bag')
+
+    def _if(bag_patches, image_patch, result):
+        result = image_patch.simple_query('Is the bag on the right side of the image?')
+        return (bag_patches, image_patch, result)
+
+    def _else(bag_patches, image_patch, result):
+        result = 'no'
+
+        def _for(bag_patch, bag_patches, image_patch, result):
+
+            def _if(bag_patches, image_patch, result):
+                result = 'yes'
+                return (bag_patches, image_patch, result)
+            bag_patches, image_patch, result = if_stmt(_if, None, bag_patch.horizontal_center > image_patch.horizontal_center, (bag_patches, image_patch, result))
+            return (bag_patches, image_patch, result)
+        bag_patches, image_patch, result = for_stmt(_for, bag_patches, (bag_patches, image_patch, result))
+        return (bag_patches, image_patch, result)
+    bag_patches, image_patch, result = if_stmt(_if, _else, len(bag_patches) == 0, (bag_patches, image_patch, result))
+    return result

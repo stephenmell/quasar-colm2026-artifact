@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+
+    if len(person_patches) == 0:
+        result = image_patch.simple_query("Are there men to the right of the sitting person on the bench?")
+    else:
+        man_patches = image_patch.find("man")
+        if len(man_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for person_patch in person_patches:
+                is_sitting_on_bench = (person_patch.simple_query("Is the person sitting on a bench?") == "yes")
+                if is_sitting_on_bench:
+                    for man_patch in man_patches:
+                        if man_patch.horizontal_center > person_patch.horizontal_center:
+                            result = "yes"
+    return result

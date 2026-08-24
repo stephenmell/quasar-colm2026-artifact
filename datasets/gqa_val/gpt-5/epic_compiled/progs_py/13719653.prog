@@ -1,0 +1,7 @@
+# Do you see any scooters?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    scooter_exists = image_patch.exists("scooter")
+    scooters_exists = image_patch.exists("scooters")
+    result = bool_to_yesno(scooter_exists or scooters_exists)
+    return result

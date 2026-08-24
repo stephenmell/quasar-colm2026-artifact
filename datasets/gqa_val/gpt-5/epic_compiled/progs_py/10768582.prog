@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Is the bus to the right of the man that is carrying a backpack?")
+    else:
+        carrying_man_patch = None
+        for man_patch in man_patches:
+            is_carrying = (man_patch.simple_query("Is the man carrying a backpack?") == "yes")
+            if is_carrying and carrying_man_patch is None:
+                carrying_man_patch = man_patch
+        if carrying_man_patch is None:
+            result = image_patch.simple_query("Is the bus to the right of the man that is carrying a backpack?")
+        else:
+            bus_patches = image_patch.find("bus")
+            if len(bus_patches) == 0:
+                result = "no"
+            else:
+                result = "no"
+                for bus_patch in bus_patches:
+                    if bus_patch.horizontal_center > carrying_man_patch.horizontal_center:
+                        result = "yes"
+    return result

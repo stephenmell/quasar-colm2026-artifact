@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find("shirt")
+    if len(shirt_patches) == 0:
+        result = image_patch.simple_query("Is the shirt brown or white?")
+    else:
+        brown_count = 0
+        white_count = 0
+        for shirt_patch in shirt_patches:
+            color = shirt_patch.best_text_match(("brown", "white"))
+            if color == "brown":
+                brown_count = brown_count + 1
+            elif color == "white":
+                white_count = white_count + 1
+        if brown_count >= white_count:
+            result = "brown"
+        else:
+            result = "white"
+    return result

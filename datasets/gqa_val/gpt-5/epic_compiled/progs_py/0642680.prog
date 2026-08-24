@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find("car")
+    if len(car_patches) == 0:
+        result = image_patch.simple_query("Does that car look red?")
+    else:
+        result = "no"
+        for car_patch in car_patches:
+            if car_patch.verify_property("car", "red"):
+                result = "yes"
+    return result

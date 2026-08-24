@@ -1,0 +1,41 @@
+# Is the white umbrella to the right or to the left of the person that is in front of the statue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Identify a white umbrella
+    white_umbrella_patch = None
+    umbrella_patches = image_patch.find("umbrella")
+    for umbrella_patch in umbrella_patches:
+        is_white_umbrella = umbrella_patch.verify_property("umbrella", "white")
+        if is_white_umbrella and white_umbrella_patch is None:
+            white_umbrella_patch = umbrella_patch
+
+    # Identify the person that is in front of the statue
+    person_in_front_patch = None
+    person_patches = image_patch.find("person")
+    statue_patches = image_patch.find("statue")
+
+    if len(person_patches) > 0 and len(statue_patches) > 0:
+        # First try via QA on each person crop
+        for person_patch in person_patches:
+            is_in_front_answer = person_patch.simple_query("Is the person in front of the statue?")
+            if is_in_front_answer == "yes" and person_in_front_patch is None:
+                person_in_front_patch = person_patch
+        # Fallback to geometric heuristic relative to the first statue
+        if person_in_front_patch is None:
+            ref_statue = statue_patches[0]
+            for person_patch in person_patches:
+                if person_patch.vertical_center > ref_statue.vertical_center and person_in_front_patch is None:
+                    person_in_front_patch = person_patch
+
+    # If necessary information is missing, ask directly
+    if white_umbrella_patch is None or person_in_front_patch is None:
+        result = image_patch.simple_query("Is the white umbrella to the right or to the left of the person that is in front of the statue?")
+    else:
+        if white_umbrella_patch.horizontal_center > person_in_front_patch.horizontal_center:
+            result = "right"
+        else:
+            result = "left"
+
+    return result

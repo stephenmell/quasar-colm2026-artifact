@@ -1,0 +1,13 @@
+context_info = ()
+i = 0
+for d in context:
+    prompt = "You are helping to answer a very specific question using the single document shown below.\n\nDOCUMENT BEGIN\n" + d + "\nDOCUMENT END\n\nTask:\nDetermine whether this document contains information relevant to identifying a museum that satisfies ALL of the following constraints:\n- The museum is along a river.\n- It was added to the U.S. National Register of Historic Places (NRHP) in 1988.\n- The museum is named after the last name (surname) of an individual who paid a little over $500 to buy the rights to the land on which the museum now sits.\n- That individual's first child was born in the first week of May.\n- That individual's third child was born on November 22.\n\nIf the document matches ALL constraints, provide:\n- Museum name\n- River name\n- NRHP listing year (and exact date if given)\n- Individual's full name (whose surname the museum bears)\n- The stated amount paid (a little over $500) and the phrasing used\n- The children's names with birthdates, including specifically the first child (in first week of May) and the third child (Nov 22)\n- Exact quotes (short) from the document supporting each of the above\n- A final one-line verdict: MATCH: <Museum Name>\n\nIf the document matches SOME but not all constraints, provide what it matches (with short quotes) and end with: PARTIAL: <best-guess museum name if inferable, else UNKNOWN>\n\nIf the document is not relevant, respond with: NO MATCH\n"
+    res = llm_query(prompt)
+    context_info = context_info + ("Document " + str(i) + " analysis:\n" + res, )
+    i = i + 1
+
+aggregated = "\n\n".join(context_info)
+
+final_prompt = "You are given analyses of multiple documents. Your goal is to identify a single museum that fits ALL of the following constraints:\n- It is along a river.\n- It was added to the National Register of Historic Places (NRHP) in 1988.\n- It is named after the last name of an individual who paid a little over $500 to buy the rights to the land on which the museum is located.\n- That individual's first child was born in the first week of May.\n- That individual's third child was born on November 22.\n\nAs of December 2022, the question asks only for the NAME of this museum.\n\nHere are the per-document analyses:\n\n" + aggregated + "\n\nTask:\n- From the information above, pick the single best museum that matches ALL constraints. If multiple appear, choose the one with the strongest direct documentary support (exact quotes) for all constraints.\n- Output ONLY the museum's name, with no extra words, lines, or punctuation.\n"
+final_answer = llm_query(final_prompt)
+return_result(final_answer)

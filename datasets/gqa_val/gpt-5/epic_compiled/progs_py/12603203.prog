@@ -1,0 +1,9 @@
+# Are there bears in the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_bear = image_patch.exists("bear")
+    has_teddy_bear = image_patch.exists("teddy bear")
+    result = bool_to_yesno(has_bear or has_teddy_bear)
+    if result == "no":
+        result = image_patch.simple_query("Are there bears in the image?")
+    return result

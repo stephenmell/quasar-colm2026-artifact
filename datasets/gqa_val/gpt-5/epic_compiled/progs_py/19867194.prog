@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Try to find a "water glass"; fall back to "glass" or "cup" if needed
+    water_glass_patches = image_patch.find("water glass")
+    chosen_patches = ()
+    if len(water_glass_patches) > 0:
+        chosen_patches = water_glass_patches
+    else:
+        glass_patches = image_patch.find("glass")
+        if len(glass_patches) > 0:
+            chosen_patches = glass_patches
+        else:
+            cup_patches = image_patch.find("cup")
+            chosen_patches = cup_patches
+
+    if len(chosen_patches) == 0:
+        # If no relevant container is found, ask directly
+        result = image_patch.simple_query("What is the food that is to the right of the water glass?")
+    else:
+        # For each candidate glass/cup, look to the right and ask what the food is
+        for container_patch in chosen_patches:
+            right_area_patch = image_patch.crop(container_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            candidate_answer = right_area_patch.simple_query("What is the food?")
+            if not result:
+                result = candidate_answer
+        if not result:
+            result = image_patch.simple_query("What is the food that is to the right of the water glass?")
+    return result

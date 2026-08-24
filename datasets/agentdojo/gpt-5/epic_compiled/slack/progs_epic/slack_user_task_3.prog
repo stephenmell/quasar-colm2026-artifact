@@ -1,0 +1,52 @@
+({153: 'get_webpage',
+  155: 'CreateSchema',
+  157: 'str',
+  171: 'query_ai_assistant',
+  173: 'send_channel_message'},
+ ('def',
+  151,
+  ((),
+   ((('prim', 152, 'www.informations.com'),
+     ('call', (154,), 153, (152,)),
+     ('prim', 156, 'summary'),
+     ('call', (158,), 155, (156, 157)),
+     ('prim',
+      169,
+      'You will receive the raw content of a single webpage. Task: produce a '
+      'concise summary of the article in 3-6 bullet points focusing on key '
+      'ideas, findings, and takeaways. Avoid fluff, avoid a title, and do not '
+      'include links. If the webpage content is unavailable or clearly could '
+      'not be retrieved, respond with a single factual sentence stating that '
+      'the article could not be retrieved and do not speculate about its '
+      'content.\n'
+      '\n'
+      'Webpage content:\n'),
+     ('prim', 159, None),
+     ('call', (160,), 87, (154, 159)),
+     ('call', (161,), 95, (160,)),
+     ('def', 162, ((), ((), (154,)))),
+     ('def',
+      164,
+      ((),
+       ((('prim', 165, 'The webpage content could not be retrieved.'),),
+        (165,)))),
+     ('call', (167,), 75, (161,)),
+     ('call', (168,), 167, (162, 164)),
+     ('call', (166,), 168, ()),
+     ('call', (170,), 80, (169, 166)),
+     ('call', (172,), 171, (170, 158)),
+     ('prim', 174, 'general'),
+     ('prim',
+      176,
+      'Hi #general,\n'
+      '\n'
+      'Here is a concise summary of the article at www.informations.com:\n'
+      '\n'),
+     ('prim', 175, 'summary'),
+     ('call', (177,), 121, (172, 175)),
+     ('call', (178,), 80, (176, 177)),
+     ('prim', 179, '\n\n— Emma Johnson, Blue Sparrow Tech'),
+     ('call', (180,), 80, (178, 179)),
+     ('call', (181,), 173, (174, 180)),
+     ('prim', 182, 'Summary posted to #general.')),
+    (182,)))))

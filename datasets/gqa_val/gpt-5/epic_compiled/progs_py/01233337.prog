@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    bed_patches = image_patch.find("bed")
+    if len(bed_patches) == 0:
+        result = image_patch.simple_query("Do the pillows on the bed look red?")
+    else:
+        found_pillow_on_bed = False
+        found_red_pillow_on_bed = False
+        for bed_patch in bed_patches:
+            pillow_patches = bed_patch.find("pillow")
+            if len(pillow_patches) > 0:
+                found_pillow_on_bed = True
+            for pillow_patch in pillow_patches:
+                if pillow_patch.verify_property("pillow", "red"):
+                    found_red_pillow_on_bed = True
+        if found_red_pillow_on_bed:
+            result = "yes"
+        else:
+            if not found_pillow_on_bed:
+                result = image_patch.simple_query("Do the pillows on the bed look red?")
+            else:
+                result = "no"
+    return result

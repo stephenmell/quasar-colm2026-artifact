@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    rug_patches = image_patch.find("rug")
+    towel_patches = image_patch.find("towel")
+    # If either object isn't found, ask directly
+    if len(rug_patches) == 0 or len(towel_patches) == 0:
+        return image_patch.simple_query("Is the towel to the left of the rug white or green?")
+    # Find a towel that is to the left of any rug
+    for towel_patch in towel_patches:
+        for rug_patch in rug_patches:
+            if towel_patch.horizontal_center < rug_patch.horizontal_center:
+                return towel_patch.best_text_match(["white", "green"])
+    # If no towel is to the left of a rug, ask directly
+    return image_patch.simple_query("Is the towel to the left of the rug white or green?")

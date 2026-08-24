@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    found_any_vehicle = None
+    found_blue_small_long = None
+    image_patch = None
+    is_blue = None
+    is_long = None
+    is_small = None
+    object_types = None
+    patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    object_types = ('vehicle', 'car', 'truck', 'bus', 'van', 'suv', 'motorcycle', 'bicycle', 'train')
+    found_any_vehicle = False
+    found_blue_small_long = False
+
+    def _for(obj_type, found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result):
+        patches = image_patch.find(obj_type)
+
+        def _if(found_any_vehicle, found_blue_small_long, image_patch, object_types, patches, result):
+            found_any_vehicle = True
+            return (found_any_vehicle, found_blue_small_long, image_patch, object_types, patches, result)
+        found_any_vehicle, found_blue_small_long, image_patch, object_types, patches, result = if_stmt(_if, None, len(patches) > 0, (found_any_vehicle, found_blue_small_long, image_patch, object_types, patches, result))
+
+        def _for(patch, found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result):
+            is_blue = patch.verify_property(obj_type, 'blue')
+            is_small = patch.verify_property(obj_type, 'small')
+            is_long = patch.verify_property(obj_type, 'long')
+
+            def _if(found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result):
+                found_blue_small_long = True
+                return (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result)
+            found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result = if_stmt(_if, None, and_expr(is_blue, and_expr(is_small, is_long)), (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result))
+            return (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result)
+        found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result = for_stmt(_for, patches, (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result))
+        return (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result)
+    found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result = for_stmt(_for, object_types, (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result))
+
+    def _if(found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result):
+        result = 'yes'
+        return (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result)
+
+    def _else(found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result):
+
+        def _if(found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result):
+            result = image_patch.simple_query('Does the blue vehicle look small and long?')
+            return (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result)
+
+        def _else(found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result):
+            result = 'no'
+            return (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result)
+        found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result = if_stmt(_if, _else, not_expr(found_any_vehicle), (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result))
+        return (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result)
+    found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result = if_stmt(_if, _else, found_blue_small_long, (found_any_vehicle, found_blue_small_long, image_patch, is_blue, is_long, is_small, object_types, patches, result))
+    return result

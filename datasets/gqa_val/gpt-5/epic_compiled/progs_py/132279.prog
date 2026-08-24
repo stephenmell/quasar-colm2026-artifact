@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    man_patches = image_patch.find("man")
+    pot_patches = image_patch.find("pot")
+
+    if len(man_patches) == 0 or len(pot_patches) == 0:
+        result = image_patch.simple_query("Do you see any pans to the right of the man the pot is to the right of?")
+    else:
+        pan_patches = image_patch.find("pan")
+        for pot_patch in pot_patches:
+            for man_patch in man_patches:
+                if man_patch.horizontal_center < pot_patch.horizontal_center:
+                    for pan_patch in pan_patches:
+                        if pan_patch.horizontal_center > man_patch.horizontal_center:
+                            result = "yes"
+    return result

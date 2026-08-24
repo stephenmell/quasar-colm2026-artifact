@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # Question assumes one man patch
+    if len(man_patches) == 0:
+        # If no man is found, query the image directly
+        return image_patch.simple_query("Is the catcher that is to the right of the man wearing a glove?")
+    man_patch = man_patches[0]
+
+    catcher_patches = image_patch.find("catcher")
+    # If no catcher is found, ask directly
+    if len(catcher_patches) == 0:
+        return image_patch.simple_query("Is the catcher that is to the right of the man wearing a glove?")
+
+    # Check catchers to the right of the man
+    for catcher_patch in catcher_patches:
+        if catcher_patch.horizontal_center > man_patch.horizontal_center:
+            if catcher_patch.simple_query("Is the catcher wearing a glove?") == "yes":
+                return "yes"
+    return "no"

@@ -1,0 +1,79 @@
+def execute_command(image) -> str:
+    cabinet_patches = None
+    curtain_patches = None
+    curtains_to_check = None
+    image_patch = None
+    result = None
+    right_curtain_count = None
+    rightmost_curtain = None
+    rightmost_x = None
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find('curtain')
+
+    def _if(cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+        result = image_patch.simple_query('Do you see cabinets to the left of the curtain on the right side?')
+        return (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+
+    def _else(cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+        result = 'no'
+        right_curtain_count = 0
+
+        def _for(c, curtain_patches, image_patch, result, right_curtain_count):
+
+            def _if(curtain_patches, image_patch, result, right_curtain_count):
+                right_curtain_count = right_curtain_count + 1
+                return (curtain_patches, image_patch, result, right_curtain_count)
+            curtain_patches, image_patch, result, right_curtain_count = if_stmt(_if, None, c.horizontal_center >= image_patch.horizontal_center, (curtain_patches, image_patch, result, right_curtain_count))
+            return (curtain_patches, image_patch, result, right_curtain_count)
+        curtain_patches, image_patch, result, right_curtain_count = for_stmt(_for, curtain_patches, (curtain_patches, image_patch, result, right_curtain_count))
+        rightmost_curtain = curtain_patches[0]
+        rightmost_x = curtain_patches[0].horizontal_center
+
+        def _for(c, curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+
+            def _if(curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+                rightmost_curtain = c
+                rightmost_x = c.horizontal_center
+                return (curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+            curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = if_stmt(_if, None, c.horizontal_center > rightmost_x, (curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+            return (curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+        curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = for_stmt(_for, curtain_patches, (curtain_patches, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+        curtains_to_check = ()
+
+        def _if(curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+            curtains_to_check = (rightmost_curtain,)
+            return (curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+
+        def _else(curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+
+            def _for(c, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+
+                def _if(curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+                    curtains_to_check = curtains_to_check + (c,)
+                    return (curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+                curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = if_stmt(_if, None, c.horizontal_center >= image_patch.horizontal_center, (curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+                return (curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+            curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = for_stmt(_for, curtain_patches, (curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+            return (curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+        curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = if_stmt(_if, _else, right_curtain_count == 0, (curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+        cabinet_patches = image_patch.find('cabinet')
+
+        def _if(cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+
+            def _for(cur, cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+
+                def _for(cab, cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+
+                    def _if(cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x):
+                        result = 'yes'
+                        return (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+                    cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = if_stmt(_if, None, cab.horizontal_center < cur.horizontal_center, (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+                    return (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+                cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = for_stmt(_for, cabinet_patches, (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+                return (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+            cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = for_stmt(_for, curtains_to_check, (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+            return (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+        cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = if_stmt(_if, None, len(cabinet_patches) > 0, (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+        return (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x)
+    cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x = if_stmt(_if, _else, len(curtain_patches) == 0, (cabinet_patches, curtain_patches, curtains_to_check, image_patch, result, right_curtain_count, rightmost_curtain, rightmost_x))
+    return result

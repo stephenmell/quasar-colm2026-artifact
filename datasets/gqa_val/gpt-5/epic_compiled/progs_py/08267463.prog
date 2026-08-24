@@ -1,0 +1,18 @@
+# Are there any towels to the left of the shampoo bottle?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shampoo_patches = image_patch.find("shampoo bottle")
+
+    if len(shampoo_patches) == 0:
+        result = image_patch.simple_query("Are there any towels to the left of the shampoo bottle?")
+    else:
+        towel_patches = image_patch.find("towel")
+        if len(towel_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for shampoo_patch in shampoo_patches:
+                for towel_patch in towel_patches:
+                    if towel_patch.horizontal_center < shampoo_patch.horizontal_center:
+                        result = "yes"
+    return result

@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    giraffe_patches = None
+    image_patch = None
+    is_baby = None
+    match = None
+    result = None
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find('giraffe')
+
+    def _if(giraffe_patches, image_patch, is_baby, match, result):
+        result = image_patch.simple_query('Is the giraffe a baby?')
+        return (giraffe_patches, image_patch, is_baby, match, result)
+
+    def _else(giraffe_patches, image_patch, is_baby, match, result):
+        result = 'no'
+
+        def _for(giraffe_patch, giraffe_patches, image_patch, is_baby, match, result):
+            is_baby = giraffe_patch.verify_property('giraffe', 'baby')
+
+            def _if(giraffe_patches, image_patch, is_baby, result):
+                is_baby = giraffe_patch.verify_property('giraffe', 'young')
+                return (giraffe_patches, image_patch, is_baby, result)
+            giraffe_patches, image_patch, is_baby, result = if_stmt(_if, None, not_expr(is_baby), (giraffe_patches, image_patch, is_baby, result))
+
+            def _if(giraffe_patches, image_patch, is_baby, match, result):
+                match = giraffe_patch.best_text_match(('baby', 'adult'))
+
+                def _if(giraffe_patches, image_patch, is_baby, match, result):
+                    is_baby = True
+                    return (giraffe_patches, image_patch, is_baby, match, result)
+                giraffe_patches, image_patch, is_baby, match, result = if_stmt(_if, None, match == 'baby', (giraffe_patches, image_patch, is_baby, match, result))
+                return (giraffe_patches, image_patch, is_baby, match, result)
+            giraffe_patches, image_patch, is_baby, match, result = if_stmt(_if, None, not_expr(is_baby), (giraffe_patches, image_patch, is_baby, match, result))
+
+            def _if(giraffe_patches, image_patch, is_baby, match, result):
+                result = 'yes'
+                return (giraffe_patches, image_patch, is_baby, match, result)
+            giraffe_patches, image_patch, is_baby, match, result = if_stmt(_if, None, is_baby, (giraffe_patches, image_patch, is_baby, match, result))
+            return (giraffe_patches, image_patch, is_baby, match, result)
+        giraffe_patches, image_patch, is_baby, match, result = for_stmt(_for, giraffe_patches, (giraffe_patches, image_patch, is_baby, match, result))
+        return (giraffe_patches, image_patch, is_baby, match, result)
+    giraffe_patches, image_patch, is_baby, match, result = if_stmt(_if, _else, len(giraffe_patches) == 0, (giraffe_patches, image_patch, is_baby, match, result))
+    return result

@@ -1,0 +1,65 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    answer = None
+    image_patch = None
+    result = None
+    seen = None
+    text = None
+    types = None
+    unique_types = None
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, answer, image_patch, result, seen, text, types, unique_types):
+        result = image_patch.simple_query('Are these animals of different types?')
+        return (animal_patches, answer, image_patch, result, seen, text, types, unique_types)
+
+    def _else(animal_patches, answer, image_patch, result, seen, text, types, unique_types):
+        types = ()
+
+        def _for(animal_patch, animal_patches, answer, image_patch, text, types):
+            answer = animal_patch.simple_query('What kind of animal is this?')
+
+            def _if(animal_patches, answer, image_patch, text, types):
+                text = f'{answer}'
+                return (animal_patches, answer, image_patch, text, types)
+
+            def _else(animal_patches, answer, image_patch, text, types):
+                text = ''
+                return (animal_patches, answer, image_patch, text, types)
+            animal_patches, answer, image_patch, text, types = if_stmt(_if, _else, answer, (animal_patches, answer, image_patch, text, types))
+            types = types + (text,)
+            return (animal_patches, answer, image_patch, text, types)
+        animal_patches, answer, image_patch, text, types = for_stmt(_for, animal_patches, (animal_patches, answer, image_patch, text, types))
+        unique_types = ()
+
+        def _for(t, animal_patches, answer, image_patch, seen, text, types, unique_types):
+            seen = False
+
+            def _for(u, animal_patches, answer, image_patch, seen, text, types, unique_types):
+
+                def _if(animal_patches, answer, image_patch, seen, text, types, unique_types):
+                    seen = True
+                    return (animal_patches, answer, image_patch, seen, text, types, unique_types)
+                animal_patches, answer, image_patch, seen, text, types, unique_types = if_stmt(_if, None, t == u, (animal_patches, answer, image_patch, seen, text, types, unique_types))
+                return (animal_patches, answer, image_patch, seen, text, types, unique_types)
+            animal_patches, answer, image_patch, seen, text, types, unique_types = for_stmt(_for, unique_types, (animal_patches, answer, image_patch, seen, text, types, unique_types))
+
+            def _if(animal_patches, answer, image_patch, seen, text, types, unique_types):
+                unique_types = unique_types + (t,)
+                return (animal_patches, answer, image_patch, seen, text, types, unique_types)
+            animal_patches, answer, image_patch, seen, text, types, unique_types = if_stmt(_if, None, not_expr(seen), (animal_patches, answer, image_patch, seen, text, types, unique_types))
+            return (animal_patches, answer, image_patch, seen, text, types, unique_types)
+        animal_patches, answer, image_patch, seen, text, types, unique_types = for_stmt(_for, types, (animal_patches, answer, image_patch, seen, text, types, unique_types))
+
+        def _if(animal_patches, answer, image_patch, result, seen, text, types, unique_types):
+            result = 'yes'
+            return (animal_patches, answer, image_patch, result, seen, text, types, unique_types)
+
+        def _else(animal_patches, answer, image_patch, result, seen, text, types, unique_types):
+            result = 'no'
+            return (animal_patches, answer, image_patch, result, seen, text, types, unique_types)
+        animal_patches, answer, image_patch, result, seen, text, types, unique_types = if_stmt(_if, _else, len(unique_types) >= 2, (animal_patches, answer, image_patch, result, seen, text, types, unique_types))
+        return (animal_patches, answer, image_patch, result, seen, text, types, unique_types)
+    animal_patches, answer, image_patch, result, seen, text, types, unique_types = if_stmt(_if, _else, len(animal_patches) < 2, (animal_patches, answer, image_patch, result, seen, text, types, unique_types))
+    return result

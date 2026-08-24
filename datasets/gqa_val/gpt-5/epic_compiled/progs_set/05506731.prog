@@ -1,0 +1,53 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_silver = None
+    knife_patches = None
+    left_any = None
+    result = None
+    silver_any = None
+    image_patch = ImagePatch(image)
+    knife_patches = image_patch.find('knife')
+
+    def _if(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+        result = image_patch.simple_query('Is the silver knife on the left?')
+        return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+
+    def _else(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+        result = None
+        silver_any = False
+        left_any = False
+
+        def _for(knife_patch, image_patch, is_silver, knife_patches, left_any, result, silver_any):
+            is_silver = knife_patch.verify_property('knife', 'silver')
+
+            def _if(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+                silver_any = True
+
+                def _if(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+                    left_any = True
+                    return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+                image_patch, is_silver, knife_patches, left_any, result, silver_any = if_stmt(_if, None, knife_patch.horizontal_center < image_patch.horizontal_center, (image_patch, is_silver, knife_patches, left_any, result, silver_any))
+                return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+            image_patch, is_silver, knife_patches, left_any, result, silver_any = if_stmt(_if, None, is_silver, (image_patch, is_silver, knife_patches, left_any, result, silver_any))
+            return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+        image_patch, is_silver, knife_patches, left_any, result, silver_any = for_stmt(_for, knife_patches, (image_patch, is_silver, knife_patches, left_any, result, silver_any))
+
+        def _if(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+
+            def _if(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+                result = 'yes'
+                return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+
+            def _else(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+                result = 'no'
+                return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+            image_patch, is_silver, knife_patches, left_any, result, silver_any = if_stmt(_if, _else, left_any, (image_patch, is_silver, knife_patches, left_any, result, silver_any))
+            return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+
+        def _else(image_patch, is_silver, knife_patches, left_any, result, silver_any):
+            result = image_patch.simple_query('Is the silver knife on the left?')
+            return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+        image_patch, is_silver, knife_patches, left_any, result, silver_any = if_stmt(_if, _else, silver_any, (image_patch, is_silver, knife_patches, left_any, result, silver_any))
+        return (image_patch, is_silver, knife_patches, left_any, result, silver_any)
+    image_patch, is_silver, knife_patches, left_any, result, silver_any = if_stmt(_if, _else, len(knife_patches) == 0, (image_patch, is_silver, knife_patches, left_any, result, silver_any))
+    return result

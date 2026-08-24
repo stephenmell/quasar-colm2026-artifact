@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Check for any white plates
+    plate_patches = image_patch.find("plate")
+    for plate_patch in plate_patches:
+        if plate_patch.verify_property("plate", "white"):
+            return "yes"
+    # Otherwise check for any mugs (any color)
+    has_mug = image_patch.exists("mug")
+    return bool_to_yesno(has_mug)

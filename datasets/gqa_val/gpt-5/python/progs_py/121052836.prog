@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find("bag")
+    blue_bag = False
+    for bag_patch in bag_patches:
+        if bag_patch.verify_property("bag", "blue"):
+            blue_bag = True
+            break
+    is_coat = image_patch.exists("coat")
+    return bool_to_yesno(blue_bag or is_coat)

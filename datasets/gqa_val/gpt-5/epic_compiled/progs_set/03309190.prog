@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    bathtub_color = None
+    bathtub_patch = None
+    bathtub_patches = None
+    box_color = None
+    box_patch = None
+    box_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bathtub_patches = image_patch.find('bathtub')
+    box_patches = image_patch.find('box')
+
+    def _if(bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result):
+        result = image_patch.simple_query('Do the bathtub and the box have the same color?')
+        return (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result)
+
+    def _else(bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result):
+        bathtub_patch = bathtub_patches[0]
+        box_patch = box_patches[0]
+        bathtub_color = bathtub_patch.simple_query('What color is the bathtub?')
+
+        def _if(bathtub_color, bathtub_patch, bathtub_patches, box_patch, box_patches, image_patch):
+            bathtub_color = bathtub_patch.simple_query('What color is this?')
+            return (bathtub_color, bathtub_patch, bathtub_patches, box_patch, box_patches, image_patch)
+        bathtub_color, bathtub_patch, bathtub_patches, box_patch, box_patches, image_patch = if_stmt(_if, None, not_expr(bathtub_color), (bathtub_color, bathtub_patch, bathtub_patches, box_patch, box_patches, image_patch))
+        box_color = box_patch.simple_query('What color is the box?')
+
+        def _if(bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch):
+            box_color = box_patch.simple_query('What color is this?')
+            return (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch)
+        bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch = if_stmt(_if, None, not_expr(box_color), (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch))
+
+        def _if(bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result):
+            result = 'yes'
+            return (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result)
+
+        def _else(bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result):
+            result = 'no'
+            return (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result)
+        bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result = if_stmt(_if, _else, and_expr(bathtub_color, and_expr(box_color, bathtub_color.strip().lower() == box_color.strip().lower())), (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result))
+        return (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result)
+    bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result = if_stmt(_if, _else, or_expr(len(bathtub_patches) == 0, len(box_patches) == 0), (bathtub_color, bathtub_patch, bathtub_patches, box_color, box_patch, box_patches, image_patch, result))
+    return result

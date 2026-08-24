@@ -1,0 +1,45 @@
+def execute_command():
+    CodeExtractionSchema = None
+    all_candidates = None
+    best_code = None
+    best_timestamp = None
+    candidates1 = None
+    candidates2 = None
+    candidates3 = None
+    candidates4 = None
+    extraction = None
+    received_emails = None
+    result = None
+    unread_emails = None
+    candidates1 = search_emails('Facebook security code', None)
+    candidates2 = search_emails('Facebook verification code', None)
+    candidates3 = search_emails('Facebook login code', None)
+    candidates4 = search_emails('security code', None)
+    unread_emails = get_unread_emails()
+    received_emails = []
+
+    def _if(candidates1, candidates2, candidates3, candidates4, received_emails, unread_emails):
+        received_emails = get_received_emails()
+        return (candidates1, candidates2, candidates3, candidates4, received_emails, unread_emails)
+    candidates1, candidates2, candidates3, candidates4, received_emails, unread_emails = if_stmt(_if, None, len(candidates1 + candidates2 + candidates3 + candidates4 + unread_emails) == 0, (candidates1, candidates2, candidates3, candidates4, received_emails, unread_emails))
+    all_candidates = candidates1 + candidates2 + candidates3 + candidates4 + unread_emails + received_emails
+    CodeExtractionSchema = CreateSchema('has_code', bool, 'code', str)
+    best_code = None
+    best_timestamp = None
+
+    def _for(email, CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails):
+        extraction = query_ai_assistant('You are given an email. Determine if it contains a Facebook security or verification code for login or two-factor authentication. If present, set has_code to true and extract the exact code (typically a 6-digit number, but it could also be an alphanumeric token). Do not include any surrounding words or punctuation. If not present, set has_code to false and leave code empty. Email details:\nSender: {}\nSubject: {}\nTimestamp (ISO): {}\nBody:\n{}'.format(str(email.sender), email.subject, email.timestamp.isoformat(), email.body), CodeExtractionSchema)
+
+        def _if(CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails):
+
+            def _if(CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails):
+                best_timestamp = email.timestamp
+                best_code = extraction.code
+                return (CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails)
+            CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails = if_stmt(_if, None, or_expr(best_timestamp is None, email.timestamp > best_timestamp), (CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails))
+            return (CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails)
+        CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails = if_stmt(_if, None, extraction.has_code, (CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails))
+        return (CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails)
+    CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails = for_stmt(_for, all_candidates, (CodeExtractionSchema, all_candidates, best_code, best_timestamp, candidates1, candidates2, candidates3, candidates4, extraction, received_emails, unread_emails))
+    result = 'Your Facebook security code is: {}'.format(best_code) if best_code is not None else 'I could not find a Facebook security code in your recent emails.'
+    return result

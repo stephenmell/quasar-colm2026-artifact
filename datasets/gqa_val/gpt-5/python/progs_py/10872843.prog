@@ -1,0 +1,18 @@
+# Which color is the tee shirt the man is wearing?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        # If no man is found, query the image directly
+        return image_patch.simple_query("Which color is the tee shirt the man is wearing?")
+    man_patch = man_patches[0]
+    # Try to find the tee shirt within the man's region
+    shirt_aliases = ["t-shirt", "tee shirt", "t shirt", "shirt", "tee"]
+    shirt_patches = []
+    for name in shirt_aliases:
+        shirt_patches.extend(man_patch.find(name))
+    if len(shirt_patches) > 0:
+        # Ask about color focusing on the shirt crop
+        return shirt_patches[0].simple_query("Which color is the tee shirt the man is wearing?")
+    # Fallback: ask within the man's crop
+    return man_patch.simple_query("Which color is the tee shirt the man is wearing?")

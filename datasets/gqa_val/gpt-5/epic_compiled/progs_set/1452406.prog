@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    tail_patches = None
+    image_patch = ImagePatch(image)
+    tail_patches = image_patch.find('tail')
+
+    def _if(image_patch, result, tail_patches):
+        result = image_patch.simple_query('Does the tail look short?')
+        return (image_patch, result, tail_patches)
+
+    def _else(image_patch, result, tail_patches):
+        result = 'no'
+
+        def _for(tail_patch, image_patch, result, tail_patches):
+
+            def _if(image_patch, result, tail_patches):
+                result = 'yes'
+                return (image_patch, result, tail_patches)
+            image_patch, result, tail_patches = if_stmt(_if, None, tail_patch.verify_property('tail', 'short'), (image_patch, result, tail_patches))
+            return (image_patch, result, tail_patches)
+        image_patch, result, tail_patches = for_stmt(_for, tail_patches, (image_patch, result, tail_patches))
+        return (image_patch, result, tail_patches)
+    image_patch, result, tail_patches = if_stmt(_if, _else, len(tail_patches) == 0, (image_patch, result, tail_patches))
+    return result

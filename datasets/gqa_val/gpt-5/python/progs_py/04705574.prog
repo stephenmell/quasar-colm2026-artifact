@@ -1,0 +1,74 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the tea kettle
+    kettle_patches = image_patch.find("tea kettle")
+    if len(kettle_patches) == 0:
+        kettle_patches = image_patch.find("kettle")
+    if len(kettle_patches) == 0:
+        # Fallback to direct QA if kettle not detected
+        return image_patch.simple_query("Is the garbage bin to the left of the appliance the tea kettle is on?")
+    kettle_patch = kettle_patches[0]
+
+    # Ask what the tea kettle is on (the appliance)
+    appliance_answer = kettle_patch.simple_query("What is the tea kettle on?")
+    if appliance_answer is None:
+        appliance_answer = ""
+    appliance_name = appliance_answer.lower().strip(" .!?")
+
+    # Normalize common appliance names
+    aliases = {
+        "stovetop": "stove",
+        "stove top": "stove",
+        "stove-top": "stove",
+        "cooktop": "stove",
+        "range": "stove",
+        "countertop": "counter",
+        "worktop": "counter",
+        "microwave oven": "microwave",
+        "fridge": "refrigerator",
+        "freezer": "refrigerator",
+        "oven range": "stove",
+        "range oven": "stove",
+    }
+    if appliance_name.startswith("the "):
+        appliance_name = appliance_name[4:]
+    if appliance_name.startswith("a "):
+        appliance_name = appliance_name[2:]
+    if appliance_name in aliases:
+        appliance_name = aliases[appliance_name]
+    # Additional normalization
+    appliance_name = appliance_name.replace("stove top", "stove").replace("stove-top", "stove")
+
+    # Find the appliance patches
+    appliance_patches = image_patch.find(appliance_name) if appliance_name else []
+    if len(appliance_patches) == 0:
+        # Try a set of likely appliances if exact name not found
+        candidate_appliances = ["stove", "oven", "microwave", "counter", "sink", "toaster", "refrigerator"]
+        for cand in candidate_appliances:
+            appliance_patches.extend(image_patch.find(cand))
+        if len(appliance_patches) == 0:
+            # Fallback to direct QA if appliance not detected
+            return image_patch.simple_query("Is the garbage bin to the left of the appliance the tea kettle is on?")
+
+    # Choose the appliance closest to the kettle
+    def dist2(patch_a, patch_b):
+        dx = patch_a.horizontal_center - patch_b.horizontal_center
+        dy = patch_a.vertical_center - patch_b.vertical_center
+        return dx*dx + dy*dy
+
+    appliance_patch = min(appliance_patches, key=lambda p: dist2(p, kettle_patch))
+
+    # Find garbage bin (try several synonyms)
+    garbage_patches = []
+    for name in ["garbage bin", "trash can", "trash bin", "garbage can", "trash", "bin"]:
+        garbage_patches.extend(image_patch.find(name))
+    if len(garbage_patches) == 0:
+        # Fallback to direct QA if no bin detected
+        return image_patch.simple_query("Is the garbage bin to the left of the appliance the tea kettle is on?")
+
+    # Check if any garbage bin is to the left of the appliance
+    for g in garbage_patches:
+        if g.horizontal_center < appliance_patch.horizontal_center:
+            return "yes"
+    return "no"

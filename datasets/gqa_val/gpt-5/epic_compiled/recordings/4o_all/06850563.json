@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2385173",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "What kind of animal is inside the pen?"
+      ],
+      "A giraffe.",
+      1293246541
+    ]
+  ],
+  "best_text_match": []
+}

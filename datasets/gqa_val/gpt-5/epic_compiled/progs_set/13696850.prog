@@ -1,0 +1,79 @@
+def execute_command(image) -> str:
+    all_trash_cans = None
+    bag_patches = None
+    best_bag = None
+    best_dist2 = None
+    dist2 = None
+    dx = None
+    dy = None
+    found = None
+    has_left_trash = None
+    image_patch = None
+    man_patch = None
+    man_patches = None
+    result = None
+    trash_names = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+
+    def _if(all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+        result = image_patch.simple_query('Are there trash cans to the left of the bag the man holds?')
+        return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+
+    def _else(all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+        man_patch = man_patches[0]
+        bag_patches = image_patch.find('bag')
+
+        def _if(all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+            result = image_patch.simple_query('Are there trash cans to the left of the bag the man holds?')
+            return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+
+        def _else(all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+            best_bag = None
+            best_dist2 = None
+
+            def _for(bag_patch, bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result):
+                dx = bag_patch.horizontal_center - man_patch.horizontal_center
+                dy = bag_patch.vertical_center - man_patch.vertical_center
+                dist2 = dx * dx + dy * dy
+
+                def _if(bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result):
+                    best_dist2 = dist2
+                    best_bag = bag_patch
+                    return (bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result)
+                bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result = if_stmt(_if, None, or_expr(best_dist2 is None, dist2 < best_dist2), (bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result))
+                return (bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result)
+            bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result = for_stmt(_for, bag_patches, (bag_patches, best_bag, best_dist2, dist2, dx, dy, image_patch, man_patch, man_patches, result))
+            trash_names = ('trash can', 'trashcan', 'garbage can', 'trash bin', 'garbage bin', 'rubbish bin')
+            all_trash_cans = ()
+
+            def _for(name, all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, image_patch, man_patch, man_patches, result, trash_names):
+                found = image_patch.find(name)
+                all_trash_cans = all_trash_cans + found
+                return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, image_patch, man_patch, man_patches, result, trash_names)
+            all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, image_patch, man_patch, man_patches, result, trash_names = for_stmt(_for, trash_names, (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, image_patch, man_patch, man_patches, result, trash_names))
+
+            def _if(all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+                result = 'no'
+                return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+
+            def _else(all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+                has_left_trash = False
+
+                def _for(trash_patch, all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+
+                    def _if(all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names):
+                        has_left_trash = True
+                        return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+                    all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names = if_stmt(_if, None, trash_patch.horizontal_center < best_bag.horizontal_center, (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names))
+                    return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+                all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names = for_stmt(_for, all_trash_cans, (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names))
+                result = 'yes' if has_left_trash else 'no'
+                return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+            all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names = if_stmt(_if, _else, len(all_trash_cans) == 0, (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names))
+            return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+        all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names = if_stmt(_if, _else, len(bag_patches) == 0, (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names))
+        return (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names)
+    all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names = if_stmt(_if, _else, len(man_patches) == 0, (all_trash_cans, bag_patches, best_bag, best_dist2, dist2, dx, dy, found, has_left_trash, image_patch, man_patch, man_patches, result, trash_names))
+    return result

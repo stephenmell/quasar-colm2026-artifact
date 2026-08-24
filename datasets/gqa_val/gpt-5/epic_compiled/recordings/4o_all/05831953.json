@@ -1,0 +1,63 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2410522",
+          [
+            0,
+            0,
+            374,
+            500
+          ]
+        ],
+        "person"
+      ],
+      [
+        [
+          60,
+          41,
+          283,
+          324
+        ]
+      ],
+      7340648084
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2410522",
+          [
+            60,
+            41,
+            283,
+            324
+          ]
+        ],
+        "Is the person wearing a shirt?"
+      ],
+      "Yes.",
+      676836561
+    ],
+    [
+      [
+        [
+          "2410522",
+          [
+            0,
+            0,
+            374,
+            500
+          ]
+        ],
+        "Is the plastic cup to the left or to the right of the person that is wearing a shirt?"
+      ],
+      "To the left.",
+      996001471
+    ]
+  ],
+  "best_text_match": []
+}

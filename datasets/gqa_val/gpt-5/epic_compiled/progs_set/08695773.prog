@@ -1,0 +1,80 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    fence_patches = None
+    image_patch = None
+    leftmost_fence = None
+    result = None
+    right_area_patch = None
+    selected_animal = None
+    selected_center = None
+    image_patch = ImagePatch(image)
+    result = None
+    fence_patches = image_patch.find('fence')
+
+    def _if(animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center):
+        result = image_patch.simple_query('What is the name of the animal to the right of the fence on the left side?')
+        return (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center)
+
+    def _else(animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center):
+        leftmost_fence = fence_patches[0]
+
+        def _for(fence, fence_patches, image_patch, leftmost_fence, result):
+
+            def _if(fence_patches, image_patch, leftmost_fence, result):
+                leftmost_fence = fence
+                return (fence_patches, image_patch, leftmost_fence, result)
+            fence_patches, image_patch, leftmost_fence, result = if_stmt(_if, None, fence.horizontal_center < leftmost_fence.horizontal_center, (fence_patches, image_patch, leftmost_fence, result))
+            return (fence_patches, image_patch, leftmost_fence, result)
+        fence_patches, image_patch, leftmost_fence, result = for_stmt(_for, fence_patches, (fence_patches, image_patch, leftmost_fence, result))
+        animal_patches = image_patch.find('animal')
+        selected_animal = None
+        selected_center = None
+
+        def _for(animal, animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center):
+
+            def _if(animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center):
+
+                def _if(animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center):
+                    selected_animal = animal
+                    selected_center = animal.horizontal_center
+                    return (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center)
+
+                def _else(animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center):
+
+                    def _if(animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center):
+                        selected_animal = animal
+                        selected_center = animal.horizontal_center
+                        return (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center)
+                    animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center = if_stmt(_if, None, animal.horizontal_center < selected_center, (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center))
+                    return (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center)
+                animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center = if_stmt(_if, _else, selected_animal is None, (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center))
+                return (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center)
+            animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center = if_stmt(_if, None, animal.horizontal_center > leftmost_fence.horizontal_center, (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center))
+            return (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center)
+        animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center = for_stmt(_for, animal_patches, (animal_patches, fence_patches, image_patch, leftmost_fence, result, selected_animal, selected_center))
+
+        def _if(animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center):
+            result = selected_animal.simple_query('What is the name of the animal?')
+            return (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center)
+
+        def _else(animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center):
+
+            def _if(animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center):
+                right_area_patch = image_patch.crop(leftmost_fence.right, image_patch.lower, image_patch.right, image_patch.upper)
+                result = right_area_patch.simple_query('What is the name of the animal?')
+                return (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center)
+
+            def _else(animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center):
+                result = image_patch.simple_query('What is the name of the animal to the right of the fence on the left side?')
+                return (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center)
+            animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center = if_stmt(_if, _else, leftmost_fence.right < image_patch.right, (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center))
+            return (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center)
+        animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center = if_stmt(_if, _else, selected_animal is not None, (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center))
+        return (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center)
+    animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center = if_stmt(_if, _else, len(fence_patches) == 0, (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center))
+
+    def _if(animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center):
+        result = image_patch.simple_query('What is the name of the animal to the right of the fence on the left side?')
+        return (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center)
+    animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center = if_stmt(_if, None, not_expr(result), (animal_patches, fence_patches, image_patch, leftmost_fence, result, right_area_patch, selected_animal, selected_center))
+    return result

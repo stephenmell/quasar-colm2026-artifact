@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        # If no person is found, ask directly
+        return image_patch.simple_query("Is there a child to the right of the person that is wearing jeans?")
+    # Collect persons wearing jeans
+    jeans_persons = []
+    for person_patch in person_patches:
+        if person_patch.simple_query("Is the person wearing jeans?") == "yes" or person_patch.verify_property("person", "jeans"):
+            jeans_persons.append(person_patch)
+    if len(jeans_persons) == 0:
+        return "no"
+    # Look for a child to the right of any jeans-wearing person
+    child_patches = image_patch.find("child")
+    if len(child_patches) == 0:
+        return "no"
+    for person_patch in jeans_persons:
+        for child_patch in child_patches:
+            if child_patch.horizontal_center > person_patch.horizontal_center:
+                return "yes"
+    return "no"

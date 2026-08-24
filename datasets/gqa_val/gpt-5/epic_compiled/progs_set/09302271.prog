@@ -1,0 +1,80 @@
+def execute_command(image) -> str:
+    any_person_left_of_cone = None
+    cone_patches = None
+    cones_left_of_screen = None
+    image_patch = None
+    is_left_of_any_cone = None
+    people_patches = None
+    result = None
+    screen_patch = None
+    screen_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    screen_patches = image_patch.find('screen') + image_patch.find('tv') + image_patch.find('television') + image_patch.find('monitor') + image_patch.find('display')
+
+    def _if(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+        result = image_patch.simple_query('Are there any people to the left of the cones that are to the left of the screen?')
+        return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+
+    def _else(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+        screen_patch = screen_patches[0]
+        cone_patches = image_patch.find('cone') + image_patch.find('traffic cone')
+        cones_left_of_screen = ()
+
+        def _for(cone_patch, cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches):
+
+            def _if(cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches):
+                cones_left_of_screen = cones_left_of_screen + (cone_patch,)
+                return (cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches)
+            cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches = if_stmt(_if, None, cone_patch.horizontal_center < screen_patch.horizontal_center, (cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches))
+            return (cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches)
+        cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches = for_stmt(_for, cone_patches, (cone_patches, cones_left_of_screen, image_patch, result, screen_patch, screen_patches))
+
+        def _if(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+            result = 'no'
+            return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+
+        def _else(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+            people_patches = image_patch.find('person') + image_patch.find('people')
+            any_person_left_of_cone = False
+
+            def _for(person_patch, any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+                is_left_of_any_cone = False
+
+                def _for(cone_patch, any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+
+                    def _if(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+                        is_left_of_any_cone = or_expr(True, is_left_of_any_cone)
+                        return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+
+                    def _else(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+                        is_left_of_any_cone = is_left_of_any_cone
+                        return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+                    any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches = if_stmt(_if, _else, person_patch.horizontal_center < cone_patch.horizontal_center, (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches))
+                    return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+                any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches = for_stmt(_for, cones_left_of_screen, (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches))
+
+                def _if(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+                    any_person_left_of_cone = or_expr(True, any_person_left_of_cone)
+                    return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+
+                def _else(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+                    any_person_left_of_cone = any_person_left_of_cone
+                    return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+                any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches = if_stmt(_if, _else, is_left_of_any_cone, (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches))
+                return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+            any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches = for_stmt(_for, people_patches, (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches))
+
+            def _if(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+                result = 'yes'
+                return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+
+            def _else(any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches):
+                result = 'no'
+                return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+            any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches = if_stmt(_if, _else, any_person_left_of_cone, (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches))
+            return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+        any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches = if_stmt(_if, _else, len(cones_left_of_screen) == 0, (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches))
+        return (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches)
+    any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches = if_stmt(_if, _else, len(screen_patches) == 0, (any_person_left_of_cone, cone_patches, cones_left_of_screen, image_patch, is_left_of_any_cone, people_patches, result, screen_patch, screen_patches))
+    return result

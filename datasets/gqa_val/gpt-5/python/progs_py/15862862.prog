@@ -1,0 +1,25 @@
+# Do you see people to the right of the person that is wearing a mask?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no persons are found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Do you see people to the right of the person that is wearing a mask?")
+    # Find the person wearing a mask
+    masked_idx = None
+    masked_person = None
+    for i, person_patch in enumerate(person_patches):
+        if person_patch.simple_query("Is the person wearing a mask?") == "yes":
+            masked_idx = i
+            masked_person = person_patch
+            break
+    # If no masked person is found, ask directly
+    if masked_idx is None:
+        return image_patch.simple_query("Do you see people to the right of the person that is wearing a mask?")
+    # Check if any other person is to the right of the masked person
+    for j, other in enumerate(person_patches):
+        if j == masked_idx:
+            continue
+        if other.horizontal_center > masked_person.horizontal_center:
+            return "yes"
+    return "no"

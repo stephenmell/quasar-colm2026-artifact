@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pizza_patches = image_patch.find("pizza")
+    # If no pizza is found, ask directly
+    if len(pizza_patches) == 0:
+        return image_patch.simple_query("Are there any mushrooms on the pizza that is on the plate?")
+    # Filter pizzas that are on a plate
+    pizzas_on_plate = []
+    for pizza_patch in pizza_patches:
+        if pizza_patch.simple_query("Is the pizza on a plate?") == "yes":
+            pizzas_on_plate.append(pizza_patch)
+    # If no pizza on a plate is found, ask directly
+    if len(pizzas_on_plate) == 0:
+        return image_patch.simple_query("Are there any mushrooms on the pizza that is on the plate?")
+    # Check for mushrooms on any pizza that is on a plate
+    for pizza_patch in pizzas_on_plate:
+        if pizza_patch.exists("mushroom"):
+            return "yes"
+        if pizza_patch.simple_query("Are there any mushrooms on the pizza?") == "yes":
+            return "yes"
+    return "no"

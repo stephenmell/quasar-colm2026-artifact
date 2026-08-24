@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    shampoo_patches = None
+    towel_patches = None
+    image_patch = ImagePatch(image)
+    shampoo_patches = image_patch.find('shampoo bottle')
+
+    def _if(image_patch, result, shampoo_patches, towel_patches):
+        result = image_patch.simple_query('Are there any towels to the left of the shampoo bottle?')
+        return (image_patch, result, shampoo_patches, towel_patches)
+
+    def _else(image_patch, result, shampoo_patches, towel_patches):
+        towel_patches = image_patch.find('towel')
+
+        def _if(image_patch, result, shampoo_patches, towel_patches):
+            result = 'no'
+            return (image_patch, result, shampoo_patches, towel_patches)
+
+        def _else(image_patch, result, shampoo_patches, towel_patches):
+            result = 'no'
+
+            def _for(shampoo_patch, image_patch, result, shampoo_patches, towel_patches):
+
+                def _for(towel_patch, image_patch, result, shampoo_patches, towel_patches):
+
+                    def _if(image_patch, result, shampoo_patches, towel_patches):
+                        result = 'yes'
+                        return (image_patch, result, shampoo_patches, towel_patches)
+                    image_patch, result, shampoo_patches, towel_patches = if_stmt(_if, None, towel_patch.horizontal_center < shampoo_patch.horizontal_center, (image_patch, result, shampoo_patches, towel_patches))
+                    return (image_patch, result, shampoo_patches, towel_patches)
+                image_patch, result, shampoo_patches, towel_patches = for_stmt(_for, towel_patches, (image_patch, result, shampoo_patches, towel_patches))
+                return (image_patch, result, shampoo_patches, towel_patches)
+            image_patch, result, shampoo_patches, towel_patches = for_stmt(_for, shampoo_patches, (image_patch, result, shampoo_patches, towel_patches))
+            return (image_patch, result, shampoo_patches, towel_patches)
+        image_patch, result, shampoo_patches, towel_patches = if_stmt(_if, _else, len(towel_patches) == 0, (image_patch, result, shampoo_patches, towel_patches))
+        return (image_patch, result, shampoo_patches, towel_patches)
+    image_patch, result, shampoo_patches, towel_patches = if_stmt(_if, _else, len(shampoo_patches) == 0, (image_patch, result, shampoo_patches, towel_patches))
+    return result

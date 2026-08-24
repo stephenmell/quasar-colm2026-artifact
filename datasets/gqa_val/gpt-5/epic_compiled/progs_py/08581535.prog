@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    found_any = False
+
+    for obj_name in ("laptop", "camera"):
+        obj_exists = image_patch.exists(obj_name)
+        if obj_exists:
+            found_any = True
+            obj_patches = image_patch.find(obj_name)
+            for obj_patch in obj_patches:
+                is_small = obj_patch.verify_property(obj_name, "small")
+                if not is_small:
+                    result = "yes"
+
+    if not found_any and result == "no":
+        result = image_patch.simple_query("Are there laptops or cameras that are not small?")
+    return result

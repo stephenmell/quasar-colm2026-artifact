@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    image_patch = None
+    in_horiz = None
+    in_vert = None
+    mirror_patches = None
+    on_chair = None
+    pillow_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find('pillow')
+
+    def _if(chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+        result = image_patch.simple_query('Do you see mirrors to the right of the pillow on the chair?')
+        return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+
+    def _else(chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+        chair_patches = image_patch.find('chair')
+        mirror_patches = image_patch.find('mirror')
+        result = 'no'
+
+        def _for(pillow_patch, chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+            on_chair = False
+
+            def _for(chair_patch, chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+                in_horiz = and_expr(pillow_patch.horizontal_center >= chair_patch.left, pillow_patch.horizontal_center <= chair_patch.right)
+                in_vert = and_expr(pillow_patch.vertical_center >= chair_patch.upper, pillow_patch.vertical_center <= chair_patch.lower)
+
+                def _if(chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+                    on_chair = True
+                    return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+                chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result = if_stmt(_if, None, and_expr(in_horiz, in_vert), (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result))
+                return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+            chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result = for_stmt(_for, chair_patches, (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result))
+
+            def _if(chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+
+                def _for(mirror_patch, chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+
+                    def _if(chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result):
+                        result = 'yes'
+                        return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+                    chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result = if_stmt(_if, None, mirror_patch.horizontal_center > pillow_patch.horizontal_center, (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result))
+                    return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+                chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result = for_stmt(_for, mirror_patches, (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result))
+                return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+            chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result = if_stmt(_if, None, on_chair, (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result))
+            return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+        chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result = for_stmt(_for, pillow_patches, (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result))
+        return (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result)
+    chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result = if_stmt(_if, _else, len(pillow_patches) == 0, (chair_patches, image_patch, in_horiz, in_vert, mirror_patches, on_chair, pillow_patches, result))
+    return result

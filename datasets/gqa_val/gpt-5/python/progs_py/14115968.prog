@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find("umbrella")
+    if len(umbrella_patches) == 0:
+        # If no umbrella is found, ask directly
+        return image_patch.simple_query("Are there any men to the left of the people underneath the umbrella?")
+
+    # Find people and men
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        person_patches = image_patch.find("people")
+        if len(person_patches) == 0:
+            # If no people are found, ask directly
+            return image_patch.simple_query("Are there any men to the left of the people underneath the umbrella?")
+
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return "no"
+
+    # For each umbrella, find people underneath it, then check if any man is to the left of any such person
+    for umb in umbrella_patches:
+        people_under = [
+            p for p in person_patches
+            if (p.horizontal_center > umb.left and p.horizontal_center < umb.right and p.vertical_center > umb.vertical_center)
+        ]
+        if len(people_under) == 0:
+            continue
+        for pu in people_under:
+            for man in man_patches:
+                if man.horizontal_center < pu.horizontal_center:
+                    return "yes"
+
+    return "no"

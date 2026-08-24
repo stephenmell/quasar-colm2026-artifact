@@ -1,0 +1,9 @@
+Stage: other execution error
+Error: unsupported operand type(s) for +: 'AbstractTuple' and 'AbstractTuple'
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "07405947.prog", line 13, in execute_command
+TypeError: unsupported operand type(s) for +: 'AbstractTuple' and 'AbstractTuple'

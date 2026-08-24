@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sink_patches = image_patch.find("sink")
+    if len(sink_patches) == 0:
+        result = image_patch.simple_query("Does that sink have brown color?")
+    else:
+        result = bool_to_yesno(sink_patches[0].verify_property("sink", "brown"))
+    return result

@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umpire_patches = image_patch.find("umpire")
+    if len(umpire_patches) == 0:
+        result = image_patch.simple_query("Which kind of furniture is to the right of the umpire?")
+    else:
+        umpire_patch = umpire_patches[0]
+        right_area_patch = image_patch.crop(umpire_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+        result = right_area_patch.simple_query("Which kind of furniture is here?")
+    return result

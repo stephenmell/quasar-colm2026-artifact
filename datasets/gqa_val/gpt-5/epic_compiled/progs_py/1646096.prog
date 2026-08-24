@@ -1,0 +1,23 @@
+# What is the food in the bowl?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bowl_patches = image_patch.find("bowl")
+
+    if len(bowl_patches) == 0:
+        result = image_patch.simple_query("What is the food in the bowl?")
+    else:
+        max_area = -1
+        selected_bowl = None
+        for bowl_patch in bowl_patches:
+            area = bowl_patch.width * bowl_patch.height
+            if area > max_area:
+                max_area = area
+                selected_bowl = bowl_patch
+
+        if selected_bowl:
+            result = selected_bowl.simple_query("What is the food in the bowl?")
+            if not result:
+                result = selected_bowl.simple_query("What is in the bowl?")
+        else:
+            result = image_patch.simple_query("What is the food in the bowl?")
+    return result

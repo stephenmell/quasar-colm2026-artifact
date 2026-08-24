@@ -1,0 +1,24 @@
+# Are there any stoves to the right of the food that looks orange?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    food_patches = image_patch.find("food")
+    # If no food is found, ask directly
+    if len(food_patches) == 0:
+        return image_patch.simple_query("Are there any stoves to the right of the food that looks orange?")
+    # Filter foods that look orange
+    orange_food_patches = []
+    for food_patch in food_patches:
+        if food_patch.verify_property("food", "orange"):
+            orange_food_patches.append(food_patch)
+    # If no orange-looking food is found, ask directly
+    if len(orange_food_patches) == 0:
+        return image_patch.simple_query("Are there any stoves to the right of the food that looks orange?")
+    # Find stoves and check if any are to the right of any orange-looking food
+    stove_patches = image_patch.find("stove")
+    if len(stove_patches) == 0:
+        return "no"
+    for orange_food in orange_food_patches:
+        for stove in stove_patches:
+            if stove.horizontal_center > orange_food.horizontal_center:
+                return "yes"
+    return "no"

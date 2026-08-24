@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    house_patches = image_patch.find("house")
+    zebra_patches = image_patch.find("zebra")
+
+    if len(house_patches) == 0 or len(zebra_patches) == 0:
+        result = image_patch.simple_query("Is the house different in color than the zebra?")
+    else:
+        colors = ("white", "black", "gray", "brown", "red", "orange", "yellow", "green", "blue", "purple", "pink", "tan", "beige", "silver", "gold")
+        house_color = house_patches[0].best_text_match(colors)
+        zebra_color = zebra_patches[0].best_text_match(colors)
+        if house_color != zebra_color:
+            result = "yes"
+        else:
+            result = "no"
+    return result

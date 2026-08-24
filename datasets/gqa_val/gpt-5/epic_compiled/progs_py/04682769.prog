@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_man = False
+    has_woman = False
+
+    for term in ("man", "men"):
+        if image_patch.exists(term):
+            has_man = True
+
+    for term in ("woman", "women"):
+        if image_patch.exists(term):
+            has_woman = True
+
+    if has_man and has_woman:
+        result = "yes"
+    else:
+        result = image_patch.simple_query("Are there both men and women in the scene?")
+    return result

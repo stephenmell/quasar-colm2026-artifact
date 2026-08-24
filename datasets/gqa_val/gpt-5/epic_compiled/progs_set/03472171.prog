@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    cabinet_patches = None
+    image_patch = None
+    is_white = None
+    result = None
+    image_patch = ImagePatch(image)
+    cabinet_patches = image_patch.find('cabinet')
+
+    def _if(cabinet_patches, image_patch, is_white, result):
+        result = image_patch.simple_query('Is there a cabinet in the image that is not white?')
+        return (cabinet_patches, image_patch, is_white, result)
+
+    def _else(cabinet_patches, image_patch, is_white, result):
+        result = 'no'
+
+        def _for(cabinet_patch, cabinet_patches, image_patch, is_white, result):
+            is_white = cabinet_patch.verify_property('cabinet', 'white')
+
+            def _if(cabinet_patches, image_patch, is_white, result):
+                result = 'yes'
+                return (cabinet_patches, image_patch, is_white, result)
+            cabinet_patches, image_patch, is_white, result = if_stmt(_if, None, not_expr(is_white), (cabinet_patches, image_patch, is_white, result))
+            return (cabinet_patches, image_patch, is_white, result)
+        cabinet_patches, image_patch, is_white, result = for_stmt(_for, cabinet_patches, (cabinet_patches, image_patch, is_white, result))
+        return (cabinet_patches, image_patch, is_white, result)
+    cabinet_patches, image_patch, is_white, result = if_stmt(_if, _else, len(cabinet_patches) == 0, (cabinet_patches, image_patch, is_white, result))
+    return result

@@ -1,0 +1,47 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    coke_patches = image_patch.find("coke")
+    if len(coke_patches) == 0:
+        result = image_patch.simple_query("What is the piece of furniture to the left of the person that is to the left of the Coke called?")
+    else:
+        person_patches = image_patch.find("person")
+        best_person = None
+        best_person_dist = None
+        for coke_patch in coke_patches:
+            for person_patch in person_patches:
+                if person_patch.horizontal_center < coke_patch.horizontal_center:
+                    dist = coke_patch.horizontal_center - person_patch.horizontal_center
+                    if best_person is None or dist < best_person_dist:
+                        best_person = person_patch
+                        best_person_dist = dist
+
+        if best_person is None:
+            result = image_patch.simple_query("What is the piece of furniture to the left of the person that is to the left of the Coke called?")
+        else:
+            furniture_names = (
+                "chair", "table", "sofa", "couch", "desk", "stool", "bench",
+                "bed", "cabinet", "dresser", "shelf", "counter", "nightstand",
+                "end table", "coffee table", "bookshelf", "armchair", "loveseat", "ottoman"
+            )
+            best_furn_name = None
+            best_furn_patch = None
+            best_furn_dist = None
+            for furn_name in furniture_names:
+                furn_patches = image_patch.find(furn_name)
+                for furn_patch in furn_patches:
+                    if furn_patch.horizontal_center < best_person.horizontal_center:
+                        dist2 = best_person.horizontal_center - furn_patch.horizontal_center
+                        if best_furn_patch is None or dist2 < best_furn_dist:
+                            best_furn_patch = furn_patch
+                            best_furn_dist = dist2
+                            best_furn_name = furn_name
+            if best_furn_name:
+                result = best_furn_name
+            else:
+                result = image_patch.simple_query("What is the piece of furniture to the left of the person that is to the left of the Coke called?")
+
+    if not result:
+        result = image_patch.simple_query("What is the piece of furniture to the left of the person that is to the left of the Coke called?")
+    return result

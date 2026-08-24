@@ -1,0 +1,13 @@
+# Is there a helmet in the picture that is not green?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    helmet_patches = image_patch.find("helmet")
+    # If no helmet is found, ask the question directly
+    if len(helmet_patches) == 0:
+        return image_patch.simple_query("Is there a helmet in the picture that is not green?")
+    # Check if any detected helmet is not green
+    for helmet_patch in helmet_patches:
+        is_green = helmet_patch.verify_property("helmet", "green")
+        if not is_green:
+            return "yes"
+    return "no"

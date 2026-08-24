@@ -1,0 +1,120 @@
+({2282: 'context',
+  2285: 'llm_query',
+  2292: 'str',
+  2311: '.join',
+  2319: 'return_result'},
+ ('def',
+  2279,
+  ((),
+   ((('call', (2280,), -1, ()),
+     ('prim', 2281, 0),
+     ('def',
+      2283,
+      ((2307, 2284),
+       ((('unpack', (2291, 2293), 2307),
+         ('prim',
+          2286,
+          'You are given a document. Extract facts relevant to the following '
+          'riddle-like query.\n'
+          '\n'
+          'Query description:\n'
+          '- We are looking for a male individual outstanding in his field of '
+          'work, who was awarded a doctorate (PhD) at a university founded in '
+          'the 18th century (1701–1800).\n'
+          '- This same individual received advice from a man known as the '
+          '"father of a nuclear weapon" (e.g., Robert Oppenheimer — "father of '
+          'the atomic bomb"; Edward Teller — "father of the hydrogen bomb"; '
+          'Andrei Sakharov — "father of the Soviet hydrogen bomb"; Abdul '
+          'Qadeer Khan — "father of Pakistan\'s nuclear bomb"; Homi J. Bhabha '
+          '— "father of the Indian nuclear programme"; others with similar '
+          'epithets).\n'
+          '- He shares a name with a politician in an African country who '
+          'expressed gratitude toward a late journalist who hosted a political '
+          'talk show in the 21st century.\n'
+          '- We need the name of the scientific concept attributed to this '
+          'individual.\n'
+          '\n'
+          'Document:\n'
+          'BEGIN\n'),
+         ('call', (2287,), 80, (2286, 2284)),
+         ('prim',
+          2288,
+          '\n'
+          'END\n'
+          '\n'
+          'From ONLY this document, extract any of the following, if present. '
+          "For each item, give the lines under headers 'Item:' followed by "
+          "'Quotes:' (exact relevant snippets) and then 'Details:' present "
+          'concise details.\n'
+          '\n'
+          '1) Scientist/academic who earned a doctorate at a university '
+          'founded in the 18th century. Include name, field, doctorate '
+          'institution, institution founding year, and any scientific '
+          'concept(s), theorem(s), law(s) or effect(s) named after him.\n'
+          '\n'
+          '2) Instances where a person is described as receiving advice '
+          '(advised by, suggestion from, mentored by, supervised by, counsel '
+          'from) by any of: Robert Oppenheimer, Edward Teller, Andrei '
+          'Sakharov, Abdul Qadeer Khan, Homi J. Bhabha, Enrico Fermi, Ernest '
+          "Lawrence. Include who received the advice and the adviser's epithet "
+          "(e.g., 'father of the atomic bomb').\n"
+          '\n'
+          '3) Mentions of an African politician expressing gratitude to a late '
+          'journalist who hosted a political talk show (name of politician, '
+          'country, journalist, show, that the journalist is deceased). '
+          "Include the politician's name exactly as written.\n"
+          '\n'
+          "4) Any explicit hint that ties a scientist's name to a politician's "
+          'name (same first or last name). State both names.\n'
+          '\n'
+          "If the document contains none of the above, say 'No relevant "
+          "items.'"),
+         ('call', (2289,), 80, (2287, 2288)),
+         ('call', (2290,), 2285, (2289,)),
+         ('prim', 2294, 'Doc '),
+         ('call', (2295,), 2292, (2293,)),
+         ('call', (2296,), 80, (2294, 2295)),
+         ('prim', 2297, ' analysis:\n'),
+         ('call', (2298,), 80, (2296, 2297)),
+         ('call', (2299,), 80, (2298, 2290)),
+         ('call', (2300,), -1, (2299,)),
+         ('call', (2301,), 80, (2291, 2300)),
+         ('prim', 2302, 1),
+         ('call', (2303,), 80, (2293, 2302)),
+         ('pack', 2308, (2301, 2303))),
+        (2308,)))),
+     ('pack', 2309, (2280, 2281)),
+     ('call', (2310,), 79, (2282,)),
+     ('call', (2306,), 2310, (2309, 2283)),
+     ('unpack', (2304, 2305), 2306),
+     ('prim', 2312, '\n\n'),
+     ('call', (2313,), 2311, (2312, 2304)),
+     ('prim',
+      2314,
+      'Task: Identify the scientific concept attributed to the individual '
+      'described below, using the extracted items.\n'
+      '\n'
+      'Description:\n'
+      '- Male, outstanding in his field.\n'
+      '- Earned a doctorate at a university founded in the 18th century '
+      '(1701–1800).\n'
+      "- Received advice from a man known as the 'father of a nuclear weapon' "
+      '(e.g., Robert Oppenheimer – father of the atomic bomb; Edward Teller – '
+      'father of the hydrogen bomb; Andrei Sakharov; Abdul Qadeer Khan; Homi '
+      'J. Bhabha).\n'
+      '- Shares a name with an African politician who expressed gratitude '
+      'toward a late journalist who hosted a political talk show in the 21st '
+      'century.\n'
+      '\n'
+      'Extracted items from the documents:\n'),
+     ('call', (2315,), 80, (2314, 2313)),
+     ('prim',
+      2316,
+      '\n'
+      '\n'
+      'Answer with ONLY the exact name of the scientific concept attributed to '
+      'this individual (no explanation).'),
+     ('call', (2317,), 80, (2315, 2316)),
+     ('call', (2318,), 2285, (2317,)),
+     ('call', (2320,), 2319, (2318,))),
+    (2320,)))))

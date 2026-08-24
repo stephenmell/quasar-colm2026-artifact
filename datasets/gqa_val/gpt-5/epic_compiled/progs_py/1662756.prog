@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    man_patches = image_patch.find("man")
+    surfboard_patches = image_patch.find("surfboard")
+
+    if len(man_patches) == 0 or len(surfboard_patches) == 0:
+        result = image_patch.simple_query("Do you see people to the right of the surfboard that the man is with?")
+    else:
+        for man_patch in man_patches:
+            nearest_surfboard = None
+            nearest_distance = None
+            for surfboard_patch in surfboard_patches:
+                dx = abs(man_patch.horizontal_center - surfboard_patch.horizontal_center)
+                dy = abs(man_patch.vertical_center - surfboard_patch.vertical_center)
+                distance = dx + dy
+                if nearest_distance is None or distance < nearest_distance:
+                    nearest_distance = distance
+                    nearest_surfboard = surfboard_patch
+
+            if nearest_surfboard is not None:
+                person_patches = image_patch.find("person")
+                for person_patch in person_patches:
+                    if person_patch.horizontal_center > nearest_surfboard.right:
+                        result = "yes"
+    return result

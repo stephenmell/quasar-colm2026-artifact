@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    tent_patches = image_patch.find("tent")
+    man_patches = image_patch.find("man")
+
+    # If key objects are missing, ask directly
+    if len(tent_patches) == 0 or len(man_patches) == 0:
+        return image_patch.simple_query("Is the towel to the left or to the right of the man the tent is to the left of?")
+
+    # Find the man such that at least one tent is to his left
+    target_man = None
+    for man_patch in man_patches:
+        for tent_patch in tent_patches:
+            if tent_patch.horizontal_center < man_patch.horizontal_center:
+                target_man = man_patch
+                break
+        if target_man is not None:
+            break
+
+    if target_man is None:
+        return image_patch.simple_query("Is the towel to the left or to the right of the man the tent is to the left of?")
+
+    towel_patches = image_patch.find("towel")
+    if len(towel_patches) == 0:
+        return image_patch.simple_query("Is the towel to the left or to the right of the man the tent is to the left of?")
+
+    # Choose the towel closest (horizontally) to the target man
+    towel_patch = min(towel_patches, key=lambda t: abs(t.horizontal_center - target_man.horizontal_center))
+
+    return "left" if towel_patch.horizontal_center < target_man.horizontal_center else "right"

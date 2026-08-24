@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    pizza_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pizza_patches = image_patch.find('pizza')
+
+    def _if(image_patch, pizza_patches, result):
+        result = image_patch.simple_query('Are there round pizzas in the scene?')
+        return (image_patch, pizza_patches, result)
+
+    def _else(image_patch, pizza_patches, result):
+        result = 'no'
+
+        def _for(pizza_patch, image_patch, pizza_patches, result):
+
+            def _if(image_patch, pizza_patches, result):
+                result = 'yes'
+                return (image_patch, pizza_patches, result)
+            image_patch, pizza_patches, result = if_stmt(_if, None, pizza_patch.verify_property('pizza', 'round'), (image_patch, pizza_patches, result))
+            return (image_patch, pizza_patches, result)
+        image_patch, pizza_patches, result = for_stmt(_for, pizza_patches, (image_patch, pizza_patches, result))
+        return (image_patch, pizza_patches, result)
+    image_patch, pizza_patches, result = if_stmt(_if, _else, len(pizza_patches) == 0, (image_patch, pizza_patches, result))
+    return result

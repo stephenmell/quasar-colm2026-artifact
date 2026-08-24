@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    any_target_exists = None
+    image_patch = None
+    result = None
+    traffic_light_exists = None
+    traffic_light_patches = None
+    traffic_sign_exists = None
+    traffic_sign_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    any_target_exists = False
+    traffic_light_exists = image_patch.exists('traffic light')
+
+    def _if(any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches):
+        any_target_exists = True
+        traffic_light_patches = image_patch.find('traffic light')
+
+        def _for(tl_patch, any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches):
+
+            def _if(any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches):
+                result = 'yes'
+                return (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches)
+            any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches = if_stmt(_if, None, tl_patch.verify_property('traffic light', 'black'), (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches))
+            return (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches)
+        any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches = for_stmt(_for, traffic_light_patches, (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches))
+        return (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches)
+    any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches = if_stmt(_if, None, traffic_light_exists, (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches))
+    traffic_sign_exists = image_patch.exists('traffic sign')
+
+    def _if(any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches):
+        any_target_exists = True
+        traffic_sign_patches = image_patch.find('traffic sign')
+
+        def _for(ts_patch, any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches):
+
+            def _if(any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches):
+                result = 'yes'
+                return (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches)
+            any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches = if_stmt(_if, None, ts_patch.verify_property('traffic sign', 'black'), (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches))
+            return (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches)
+        any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches = for_stmt(_for, traffic_sign_patches, (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches))
+        return (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches)
+    any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches = if_stmt(_if, None, traffic_sign_exists, (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches))
+
+    def _if(any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches):
+        result = image_patch.simple_query('Are there black traffic lights or traffic signs?')
+        return (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches)
+    any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches = if_stmt(_if, None, not_expr(any_target_exists), (any_target_exists, image_patch, result, traffic_light_exists, traffic_light_patches, traffic_sign_exists, traffic_sign_patches))
+    return result

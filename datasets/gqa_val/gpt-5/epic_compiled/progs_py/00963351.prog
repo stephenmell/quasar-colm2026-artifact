@@ -1,0 +1,10 @@
+# Do you see drawers there?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    drawer_terms = ("drawer", "drawers", "dresser drawer")
+    found = False
+    for term in drawer_terms:
+        if image_patch.exists(term):
+            found = True
+    result = bool_to_yesno(found)
+    return result

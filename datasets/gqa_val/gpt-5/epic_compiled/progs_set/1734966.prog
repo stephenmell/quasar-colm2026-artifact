@@ -1,0 +1,18 @@
+def execute_command(image) -> str:
+    catcher_patch = None
+    catcher_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    catcher_patches = image_patch.find('catcher')
+
+    def _if(catcher_patch, catcher_patches, image_patch, result):
+        result = image_patch.simple_query('What is the catcher doing?')
+        return (catcher_patch, catcher_patches, image_patch, result)
+
+    def _else(catcher_patch, catcher_patches, image_patch, result):
+        catcher_patch = catcher_patches[0]
+        result = catcher_patch.simple_query('What is the catcher doing?')
+        return (catcher_patch, catcher_patches, image_patch, result)
+    catcher_patch, catcher_patches, image_patch, result = if_stmt(_if, _else, len(catcher_patches) == 0, (catcher_patch, catcher_patches, image_patch, result))
+    return result

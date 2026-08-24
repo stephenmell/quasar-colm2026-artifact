@@ -1,0 +1,13 @@
+# Is the color of the trees green?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find("tree")
+    if len(tree_patches) == 0:
+        result = image_patch.simple_query("Is the color of the trees green?")
+    else:
+        all_green = True
+        for tree_patch in tree_patches:
+            if not tree_patch.verify_property("tree", "green"):
+                all_green = False
+        result = bool_to_yesno(all_green)
+    return result

@@ -1,0 +1,35 @@
+# What is the device that is flat?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    candidate_devices = (
+        "tablet",
+        "laptop",
+        "phone",
+        "cell phone",
+        "smartphone",
+        "television",
+        "tv",
+        "monitor",
+        "screen",
+        "remote",
+        "keyboard",
+        "controller",
+        "mouse",
+        "camera",
+        "calculator",
+    )
+
+    for device_name in candidate_devices:
+        if result is None:
+            device_exists = image_patch.exists(device_name)
+            if device_exists:
+                device_patches = image_patch.find(device_name)
+                for device_patch in device_patches:
+                    if result is None:
+                        if device_patch.verify_property(device_name, "flat"):
+                            result = device_patch.simple_query("What is the device that is flat?")
+    if not result:
+        result = image_patch.simple_query("What is the device that is flat?")
+    return result

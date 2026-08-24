@@ -1,0 +1,33 @@
+def execute_command(image) -> str:
+    found_any = None
+    image_patch = None
+    object_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found_any = False
+
+    def _for(object_name, found_any, image_patch, object_patches, result):
+
+        def _if(found_any, image_patch, object_patches, result):
+            found_any = True
+            object_patches = image_patch.find(object_name)
+
+            def _for(obj_patch, found_any, image_patch, object_patches, result):
+
+                def _if(found_any, image_patch, object_patches, result):
+                    result = 'yes'
+                    return (found_any, image_patch, object_patches, result)
+                found_any, image_patch, object_patches, result = if_stmt(_if, None, obj_patch.verify_property(object_name, 'black'), (found_any, image_patch, object_patches, result))
+                return (found_any, image_patch, object_patches, result)
+            found_any, image_patch, object_patches, result = for_stmt(_for, object_patches, (found_any, image_patch, object_patches, result))
+            return (found_any, image_patch, object_patches, result)
+        found_any, image_patch, object_patches, result = if_stmt(_if, None, image_patch.exists(object_name), (found_any, image_patch, object_patches, result))
+        return (found_any, image_patch, object_patches, result)
+    found_any, image_patch, object_patches, result = for_stmt(_for, ('laptop', 'tv', 'television'), (found_any, image_patch, object_patches, result))
+
+    def _if(found_any, image_patch, object_patches, result):
+        result = image_patch.simple_query('Is there a black laptop or TV?')
+        return (found_any, image_patch, object_patches, result)
+    found_any, image_patch, object_patches, result = if_stmt(_if, None, not_expr(found_any), (found_any, image_patch, object_patches, result))
+    return result

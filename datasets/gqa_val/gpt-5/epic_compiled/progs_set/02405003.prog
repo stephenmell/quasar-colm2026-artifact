@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    has_chimney_plural = None
+    has_chimney_singular = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    has_chimney_singular = image_patch.exists('chimney')
+
+    def _if(has_chimney_plural, has_chimney_singular, image_patch, result):
+        result = 'yes'
+        return (has_chimney_plural, has_chimney_singular, image_patch, result)
+
+    def _else(has_chimney_plural, has_chimney_singular, image_patch, result):
+        has_chimney_plural = image_patch.exists('chimneys')
+
+        def _if(has_chimney_plural, has_chimney_singular, image_patch, result):
+            result = 'yes'
+            return (has_chimney_plural, has_chimney_singular, image_patch, result)
+
+        def _else(has_chimney_plural, has_chimney_singular, image_patch, result):
+            result = image_patch.simple_query('Are there chimneys in this picture?')
+            return (has_chimney_plural, has_chimney_singular, image_patch, result)
+        has_chimney_plural, has_chimney_singular, image_patch, result = if_stmt(_if, _else, has_chimney_plural, (has_chimney_plural, has_chimney_singular, image_patch, result))
+        return (has_chimney_plural, has_chimney_singular, image_patch, result)
+    has_chimney_plural, has_chimney_singular, image_patch, result = if_stmt(_if, _else, has_chimney_singular, (has_chimney_plural, has_chimney_singular, image_patch, result))
+    return result

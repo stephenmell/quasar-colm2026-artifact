@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Do you see a keyboard to the left of the man that is to the left of the glasses?")
+    else:
+        glasses_patches = image_patch.find("glasses")
+        if len(glasses_patches) > 0:
+            keyboard_patches = image_patch.find("keyboard")
+            if len(keyboard_patches) > 0:
+                for man_patch in man_patches:
+                    man_left_of_glasses = False
+                    for glasses_patch in glasses_patches:
+                        if man_patch.horizontal_center < glasses_patch.horizontal_center:
+                            man_left_of_glasses = True
+                    if man_left_of_glasses:
+                        for keyboard_patch in keyboard_patches:
+                            if keyboard_patch.horizontal_center < man_patch.horizontal_center:
+                                result = "yes"
+    return result

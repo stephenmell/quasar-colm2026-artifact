@@ -1,0 +1,8 @@
+def execute_command(image) -> str:
+    image_patch = None
+    plate_exists = None
+    result = None
+    image_patch = ImagePatch(image)
+    plate_exists = image_patch.exists('plate')
+    result = bool_to_yesno(plate_exists)
+    return result

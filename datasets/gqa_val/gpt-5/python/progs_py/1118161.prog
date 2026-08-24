@@ -1,0 +1,4 @@
+image_patch = ImagePatch(image)
+    is_strawberry = image_patch.exists("strawberry")
+    is_cake = image_patch.exists("cake")
+    return bool_to_yesno(is_strawberry and is_cake)

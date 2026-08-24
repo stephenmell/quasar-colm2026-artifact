@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    van_patches = image_patch.find("van")
+    if len(van_patches) == 0:
+        result = image_patch.simple_query("On which side of the image is the van?")
+    else:
+        total_center = 0.0
+        count = 0
+        for van_patch in van_patches:
+            total_center = total_center + van_patch.horizontal_center
+            count = count + 1
+        average_center = total_center / count
+        if average_center < image_patch.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

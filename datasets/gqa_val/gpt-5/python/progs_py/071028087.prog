@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find a red flag directly
+    red_flag_patches = image_patch.find("red flag")
+    # If not found, find flags and filter by red property
+    if len(red_flag_patches) == 0:
+        flag_patches = image_patch.find("flag")
+        red_flag_patches = [fp for fp in flag_patches if fp.verify_property("flag", "red")]
+    # If still no red flag detected, ask directly
+    if len(red_flag_patches) == 0:
+        return image_patch.simple_query("Do you see any clocks to the right of the red flag?")
+    # Find clocks
+    clock_patches = image_patch.find("clock")
+    if len(clock_patches) == 0:
+        return "no"
+    # Check if any clock is to the right of any red flag
+    for red_flag in red_flag_patches:
+        for clock in clock_patches:
+            if clock.horizontal_center > red_flag.horizontal_center:
+                return "yes"
+    return "no"

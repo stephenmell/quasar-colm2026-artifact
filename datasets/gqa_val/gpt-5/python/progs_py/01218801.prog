@@ -1,0 +1,9 @@
+# What is the color of the snow?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    snow_patches = image_patch.find("snow")
+    # Question assumes only one snow patch
+    if len(snow_patches) == 0:
+        # If no snow is found, query the image directly
+        return image_patch.simple_query("What is the color of the snow?")
+    return snow_patches[0].simple_query("What is the color of the snow?")

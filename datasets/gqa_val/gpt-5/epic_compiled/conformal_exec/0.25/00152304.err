@@ -1,0 +1,33 @@
+Stage: other execution error
+Error: '>' not supported between instances of 'NoneType' and 'float'
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "00152304.prog", line 82, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 191, in abstract_if_stmt
+    lvars_f = else_body(*lvars) if else_body is not None else lvars
+              ^^^^^^^^^^^^^^^^^
+  File "00152304.prog", line 44, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 172, in abstract_for_loop
+    lvars_new = for_body(x, *lvars)
+                ^^^^^^^^^^^^^^^^^^^
+  File "00152304.prog", line 41, in _for
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 188, in abstract_if_stmt
+    lvars = else_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "00152304.prog", line 39, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 90, in __gt__
+    def __gt__(self, other): return do_pairwise(operator.gt, self, other)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 45, in do_pairwise
+    return join_many(f(a, b) for a, b in itertools.product(self._possibilities, other._possibilities))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 143, in join_many
+    for x in xs:
+             ^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 45, in <genexpr>
+    return join_many(f(a, b) for a, b in itertools.product(self._possibilities, other._possibilities))
+                     ^^^^^^^
+TypeError: '>' not supported between instances of 'NoneType' and 'float'

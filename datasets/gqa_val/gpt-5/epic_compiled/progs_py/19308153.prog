@@ -1,0 +1,40 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    cheese_patches = image_patch.find("cheese")
+    plate_patches = image_patch.find("plate")
+    cup_patches = image_patch.find("cup")
+
+    plate_with_cheese = None
+    best_cheese_count = -1
+
+    for plate_patch in plate_patches:
+        cheese_count_on_plate = 0
+        for cheese_patch in cheese_patches:
+            in_x = (cheese_patch.horizontal_center >= plate_patch.left) and (cheese_patch.horizontal_center <= plate_patch.right)
+            in_y = (cheese_patch.vertical_center >= plate_patch.lower) and (cheese_patch.vertical_center <= plate_patch.upper)
+            if in_x and in_y:
+                cheese_count_on_plate = cheese_count_on_plate + 1
+        if cheese_count_on_plate > best_cheese_count:
+            best_cheese_count = cheese_count_on_plate
+            plate_with_cheese = plate_patch
+
+    selected_cup = None
+    if (plate_with_cheese is not None) and (best_cheese_count > 0) and (len(cup_patches) > 0):
+        best_distance = None
+        for cup_patch in cup_patches:
+            distance = abs(cup_patch.horizontal_center - plate_with_cheese.horizontal_center)
+            if (best_distance is None) or (distance < best_distance):
+                best_distance = distance
+                selected_cup = cup_patch
+
+    if (selected_cup is not None) and (plate_with_cheese is not None):
+        if selected_cup.horizontal_center > plate_with_cheese.horizontal_center:
+            result = "right"
+        else:
+            result = "left"
+    else:
+        result = image_patch.simple_query("Is the cup to the right or to the left of the plate that the cheese is on?")
+    return result

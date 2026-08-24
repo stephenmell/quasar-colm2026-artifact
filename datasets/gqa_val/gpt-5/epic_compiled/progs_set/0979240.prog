@@ -1,0 +1,63 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    dog_patches = None
+    found_chair_for_dog = None
+    image_patch = None
+    result = None
+    rightmost_chair_center = None
+    tea_patches = None
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find('dog')
+    chair_patches = image_patch.find('chair')
+    tea_patches = image_patch.find('tea')
+
+    def _if(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+        result = image_patch.simple_query('Is the tea to the right of the chairs that are to the right of the dog?')
+        return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+
+    def _else(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+        result = 'no'
+
+        def _for(dog_patch, chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+            found_chair_for_dog = False
+            rightmost_chair_center = 0.0
+
+            def _for(chair_patch, chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+
+                def _if(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+
+                    def _if(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+                        rightmost_chair_center = chair_patch.horizontal_center
+                        found_chair_for_dog = True
+                        return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+
+                    def _else(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+
+                        def _if(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+                            rightmost_chair_center = chair_patch.horizontal_center
+                            return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+                        chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = if_stmt(_if, None, chair_patch.horizontal_center > rightmost_chair_center, (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+                        return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+                    chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = if_stmt(_if, _else, not_expr(found_chair_for_dog), (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+                    return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+                chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = if_stmt(_if, None, chair_patch.horizontal_center > dog_patch.horizontal_center, (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+                return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+            chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = for_stmt(_for, chair_patches, (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+
+            def _if(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+
+                def _for(tea_patch, chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+
+                    def _if(chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches):
+                        result = 'yes'
+                        return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+                    chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = if_stmt(_if, None, tea_patch.horizontal_center > rightmost_chair_center, (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+                    return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+                chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = for_stmt(_for, tea_patches, (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+                return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+            chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = if_stmt(_if, None, found_chair_for_dog, (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+            return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+        chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = for_stmt(_for, dog_patches, (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+        return (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches)
+    chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches = if_stmt(_if, _else, or_expr(len(dog_patches) == 0, or_expr(len(chair_patches) == 0, len(tea_patches) == 0)), (chair_patches, dog_patches, found_chair_for_dog, image_patch, result, rightmost_chair_center, tea_patches))
+    return result

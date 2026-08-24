@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    refrigerator_patches = image_patch.find("refrigerator")
+    if len(refrigerator_patches) == 0:
+        return image_patch.simple_query("Is the refrigerator to the right or to the left of the drawer that looks white?")
+    fridge_patch = refrigerator_patches[0]
+
+    drawer_patches = image_patch.find("drawer")
+    if len(drawer_patches) == 0:
+        return image_patch.simple_query("Is the refrigerator to the right or to the left of the drawer that looks white?")
+
+    white_drawers = [d for d in drawer_patches if d.verify_property("drawer", "white")]
+    if len(white_drawers) == 0:
+        return image_patch.simple_query("Is the refrigerator to the right or to the left of the drawer that looks white?")
+
+    # Choose the white drawer closest to the refrigerator horizontally
+    target_drawer = min(white_drawers, key=lambda d: abs(d.horizontal_center - fridge_patch.horizontal_center))
+
+    return "right" if fridge_patch.horizontal_center > target_drawer.horizontal_center else "left"

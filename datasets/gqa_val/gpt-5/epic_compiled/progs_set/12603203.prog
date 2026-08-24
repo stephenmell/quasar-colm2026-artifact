@@ -1,0 +1,15 @@
+def execute_command(image) -> str:
+    has_bear = None
+    has_teddy_bear = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_bear = image_patch.exists('bear')
+    has_teddy_bear = image_patch.exists('teddy bear')
+    result = bool_to_yesno(or_expr(has_bear, has_teddy_bear))
+
+    def _if(has_bear, has_teddy_bear, image_patch, result):
+        result = image_patch.simple_query('Are there bears in the image?')
+        return (has_bear, has_teddy_bear, image_patch, result)
+    has_bear, has_teddy_bear, image_patch, result = if_stmt(_if, None, result == 'no', (has_bear, has_teddy_bear, image_patch, result))
+    return result

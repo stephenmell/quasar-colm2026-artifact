@@ -1,0 +1,61 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    area = None
+    best_any_patch = None
+    best_area_any = None
+    best_area_large = None
+    image_patch = None
+    is_large = None
+    result = None
+    selected_patch = None
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch):
+        result = image_patch.simple_query('What is the large animal doing?')
+        return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch)
+
+    def _else(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch):
+        selected_patch = None
+        best_area_large = -1
+        best_any_patch = None
+        best_area_any = -1
+
+        def _for(animal_patch, animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch):
+            area = animal_patch.width * animal_patch.height
+
+            def _if(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, selected_patch):
+                best_area_any = area
+                best_any_patch = animal_patch
+                return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, selected_patch)
+            animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, selected_patch = if_stmt(_if, None, area > best_area_any, (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, selected_patch))
+            is_large = animal_patch.verify_property('animal', 'large')
+
+            def _if(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch):
+
+                def _if(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch):
+                    best_area_large = area
+                    selected_patch = animal_patch
+                    return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch)
+                animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch = if_stmt(_if, None, area > best_area_large, (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch))
+                return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch)
+            animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch = if_stmt(_if, None, is_large, (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch))
+            return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch)
+        animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch = for_stmt(_for, animal_patches, (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch))
+
+        def _if(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch):
+            selected_patch = best_any_patch
+            return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch)
+        animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch = if_stmt(_if, None, selected_patch is None, (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, selected_patch))
+
+        def _if(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch):
+            result = image_patch.simple_query('What is the large animal doing?')
+            return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch)
+
+        def _else(animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch):
+            result = selected_patch.simple_query('What is the animal doing?')
+            return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch)
+        animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch = if_stmt(_if, _else, selected_patch is None, (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch))
+        return (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch)
+    animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch = if_stmt(_if, _else, len(animal_patches) == 0, (animal_patches, area, best_any_patch, best_area_any, best_area_large, image_patch, is_large, result, selected_patch))
+    return result

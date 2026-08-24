@@ -1,0 +1,76 @@
+({1342: 'context', 1346: 'llm_query', 1358: '.join', 1364: 'return_result'},
+ ('def',
+  1340,
+  ((),
+   ((('call', (1341,), -1, ()),
+     ('def',
+      1343,
+      ((1353, 1344),
+       ((('prim',
+          1345,
+          'You are given one document. Extract only information directly '
+          'supported by this document.\n'
+          'Task:\n'
+          '- Identify any 1990s TV series mentioned and note if they were '
+          'short-lived (one season or otherwise explicitly described as '
+          'short-lived/cancelled quickly).\n'
+          '- List actors connected to those series (as presented in this '
+          'document), and capture any of the following actor traits if present '
+          'in the document:\n'
+          '  A) Born in Tennessee (cite city/state if mentioned)\n'
+          '  B) Caribbean immigrant (born in a Caribbean nation and immigrated '
+          'to the U.S.; cite origin and immigration language)\n'
+          '  C) Father was a law enforcement officer for more than 3 decades '
+          '(cite father’s law enforcement role and duration)\n'
+          '- For each item, provide brief direct quotes from the document that '
+          'justify both the linkage (actor-to-series) and the trait.\n'
+          '\n'
+          'Format your output as entries. For each series you find in the '
+          'document:\n'
+          'Series: <series title> (<year(s)>)\n'
+          'Short-lived?: <yes/no/unclear + any details>\n'
+          'Actor evidence:\n'
+          "- <Actor name>: <trait(s) detected among A/B/C or 'none'> \n"
+          '  Quotes:\n'
+          '  - <quote linking actor to series>\n'
+          '  - <quote supporting trait(s)>\n'
+          '\n'
+          'Only include items that are directly supported by explicit text in '
+          'this document. If the document doesn’t contain relevant info, '
+          'output nothing.'),
+         ('prim', 1347, 'BEGIN_DOCUMENT\n'),
+         ('call', (1348,), 80, (1347, 1344)),
+         ('prim', 1349, '\nEND_DOCUMENT\n'),
+         ('call', (1350,), 80, (1348, 1349)),
+         ('call', (1351,), 80, (1350, 1345)),
+         ('call', (1352,), 1346, (1351,)),
+         ('call', (1354,), -1, (1352,)),
+         ('call', (1355,), 80, (1353, 1354))),
+        (1355,)))),
+     ('call', (1357,), 79, (1342,)),
+     ('call', (1356,), 1357, (1341, 1343)),
+     ('prim', 1359, '\n\n'),
+     ('call', (1360,), 1358, (1359, 1356)),
+     ('prim',
+      1361,
+      'You are given extracted evidence from multiple documents. Your job: '
+      'determine which 1990s TV series (short-lived) satisfies ALL THREE of '
+      'the following, considering evidence across documents:\n'
+      '1) It starred at least one actor who was born in Tennessee.\n'
+      '2) It starred at least one actor who was a Caribbean immigrant (born in '
+      'the Caribbean and immigrated to the U.S.).\n'
+      '3) It starred at least one actor whose father was a law enforcement '
+      'officer for more than three decades.\n'
+      '\n'
+      'Instructions:\n'
+      '- Use only the provided evidence to match actors to series and to '
+      'verify the traits with quotes.\n'
+      '- If multiple series are candidates, choose the best-supported one.\n'
+      '- Output ONLY the title of the TV series (no explanation, no extra '
+      'words).\n'
+      '\n'
+      'Evidence:\n'),
+     ('call', (1362,), 80, (1361, 1360)),
+     ('call', (1363,), 1346, (1362,)),
+     ('call', (1365,), 1364, (1363,))),
+    (1365,)))))

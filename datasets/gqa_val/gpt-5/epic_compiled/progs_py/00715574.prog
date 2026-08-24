@@ -1,0 +1,5 @@
+# What's located on top of the water?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("What is located on top of the water?")
+    return result

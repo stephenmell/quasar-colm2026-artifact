@@ -1,0 +1,19 @@
+# Are there both glasses and cakes in the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    glasses_names = ("glasses", "glass", "eyeglasses", "sunglasses", "wine glass", "drinking glass")
+    cakes_names = ("cake", "cakes")
+
+    has_glasses = False
+    has_cakes = False
+
+    for name in glasses_names:
+        if image_patch.exists(name):
+            has_glasses = True
+
+    for name in cakes_names:
+        if image_patch.exists(name):
+            has_cakes = True
+
+    result = bool_to_yesno(has_glasses and has_cakes)
+    return result

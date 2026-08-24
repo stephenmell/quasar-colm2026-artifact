@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2361213",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "woman"
+      ],
+      [],
+      13527780664
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2361213",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is the woman to the left of a racket?"
+      ],
+      "I don't know.",
+      1163837532
+    ]
+  ],
+  "best_text_match": []
+}

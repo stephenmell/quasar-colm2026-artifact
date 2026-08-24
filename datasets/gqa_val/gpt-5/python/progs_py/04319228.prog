@@ -1,0 +1,36 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find kites and persons
+    kite_patches = image_patch.find("kite")
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        # Fallback to man/woman if "person" is not detected
+        person_patches = image_patch.find("man") + image_patch.find("woman")
+
+    # Filter to the person standing on the side walk (or sidewalk)
+    sidewalk_persons = []
+    for p in person_patches:
+        ans = p.simple_query("Is the person standing on the side walk?")
+        if ans != "yes":
+            ans = p.simple_query("Is the person standing on the sidewalk?")
+        if ans == "yes":
+            sidewalk_persons.append(p)
+
+    # If we can't confidently find both, ask directly
+    if len(kite_patches) == 0 or len(sidewalk_persons) == 0:
+        return image_patch.simple_query("Is the kite to the right or to the left of the person that is standing on the side walk?")
+
+    # Choose the kite-person pair that are closest horizontally
+    best_kite = kite_patches[0]
+    best_person = sidewalk_persons[0]
+    best_dist = abs(best_kite.horizontal_center - best_person.horizontal_center)
+    for person in sidewalk_persons:
+        for kite in kite_patches:
+            dist = abs(kite.horizontal_center - person.horizontal_center)
+            if dist < best_dist:
+                best_dist = dist
+                best_kite = kite
+                best_person = person
+
+    return "right" if best_kite.horizontal_center > best_person.horizontal_center else "left"

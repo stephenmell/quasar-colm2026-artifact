@@ -1,0 +1,59 @@
+def execute_command(image) -> str:
+    best_scene = None
+    exists_here = None
+    image_patch = None
+    is_kitchen = None
+    kitchen_indicators = None
+    result = None
+    scene_options = None
+    yn = None
+    image_patch = ImagePatch(image)
+    kitchen_indicators = ('kitchen', 'stove', 'oven', 'refrigerator', 'fridge', 'microwave', 'kitchen sink', 'sink', 'kitchen cabinet', 'cabinet', 'countertop', 'kitchen counter', 'dishwasher')
+    is_kitchen = False
+
+    def _for(indicator, exists_here, image_patch, is_kitchen, kitchen_indicators):
+        exists_here = image_patch.exists(indicator)
+
+        def _if(exists_here, image_patch, is_kitchen, kitchen_indicators):
+            is_kitchen = True
+            return (exists_here, image_patch, is_kitchen, kitchen_indicators)
+        exists_here, image_patch, is_kitchen, kitchen_indicators = if_stmt(_if, None, exists_here, (exists_here, image_patch, is_kitchen, kitchen_indicators))
+        return (exists_here, image_patch, is_kitchen, kitchen_indicators)
+    exists_here, image_patch, is_kitchen, kitchen_indicators = for_stmt(_for, kitchen_indicators, (exists_here, image_patch, is_kitchen, kitchen_indicators))
+
+    def _if(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+        result = 'yes'
+        return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+
+    def _else(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+        scene_options = ('kitchen', 'bathroom', 'bedroom', 'living room', 'dining room', 'outdoors', 'office', 'store', 'restaurant', 'garage', 'hallway', 'classroom')
+        best_scene = image_patch.best_text_match(scene_options)
+
+        def _if(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+            result = 'yes'
+            return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+
+        def _else(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+            yn = image_patch.best_text_match(('yes', 'no'))
+
+            def _if(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+                result = 'yes'
+                return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+
+            def _else(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+
+                def _if(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+                    result = 'no'
+                    return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+
+                def _else(best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn):
+                    result = 'no'
+                    return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+                best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn = if_stmt(_if, _else, yn == 'no', (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn))
+                return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+            best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn = if_stmt(_if, _else, yn == 'yes', (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn))
+            return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+        best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn = if_stmt(_if, _else, best_scene == 'kitchen', (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn))
+        return (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn)
+    best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn = if_stmt(_if, _else, is_kitchen, (best_scene, exists_here, image_patch, is_kitchen, kitchen_indicators, result, scene_options, yn))
+    return result

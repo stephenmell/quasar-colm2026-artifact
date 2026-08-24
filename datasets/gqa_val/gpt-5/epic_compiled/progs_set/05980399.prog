@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    frisbee_patches = None
+    image_patch = None
+    person_patches = None
+    result = None
+    rightmost_person = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(frisbee_patches, image_patch, person_patches, result, rightmost_person):
+        result = image_patch.simple_query('Is there a frisbee to the right of the person on the right?')
+        return (frisbee_patches, image_patch, person_patches, result, rightmost_person)
+
+    def _else(frisbee_patches, image_patch, person_patches, result, rightmost_person):
+        rightmost_person = person_patches[0]
+
+        def _for(person_patch, image_patch, person_patches, rightmost_person):
+
+            def _if(image_patch, person_patches, rightmost_person):
+                rightmost_person = person_patch
+                return (image_patch, person_patches, rightmost_person)
+            image_patch, person_patches, rightmost_person = if_stmt(_if, None, person_patch.horizontal_center > rightmost_person.horizontal_center, (image_patch, person_patches, rightmost_person))
+            return (image_patch, person_patches, rightmost_person)
+        image_patch, person_patches, rightmost_person = for_stmt(_for, person_patches, (image_patch, person_patches, rightmost_person))
+        frisbee_patches = image_patch.find('frisbee')
+
+        def _if(frisbee_patches, image_patch, person_patches, result, rightmost_person):
+            result = 'no'
+            return (frisbee_patches, image_patch, person_patches, result, rightmost_person)
+
+        def _else(frisbee_patches, image_patch, person_patches, result, rightmost_person):
+            result = 'no'
+
+            def _for(frisbee_patch, frisbee_patches, image_patch, person_patches, result, rightmost_person):
+
+                def _if(frisbee_patches, image_patch, person_patches, result, rightmost_person):
+                    result = 'yes'
+                    return (frisbee_patches, image_patch, person_patches, result, rightmost_person)
+                frisbee_patches, image_patch, person_patches, result, rightmost_person = if_stmt(_if, None, frisbee_patch.horizontal_center > rightmost_person.horizontal_center, (frisbee_patches, image_patch, person_patches, result, rightmost_person))
+                return (frisbee_patches, image_patch, person_patches, result, rightmost_person)
+            frisbee_patches, image_patch, person_patches, result, rightmost_person = for_stmt(_for, frisbee_patches, (frisbee_patches, image_patch, person_patches, result, rightmost_person))
+            return (frisbee_patches, image_patch, person_patches, result, rightmost_person)
+        frisbee_patches, image_patch, person_patches, result, rightmost_person = if_stmt(_if, _else, len(frisbee_patches) == 0, (frisbee_patches, image_patch, person_patches, result, rightmost_person))
+        return (frisbee_patches, image_patch, person_patches, result, rightmost_person)
+    frisbee_patches, image_patch, person_patches, result, rightmost_person = if_stmt(_if, _else, len(person_patches) == 0, (frisbee_patches, image_patch, person_patches, result, rightmost_person))
+    return result

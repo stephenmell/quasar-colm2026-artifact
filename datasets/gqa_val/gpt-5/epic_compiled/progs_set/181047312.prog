@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    giraffe_exists = None
+    giraffe_patches = None
+    image_patch = None
+    lamb_exists = None
+    lamb_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    giraffe_exists = image_patch.exists('giraffe')
+    lamb_exists = image_patch.exists('lamb')
+
+    def _if(giraffe_exists, giraffe_patches, image_patch, lamb_exists, result):
+        giraffe_patches = image_patch.find('giraffe')
+
+        def _for(giraffe_patch, giraffe_exists, giraffe_patches, image_patch, lamb_exists, result):
+
+            def _if(giraffe_exists, giraffe_patches, image_patch, lamb_exists, result):
+                result = 'yes'
+                return (giraffe_exists, giraffe_patches, image_patch, lamb_exists, result)
+            giraffe_exists, giraffe_patches, image_patch, lamb_exists, result = if_stmt(_if, None, giraffe_patch.verify_property('giraffe', 'white'), (giraffe_exists, giraffe_patches, image_patch, lamb_exists, result))
+            return (giraffe_exists, giraffe_patches, image_patch, lamb_exists, result)
+        giraffe_exists, giraffe_patches, image_patch, lamb_exists, result = for_stmt(_for, giraffe_patches, (giraffe_exists, giraffe_patches, image_patch, lamb_exists, result))
+        return (giraffe_exists, giraffe_patches, image_patch, lamb_exists, result)
+    giraffe_exists, giraffe_patches, image_patch, lamb_exists, result = if_stmt(_if, None, giraffe_exists, (giraffe_exists, giraffe_patches, image_patch, lamb_exists, result))
+
+    def _if(giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result):
+        lamb_patches = image_patch.find('lamb')
+
+        def _for(lamb_patch, giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result):
+
+            def _if(giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result):
+                result = 'yes'
+                return (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result)
+            giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result = if_stmt(_if, None, lamb_patch.verify_property('lamb', 'white'), (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result))
+            return (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result)
+        giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result = for_stmt(_for, lamb_patches, (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result))
+        return (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result)
+    giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result = if_stmt(_if, None, lamb_exists, (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result))
+
+    def _if(giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result):
+        result = image_patch.simple_query('Is there either a white giraffe or lamb?')
+        return (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result)
+    giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result = if_stmt(_if, None, and_expr(not giraffe_exists, not lamb_exists), (giraffe_exists, giraffe_patches, image_patch, lamb_exists, lamb_patches, result))
+    return result

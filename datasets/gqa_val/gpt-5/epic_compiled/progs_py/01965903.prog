@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    object_names = ("letters", "letter")
+
+    any_found = False
+    for name in object_names:
+        if image_patch.exists(name):
+            any_found = True
+
+    if not any_found:
+        result = image_patch.simple_query("Are there white letters?")
+    else:
+        white_found = False
+        for name in object_names:
+            patches = image_patch.find(name)
+            for patch in patches:
+                if patch.verify_property(name, "white"):
+                    white_found = True
+        result = bool_to_yesno(white_found)
+    return result

@@ -1,0 +1,50 @@
+def execute_command(image) -> str:
+    best_dx = None
+    best_patch = None
+    cheese_patches = None
+    dx = None
+    image_patch = None
+    result = None
+    vegetable_patches = None
+    image_patch = ImagePatch(image)
+    cheese_patches = image_patch.find('cheese')
+    vegetable_patches = image_patch.find('vegetable')
+
+    def _if(best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches):
+        result = image_patch.simple_query('Which kind of vegetable is to the right of the cheese?')
+        return (best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches)
+
+    def _else(best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches):
+        best_patch = None
+        best_dx = None
+
+        def _for(veg_patch, best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches):
+
+            def _for(cheese_patch, best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches):
+                dx = veg_patch.horizontal_center - cheese_patch.horizontal_center
+
+                def _if(best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches):
+
+                    def _if(best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches):
+                        best_dx = dx
+                        best_patch = veg_patch
+                        return (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches)
+                    best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches = if_stmt(_if, None, or_expr(best_dx is None, dx < best_dx), (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches))
+                    return (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches)
+                best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches = if_stmt(_if, None, dx > 0, (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches))
+                return (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches)
+            best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches = for_stmt(_for, cheese_patches, (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches))
+            return (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches)
+        best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches = for_stmt(_for, vegetable_patches, (best_dx, best_patch, cheese_patches, dx, image_patch, vegetable_patches))
+
+        def _if(best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches):
+            result = best_patch.simple_query('Which kind of vegetable is this?')
+            return (best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches)
+
+        def _else(best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches):
+            result = image_patch.simple_query('Which kind of vegetable is to the right of the cheese?')
+            return (best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches)
+        best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches = if_stmt(_if, _else, best_patch, (best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches))
+        return (best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches)
+    best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches = if_stmt(_if, _else, or_expr(len(cheese_patches) == 0, len(vegetable_patches) == 0), (best_dx, best_patch, cheese_patches, dx, image_patch, result, vegetable_patches))
+    return result

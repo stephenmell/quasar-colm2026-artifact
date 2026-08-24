@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    airplane_patches = None
+    image_patch = None
+    is_white = None
+    result = None
+    image_patch = ImagePatch(image)
+    airplane_patches = image_patch.find('airplane')
+
+    def _if(airplane_patches, image_patch, is_white, result):
+        result = image_patch.simple_query('Is there an airplane in the picture that is not white?')
+        return (airplane_patches, image_patch, is_white, result)
+
+    def _else(airplane_patches, image_patch, is_white, result):
+        result = 'no'
+
+        def _for(airplane_patch, airplane_patches, image_patch, is_white, result):
+            is_white = airplane_patch.verify_property('airplane', 'white')
+
+            def _if(airplane_patches, image_patch, is_white, result):
+                result = 'yes'
+                return (airplane_patches, image_patch, is_white, result)
+            airplane_patches, image_patch, is_white, result = if_stmt(_if, None, not_expr(is_white), (airplane_patches, image_patch, is_white, result))
+            return (airplane_patches, image_patch, is_white, result)
+        airplane_patches, image_patch, is_white, result = for_stmt(_for, airplane_patches, (airplane_patches, image_patch, is_white, result))
+        return (airplane_patches, image_patch, is_white, result)
+    airplane_patches, image_patch, is_white, result = if_stmt(_if, _else, len(airplane_patches) == 0, (airplane_patches, image_patch, is_white, result))
+    return result

@@ -1,0 +1,40 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find relevant objects with some fallbacks
+    bag_patches = image_patch.find("bag")
+
+    tv_patches = image_patch.find("tv stand")
+    if len(tv_patches) == 0:
+        tv_alt = image_patch.find("TV stand")
+        if len(tv_alt) > 0:
+            tv_patches = tv_alt
+
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        men_alt = image_patch.find("men")
+        if len(men_alt) > 0:
+            man_patches = men_alt
+        else:
+            person_alt = image_patch.find("person")
+            if len(person_alt) > 0:
+                man_patches = person_alt
+
+    # If any key object is missing, ask directly
+    if len(bag_patches) == 0 or len(tv_patches) == 0 or len(man_patches) == 0:
+        result = image_patch.simple_query("Are there men to the right of the bag that is to the left of the TV stand?")
+    else:
+        result = "no"
+        # For each bag, check if it's to the left of any TV stand, and if any man is to the right of that bag
+        for bag_patch in bag_patches:
+            bag_left_of_tv = False
+            # Check relation: bag to the left of TV stand
+            for tv_patch in tv_patches:
+                if bag_patch.horizontal_center < tv_patch.horizontal_center:
+                    bag_left_of_tv = True
+            # If the bag is left of a TV stand, check for men to the right of the bag
+            if bag_left_of_tv:
+                for man_patch in man_patches:
+                    if man_patch.horizontal_center > bag_patch.horizontal_center:
+                        result = "yes"
+    return result

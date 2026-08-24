@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tomato_patches = image_patch.find("tomato")
+    # If no tomato is found, ask directly (relational question)
+    if len(tomato_patches) == 0:
+        return image_patch.simple_query("Is the tomato on a bun?")
+    bun_patches = image_patch.find("bun")
+    if len(bun_patches) == 0:
+        return "no"
+    # Check if any tomato is on any bun: horizontally overlapping and above vertically
+    for tomato_patch in tomato_patches:
+        for bun_patch in bun_patches:
+            horizontal_overlap = (tomato_patch.left < bun_patch.right) and (tomato_patch.right > bun_patch.left)
+            on_top = tomato_patch.vertical_center < bun_patch.vertical_center
+            if horizontal_overlap and on_top:
+                return "yes"
+    return "no"

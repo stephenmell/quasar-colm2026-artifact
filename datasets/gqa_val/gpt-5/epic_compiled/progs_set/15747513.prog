@@ -1,0 +1,24 @@
+def execute_command(image) -> str:
+    image_patch = None
+    onion_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    onion_patches = image_patch.find('onion')
+
+    def _if(image_patch, onion_patches, result):
+        result = image_patch.simple_query('Which side is the onion on, the left or the right?')
+        return (image_patch, onion_patches, result)
+
+    def _else(image_patch, onion_patches, result):
+
+        def _if(image_patch, onion_patches, result):
+            result = 'left'
+            return (image_patch, onion_patches, result)
+
+        def _else(image_patch, onion_patches, result):
+            result = 'right'
+            return (image_patch, onion_patches, result)
+        image_patch, onion_patches, result = if_stmt(_if, _else, onion_patches[0].horizontal_center < image_patch.horizontal_center, (image_patch, onion_patches, result))
+        return (image_patch, onion_patches, result)
+    image_patch, onion_patches, result = if_stmt(_if, _else, len(onion_patches) == 0, (image_patch, onion_patches, result))
+    return result

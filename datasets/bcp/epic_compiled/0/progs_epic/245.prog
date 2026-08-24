@@ -1,0 +1,102 @@
+({2351: 'context', 2358: 'llm_query', 2365: '.join', 2373: 'return_result'},
+ ('def',
+  2349,
+  ((),
+   ((('call', (2350,), -1, ()),
+     ('def',
+      2352,
+      ((2360, 2353),
+       ((('prim',
+          2354,
+          'You will be given a single document. Extract and list only the '
+          'facts that match ANY of the following clues, if present. If a clue '
+          'is not present, skip it.\n'
+          '\n'
+          'For each matched clue, provide:\n'
+          '- Clue label (e.g., "Lead author on element extraction", '
+          '"Microwave-assisted digestion preferred", "Mineralizer fluid nearly '
+          'to dryness then transferred to ~10 mL volumetric and diluted with '
+          'quadruple-distilled water", "Phenolic acids are primary phenolics", '
+          '"Positive impact on human health", "Heavy metal evaluation '
+          'important for health protection")\n'
+          '- Exact quote(s) from the document supporting it\n'
+          '- The biological entity discussed (e.g., mushrooms, plants, '
+          'cereals, bee pollen, etc.)\n'
+          '- The element mentioned (if any) and its atomic number (confirm it '
+          'is between 20 and 40)\n'
+          '- The paper title or citation snippet if available\n'
+          '- The author name(s) as listed, and clearly indicate if the author '
+          'appears as the LEAD (first) author\n'
+          '\n'
+          'Here is the document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2355,), 80, (2354, 2353)),
+         ('prim', 2356, '\nEND_DOCUMENT\n'),
+         ('call', (2357,), 80, (2355, 2356)),
+         ('call', (2359,), 2358, (2357,)),
+         ('call', (2361,), -1, (2359,)),
+         ('call', (2362,), 80, (2360, 2361))),
+        (2362,)))),
+     ('call', (2364,), 79, (2351,)),
+     ('call', (2363,), 2364, (2350, 2352)),
+     ('prim', 2366, '\n\n'),
+     ('call', (2367,), 2365, (2366, 2363)),
+     ('prim',
+      2368,
+      'You are given extracted notes from multiple documents. Your task: '
+      'Identify the single author whose body of work best matches ALL of the '
+      'following clues simultaneously, as evidenced by the extracted notes. If '
+      'multiple authors are possible, choose the one supported by the most and '
+      'strongest matches, prioritizing explicit quotes.\n'
+      '\n'
+      'Clues to satisfy (for the SAME biological entity across the clues, if '
+      'possible):\n'
+      '1) The author wrote a paper on a certain biological entity and how to '
+      'extract an element with an atomic number between 20 and 40 from that '
+      'entity. The author was the lead author on that paper.\n'
+      '2) According to a paper by this author, these specific biological '
+      'entities have been scientifically proven to positively impact human '
+      'health.\n'
+      '3) According to a paper by this author, microwave-assisted digestion is '
+      'a widely used technique and often a preferred approach for element '
+      'extraction.\n'
+      '4) In a paper by this author, the methods state that the mineralizer '
+      'fluid was evaporated nearly to a dry residue, then quantitatively '
+      'transferred into volumetric flasks somewhere between 8 mL and 12 mL in '
+      'size (i.e., ~10 mL), and diluted to volume with quadruple-distilled '
+      'water.\n'
+      '5) According to a paper by this author, phenolic acids are the primary '
+      'type of phenolic compounds found in these specific biological '
+      'entities.\n'
+      '6) According to a paper by this author, evaluating these specific '
+      'organic entities for their heavy metal content is important for '
+      'ensuring human health protection.\n'
+      '\n'
+      'Here are the extracted notes:\n'
+      'BEGIN_EXTRACTED_NOTES\n'),
+     ('call', (2369,), 80, (2368, 2367)),
+     ('prim',
+      2370,
+      '\n'
+      'END_EXTRACTED_NOTES\n'
+      '\n'
+      'Instructions:\n'
+      '- Determine the single best-matching author name (full name).\n'
+      '- Ensure the biological entity is consistent across the clues (e.g., '
+      'mushrooms, if indicated).\n'
+      '- Ensure that at least one element explicitly mentioned has an atomic '
+      'number between 20 and 40 (e.g., Ca=20, As=33, Se=34, Zn=30, Cu=29, '
+      'etc.), AND that the author was lead author on the relevant '
+      'extraction/determination paper.\n'
+      '- Prefer direct quotes that explicitly mention (a) microwave-assisted '
+      'digestion as widely used/preferred, (b) the mineralizer-to-dryness then '
+      '10 mL volumetric with quadruple-distilled water procedure, (c) phenolic '
+      'acids as primary phenolics, (d) health benefits, and (e) heavy metal '
+      'evaluation importance.\n'
+      '\n'
+      'Output format:\n'
+      "- ONLY the author's full name. No justification, no extra text.\n"),
+     ('call', (2371,), 80, (2369, 2370)),
+     ('call', (2372,), 2358, (2371,)),
+     ('call', (2374,), 2373, (2372,))),
+    (2374,)))))

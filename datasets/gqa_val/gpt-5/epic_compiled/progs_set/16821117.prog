@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    airplane_synonyms = None
+    any_airplane = None
+    any_truck = None
+    image_patch = None
+    result = None
+    truck_synonyms = None
+    image_patch = ImagePatch(image)
+    any_truck = image_patch.exists('truck')
+    truck_synonyms = ('pickup truck', 'fire truck', 'semi truck', 'dump truck', 'garbage truck')
+
+    def _for(t_name, any_truck, image_patch, truck_synonyms):
+
+        def _if(any_truck, image_patch, truck_synonyms):
+            any_truck = True
+            return (any_truck, image_patch, truck_synonyms)
+        any_truck, image_patch, truck_synonyms = if_stmt(_if, None, image_patch.exists(t_name), (any_truck, image_patch, truck_synonyms))
+        return (any_truck, image_patch, truck_synonyms)
+    any_truck, image_patch, truck_synonyms = for_stmt(_for, truck_synonyms, (any_truck, image_patch, truck_synonyms))
+    any_airplane = False
+    airplane_synonyms = ('airplane', 'plane', 'jet', 'aircraft', 'airliner')
+
+    def _for(a_name, airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms):
+
+        def _if(airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms):
+            any_airplane = True
+            return (airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms)
+        airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms = if_stmt(_if, None, image_patch.exists(a_name), (airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms))
+        return (airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms)
+    airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms = for_stmt(_for, airplane_synonyms, (airplane_synonyms, any_airplane, any_truck, image_patch, truck_synonyms))
+    result = bool_to_yesno(and_expr(any_truck, any_airplane))
+    return result

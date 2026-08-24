@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("Is the person that is to the left of the woman wearing a helmet?")
+    else:
+        woman_patch = woman_patches[0]
+        person_patches = image_patch.find("person")
+        if len(person_patches) == 0:
+            result = "no"
+        else:
+            closest_left_person = None
+            smallest_dx = None
+            for person_patch in person_patches:
+                if person_patch.horizontal_center < woman_patch.horizontal_center:
+                    dx = woman_patch.horizontal_center - person_patch.horizontal_center
+                    if closest_left_person is None or dx < smallest_dx:
+                        closest_left_person = person_patch
+                        smallest_dx = dx
+            if closest_left_person is None:
+                result = "no"
+            else:
+                answer = closest_left_person.simple_query("Is the person wearing a helmet?")
+                if answer == "yes":
+                    result = "yes"
+                else:
+                    result = "no"
+    return result

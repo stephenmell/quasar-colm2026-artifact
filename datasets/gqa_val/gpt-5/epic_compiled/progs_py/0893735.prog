@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    bus_patches = image_patch.find("bus")
+    if len(bus_patches) == 0:
+        result = image_patch.simple_query("Does this bus look long?")
+    else:
+        for bus_patch in bus_patches:
+            if bus_patch.verify_property("bus", "long"):
+                result = "yes"
+    return result

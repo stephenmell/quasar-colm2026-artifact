@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    car_exists = image_patch.exists("car")
+    scooter_exists = image_patch.exists("scooter")
+
+    if not car_exists and not scooter_exists:
+        result = image_patch.simple_query("Are there any silver cars or scooters?")
+    else:
+        if car_exists:
+            car_patches = image_patch.find("car")
+            for car_patch in car_patches:
+                if car_patch.verify_property("car", "silver"):
+                    result = "yes"
+        if scooter_exists:
+            scooter_patches = image_patch.find("scooter")
+            for scooter_patch in scooter_patches:
+                if scooter_patch.verify_property("scooter", "silver"):
+                    result = "yes"
+    return result

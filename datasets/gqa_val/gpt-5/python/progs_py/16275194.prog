@@ -1,0 +1,25 @@
+# Is there a speaker to the left of the man that is sitting in the chair?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # If no man is found, ask the question directly
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Is there a speaker to the left of the man that is sitting in the chair?")
+    # Filter to men sitting in a chair
+    seated_man_patches = []
+    for man_patch in man_patches:
+        if man_patch.simple_query("Is the man sitting in a chair?") == "yes":
+            seated_man_patches.append(man_patch)
+    # If no seated man is found, ask directly
+    if len(seated_man_patches) == 0:
+        return image_patch.simple_query("Is there a speaker to the left of the man that is sitting in the chair?")
+    # Find speakers
+    speaker_patches = image_patch.find("speaker")
+    if len(speaker_patches) == 0:
+        return "no"
+    # Check if any speaker is to the left of any seated man
+    for man_patch in seated_man_patches:
+        for speaker_patch in speaker_patches:
+            if speaker_patch.horizontal_center < man_patch.horizontal_center:
+                return "yes"
+    return "no"

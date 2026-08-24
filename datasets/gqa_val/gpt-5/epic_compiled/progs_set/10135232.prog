@@ -1,0 +1,26 @@
+def execute_command(image) -> str:
+    checkered_floor_patches = None
+    floor_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    checkered_floor_patches = image_patch.find('checkered floor')
+
+    def _if(checkered_floor_patches, floor_patches, image_patch, result):
+        floor_patches = image_patch.find('floor')
+
+        def _if(checkered_floor_patches, floor_patches, image_patch, result):
+            result = image_patch.simple_query('Is the checkered floor brown or white?')
+            return (checkered_floor_patches, floor_patches, image_patch, result)
+
+        def _else(checkered_floor_patches, floor_patches, image_patch, result):
+            result = floor_patches[0].best_text_match(('brown', 'white'))
+            return (checkered_floor_patches, floor_patches, image_patch, result)
+        checkered_floor_patches, floor_patches, image_patch, result = if_stmt(_if, _else, len(floor_patches) == 0, (checkered_floor_patches, floor_patches, image_patch, result))
+        return (checkered_floor_patches, floor_patches, image_patch, result)
+
+    def _else(checkered_floor_patches, floor_patches, image_patch, result):
+        result = checkered_floor_patches[0].best_text_match(('brown', 'white'))
+        return (checkered_floor_patches, floor_patches, image_patch, result)
+    checkered_floor_patches, floor_patches, image_patch, result = if_stmt(_if, _else, len(checkered_floor_patches) == 0, (checkered_floor_patches, floor_patches, image_patch, result))
+    return result

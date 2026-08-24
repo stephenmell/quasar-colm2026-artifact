@@ -1,0 +1,7 @@
+# Are there either fences or flags?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_fence = image_patch.exists("fence")
+    is_flag = image_patch.exists("flag")
+    result = bool_to_yesno(is_fence or is_flag)
+    return result

@@ -1,0 +1,17 @@
+# Is the container on a shelf?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    container_patches = image_patch.find("container")
+    shelf_patches = image_patch.find("shelf")
+
+    if len(container_patches) == 0 or len(shelf_patches) == 0:
+        result = image_patch.simple_query("Is the container on a shelf?")
+    else:
+        result = "no"
+        for container_patch in container_patches:
+            for shelf_patch in shelf_patches:
+                horizontal_overlap = (container_patch.right > shelf_patch.left) and (container_patch.left < shelf_patch.right)
+                is_above = container_patch.vertical_center < shelf_patch.vertical_center
+                if horizontal_overlap and is_above:
+                    result = "yes"
+    return result

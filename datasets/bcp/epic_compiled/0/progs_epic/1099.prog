@@ -1,0 +1,115 @@
+({2377: 'context', 2380: 'llm_query', 2398: '.join', 2413: 'return_result'},
+ ('def',
+  2375,
+  ((),
+   ((('call', (2376,), -1, ()),
+     ('def',
+      2378,
+      ((2393, 2379),
+       ((('prim', 2381, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (2382,), 118, (2379,)),
+         ('prim',
+          2383,
+          '\n'
+          'END_DOCUMENT\n'
+          '\n'
+          'You are helping to solve a specific identification puzzle with '
+          'these constraints:\n'
+          '- A 2017 article identifies a "song of the month" and calls it "the '
+          'most beautiful piece of music in a long time" (approximate wording '
+          'acceptable).\n'
+          '- In the same article, the "album of the month" is an album '
+          'released in January of 2015, 2016, 2017, or 2018, by a band formed '
+          'in 2003, 2004, 2005, or 2006.\n'
+          '- The "song of the month" has a music video that was released in '
+          'December of one of 2013, 2014, 2015, or 2016.\n'
+          '- The song’s composer was born in June of one of 1968, 1969, 1970, '
+          'or 1971.\n'
+          '\n'
+          'Tasks:\n'
+          '1) Determine whether this document appears to be that 2017 article. '
+          'If yes, extract:\n'
+          '   - Article date and author\n'
+          '   - The "song of the month": title, artist, composer name, '
+          'composer birth month and year, and whether the music video was '
+          'released in December 2013–2016 (include date and source URL if '
+          'present)\n'
+          '   - The "album of the month": title, band name, band formation '
+          'year, album release month and year (include date and source URL if '
+          'present)\n'
+          '   - Include exact quotes from the article supporting the above, '
+          'especially any "song of the month"/"album of the month" headings '
+          'and the "most beautiful piece of music in a long time" wording\n'
+          '2) If not, does the document mention any candidate songs, '
+          'composers, bands, or a "song of the month"/"album of the month" '
+          'section that could be relevant to these constraints? Extract any '
+          'possibly relevant details with quotes and URLs.\n'
+          '\n'
+          'Answer in this strict template for this single document:\n'
+          'Match: Yes/No\n'
+          'Reasons:\n'
+          'Extracted:\n'
+          '- Article: [date], [author], [URL if present]\n'
+          '- Song of the month: [title] — [artist]; composer [name], born '
+          '[month year]; video released [month year]; [video URL if present]\n'
+          '- Album of the month: [title] — [band]; band formed [year]; album '
+          'released [month year]; [album URL if present]\n'
+          'Quotes:\n'
+          '[...key quotes...]\n'),
+         ('def',
+          2389,
+          ((2384, 2385),
+           ((('call', (2386,), 2385, (2384, 2381)),
+             ('call', (2387,), 2385, (2386, 2382)),
+             ('call', (2388,), 2385, (2387, 2383))),
+            (2388,)))),
+         ('prim', 2390, ''),
+         ('call', (2391,), 2389, (2390, 80)),
+         ('call', (2392,), 2380, (2391,)),
+         ('call', (2394,), -1, (2392,)),
+         ('call', (2395,), 80, (2393, 2394))),
+        (2395,)))),
+     ('call', (2397,), 79, (2377,)),
+     ('call', (2396,), 2397, (2376, 2378)),
+     ('prim', 2399, '\n\n'),
+     ('call', (2400,), 2398, (2399, 2396)),
+     ('prim',
+      2401,
+      'You will be given extractions from multiple documents. Using only these '
+      'extractions, identify the single song that satisfies all constraints '
+      'below. If more than one candidate appears, choose the one where ALL '
+      'constraints are explicitly satisfied by the evidence.\n'
+      '\n'
+      'Constraints to satisfy:\n'
+      '1) The music video of the song was released in December in one of these '
+      'years: 2013, 2014, 2015, or 2016.\n'
+      '2) A 2017 article calls this song the author\'s "song of the month" and '
+      'describes it as "the most beautiful piece of music in a long time" '
+      '(approximate phrasing permitted).\n'
+      '3) In the same article, the "album of the month" is an album released '
+      'in January of 2015, 2016, 2017, or 2018 by a band formed in 2003, 2004, '
+      '2005, or 2006.\n'
+      "4) The song's composer was born in June of 1968, 1969, 1970, or 1971.\n"
+      '\n'
+      'Here are the extractions:\n'
+      'BEGIN_EXTRACTED_NOTES\n'),
+     ('call', (2402,), 118, (2400,)),
+     ('prim',
+      2403,
+      '\n'
+      'END_EXTRACTED_NOTES\n'
+      '\n'
+      'Output ONLY the exact title of the song, nothing else (no artist name, '
+      'no quotes, no punctuation beyond what is part of the title).'),
+     ('def',
+      2409,
+      ((2404, 2405),
+       ((('call', (2406,), 2405, (2404, 2401)),
+         ('call', (2407,), 2405, (2406, 2402)),
+         ('call', (2408,), 2405, (2407, 2403))),
+        (2408,)))),
+     ('prim', 2410, ''),
+     ('call', (2411,), 2409, (2410, 80)),
+     ('call', (2412,), 2380, (2411,)),
+     ('call', (2414,), 2413, (2412,))),
+    (2414,)))))

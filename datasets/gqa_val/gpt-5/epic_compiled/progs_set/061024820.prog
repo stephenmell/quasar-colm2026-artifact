@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_gray = None
+    is_right = None
+    result = None
+    van_patches = None
+    image_patch = ImagePatch(image)
+    van_patches = image_patch.find('van')
+
+    def _if(image_patch, is_gray, is_right, result, van_patches):
+        result = image_patch.simple_query('Is the gray van on the right of the image?')
+        return (image_patch, is_gray, is_right, result, van_patches)
+
+    def _else(image_patch, is_gray, is_right, result, van_patches):
+        result = 'no'
+
+        def _for(van_patch, image_patch, is_gray, is_right, result, van_patches):
+            is_gray = van_patch.verify_property('van', 'gray')
+            is_right = van_patch.horizontal_center > image_patch.horizontal_center
+
+            def _if(image_patch, is_gray, is_right, result, van_patches):
+                result = 'yes'
+                return (image_patch, is_gray, is_right, result, van_patches)
+            image_patch, is_gray, is_right, result, van_patches = if_stmt(_if, None, and_expr(is_gray, is_right), (image_patch, is_gray, is_right, result, van_patches))
+            return (image_patch, is_gray, is_right, result, van_patches)
+        image_patch, is_gray, is_right, result, van_patches = for_stmt(_for, van_patches, (image_patch, is_gray, is_right, result, van_patches))
+        return (image_patch, is_gray, is_right, result, van_patches)
+    image_patch, is_gray, is_right, result, van_patches = if_stmt(_if, _else, len(van_patches) == 0, (image_patch, is_gray, is_right, result, van_patches))
+    return result

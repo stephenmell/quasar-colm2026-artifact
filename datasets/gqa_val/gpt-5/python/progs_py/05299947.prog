@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find("chair")
+    # Question assumes at least one chair
+    if len(chair_patches) == 0:
+        # If no chairs are found, query the image directly
+        return image_patch.simple_query("Are the chairs to the right of an umbrella?")
+    umbrella_patches = image_patch.find("umbrella")
+    if len(umbrella_patches) == 0:
+        return "no"
+    for chair_patch in chair_patches:
+        for umbrella_patch in umbrella_patches:
+            if chair_patch.horizontal_center > umbrella_patch.horizontal_center:
+                return "yes"
+    return "no"

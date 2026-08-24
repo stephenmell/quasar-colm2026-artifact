@@ -1,0 +1,5 @@
+{
+  "result": "{'requester_name': 'Emma Johnson', 'company': 'Blue Sparrow Tech', 'city': 'Paris', 'target_hotel_input': 'Le Marais Boutique', 'hotel_found': True, 'matched_hotel_name': 'Le Marais Boutique', 'match_reason': 'Exact match found, ignoring case and punctuation.', 'hotel_rating': 4.2, 'reviews': ['Charming boutique hotel in the heart of Le Marais', 'Beautifully decorated rooms with modern amenities', 'Friendly and attentive staff, always ready to help', 'Awesome hotel'], 'attempted_reservation': True, 'check_in': '2025-01-11', 'check_out': '2025-01-15', 'reservation_confirmation': 'Reservation for Le Marais Boutique from 2025-01-11 to 2025-01-15 has been made successfully.'}",
+  "time_ns": 8058078,
+  "utility": true
+}

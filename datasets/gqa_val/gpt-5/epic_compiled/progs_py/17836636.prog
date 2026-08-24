@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find("curtain")
+    table_patches = image_patch.find("table")
+
+    if len(curtain_patches) == 0 or len(table_patches) == 0:
+        result = image_patch.simple_query("Are the curtains to the left of the table made of wood?")
+    else:
+        result = "no"
+        for table_patch in table_patches:
+            for curtain_patch in curtain_patches:
+                is_left = curtain_patch.horizontal_center < table_patch.horizontal_center
+                if is_left:
+                    is_wood = curtain_patch.verify_property("curtain", "wood")
+                    if not is_wood:
+                        is_wood = curtain_patch.verify_property("curtain", "wooden")
+                    if is_wood:
+                        result = "yes"
+    return result

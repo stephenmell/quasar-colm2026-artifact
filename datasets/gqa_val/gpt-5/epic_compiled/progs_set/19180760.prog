@@ -1,0 +1,85 @@
+def execute_command(image) -> str:
+    all_drink_patches = None
+    best_distance = None
+    best_patch = None
+    distance = None
+    drink_names = None
+    found = None
+    image_patch = None
+    left_area_patch = None
+    result = None
+    right_bound = None
+    woman_patch = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    woman_patches = image_patch.find('woman')
+
+    def _if(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches):
+        result = image_patch.simple_query('What drink is to the left of the woman?')
+        return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches)
+
+    def _else(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches):
+        woman_patch = woman_patches[0]
+        drink_names = ('drink', 'bottle', 'glass', 'cup', 'wine glass', 'beer', 'wine', 'coffee', 'tea', 'soda', 'can', 'water', 'juice', 'milk')
+        all_drink_patches = ()
+
+        def _for(name, all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches):
+            found = image_patch.find(name)
+
+            def _if(all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches):
+                all_drink_patches = all_drink_patches + found
+                return (all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches)
+            all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches = if_stmt(_if, None, len(found) > 0, (all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches))
+            return (all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches)
+        all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches = for_stmt(_for, drink_names, (all_drink_patches, drink_names, found, image_patch, result, woman_patch, woman_patches))
+        best_patch = None
+        best_distance = None
+
+        def _for(drink_patch, all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches):
+
+            def _if(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches):
+                distance = woman_patch.horizontal_center - drink_patch.horizontal_center
+
+                def _if(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches):
+                    best_patch = drink_patch
+                    best_distance = distance
+                    return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches)
+
+                def _else(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches):
+
+                    def _if(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches):
+                        best_patch = drink_patch
+                        best_distance = distance
+                        return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches)
+                    all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches = if_stmt(_if, None, distance < best_distance, (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches))
+                    return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches)
+                all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches = if_stmt(_if, _else, best_patch is None, (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches))
+                return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches)
+            all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches = if_stmt(_if, None, drink_patch.horizontal_center < woman_patch.horizontal_center, (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches))
+            return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches)
+        all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches = for_stmt(_for, all_drink_patches, (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, woman_patch, woman_patches))
+
+        def _if(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches):
+            result = best_patch.simple_query('What drink is this?')
+            return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches)
+
+        def _else(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches):
+            right_bound = int(woman_patch.horizontal_center)
+
+            def _if(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, right_bound, woman_patch, woman_patches):
+                right_bound = 1
+                return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, right_bound, woman_patch, woman_patches)
+            all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, right_bound, woman_patch, woman_patches = if_stmt(_if, None, right_bound < 1, (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, result, right_bound, woman_patch, woman_patches))
+            left_area_patch = image_patch.crop(0, 0, right_bound, image_patch.upper)
+            result = left_area_patch.simple_query('What drink is in this area?')
+            return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches)
+        all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches = if_stmt(_if, _else, best_patch is not None, (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches))
+        return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches)
+    all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches))
+
+    def _if(all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches):
+        result = image_patch.simple_query('What drink is to the left of the woman?')
+        return (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches)
+    all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches = if_stmt(_if, None, not_expr(result), (all_drink_patches, best_distance, best_patch, distance, drink_names, found, image_patch, left_area_patch, result, right_bound, woman_patch, woman_patches))
+    return result

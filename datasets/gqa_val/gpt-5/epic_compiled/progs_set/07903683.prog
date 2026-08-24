@@ -1,0 +1,26 @@
+def execute_command(image) -> str:
+    dog_patch = None
+    dog_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find('dog')
+
+    def _if(dog_patch, dog_patches, image_patch, result):
+        result = image_patch.simple_query('Is the dog on the left side or on the right?')
+        return (dog_patch, dog_patches, image_patch, result)
+
+    def _else(dog_patch, dog_patches, image_patch, result):
+        dog_patch = dog_patches[0]
+
+        def _if(dog_patch, dog_patches, image_patch, result):
+            result = 'left'
+            return (dog_patch, dog_patches, image_patch, result)
+
+        def _else(dog_patch, dog_patches, image_patch, result):
+            result = 'right'
+            return (dog_patch, dog_patches, image_patch, result)
+        dog_patch, dog_patches, image_patch, result = if_stmt(_if, _else, dog_patch.horizontal_center < image_patch.horizontal_center, (dog_patch, dog_patches, image_patch, result))
+        return (dog_patch, dog_patches, image_patch, result)
+    dog_patch, dog_patches, image_patch, result = if_stmt(_if, _else, len(dog_patches) == 0, (dog_patch, dog_patches, image_patch, result))
+    return result

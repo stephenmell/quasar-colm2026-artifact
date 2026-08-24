@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find("pillow")
+    if len(pillow_patches) == 0:
+        # If no pillow is found, query the image directly
+        return image_patch.simple_query("Is the white pillow in the top part of the photo?")
+    for pillow_patch in pillow_patches:
+        # Check that the pillow is white
+        if pillow_patch.verify_property("pillow", "white"):
+            # Following the convention used above: top if vertical_center >= image center
+            if pillow_patch.vertical_center >= image_patch.vertical_center:
+                return "yes"
+    return "no"

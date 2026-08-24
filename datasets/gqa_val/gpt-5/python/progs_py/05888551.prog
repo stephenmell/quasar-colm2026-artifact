@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    bicycle_patches = image_patch.find("bicycle")
+
+    # If we can't find the key referenced objects, ask directly
+    if len(person_patches) == 0 or len(bicycle_patches) == 0:
+        return image_patch.simple_query("Do you see cars to the left of the person that is to the left of the bicycle?")
+
+    # Find any person that is to the left of at least one bicycle
+    persons_left_of_bicycle = []
+    for person in person_patches:
+        for bicycle in bicycle_patches:
+            if person.horizontal_center < bicycle.horizontal_center:
+                persons_left_of_bicycle.append(person)
+                break
+
+    if len(persons_left_of_bicycle) == 0:
+        return "no"
+
+    car_patches = image_patch.find("car")
+    if len(car_patches) == 0:
+        return "no"
+
+    # Check if there exists a car to the left of any such person
+    for person in persons_left_of_bicycle:
+        for car in car_patches:
+            if car.horizontal_center < person.horizontal_center:
+                return "yes"
+
+    return "no"

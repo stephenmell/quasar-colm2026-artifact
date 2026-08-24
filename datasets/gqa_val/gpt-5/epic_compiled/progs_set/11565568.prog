@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    found_skiing = None
+    image_patch = None
+    is_skiing = None
+    is_wearing_jacket = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result):
+        result = image_patch.simple_query('Is the person that is skiing wearing a jacket?')
+        return (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result)
+
+    def _else(found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result):
+        result = 'no'
+        found_skiing = False
+
+        def _for(person_patch, found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result):
+            is_skiing = person_patch.simple_query('Is the person skiing?') == 'yes'
+
+            def _if(found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result):
+                found_skiing = True
+                is_wearing_jacket = person_patch.simple_query('Is the person wearing a jacket?') == 'yes'
+
+                def _if(found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result):
+                    result = 'yes'
+                    return (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result)
+                found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result = if_stmt(_if, None, is_wearing_jacket, (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result))
+                return (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result)
+            found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result = if_stmt(_if, None, is_skiing, (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result))
+            return (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result)
+        found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result = for_stmt(_for, person_patches, (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result))
+
+        def _if(found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result):
+            result = image_patch.simple_query('Is the person that is skiing wearing a jacket?')
+            return (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result)
+        found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result = if_stmt(_if, None, not_expr(found_skiing), (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result))
+        return (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result)
+    found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (found_skiing, image_patch, is_skiing, is_wearing_jacket, person_patches, result))
+    return result

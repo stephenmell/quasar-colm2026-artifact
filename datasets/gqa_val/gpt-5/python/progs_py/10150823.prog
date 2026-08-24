@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bed_patches = image_patch.find("bed")
+    # Question assumes only one bed patch
+    if len(bed_patches) == 0:
+        # If no bed is found, query the image directly
+        return image_patch.simple_query("Is the bed to the left or to the right of the white lamp?")
+    bed_patch = bed_patches[0]
+
+    lamp_patches = image_patch.find("lamp")
+    white_lamp_patches = []
+    for lamp_patch in lamp_patches:
+        if lamp_patch.verify_property("lamp", "white"):
+            white_lamp_patches.append(lamp_patch)
+
+    if len(white_lamp_patches) == 0:
+        # If no white lamp is found, query the image directly
+        return image_patch.simple_query("Is the bed to the left or to the right of the white lamp?")
+
+    # Choose the white lamp closest to the bed horizontally
+    closest_lamp = min(white_lamp_patches, key=lambda p: abs(p.horizontal_center - bed_patch.horizontal_center))
+
+    if bed_patch.horizontal_center < closest_lamp.horizontal_center:
+        return "left"
+    else:
+        return "right"

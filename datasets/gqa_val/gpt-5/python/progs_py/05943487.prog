@@ -1,0 +1,5 @@
+# Does the sand beside the grass look gold?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Contains a spatial relation ("beside"), so ask directly
+    return image_patch.simple_query("Does the sand beside the grass look gold?")

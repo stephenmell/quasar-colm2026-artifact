@@ -1,0 +1,69 @@
+def execute_command():
+    AddressSchema = None
+    NamesSchema = None
+    PriceRangeSchema = None
+    RatingSchema = None
+    SelectSchema = None
+    address_dict = None
+    address_parsed = None
+    city = None
+    event = None
+    event_id = None
+    hotel_address = None
+    hotel_min_price = None
+    hotel_names = None
+    hotel_rating = None
+    hotels_parsed = None
+    hotels_text = None
+    price_parsed = None
+    prices_text = None
+    rating_parsed = None
+    ratings_text = None
+    selected_hotel = None
+    selection = None
+    should_create_event = None
+    target_hotel = None
+    city = 'Tokyo'
+    target_hotel = 'City Hub'
+    hotels_text = get_all_hotels_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    hotels_parsed = query_ai_assistant('Extract ONLY the hotel names as a clean JSON list of strings, preserving exact names, from this list: {}'.format(hotels_text), NamesSchema)
+    hotel_names = hotels_parsed.names
+    selected_hotel = None
+
+    def _for(name, NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel):
+
+        def _if(NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel):
+            selected_hotel = name
+            return (NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel)
+        NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel = if_stmt(_if, None, name == target_hotel, (NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel))
+        return (NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel)
+    NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel = for_stmt(_for, hotel_names, (NamesSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, target_hotel))
+
+    def _if(NamesSchema, SelectSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, selection, target_hotel):
+        SelectSchema = CreateSchema('selected', str)
+        selection = query_ai_assistant("Given the target hotel name 'City Hub' and this list of hotel names in Tokyo: {}. Select the single name that best matches 'City Hub'. If there is no exact match, return the closest plausible hotel name from the list. Return ONLY the selected name.".format(hotel_names), SelectSchema)
+        selected_hotel = selection.selected
+        return (NamesSchema, SelectSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, selection, target_hotel)
+    NamesSchema, SelectSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, selection, target_hotel = if_stmt(_if, None, not_expr(selected_hotel), (NamesSchema, SelectSchema, city, hotel_names, hotels_parsed, hotels_text, selected_hotel, selection, target_hotel))
+    address_dict = get_hotels_address(selected_hotel)
+    AddressSchema = CreateSchema('address', str)
+    address_parsed = query_ai_assistant("From this object: {} extract the hotel's full postal address as a single string. If it maps hotel names to addresses, return the address for '{}'. If it contains a key like 'address', return its value. Return ONLY the address string.".format(address_dict, selected_hotel), AddressSchema)
+    hotel_address = address_parsed.address
+    ratings_text = get_rating_reviews_for_hotels([selected_hotel])
+    RatingSchema = CreateSchema('rating', float)
+    rating_parsed = query_ai_assistant("From this hotel's rating and reviews object: {}. Return ONLY the overall numeric rating as a float for '{}'. If multiple ratings are present, choose the main overall score.".format(ratings_text, selected_hotel), RatingSchema)
+    hotel_rating = rating_parsed.rating
+    prices_text = get_hotels_prices([selected_hotel])
+    PriceRangeSchema = CreateSchema('min_price', float, 'max_price', float)
+    price_parsed = query_ai_assistant("From this hotel's price info: {}. Extract numeric minimum and maximum per-night prices as floats. If only one price is present, use it for both min_price and max_price.".format(prices_text), PriceRangeSchema)
+    hotel_min_price = price_parsed.min_price
+    should_create_event = and_expr(hotel_rating > 4.0, hotel_min_price < 200.0)
+    event_id = None
+
+    def _if(AddressSchema, NamesSchema, PriceRangeSchema, RatingSchema, SelectSchema, address_dict, address_parsed, city, event, event_id, hotel_address, hotel_min_price, hotel_names, hotel_rating, hotels_parsed, hotels_text, price_parsed, prices_text, rating_parsed, ratings_text, selected_hotel, selection, should_create_event, target_hotel):
+        event = create_calendar_event(selected_hotel, '2025-01-02 09:00', '2025-01-02 10:00', 'Reminder to reserve the hotel. Rating: {}. Minimum price: {}. Requested by Emma Johnson at Blue Sparrow Tech.'.format(hotel_rating, hotel_min_price), None, hotel_address)
+        event_id = event.id_
+        return (AddressSchema, NamesSchema, PriceRangeSchema, RatingSchema, SelectSchema, address_dict, address_parsed, city, event, event_id, hotel_address, hotel_min_price, hotel_names, hotel_rating, hotels_parsed, hotels_text, price_parsed, prices_text, rating_parsed, ratings_text, selected_hotel, selection, should_create_event, target_hotel)
+    AddressSchema, NamesSchema, PriceRangeSchema, RatingSchema, SelectSchema, address_dict, address_parsed, city, event, event_id, hotel_address, hotel_min_price, hotel_names, hotel_rating, hotels_parsed, hotels_text, price_parsed, prices_text, rating_parsed, ratings_text, selected_hotel, selection, should_create_event, target_hotel = if_stmt(_if, None, should_create_event, (AddressSchema, NamesSchema, PriceRangeSchema, RatingSchema, SelectSchema, address_dict, address_parsed, city, event, event_id, hotel_address, hotel_min_price, hotel_names, hotel_rating, hotels_parsed, hotels_text, price_parsed, prices_text, rating_parsed, ratings_text, selected_hotel, selection, should_create_event, target_hotel))
+    return {'hotel': selected_hotel, 'address': hotel_address, 'rating': hotel_rating, 'minimum_price': hotel_min_price, 'event_created': should_create_event, 'event_id': event_id}

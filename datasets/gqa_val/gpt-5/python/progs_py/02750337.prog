@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    skateboard_patches = image_patch.find("skateboard")
+    # Question assumes at least one skateboard
+    if len(skateboard_patches) == 0:
+        # If no skateboard is found, query the image directly
+        return image_patch.simple_query("Is the skateboard to the right of a cone?")
+    cone_patches = image_patch.find("cone")
+    if len(cone_patches) == 0:
+        return "no"
+    for skateboard_patch in skateboard_patches:
+        for cone_patch in cone_patches:
+            if skateboard_patch.horizontal_center > cone_patch.horizontal_center:
+                return "yes"
+    return "no"

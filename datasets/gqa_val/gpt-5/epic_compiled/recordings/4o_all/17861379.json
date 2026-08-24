@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2334149",
+          [
+            0,
+            0,
+            500,
+            324
+          ]
+        ],
+        "What is in front of the building?"
+      ],
+      "Two trucks.",
+      3486278570
+    ]
+  ],
+  "best_text_match": []
+}

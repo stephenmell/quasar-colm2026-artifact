@@ -1,0 +1,33 @@
+def execute_command(image) -> str:
+    board_patches = None
+    image_patch = None
+    pepper_patches = None
+    peppers_on_board = None
+    result = None
+    image_patch = ImagePatch(image)
+    pepper_patches = image_patch.find('pepper')
+    board_patches = image_patch.find('cutting board')
+
+    def _if(board_patches, image_patch, pepper_patches, peppers_on_board, result):
+        result = image_patch.simple_query('Does the pepper on the cutting board have yellow color?')
+        return (board_patches, image_patch, pepper_patches, peppers_on_board, result)
+
+    def _else(board_patches, image_patch, pepper_patches, peppers_on_board, result):
+        result = 'no'
+
+        def _for(board_patch, board_patches, image_patch, pepper_patches, peppers_on_board, result):
+            peppers_on_board = board_patch.find('pepper')
+
+            def _for(pepper_patch, board_patches, image_patch, pepper_patches, peppers_on_board, result):
+
+                def _if(board_patches, image_patch, pepper_patches, peppers_on_board, result):
+                    result = 'yes'
+                    return (board_patches, image_patch, pepper_patches, peppers_on_board, result)
+                board_patches, image_patch, pepper_patches, peppers_on_board, result = if_stmt(_if, None, pepper_patch.verify_property('pepper', 'yellow'), (board_patches, image_patch, pepper_patches, peppers_on_board, result))
+                return (board_patches, image_patch, pepper_patches, peppers_on_board, result)
+            board_patches, image_patch, pepper_patches, peppers_on_board, result = for_stmt(_for, peppers_on_board, (board_patches, image_patch, pepper_patches, peppers_on_board, result))
+            return (board_patches, image_patch, pepper_patches, peppers_on_board, result)
+        board_patches, image_patch, pepper_patches, peppers_on_board, result = for_stmt(_for, board_patches, (board_patches, image_patch, pepper_patches, peppers_on_board, result))
+        return (board_patches, image_patch, pepper_patches, peppers_on_board, result)
+    board_patches, image_patch, pepper_patches, peppers_on_board, result = if_stmt(_if, _else, or_expr(len(pepper_patches) == 0, len(board_patches) == 0), (board_patches, image_patch, pepper_patches, peppers_on_board, result))
+    return result

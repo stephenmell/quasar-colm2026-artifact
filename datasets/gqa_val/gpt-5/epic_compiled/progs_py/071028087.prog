@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    red_flag_patches = image_patch.find("red flag")
+
+    if len(red_flag_patches) == 0:
+        flag_patches = image_patch.find("flag")
+        candidate_red_flags = ()
+        for flag_patch in flag_patches:
+            if flag_patch.verify_property("flag", "red"):
+                candidate_red_flags = candidate_red_flags + (flag_patch,)
+        if len(candidate_red_flags) == 0:
+            result = image_patch.simple_query("Do you see any clocks to the right of the red flag?")
+        else:
+            red_flag_patches = candidate_red_flags
+
+    if len(red_flag_patches) > 0:
+        clock_patches = image_patch.find("clock")
+        if len(clock_patches) == 0:
+            placeholder = 0
+        else:
+            for red_flag_patch in red_flag_patches:
+                for clock_patch in clock_patches:
+                    if clock_patch.horizontal_center > red_flag_patch.horizontal_center:
+                        result = "yes"
+    return result

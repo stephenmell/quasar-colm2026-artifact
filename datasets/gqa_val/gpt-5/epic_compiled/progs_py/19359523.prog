@@ -1,0 +1,5 @@
+# What is the vehicle that is parked in the street?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("What is the vehicle that is parked in the street?")
+    return result

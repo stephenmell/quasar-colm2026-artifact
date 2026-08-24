@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    child_patches = None
+    image_patch = None
+    is_wearing_jeans = None
+    jeans_person_found = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    person_patches = image_patch.find('person')
+
+    def _if(child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result):
+        result = image_patch.simple_query('Is there a child to the right of the person that is wearing jeans?')
+        return (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result)
+
+    def _else(child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result):
+        jeans_person_found = False
+
+        def _for(person_patch, child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result):
+            is_wearing_jeans = person_patch.simple_query('Is the person wearing jeans?') == 'yes'
+
+            def _if(child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result):
+                jeans_person_found = True
+                child_patches = image_patch.find('child')
+
+                def _for(child_patch, child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result):
+
+                    def _if(child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result):
+                        result = 'yes'
+                        return (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result)
+                    child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result = if_stmt(_if, None, child_patch.horizontal_center > person_patch.horizontal_center, (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result))
+                    return (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result)
+                child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result = for_stmt(_for, child_patches, (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result))
+                return (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result)
+            child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result = if_stmt(_if, None, is_wearing_jeans, (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result))
+            return (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result)
+        child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result = for_stmt(_for, person_patches, (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result))
+
+        def _if(child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result):
+            result = image_patch.simple_query('Is there a child to the right of the person that is wearing jeans?')
+            return (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result)
+        child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result = if_stmt(_if, None, not_expr(jeans_person_found), (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result))
+        return (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result)
+    child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (child_patches, image_patch, is_wearing_jeans, jeans_person_found, person_patches, result))
+    return result

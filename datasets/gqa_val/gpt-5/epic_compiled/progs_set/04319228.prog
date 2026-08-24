@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    image_patch = None
+    kite_patch = None
+    kite_patches = None
+    on_sidewalk = None
+    person_patches = None
+    result = None
+    target_person = None
+    image_patch = ImagePatch(image)
+    kite_patches = image_patch.find('kite')
+    person_patches = image_patch.find('person')
+
+    def _if(image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person):
+        result = image_patch.simple_query('Is the kite to the right or to the left of the person that is standing on the side walk?')
+        return (image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person)
+
+    def _else(image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person):
+        target_person = None
+
+        def _for(person_patch, image_patch, kite_patches, on_sidewalk, person_patches, target_person):
+            on_sidewalk = or_expr(person_patch.verify_property('person', 'standing on the sidewalk'), or_expr(person_patch.verify_property('person', 'on the sidewalk'), person_patch.verify_property('person', 'standing on the side walk')))
+
+            def _if(image_patch, kite_patches, on_sidewalk, person_patches, target_person):
+                target_person = person_patch
+                return (image_patch, kite_patches, on_sidewalk, person_patches, target_person)
+            image_patch, kite_patches, on_sidewalk, person_patches, target_person = if_stmt(_if, None, and_expr(on_sidewalk, target_person is None), (image_patch, kite_patches, on_sidewalk, person_patches, target_person))
+            return (image_patch, kite_patches, on_sidewalk, person_patches, target_person)
+        image_patch, kite_patches, on_sidewalk, person_patches, target_person = for_stmt(_for, person_patches, (image_patch, kite_patches, on_sidewalk, person_patches, target_person))
+
+        def _if(image_patch, kite_patches, on_sidewalk, person_patches, target_person):
+            target_person = person_patches[0]
+            return (image_patch, kite_patches, on_sidewalk, person_patches, target_person)
+        image_patch, kite_patches, on_sidewalk, person_patches, target_person = if_stmt(_if, None, target_person is None, (image_patch, kite_patches, on_sidewalk, person_patches, target_person))
+        kite_patch = kite_patches[0]
+
+        def _if(image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person):
+            result = 'right'
+            return (image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person)
+
+        def _else(image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person):
+            result = 'left'
+            return (image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person)
+        image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person = if_stmt(_if, _else, kite_patch.horizontal_center > target_person.horizontal_center, (image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person))
+        return (image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person)
+    image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person = if_stmt(_if, _else, or_expr(len(kite_patches) == 0, len(person_patches) == 0), (image_patch, kite_patch, kite_patches, on_sidewalk, person_patches, result, target_person))
+    return result

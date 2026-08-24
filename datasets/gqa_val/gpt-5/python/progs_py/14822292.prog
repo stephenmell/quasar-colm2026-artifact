@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    skis_patches = image_patch.find("skis")
+    if len(skis_patches) == 0:
+        skis_patches = image_patch.find("ski")
+    if len(skis_patches) == 0:
+        # If no skis are found, query the image directly
+        return image_patch.simple_query("Are there orange skis in the image?")
+    for skis_patch in skis_patches:
+        if skis_patch.verify_property("skis", "orange") or skis_patch.verify_property("ski", "orange"):
+            return "yes"
+    return "no"

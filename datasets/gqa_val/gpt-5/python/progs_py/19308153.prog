@@ -1,0 +1,40 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cup_patches = image_patch.find("cup")
+    plate_patches = image_patch.find("plate")
+    cheese_patches = image_patch.find("cheese")
+
+    if len(cup_patches) == 0 or len(plate_patches) == 0 or len(cheese_patches) == 0:
+        return image_patch.simple_query("Is the cup to the right or to the left of the plate that the cheese is on?")
+
+    # Select the plate that the cheese is on (prefer plates below and closest to the cheese)
+    best_plate = None
+    best_score = float("inf")
+    for cheese in cheese_patches:
+        for plate in plate_patches:
+            dy = plate.vertical_center - cheese.vertical_center
+            dx = plate.horizontal_center - cheese.horizontal_center
+            penalty = 0
+            if dy < 0:
+                penalty += 1e6  # discourage plates above the cheese
+            score = abs(dx) + abs(dy) + penalty
+            if score < best_score:
+                best_score = score
+                best_plate = plate
+
+    if best_plate is None:
+        return image_patch.simple_query("Is the cup to the right or to the left of the plate that the cheese is on?")
+
+    # Choose the cup nearest to that plate
+    best_cup = None
+    best_dist = float("inf")
+    for cup in cup_patches:
+        dist = abs(cup.horizontal_center - best_plate.horizontal_center) + abs(cup.vertical_center - best_plate.vertical_center)
+        if dist < best_dist:
+            best_dist = dist
+            best_cup = cup
+
+    if best_cup is None:
+        return image_patch.simple_query("Is the cup to the right or to the left of the plate that the cheese is on?")
+
+    return "right" if best_cup.horizontal_center > best_plate.horizontal_center else "left"

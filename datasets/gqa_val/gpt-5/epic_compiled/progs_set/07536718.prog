@@ -1,0 +1,33 @@
+def execute_command(image) -> str:
+    found_any = None
+    image_patch = None
+    patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found_any = False
+
+    def _for(object_name, found_any, image_patch, patches, result):
+        patches = image_patch.find(object_name)
+
+        def _if(found_any, image_patch, patches, result):
+            found_any = True
+
+            def _for(patch, found_any, image_patch, patches, result):
+
+                def _if(found_any, image_patch, patches, result):
+                    result = 'yes'
+                    return (found_any, image_patch, patches, result)
+                found_any, image_patch, patches, result = if_stmt(_if, None, patch.verify_property(object_name, 'orange'), (found_any, image_patch, patches, result))
+                return (found_any, image_patch, patches, result)
+            found_any, image_patch, patches, result = for_stmt(_for, patches, (found_any, image_patch, patches, result))
+            return (found_any, image_patch, patches, result)
+        found_any, image_patch, patches, result = if_stmt(_if, None, len(patches) > 0, (found_any, image_patch, patches, result))
+        return (found_any, image_patch, patches, result)
+    found_any, image_patch, patches, result = for_stmt(_for, ('motorbike', 'motorcycle'), (found_any, image_patch, patches, result))
+
+    def _if(found_any, image_patch, patches, result):
+        result = image_patch.simple_query('Does this motorbike look orange?')
+        return (found_any, image_patch, patches, result)
+    found_any, image_patch, patches, result = if_stmt(_if, None, not_expr(found_any), (found_any, image_patch, patches, result))
+    return result

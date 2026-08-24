@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the giraffe that is looking through the door
+    giraffe_patches = image_patch.find("giraffe")
+    if len(giraffe_patches) == 0:
+        return image_patch.simple_query("Are there animals to the right of the giraffe that is looking through the door?")
+    target_giraffe = None
+    for giraffe_patch in giraffe_patches:
+        if giraffe_patch.verify_property("giraffe", "looking through the door"):
+            target_giraffe = giraffe_patch
+            break
+    if target_giraffe is None:
+        return image_patch.simple_query("Are there animals to the right of the giraffe that is looking through the door?")
+
+    # Check for any animals to the right of the identified giraffe
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        return "no"
+    for animal_patch in animal_patches:
+        if animal_patch.horizontal_center > target_giraffe.horizontal_center:
+            return "yes"
+    return "no"

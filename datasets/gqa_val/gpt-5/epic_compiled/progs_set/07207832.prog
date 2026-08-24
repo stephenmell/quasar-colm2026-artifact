@@ -1,0 +1,48 @@
+def execute_command(image) -> str:
+    bicycle_left_of_pot = None
+    bicycle_patches = None
+    image_patch = None
+    pot_patches = None
+    result = None
+    scooter_patches = None
+    image_patch = ImagePatch(image)
+    scooter_patches = image_patch.find('scooter')
+
+    def _if(bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+        result = image_patch.simple_query('Is the scooter to the left of the bicycle that is to the left of the pot?')
+        return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+
+    def _else(bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+        result = 'no'
+        bicycle_patches = image_patch.find('bicycle')
+        pot_patches = image_patch.find('pot')
+
+        def _for(bicycle_patch, bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+            bicycle_left_of_pot = False
+
+            def _for(pot_patch, bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+
+                def _if(bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+                    bicycle_left_of_pot = True
+                    return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+                bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches = if_stmt(_if, None, bicycle_patch.horizontal_center < pot_patch.horizontal_center, (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches))
+                return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+            bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches = for_stmt(_for, pot_patches, (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches))
+
+            def _if(bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+
+                def _for(scooter_patch, bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+
+                    def _if(bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches):
+                        result = 'yes'
+                        return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+                    bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches = if_stmt(_if, None, scooter_patch.horizontal_center < bicycle_patch.horizontal_center, (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches))
+                    return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+                bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches = for_stmt(_for, scooter_patches, (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches))
+                return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+            bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches = if_stmt(_if, None, bicycle_left_of_pot, (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches))
+            return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+        bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches = for_stmt(_for, bicycle_patches, (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches))
+        return (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches)
+    bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches = if_stmt(_if, _else, len(scooter_patches) == 0, (bicycle_left_of_pot, bicycle_patches, image_patch, pot_patches, result, scooter_patches))
+    return result

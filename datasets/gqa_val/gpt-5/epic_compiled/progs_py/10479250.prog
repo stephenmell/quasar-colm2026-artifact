@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    safety_terms = ("safety jacket", "life jacket", "safety vest", "reflective vest", "high visibility vest", "hi-vis vest", "hi vis vest")
+    tissue_terms = ("tissue", "tissues", "tissue box", "kleenex", "box of tissues")
+
+    found_safety = False
+    for term in safety_terms:
+        if image_patch.exists(term):
+            found_safety = True
+
+    found_tissue = False
+    for term in tissue_terms:
+        if image_patch.exists(term):
+            found_tissue = True
+
+    result = bool_to_yesno(found_safety or found_tissue)
+    return result

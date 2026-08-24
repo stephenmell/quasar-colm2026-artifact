@@ -1,0 +1,103 @@
+({2448: 'context', 2455: 'llm_query', 2476: 'return_result'},
+ ('def',
+  2446,
+  ((),
+   ((('call', (2447,), -1, ()),
+     ('def',
+      2449,
+      ((2457, 2450),
+       ((('prim',
+          2451,
+          'You are given a single document. Your task is to find any '
+          'anime/manga details relevant to solving the following query and '
+          'extract the most relevant evidence.\n'
+          '\n'
+          'Query constraints to match (all of them):\n'
+          '- Anime where the main character is an introvert and quite '
+          'awkward.\n'
+          '- Anime has between 10 and 30 episodes (inclusive).\n'
+          '- The anime includes a song (OP/ED/insert) whose lyrics/story '
+          'depict a relationship between a woman and a guy who turns out to be '
+          'very different from how he initially seemed.\n'
+          "- The anime is adapted from a manga. The manga's writer graduated "
+          "from a college whose former name was 'Nagoya Meitoku Junior "
+          "College'. Identify the current name of that institution if "
+          'mentioned.\n'
+          '- The anime was released in or before 2020.\n'
+          '\n'
+          'From this document only, extract any candidates that could satisfy '
+          'some or all constraints. Be literal and cite exact lines that '
+          'support each item. If the document is irrelevant to the query, '
+          "output 'No match'.\n"
+          '\n'
+          'Required output format exactly:\n'
+          'Candidates:\n'
+          '- Anime: <title>\n'
+          '  Evidence: <quoted snippets from the document supporting '
+          'relevance>\n'
+          '  Episodes: <number if present>\n'
+          '  Year(s): <years if present>\n'
+          '  MC traits: <as described in doc>\n'
+          '  Songs: <OP/ED/insert titles with singer and what the lyrics '
+          'depict, if present>\n'
+          '  Manga writer: <full name>\n'
+          "  Writer's education: <college or university; explicitly note if it "
+          "was formerly 'Nagoya Meitoku Junior College' and give current name "
+          'if present>\n'
+          '\n'
+          'Document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2452,), 80, (2451, 2450)),
+         ('prim', 2453, '\nEND_DOCUMENT'),
+         ('call', (2454,), 80, (2452, 2453)),
+         ('call', (2456,), 2455, (2454,)),
+         ('call', (2458,), -1, (2456,)),
+         ('call', (2459,), 80, (2457, 2458))),
+        (2459,)))),
+     ('call', (2461,), 79, (2448,)),
+     ('call', (2460,), 2461, (2447, 2449)),
+     ('prim', 2462, ''),
+     ('def',
+      2463,
+      ((2465, 2464),
+       ((('call', (2466,), 80, (2465, 2464)),
+         ('prim', 2467, '\n\n'),
+         ('call', (2468,), 80, (2466, 2467))),
+        (2468,)))),
+     ('call', (2470,), 79, (2460,)),
+     ('call', (2469,), 2470, (2462, 2463)),
+     ('prim',
+      2471,
+      'We must identify the single anime title that satisfies ALL of the '
+      'following constraints:\n'
+      '1) Main character is an introvert and quite awkward.\n'
+      '2) Has 10–30 episodes (inclusive).\n'
+      '3) Includes a song (OP/ED/insert) whose lyrics depict a relationship '
+      'between a woman and a guy who turns out to be very different from how '
+      'he initially seemed.\n'
+      '4) Is adapted from a manga whose writer graduated from a college '
+      "formerly named 'Nagoya Meitoku Junior College' (state the current name "
+      'if known).\n'
+      '5) Released in or before 2020.\n'
+      '\n'
+      'Below are extracted candidates and evidence from the available context '
+      'documents:\n'
+      '\n'),
+     ('call', (2472,), 80, (2471, 2469)),
+     ('prim',
+      2473,
+      '\n'
+      'Decide which anime best fits ALL constraints. Prioritize strong, '
+      "explicit evidence for the mangaka's education (former name 'Nagoya "
+      "Meitoku Junior College' and its current name), episode count, MC "
+      'traits, release year, and the song description. If multiple match, '
+      'choose the best supported.\n'
+      '\n'
+      'Output the final answer as concisely as possible:\n'
+      '- If certain, output only the anime title.\n'
+      '- If not fully certain but best guess, output: <Title> — <very short '
+      'justification>.'),
+     ('call', (2474,), 80, (2472, 2473)),
+     ('call', (2475,), 2455, (2474,)),
+     ('call', (2477,), 2476, (2475,))),
+    (2477,)))))

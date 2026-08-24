@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2279",
+          [
+            0,
+            0,
+            800,
+            600
+          ]
+        ],
+        "What is the vehicle to the left of the people on the sidewalk?"
+      ],
+      "A silver SUV.",
+      1893832346
+    ]
+  ],
+  "best_text_match": []
+}

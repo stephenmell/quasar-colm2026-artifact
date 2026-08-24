@@ -1,0 +1,18 @@
+# Is there a mirror to the right of the towel?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    towel_patches = image_patch.find("towel")
+
+    if len(towel_patches) == 0:
+        result = image_patch.simple_query("Is there a mirror to the right of the towel?")
+    else:
+        mirror_patches = image_patch.find("mirror")
+        if len(mirror_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for towel_patch in towel_patches:
+                for mirror_patch in mirror_patches:
+                    if mirror_patch.horizontal_center > towel_patch.horizontal_center:
+                        result = "yes"
+    return result

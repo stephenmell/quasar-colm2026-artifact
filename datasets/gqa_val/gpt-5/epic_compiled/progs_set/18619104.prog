@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    appliance_patches = None
+    image_patch = None
+    is_metal = None
+    metal_appliance_patches = None
+    oven_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    appliance_patches = image_patch.find('appliance')
+    metal_appliance_patches = ()
+
+    def _for(appliance_patch, appliance_patches, image_patch, is_metal, metal_appliance_patches, result):
+        is_metal = appliance_patch.verify_property('appliance', 'metal')
+
+        def _if(appliance_patches, image_patch, is_metal, metal_appliance_patches, result):
+            is_metal = appliance_patch.verify_property('appliance', 'made of metal')
+            return (appliance_patches, image_patch, is_metal, metal_appliance_patches, result)
+        appliance_patches, image_patch, is_metal, metal_appliance_patches, result = if_stmt(_if, None, not_expr(is_metal), (appliance_patches, image_patch, is_metal, metal_appliance_patches, result))
+
+        def _if(appliance_patches, image_patch, is_metal, metal_appliance_patches, result):
+            metal_appliance_patches = metal_appliance_patches + (appliance_patch,)
+            return (appliance_patches, image_patch, is_metal, metal_appliance_patches, result)
+        appliance_patches, image_patch, is_metal, metal_appliance_patches, result = if_stmt(_if, None, is_metal, (appliance_patches, image_patch, is_metal, metal_appliance_patches, result))
+        return (appliance_patches, image_patch, is_metal, metal_appliance_patches, result)
+    appliance_patches, image_patch, is_metal, metal_appliance_patches, result = for_stmt(_for, appliance_patches, (appliance_patches, image_patch, is_metal, metal_appliance_patches, result))
+
+    def _if(appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result):
+        result = image_patch.simple_query('Are there any ovens to the left of the appliance made of metal?')
+        return (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result)
+
+    def _else(appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result):
+        oven_patches = image_patch.find('oven')
+
+        def _if(appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result):
+            result = 'no'
+            return (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result)
+
+        def _else(appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result):
+
+            def _for(oven_patch, appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result):
+
+                def _for(metal_appliance_patch, appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result):
+
+                    def _if(appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result):
+                        result = 'yes'
+                        return (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result)
+                    appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result = if_stmt(_if, None, oven_patch.horizontal_center < metal_appliance_patch.horizontal_center, (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result))
+                    return (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result)
+                appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result = for_stmt(_for, metal_appliance_patches, (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result))
+                return (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result)
+            appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result = for_stmt(_for, oven_patches, (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result))
+            return (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result)
+        appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result = if_stmt(_if, _else, len(oven_patches) == 0, (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result))
+        return (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result)
+    appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result = if_stmt(_if, _else, len(metal_appliance_patches) == 0, (appliance_patches, image_patch, is_metal, metal_appliance_patches, oven_patches, result))
+    return result

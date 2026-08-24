@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("How is the device to the right of the woman on the left called?")
+    else:
+        leftmost_woman = woman_patches[0]
+        for w_patch in woman_patches:
+            if w_patch.horizontal_center < leftmost_woman.horizontal_center:
+                leftmost_woman = w_patch
+        right_area_patch = image_patch.crop(leftmost_woman.right, image_patch.lower, image_patch.right, image_patch.upper)
+        device_patches = right_area_patch.find("device")
+        if len(device_patches) == 0:
+            result = right_area_patch.simple_query("What is the device called?")
+        else:
+            target_device = device_patches[0]
+            for d_patch in device_patches:
+                if d_patch.horizontal_center < target_device.horizontal_center:
+                    target_device = d_patch
+            result = target_device.simple_query("What is the device called?")
+    return result

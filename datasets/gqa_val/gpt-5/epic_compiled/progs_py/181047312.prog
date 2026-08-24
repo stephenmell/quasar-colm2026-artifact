@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    giraffe_exists = image_patch.exists("giraffe")
+    lamb_exists = image_patch.exists("lamb")
+
+    if giraffe_exists:
+        giraffe_patches = image_patch.find("giraffe")
+        for giraffe_patch in giraffe_patches:
+            if giraffe_patch.verify_property("giraffe", "white"):
+                result = "yes"
+
+    if lamb_exists:
+        lamb_patches = image_patch.find("lamb")
+        for lamb_patch in lamb_patches:
+            if lamb_patch.verify_property("lamb", "white"):
+                result = "yes"
+
+    if (not giraffe_exists) and (not lamb_exists):
+        result = image_patch.simple_query("Is there either a white giraffe or lamb?")
+    return result

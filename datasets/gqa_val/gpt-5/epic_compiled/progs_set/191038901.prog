@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    black_screen_patches = None
+    image_patch = None
+    is_black = None
+    is_tall = None
+    lamp_patch = None
+    lamp_patches = None
+    result = None
+    screen_patch = None
+    screen_patches = None
+    tall_lamp_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    screen_patches = image_patch.find('screen')
+    lamp_patches = image_patch.find('lamp')
+    black_screen_patches = ()
+
+    def _for(sp, black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches):
+        is_black = sp.verify_property('screen', 'black')
+
+        def _if(black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches):
+            black_screen_patches = black_screen_patches + (sp,)
+            return (black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches)
+        black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches = if_stmt(_if, None, is_black, (black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches))
+        return (black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches)
+    black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches = for_stmt(_for, screen_patches, (black_screen_patches, image_patch, is_black, lamp_patches, result, screen_patches))
+    tall_lamp_patches = ()
+
+    def _for(lp, black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches):
+        is_tall = lp.verify_property('lamp', 'tall')
+
+        def _if(black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches):
+            tall_lamp_patches = tall_lamp_patches + (lp,)
+            return (black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches)
+        black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches = if_stmt(_if, None, is_tall, (black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches))
+        return (black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches)
+    black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches = for_stmt(_for, lamp_patches, (black_screen_patches, image_patch, is_black, is_tall, lamp_patches, result, screen_patches, tall_lamp_patches))
+
+    def _if(black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches):
+        result = image_patch.simple_query('Is the black screen to the left or to the right of the tall lamp?')
+        return (black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches)
+
+    def _else(black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches):
+        screen_patch = black_screen_patches[0]
+        lamp_patch = tall_lamp_patches[0]
+
+        def _if(black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches):
+            result = 'left'
+            return (black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches)
+
+        def _else(black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches):
+            result = 'right'
+            return (black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches)
+        black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches = if_stmt(_if, _else, screen_patch.horizontal_center < lamp_patch.horizontal_center, (black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches))
+        return (black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches)
+    black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches = if_stmt(_if, _else, or_expr(len(black_screen_patches) == 0, len(tall_lamp_patches) == 0), (black_screen_patches, image_patch, is_black, is_tall, lamp_patch, lamp_patches, result, screen_patch, screen_patches, tall_lamp_patches))
+    return result

@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    bag_labels = None
+    bag_patches = None
+    car_patches = None
+    image_patch = None
+    is_right_of_any_car = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    car_patches = image_patch.find('car')
+    person_patches = image_patch.find('person')
+    bag_labels = ('bag', 'backpack', 'handbag', 'purse', 'shopping bag', 'paper bag', 'plastic bag', 'tote bag', 'duffel bag', 'suitcase', 'briefcase')
+    bag_patches = ()
+
+    def _for(label, bag_labels, bag_patches, car_patches, image_patch, person_patches, result):
+        bag_patches = bag_patches + image_patch.find(label)
+        return (bag_labels, bag_patches, car_patches, image_patch, person_patches, result)
+    bag_labels, bag_patches, car_patches, image_patch, person_patches, result = for_stmt(_for, bag_labels, (bag_labels, bag_patches, car_patches, image_patch, person_patches, result))
+
+    def _if(bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+        result = image_patch.simple_query('Is there any bag to the right of the person that is to the right of the car?')
+        return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+
+    def _else(bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+
+        def _for(person_patch, bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+            is_right_of_any_car = False
+
+            def _for(car_patch, bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+
+                def _if(bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+                    is_right_of_any_car = True
+                    return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+                bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result = if_stmt(_if, None, person_patch.horizontal_center > car_patch.horizontal_center, (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result))
+                return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+            bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result = for_stmt(_for, car_patches, (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result))
+
+            def _if(bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+
+                def _for(bag_patch, bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+
+                    def _if(bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result):
+                        result = 'yes'
+                        return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+                    bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result = if_stmt(_if, None, bag_patch.horizontal_center > person_patch.horizontal_center, (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result))
+                    return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+                bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result = for_stmt(_for, bag_patches, (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result))
+                return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+            bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result = if_stmt(_if, None, is_right_of_any_car, (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result))
+            return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+        bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result = for_stmt(_for, person_patches, (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result))
+        return (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result)
+    bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result = if_stmt(_if, _else, or_expr(len(car_patches) == 0, len(person_patches) == 0), (bag_labels, bag_patches, car_patches, image_patch, is_right_of_any_car, person_patches, result))
+    return result

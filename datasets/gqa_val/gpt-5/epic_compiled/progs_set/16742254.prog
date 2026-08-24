@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    blue_helmet_patch = None
+    helmet_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    helmet_patches = image_patch.find('helmet')
+
+    def _if(blue_helmet_patch, helmet_patches, image_patch, result):
+        result = image_patch.simple_query('Is the blue helmet in the bottom or in the top part of the image?')
+        return (blue_helmet_patch, helmet_patches, image_patch, result)
+
+    def _else(blue_helmet_patch, helmet_patches, image_patch, result):
+        blue_helmet_patch = None
+
+        def _for(helmet_patch, blue_helmet_patch, helmet_patches, image_patch):
+
+            def _if(blue_helmet_patch, helmet_patches, image_patch):
+
+                def _if(blue_helmet_patch, helmet_patches, image_patch):
+                    blue_helmet_patch = helmet_patch
+                    return (blue_helmet_patch, helmet_patches, image_patch)
+                blue_helmet_patch, helmet_patches, image_patch = if_stmt(_if, None, helmet_patch.verify_property('helmet', 'blue'), (blue_helmet_patch, helmet_patches, image_patch))
+                return (blue_helmet_patch, helmet_patches, image_patch)
+            blue_helmet_patch, helmet_patches, image_patch = if_stmt(_if, None, blue_helmet_patch is None, (blue_helmet_patch, helmet_patches, image_patch))
+            return (blue_helmet_patch, helmet_patches, image_patch)
+        blue_helmet_patch, helmet_patches, image_patch = for_stmt(_for, helmet_patches, (blue_helmet_patch, helmet_patches, image_patch))
+
+        def _if(blue_helmet_patch, helmet_patches, image_patch, result):
+            result = image_patch.simple_query('Is the blue helmet in the bottom or in the top part of the image?')
+            return (blue_helmet_patch, helmet_patches, image_patch, result)
+
+        def _else(blue_helmet_patch, helmet_patches, image_patch, result):
+
+            def _if(blue_helmet_patch, helmet_patches, image_patch, result):
+                result = 'bottom'
+                return (blue_helmet_patch, helmet_patches, image_patch, result)
+
+            def _else(blue_helmet_patch, helmet_patches, image_patch, result):
+                result = 'top'
+                return (blue_helmet_patch, helmet_patches, image_patch, result)
+            blue_helmet_patch, helmet_patches, image_patch, result = if_stmt(_if, _else, blue_helmet_patch.vertical_center < image_patch.vertical_center, (blue_helmet_patch, helmet_patches, image_patch, result))
+            return (blue_helmet_patch, helmet_patches, image_patch, result)
+        blue_helmet_patch, helmet_patches, image_patch, result = if_stmt(_if, _else, not_expr(blue_helmet_patch), (blue_helmet_patch, helmet_patches, image_patch, result))
+        return (blue_helmet_patch, helmet_patches, image_patch, result)
+    blue_helmet_patch, helmet_patches, image_patch, result = if_stmt(_if, _else, len(helmet_patches) == 0, (blue_helmet_patch, helmet_patches, image_patch, result))
+    return result

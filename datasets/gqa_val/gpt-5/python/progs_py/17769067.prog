@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try finding "shoes" first, then fall back to "shoe"
+    label = "shoes"
+    shoes_patches = image_patch.find(label)
+    if len(shoes_patches) == 0:
+        label = "shoe"
+        shoes_patches = image_patch.find(label)
+
+    # If no shoes found, ask directly
+    if len(shoes_patches) == 0:
+        return image_patch.simple_query("Do the shoes look white?")
+
+    # If shoes found, verify if they look white
+    white_count = 0
+    for shoe_patch in shoes_patches:
+        if shoe_patch.verify_property(label, "white"):
+            white_count += 1
+
+    if white_count >= len(shoes_patches) / 2:
+        return "yes"
+    else:
+        return "no"

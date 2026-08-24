@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_airplane = image_patch.exists("airplane")
+    result = bool_to_yesno(has_airplane)
+    return result

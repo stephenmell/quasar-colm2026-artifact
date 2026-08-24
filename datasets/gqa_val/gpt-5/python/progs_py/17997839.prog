@@ -1,0 +1,13 @@
+# Do you think the zebra that is little is young or old?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    zebra_patches = image_patch.find("zebra")
+    if len(zebra_patches) == 0:
+        return image_patch.simple_query("Do you think the zebra that is little is young or old?")
+    little_zebras = []
+    for zebra_patch in zebra_patches:
+        if zebra_patch.verify_property("zebra", "little") or zebra_patch.verify_property("zebra", "small"):
+            little_zebras.append(zebra_patch)
+    if len(little_zebras) == 0:
+        return image_patch.simple_query("Do you think the zebra that is little is young or old?")
+    return little_zebras[0].best_text_match(["young", "old"])

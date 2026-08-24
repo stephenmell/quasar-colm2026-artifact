@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    computer_patches = None
+    image_patch = None
+    monitor_patches = None
+    result = None
+    tissue_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    tissue_patches = image_patch.find('tissues') + image_patch.find('tissue') + image_patch.find('tissue box')
+
+    def _if(computer_patches, image_patch, monitor_patches, result, tissue_patches):
+        result = image_patch.simple_query('Is there any computer to the left of the computer monitor that is to the left of the tissues?')
+        return (computer_patches, image_patch, monitor_patches, result, tissue_patches)
+
+    def _else(computer_patches, image_patch, monitor_patches, result, tissue_patches):
+        monitor_patches = image_patch.find('computer monitor') + image_patch.find('monitor') + image_patch.find('screen')
+        computer_patches = image_patch.find('computer') + image_patch.find('laptop') + image_patch.find('desktop computer') + image_patch.find('pc')
+
+        def _for(tissue_patch, computer_patches, image_patch, monitor_patches, result, tissue_patches):
+
+            def _for(monitor_patch, computer_patches, image_patch, monitor_patches, result, tissue_patches):
+
+                def _if(computer_patches, image_patch, monitor_patches, result, tissue_patches):
+
+                    def _for(computer_patch, computer_patches, image_patch, monitor_patches, result, tissue_patches):
+
+                        def _if(computer_patches, image_patch, monitor_patches, result, tissue_patches):
+                            result = 'yes'
+                            return (computer_patches, image_patch, monitor_patches, result, tissue_patches)
+                        computer_patches, image_patch, monitor_patches, result, tissue_patches = if_stmt(_if, None, computer_patch.horizontal_center < monitor_patch.horizontal_center, (computer_patches, image_patch, monitor_patches, result, tissue_patches))
+                        return (computer_patches, image_patch, monitor_patches, result, tissue_patches)
+                    computer_patches, image_patch, monitor_patches, result, tissue_patches = for_stmt(_for, computer_patches, (computer_patches, image_patch, monitor_patches, result, tissue_patches))
+                    return (computer_patches, image_patch, monitor_patches, result, tissue_patches)
+                computer_patches, image_patch, monitor_patches, result, tissue_patches = if_stmt(_if, None, monitor_patch.horizontal_center < tissue_patch.horizontal_center, (computer_patches, image_patch, monitor_patches, result, tissue_patches))
+                return (computer_patches, image_patch, monitor_patches, result, tissue_patches)
+            computer_patches, image_patch, monitor_patches, result, tissue_patches = for_stmt(_for, monitor_patches, (computer_patches, image_patch, monitor_patches, result, tissue_patches))
+            return (computer_patches, image_patch, monitor_patches, result, tissue_patches)
+        computer_patches, image_patch, monitor_patches, result, tissue_patches = for_stmt(_for, tissue_patches, (computer_patches, image_patch, monitor_patches, result, tissue_patches))
+        return (computer_patches, image_patch, monitor_patches, result, tissue_patches)
+    computer_patches, image_patch, monitor_patches, result, tissue_patches = if_stmt(_if, _else, len(tissue_patches) == 0, (computer_patches, image_patch, monitor_patches, result, tissue_patches))
+    return result

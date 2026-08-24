@@ -1,0 +1,19 @@
+# Is the color of the hat different than the house?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    hat_patches = image_patch.find("hat")
+    house_patches = image_patch.find("house")
+
+    # If either object isn't detected, ask directly
+    if len(hat_patches) == 0 or len(house_patches) == 0:
+        return image_patch.simple_query("Is the color of the hat different than the house?")
+
+    # Estimate colors using best text match over a set of common colors
+    color_options = [
+        "red", "orange", "yellow", "green", "blue", "purple", "pink",
+        "brown", "black", "white", "gray", "gold", "silver", "tan", "beige"
+    ]
+    hat_color = hat_patches[0].best_text_match(color_options)
+    house_color = house_patches[0].best_text_match(color_options)
+
+    return bool_to_yesno(hat_color != house_color)

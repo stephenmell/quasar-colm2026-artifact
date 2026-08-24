@@ -1,0 +1,12 @@
+# Does the window look small?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    window_patches = image_patch.find("window")
+    if len(window_patches) == 0:
+        result = image_patch.simple_query("Does the window look small?")
+    else:
+        result = "no"
+        for window_patch in window_patches:
+            if window_patch.verify_property("window", "small"):
+                result = "yes"
+    return result

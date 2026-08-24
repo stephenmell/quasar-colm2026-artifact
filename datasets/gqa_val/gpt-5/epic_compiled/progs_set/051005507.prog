@@ -1,0 +1,26 @@
+def execute_command(image) -> str:
+    found_any = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    found_any = False
+
+    def _for(name, found_any, image_patch):
+
+        def _if(found_any, image_patch):
+            found_any = True
+            return (found_any, image_patch)
+        found_any, image_patch = if_stmt(_if, None, image_patch.exists(name), (found_any, image_patch))
+        return (found_any, image_patch)
+    found_any, image_patch = for_stmt(_for, ('lock', 'padlock', 'door lock', 'combination lock'), (found_any, image_patch))
+
+    def _for(name, found_any, image_patch):
+
+        def _if(found_any, image_patch):
+            found_any = True
+            return (found_any, image_patch)
+        found_any, image_patch = if_stmt(_if, None, image_patch.exists(name), (found_any, image_patch))
+        return (found_any, image_patch)
+    found_any, image_patch = for_stmt(_for, ('safety jacket', 'life jacket', 'safety vest', 'reflective vest', 'life vest', 'high-visibility vest', 'hi-vis vest'), (found_any, image_patch))
+    result = bool_to_yesno(found_any)
+    return result

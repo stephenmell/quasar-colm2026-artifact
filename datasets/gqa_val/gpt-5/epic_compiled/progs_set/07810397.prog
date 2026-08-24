@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    blue_container_patches = None
+    container_patches = None
+    image_patch = None
+    result = None
+    right_area_patch = None
+    selected_container_patch = None
+    image_patch = ImagePatch(image)
+    result = None
+    blue_container_patches = image_patch.find('blue container')
+    selected_container_patch = None
+
+    def _if(blue_container_patches, container_patches, image_patch, result, selected_container_patch):
+        container_patches = image_patch.find('container')
+
+        def _for(container_patch, blue_container_patches, container_patches, image_patch, result, selected_container_patch):
+
+            def _if(blue_container_patches, container_patches, image_patch, result, selected_container_patch):
+                selected_container_patch = container_patch
+                return (blue_container_patches, container_patches, image_patch, result, selected_container_patch)
+            blue_container_patches, container_patches, image_patch, result, selected_container_patch = if_stmt(_if, None, and_expr(container_patch.verify_property('container', 'blue'), selected_container_patch is None), (blue_container_patches, container_patches, image_patch, result, selected_container_patch))
+            return (blue_container_patches, container_patches, image_patch, result, selected_container_patch)
+        blue_container_patches, container_patches, image_patch, result, selected_container_patch = for_stmt(_for, container_patches, (blue_container_patches, container_patches, image_patch, result, selected_container_patch))
+        return (blue_container_patches, container_patches, image_patch, result, selected_container_patch)
+
+    def _else(blue_container_patches, container_patches, image_patch, result, selected_container_patch):
+        selected_container_patch = blue_container_patches[0]
+        return (blue_container_patches, container_patches, image_patch, result, selected_container_patch)
+    blue_container_patches, container_patches, image_patch, result, selected_container_patch = if_stmt(_if, _else, len(blue_container_patches) == 0, (blue_container_patches, container_patches, image_patch, result, selected_container_patch))
+
+    def _if(blue_container_patches, container_patches, image_patch, result, right_area_patch, selected_container_patch):
+        result = image_patch.simple_query('What type of furniture is to the right of the blue container?')
+        return (blue_container_patches, container_patches, image_patch, result, right_area_patch, selected_container_patch)
+
+    def _else(blue_container_patches, container_patches, image_patch, result, right_area_patch, selected_container_patch):
+        right_area_patch = image_patch.crop(selected_container_patch.right, selected_container_patch.lower, image_patch.right, selected_container_patch.upper)
+        result = right_area_patch.simple_query('What type of furniture is here?')
+        return (blue_container_patches, container_patches, image_patch, result, right_area_patch, selected_container_patch)
+    blue_container_patches, container_patches, image_patch, result, right_area_patch, selected_container_patch = if_stmt(_if, _else, selected_container_patch is None, (blue_container_patches, container_patches, image_patch, result, right_area_patch, selected_container_patch))
+    return result

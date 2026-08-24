@@ -1,0 +1,17 @@
+# Are there sandwiches in front of the toaster?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    toaster_patches = image_patch.find("toaster")
+    if len(toaster_patches) == 0:
+        result = image_patch.simple_query("Are there sandwiches in front of the toaster?")
+    else:
+        sandwich_patches = image_patch.find("sandwich")
+        if len(sandwich_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for sandwich_patch in sandwich_patches:
+                for toaster_patch in toaster_patches:
+                    if sandwich_patch.vertical_center > toaster_patch.vertical_center:
+                        result = "yes"
+    return result

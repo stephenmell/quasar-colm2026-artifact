@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find('umbrella')
+
+    def _if(image_patch, result, umbrella_patches):
+        result = image_patch.simple_query('Does that umbrella look white?')
+        return (image_patch, result, umbrella_patches)
+
+    def _else(image_patch, result, umbrella_patches):
+        result = 'no'
+
+        def _for(umbrella_patch, image_patch, result, umbrella_patches):
+
+            def _if(image_patch, result, umbrella_patches):
+                result = 'yes'
+                return (image_patch, result, umbrella_patches)
+            image_patch, result, umbrella_patches = if_stmt(_if, None, umbrella_patch.verify_property('umbrella', 'white'), (image_patch, result, umbrella_patches))
+            return (image_patch, result, umbrella_patches)
+        image_patch, result, umbrella_patches = for_stmt(_for, umbrella_patches, (image_patch, result, umbrella_patches))
+        return (image_patch, result, umbrella_patches)
+    image_patch, result, umbrella_patches = if_stmt(_if, _else, len(umbrella_patches) == 0, (image_patch, result, umbrella_patches))
+    return result

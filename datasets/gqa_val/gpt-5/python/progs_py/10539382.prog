@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    boy_patches = image_patch.find("boy")
+    # Question assumes only one boy patch
+    if len(boy_patches) == 0:
+        # If no boy is found, query the image directly
+        return image_patch.simple_query("On which side of the image is the boy?")
+    boy_patch = boy_patches[0]
+    if boy_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

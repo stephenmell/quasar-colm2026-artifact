@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find("device")
+    # If no device is found, ask directly
+    if len(device_patches) == 0:
+        return image_patch.simple_query("Are there chairs to the left of the device on the right?")
+    # Choose the rightmost device
+    rightmost_device = max(device_patches, key=lambda p: p.horizontal_center)
+    chair_patches = image_patch.find("chair")
+    if len(chair_patches) == 0:
+        return "no"
+    # Check if any chair is to the left of the rightmost device
+    for chair_patch in chair_patches:
+        if chair_patch.horizontal_center < rightmost_device.horizontal_center:
+            return "yes"
+    return "no"

@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result_bool = False
+
+    blind_options = ("blind", "blinds", "window blind", "window blinds")
+    screen_options = ("screen", "screens", "window screen", "window screens", "screen door")
+
+    for name in blind_options:
+        exists_blind = image_patch.exists(name)
+        result_bool = result_bool or exists_blind
+
+    for name in screen_options:
+        exists_screen = image_patch.exists(name)
+        result_bool = result_bool or exists_screen
+
+    result = bool_to_yesno(result_bool)
+    return result

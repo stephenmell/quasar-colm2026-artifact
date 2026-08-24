@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    book_patches = None
+    clock_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    clock_patches = image_patch.find('clock')
+    book_patches = image_patch.find('book')
+
+    def _if(book_patches, clock_patches, image_patch, result):
+        result = image_patch.simple_query('Is the clock to the left of a book?')
+        return (book_patches, clock_patches, image_patch, result)
+
+    def _else(book_patches, clock_patches, image_patch, result):
+        result = 'no'
+
+        def _for(clock_patch, book_patches, clock_patches, image_patch, result):
+
+            def _for(book_patch, book_patches, clock_patches, image_patch, result):
+
+                def _if(book_patches, clock_patches, image_patch, result):
+                    result = 'yes'
+                    return (book_patches, clock_patches, image_patch, result)
+                book_patches, clock_patches, image_patch, result = if_stmt(_if, None, clock_patch.horizontal_center < book_patch.horizontal_center, (book_patches, clock_patches, image_patch, result))
+                return (book_patches, clock_patches, image_patch, result)
+            book_patches, clock_patches, image_patch, result = for_stmt(_for, book_patches, (book_patches, clock_patches, image_patch, result))
+            return (book_patches, clock_patches, image_patch, result)
+        book_patches, clock_patches, image_patch, result = for_stmt(_for, clock_patches, (book_patches, clock_patches, image_patch, result))
+        return (book_patches, clock_patches, image_patch, result)
+    book_patches, clock_patches, image_patch, result = if_stmt(_if, _else, or_expr(len(clock_patches) == 0, len(book_patches) == 0), (book_patches, clock_patches, image_patch, result))
+    return result

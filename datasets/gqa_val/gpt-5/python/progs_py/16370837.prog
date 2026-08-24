@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    # If no table is found, query the image directly
+    if len(table_patches) == 0:
+        return image_patch.simple_query("Is the table white?")
+    # If any detected table is white, answer yes
+    for table_patch in table_patches:
+        if table_patch.verify_property("table", "white"):
+            return "yes"
+    return "no"

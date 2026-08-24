@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("Is the pizza to the right or to the left of the woman on the left?")
+    else:
+        leftmost_woman = woman_patches[0]
+        for woman_patch in woman_patches:
+            if woman_patch.horizontal_center < leftmost_woman.horizontal_center:
+                leftmost_woman = woman_patch
+        pizza_patches = image_patch.find("pizza")
+        if len(pizza_patches) == 0:
+            result = image_patch.simple_query("Is the pizza to the right or to the left of the woman on the left?")
+        else:
+            chosen_pizza = pizza_patches[0]
+            min_diff = abs(chosen_pizza.horizontal_center - leftmost_woman.horizontal_center)
+            for pizza_patch in pizza_patches:
+                diff = abs(pizza_patch.horizontal_center - leftmost_woman.horizontal_center)
+                if diff < min_diff:
+                    min_diff = diff
+                    chosen_pizza = pizza_patch
+            if chosen_pizza.horizontal_center > leftmost_woman.horizontal_center:
+                result = "right"
+            else:
+                result = "left"
+    return result

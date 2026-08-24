@@ -1,0 +1,14 @@
+# Are the clouds thin and white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cloud_patches = image_patch.find("cloud")
+    if len(cloud_patches) == 0:
+        result = image_patch.simple_query("Are the clouds thin and white?")
+    else:
+        result = "no"
+        for cloud_patch in cloud_patches:
+            is_thin = cloud_patch.verify_property("cloud", "thin")
+            is_white = cloud_patch.verify_property("cloud", "white")
+            if is_thin and is_white:
+                result = "yes"
+    return result

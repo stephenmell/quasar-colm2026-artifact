@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    bathroom_indicators = None
+    bathroom_score = None
+    image_patch = None
+    kitchen_indicators = None
+    kitchen_score = None
+    result = None
+    image_patch = ImagePatch(image)
+    bathroom_indicators = ('toilet', 'toilet seat', 'bathtub', 'shower', 'shower head', 'shower curtain', 'bathroom sink', 'toilet paper', 'towel rack', 'towel', 'soap dispenser', 'mirror', 'bathroom')
+    kitchen_indicators = ('stove', 'oven', 'range', 'cooktop', 'microwave', 'refrigerator', 'fridge', 'dishwasher', 'kitchen sink', 'sink faucet', 'range hood', 'vent hood', 'cabinet', 'countertop', 'pot', 'pan', 'kitchen')
+    bathroom_score = 0
+
+    def _for(name, bathroom_indicators, bathroom_score, image_patch, kitchen_indicators):
+
+        def _if(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators):
+            bathroom_score = bathroom_score + 1
+            return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators)
+        bathroom_indicators, bathroom_score, image_patch, kitchen_indicators = if_stmt(_if, None, image_patch.exists(name), (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators))
+        return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators)
+    bathroom_indicators, bathroom_score, image_patch, kitchen_indicators = for_stmt(_for, bathroom_indicators, (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators))
+    kitchen_score = 0
+
+    def _for(name, bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score):
+
+        def _if(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score):
+            kitchen_score = kitchen_score + 1
+            return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score)
+        bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score = if_stmt(_if, None, image_patch.exists(name), (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score))
+        return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score)
+    bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score = for_stmt(_for, kitchen_indicators, (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score))
+    result = ''
+
+    def _if(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result):
+        result = image_patch.simple_query('Is it a bathroom or a kitchen?')
+        return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result)
+
+    def _else(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result):
+
+        def _if(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result):
+            result = 'bathroom'
+            return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result)
+
+        def _else(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result):
+
+            def _if(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result):
+                result = 'kitchen'
+                return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result)
+
+            def _else(bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result):
+                result = image_patch.best_text_match(('bathroom', 'kitchen'))
+                return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result)
+            bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result = if_stmt(_if, _else, kitchen_score > bathroom_score, (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result))
+            return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result)
+        bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result = if_stmt(_if, _else, bathroom_score > kitchen_score, (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result))
+        return (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result)
+    bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result = if_stmt(_if, _else, and_expr(bathroom_score == 0, kitchen_score == 0), (bathroom_indicators, bathroom_score, image_patch, kitchen_indicators, kitchen_score, result))
+    return result

@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    image_patch = None
+    lady_patch = None
+    lady_patches = None
+    result = None
+    woman_patch = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    lady_patches = image_patch.find('lady')
+
+    def _if(image_patch, lady_patch, lady_patches, result, woman_patch, woman_patches):
+        woman_patches = image_patch.find('woman')
+
+        def _if(image_patch, lady_patches, result, woman_patch, woman_patches):
+            result = image_patch.simple_query('In which part of the photo is the lady, the top or the bottom?')
+            return (image_patch, lady_patches, result, woman_patch, woman_patches)
+
+        def _else(image_patch, lady_patches, result, woman_patch, woman_patches):
+            woman_patch = woman_patches[0]
+
+            def _if(image_patch, lady_patches, result, woman_patch, woman_patches):
+                result = 'bottom'
+                return (image_patch, lady_patches, result, woman_patch, woman_patches)
+
+            def _else(image_patch, lady_patches, result, woman_patch, woman_patches):
+                result = 'top'
+                return (image_patch, lady_patches, result, woman_patch, woman_patches)
+            image_patch, lady_patches, result, woman_patch, woman_patches = if_stmt(_if, _else, woman_patch.vertical_center < image_patch.vertical_center, (image_patch, lady_patches, result, woman_patch, woman_patches))
+            return (image_patch, lady_patches, result, woman_patch, woman_patches)
+        image_patch, lady_patches, result, woman_patch, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (image_patch, lady_patches, result, woman_patch, woman_patches))
+        return (image_patch, lady_patch, lady_patches, result, woman_patch, woman_patches)
+
+    def _else(image_patch, lady_patch, lady_patches, result, woman_patch, woman_patches):
+        lady_patch = lady_patches[0]
+
+        def _if(image_patch, lady_patch, lady_patches, result):
+            result = 'bottom'
+            return (image_patch, lady_patch, lady_patches, result)
+
+        def _else(image_patch, lady_patch, lady_patches, result):
+            result = 'top'
+            return (image_patch, lady_patch, lady_patches, result)
+        image_patch, lady_patch, lady_patches, result = if_stmt(_if, _else, lady_patch.vertical_center < image_patch.vertical_center, (image_patch, lady_patch, lady_patches, result))
+        return (image_patch, lady_patch, lady_patches, result, woman_patch, woman_patches)
+    image_patch, lady_patch, lady_patches, result, woman_patch, woman_patches = if_stmt(_if, _else, len(lady_patches) == 0, (image_patch, lady_patch, lady_patches, result, woman_patch, woman_patches))
+    return result

@@ -1,0 +1,33 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    image_patch = None
+    pillow_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    pillow_patches = image_patch.find('pillow')
+
+    def _for(pillow_patch, image_patch, pillow_patches, result):
+
+        def _if(image_patch, pillow_patches, result):
+            result = 'yes'
+            return (image_patch, pillow_patches, result)
+        image_patch, pillow_patches, result = if_stmt(_if, None, pillow_patch.verify_property('pillow', 'white'), (image_patch, pillow_patches, result))
+        return (image_patch, pillow_patches, result)
+    image_patch, pillow_patches, result = for_stmt(_for, pillow_patches, (image_patch, pillow_patches, result))
+    chair_patches = image_patch.find('chair')
+
+    def _for(chair_patch, chair_patches, image_patch, pillow_patches, result):
+
+        def _if(chair_patches, image_patch, pillow_patches, result):
+            result = 'yes'
+            return (chair_patches, image_patch, pillow_patches, result)
+        chair_patches, image_patch, pillow_patches, result = if_stmt(_if, None, chair_patch.verify_property('chair', 'white'), (chair_patches, image_patch, pillow_patches, result))
+        return (chair_patches, image_patch, pillow_patches, result)
+    chair_patches, image_patch, pillow_patches, result = for_stmt(_for, chair_patches, (chair_patches, image_patch, pillow_patches, result))
+
+    def _if(chair_patches, image_patch, pillow_patches, result):
+        result = image_patch.simple_query('Is there a pillow or a chair that is white?')
+        return (chair_patches, image_patch, pillow_patches, result)
+    chair_patches, image_patch, pillow_patches, result = if_stmt(_if, None, and_expr(len(pillow_patches) == 0, len(chair_patches) == 0), (chair_patches, image_patch, pillow_patches, result))
+    return result

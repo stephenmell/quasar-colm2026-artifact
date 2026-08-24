@@ -1,0 +1,8 @@
+# Are there cars in the photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_car = image_patch.exists("car")
+    if not is_car:
+        is_car = image_patch.exists("cars")
+    result = bool_to_yesno(is_car)
+    return result

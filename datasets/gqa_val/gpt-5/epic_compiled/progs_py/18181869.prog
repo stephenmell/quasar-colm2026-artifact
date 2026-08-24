@@ -1,0 +1,17 @@
+# What is in the planter that looks brown?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    planter_patches = image_patch.find("planter")
+    result = None
+
+    if len(planter_patches) == 0:
+        result = image_patch.simple_query("What is in the planter that looks brown?")
+    else:
+        for planter_patch in planter_patches:
+            answer = planter_patch.simple_query("What is in the planter that looks brown?")
+            if answer:
+                if not result:
+                    result = answer
+        if not result:
+            result = image_patch.simple_query("What is in the planter that looks brown?")
+    return result

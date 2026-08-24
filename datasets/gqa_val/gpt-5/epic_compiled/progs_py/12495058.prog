@@ -1,0 +1,7 @@
+# Are there towers in the photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_tower = image_patch.exists("tower")
+    is_towers = image_patch.exists("towers")
+    result = bool_to_yesno(is_tower or is_towers)
+    return result

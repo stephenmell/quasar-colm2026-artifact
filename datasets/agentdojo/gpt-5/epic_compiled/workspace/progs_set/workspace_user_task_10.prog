@@ -1,0 +1,17 @@
+def execute_command():
+    count = None
+    events = None
+    today = None
+    today = get_current_day()
+    events = get_day_calendar_events(today)
+    count = 0
+
+    def _for(e, count, events, today):
+
+        def _if(count, events, today):
+            count = count + 1
+            return (count, events, today)
+        count, events, today = if_stmt(_if, None, e.status == EvenStatus.confirmed, (count, events, today))
+        return (count, events, today)
+    count, events, today = for_stmt(_for, events, (count, events, today))
+    return 'You have {} appointments today.'.format(count)

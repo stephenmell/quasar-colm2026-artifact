@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    donut_patches = None
+    image_patch = None
+    is_right = None
+    result = None
+    snack_patches = None
+    image_patch = ImagePatch(image)
+    snack_patches = image_patch.find('snack')
+
+    def _if(donut_patches, image_patch, is_right, result, snack_patches):
+        result = image_patch.simple_query('Does the donut to the right of the snack look round?')
+        return (donut_patches, image_patch, is_right, result, snack_patches)
+
+    def _else(donut_patches, image_patch, is_right, result, snack_patches):
+        donut_patches = image_patch.find('donut')
+
+        def _if(donut_patches, image_patch, is_right, result, snack_patches):
+            result = 'no'
+            return (donut_patches, image_patch, is_right, result, snack_patches)
+
+        def _else(donut_patches, image_patch, is_right, result, snack_patches):
+            result = 'no'
+
+            def _for(snack_patch, donut_patches, image_patch, is_right, result, snack_patches):
+
+                def _for(donut_patch, donut_patches, image_patch, is_right, result, snack_patches):
+                    is_right = donut_patch.horizontal_center > snack_patch.horizontal_center
+
+                    def _if(donut_patches, image_patch, is_right, result, snack_patches):
+                        result = 'yes'
+                        return (donut_patches, image_patch, is_right, result, snack_patches)
+                    donut_patches, image_patch, is_right, result, snack_patches = if_stmt(_if, None, and_expr(is_right, donut_patch.verify_property('donut', 'round')), (donut_patches, image_patch, is_right, result, snack_patches))
+                    return (donut_patches, image_patch, is_right, result, snack_patches)
+                donut_patches, image_patch, is_right, result, snack_patches = for_stmt(_for, donut_patches, (donut_patches, image_patch, is_right, result, snack_patches))
+                return (donut_patches, image_patch, is_right, result, snack_patches)
+            donut_patches, image_patch, is_right, result, snack_patches = for_stmt(_for, snack_patches, (donut_patches, image_patch, is_right, result, snack_patches))
+            return (donut_patches, image_patch, is_right, result, snack_patches)
+        donut_patches, image_patch, is_right, result, snack_patches = if_stmt(_if, _else, len(donut_patches) == 0, (donut_patches, image_patch, is_right, result, snack_patches))
+        return (donut_patches, image_patch, is_right, result, snack_patches)
+    donut_patches, image_patch, is_right, result, snack_patches = if_stmt(_if, _else, len(snack_patches) == 0, (donut_patches, image_patch, is_right, result, snack_patches))
+    return result

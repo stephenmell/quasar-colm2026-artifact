@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    all_tall_and_green = None
+    image_patch = None
+    is_green = None
+    is_tall = None
+    result = None
+    tree_patches = None
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find('tree')
+
+    def _if(all_tall_and_green, image_patch, is_green, is_tall, result, tree_patches):
+        result = image_patch.simple_query('Are the trees tall and green?')
+        return (all_tall_and_green, image_patch, is_green, is_tall, result, tree_patches)
+
+    def _else(all_tall_and_green, image_patch, is_green, is_tall, result, tree_patches):
+        all_tall_and_green = True
+
+        def _for(tree_patch, all_tall_and_green, image_patch, is_green, is_tall, tree_patches):
+            is_tall = tree_patch.verify_property('tree', 'tall')
+            is_green = tree_patch.verify_property('tree', 'green')
+            all_tall_and_green = and_expr(all_tall_and_green, is_tall and is_green)
+            return (all_tall_and_green, image_patch, is_green, is_tall, tree_patches)
+        all_tall_and_green, image_patch, is_green, is_tall, tree_patches = for_stmt(_for, tree_patches, (all_tall_and_green, image_patch, is_green, is_tall, tree_patches))
+        result = bool_to_yesno(all_tall_and_green)
+        return (all_tall_and_green, image_patch, is_green, is_tall, result, tree_patches)
+    all_tall_and_green, image_patch, is_green, is_tall, result, tree_patches = if_stmt(_if, _else, len(tree_patches) == 0, (all_tall_and_green, image_patch, is_green, is_tall, result, tree_patches))
+    return result

@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    image_patch = None
+    nightstand_patches = None
+    radiator_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    nightstand_patches = image_patch.find('nightstand')
+
+    def _if(image_patch, nightstand_patches, radiator_patches, result):
+        result = image_patch.simple_query('Is the nightstand to the right of a radiator?')
+        return (image_patch, nightstand_patches, radiator_patches, result)
+
+    def _else(image_patch, nightstand_patches, radiator_patches, result):
+        result = 'no'
+        radiator_patches = image_patch.find('radiator')
+
+        def _for(nightstand_patch, image_patch, nightstand_patches, radiator_patches, result):
+
+            def _for(radiator_patch, image_patch, nightstand_patches, radiator_patches, result):
+
+                def _if(image_patch, nightstand_patches, radiator_patches, result):
+                    result = 'yes'
+                    return (image_patch, nightstand_patches, radiator_patches, result)
+                image_patch, nightstand_patches, radiator_patches, result = if_stmt(_if, None, nightstand_patch.horizontal_center > radiator_patch.horizontal_center, (image_patch, nightstand_patches, radiator_patches, result))
+                return (image_patch, nightstand_patches, radiator_patches, result)
+            image_patch, nightstand_patches, radiator_patches, result = for_stmt(_for, radiator_patches, (image_patch, nightstand_patches, radiator_patches, result))
+            return (image_patch, nightstand_patches, radiator_patches, result)
+        image_patch, nightstand_patches, radiator_patches, result = for_stmt(_for, nightstand_patches, (image_patch, nightstand_patches, radiator_patches, result))
+        return (image_patch, nightstand_patches, radiator_patches, result)
+    image_patch, nightstand_patches, radiator_patches, result = if_stmt(_if, _else, len(nightstand_patches) == 0, (image_patch, nightstand_patches, radiator_patches, result))
+    return result

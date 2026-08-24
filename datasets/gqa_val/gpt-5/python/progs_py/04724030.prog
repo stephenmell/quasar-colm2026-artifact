@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find("bus")
+    train_patches = image_patch.find("train")
+
+    # If neither buses nor trains are detected, ask directly
+    if len(bus_patches) == 0 and len(train_patches) == 0:
+        return image_patch.simple_query("Are there either buses or trains that are colorful?")
+
+    # Check if any bus is colorful
+    for bus_patch in bus_patches:
+        if bus_patch.verify_property("bus", "colorful"):
+            return "yes"
+
+    # Check if any train is colorful
+    for train_patch in train_patches:
+        if train_patch.verify_property("train", "colorful"):
+            return "yes"
+
+    return "no"

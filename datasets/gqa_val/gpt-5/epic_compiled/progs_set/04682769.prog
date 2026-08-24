@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    has_man = None
+    has_woman = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_man = False
+    has_woman = False
+
+    def _for(term, has_man, has_woman, image_patch):
+
+        def _if(has_man, has_woman, image_patch):
+            has_man = True
+            return (has_man, has_woman, image_patch)
+        has_man, has_woman, image_patch = if_stmt(_if, None, image_patch.exists(term), (has_man, has_woman, image_patch))
+        return (has_man, has_woman, image_patch)
+    has_man, has_woman, image_patch = for_stmt(_for, ('man', 'men'), (has_man, has_woman, image_patch))
+
+    def _for(term, has_man, has_woman, image_patch):
+
+        def _if(has_man, has_woman, image_patch):
+            has_woman = True
+            return (has_man, has_woman, image_patch)
+        has_man, has_woman, image_patch = if_stmt(_if, None, image_patch.exists(term), (has_man, has_woman, image_patch))
+        return (has_man, has_woman, image_patch)
+    has_man, has_woman, image_patch = for_stmt(_for, ('woman', 'women'), (has_man, has_woman, image_patch))
+
+    def _if(has_man, has_woman, image_patch, result):
+        result = 'yes'
+        return (has_man, has_woman, image_patch, result)
+
+    def _else(has_man, has_woman, image_patch, result):
+        result = image_patch.simple_query('Are there both men and women in the scene?')
+        return (has_man, has_woman, image_patch, result)
+    has_man, has_woman, image_patch, result = if_stmt(_if, _else, and_expr(has_man, has_woman), (has_man, has_woman, image_patch, result))
+    return result

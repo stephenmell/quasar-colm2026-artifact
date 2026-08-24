@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, there is a small elephant.",
+      "no",
+      "yes",
+      "No, the elephant is not small."
+    ]
+  },
+  "time_ns": 7195782924
+}

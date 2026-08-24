@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    surfboard_patches = image_patch.find("surfboard")
+    if len(surfboard_patches) == 0:
+        result = image_patch.simple_query("Is the surfboard blue?")
+    else:
+        result = "no"
+        for surfboard_patch in surfboard_patches:
+            if surfboard_patch.verify_property("surfboard", "blue"):
+                result = "yes"
+    return result

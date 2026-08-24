@@ -1,0 +1,43 @@
+# What vegetable is to the right of the onion?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the onion first
+    onion_patches = image_patch.find("onion")
+    if len(onion_patches) == 0:
+        # If no onion is found, ask directly with the relation
+        return image_patch.simple_query("What vegetable is to the right of the onion?")
+    # If multiple onions, use the first (or pick the leftmost)
+    onion_patch = sorted(onion_patches, key=lambda p: p.horizontal_center)[0]
+
+    # Find vegetables
+    vegetable_patches = image_patch.find("vegetable")
+    # If generic "vegetable" is not detected, try common specific vegetables
+    if len(vegetable_patches) == 0:
+        candidates = []
+        common_veggies = [
+            "pepper", "bell pepper", "carrot", "tomato", "cucumber", "broccoli",
+            "lettuce", "cabbage", "garlic", "potato", "eggplant", "corn",
+            "celery", "radish", "zucchini", "cauliflower", "mushroom",
+            "pea", "bean", "green bean", "chili pepper", "scallion"
+        ]
+        for veg in common_veggies:
+            candidates.extend(image_patch.find(veg))
+        vegetable_patches = candidates
+
+    if len(vegetable_patches) == 0:
+        # If still nothing, ask directly
+        return image_patch.simple_query("What vegetable is to the right of the onion?")
+
+    # Filter to vegetables to the right of the onion
+    right_candidates = [vp for vp in vegetable_patches if vp.horizontal_center > onion_patch.horizontal_center]
+
+    if len(right_candidates) == 0:
+        return image_patch.simple_query("What vegetable is to the right of the onion?")
+
+    # Choose the closest one to the onion horizontally
+    right_candidates.sort(key=lambda vp: vp.horizontal_center - onion_patch.horizontal_center)
+    target_patch = right_candidates[0]
+
+    # Classify the selected vegetable
+    return target_patch.simple_query("What vegetable is this?")

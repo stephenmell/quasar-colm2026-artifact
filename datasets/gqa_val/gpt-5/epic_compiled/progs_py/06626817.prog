@@ -1,0 +1,34 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Find a gate
+    gate_patches = image_patch.find("gate")
+    gate_patch = None
+    if len(gate_patches) > 0:
+        gate_patch = gate_patches[0]
+
+    # Find a tee shirt (try multiple variants)
+    tee_variants = ("tee shirt", "t shirt", "t-shirt", "tshirt", "shirt")
+    tee_patch = None
+    for name in tee_variants:
+        if tee_patch is None:
+            candidate_patches = image_patch.find(name)
+            if len(candidate_patches) > 0:
+                tee_patch = candidate_patches[0]
+
+    # If either object is missing, ask directly
+    if gate_patch is None or tee_patch is None:
+        result = image_patch.simple_query("Does the gate have a different color than the tee shirt?")
+    else:
+        # Compare inferred colors
+        color_options = ("red", "blue", "green", "black", "white", "gray", "grey", "brown",
+                         "yellow", "orange", "pink", "purple", "tan", "beige", "gold", "silver")
+        gate_color = gate_patch.best_text_match(color_options)
+        tee_color = tee_patch.best_text_match(color_options)
+        if gate_color != tee_color:
+            result = "yes"
+        else:
+            result = "no"
+
+    return result

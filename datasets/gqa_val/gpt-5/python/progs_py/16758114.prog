@@ -1,0 +1,11 @@
+# Is there any bird that is black?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find("bird")
+    if len(bird_patches) == 0:
+        # If no bird is found, query the image directly
+        return image_patch.simple_query("Is there any bird that is black?")
+    for bird_patch in bird_patches:
+        if bird_patch.verify_property("bird", "black"):
+            return "yes"
+    return "no"

@@ -1,0 +1,14 @@
+{
+  "result": {
+    "_possibilities": [
+      null,
+      "Black",
+      "Red",
+      "Dark",
+      "Brown",
+      "Not visible",
+      "Skin tone"
+    ]
+  },
+  "time_ns": 35281699998
+}

@@ -1,0 +1,72 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    box_patches = None
+    chosen_animal = None
+    chosen_center = None
+    image_patch = None
+    is_above_any_box = None
+    result = None
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result):
+        result = image_patch.simple_query('What color is the animal above the box?')
+        return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result)
+
+    def _else(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result):
+        box_patches = image_patch.find('box')
+
+        def _if(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result):
+            result = image_patch.simple_query('What color is the animal above the box?')
+            return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result)
+
+        def _else(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result):
+            chosen_animal = None
+            chosen_center = None
+
+            def _for(animal_patch, animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box):
+                is_above_any_box = False
+
+                def _for(box_patch, animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box):
+
+                    def _if(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box):
+                        is_above_any_box = True
+                        return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box)
+                    animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box = if_stmt(_if, None, animal_patch.vertical_center < box_patch.vertical_center, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box))
+                    return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box)
+                animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box = for_stmt(_for, box_patches, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box))
+
+                def _if(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box):
+
+                    def _if(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box):
+                        chosen_animal = animal_patch
+                        chosen_center = animal_patch.vertical_center
+                        return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box)
+
+                    def _else(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box):
+
+                        def _if(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box):
+                            chosen_animal = animal_patch
+                            chosen_center = animal_patch.vertical_center
+                            return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box)
+                        animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box = if_stmt(_if, None, animal_patch.vertical_center < chosen_center, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box))
+                        return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box)
+                    animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box = if_stmt(_if, _else, chosen_animal is None, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box))
+                    return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box)
+                animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box = if_stmt(_if, None, is_above_any_box, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box))
+                return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box)
+            animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box = for_stmt(_for, animal_patches, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box))
+
+            def _if(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result):
+                result = image_patch.simple_query('What color is the animal above the box?')
+                return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result)
+
+            def _else(animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result):
+                result = chosen_animal.simple_query('What color is the animal?')
+                return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result)
+            animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result = if_stmt(_if, _else, chosen_animal is None, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result))
+            return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result)
+        animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result = if_stmt(_if, _else, len(box_patches) == 0, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result))
+        return (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result)
+    animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result = if_stmt(_if, _else, len(animal_patches) == 0, (animal_patches, box_patches, chosen_animal, chosen_center, image_patch, is_above_any_box, result))
+    return result

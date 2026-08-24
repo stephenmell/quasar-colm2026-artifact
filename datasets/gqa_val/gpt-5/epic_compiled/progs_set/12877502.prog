@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    image_patch = None
+    inside_horiz = None
+    inside_vert = None
+    is_on_plate = None
+    mushroom_patches = None
+    pizza_patches = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find('plate')
+
+    def _if(image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+        result = image_patch.simple_query('Are there any mushrooms on the pizza that is on the plate?')
+        return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+
+    def _else(image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+        pizza_patches = image_patch.find('pizza')
+
+        def _if(image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+            result = image_patch.simple_query('Are there any mushrooms on the pizza that is on the plate?')
+            return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+
+        def _else(image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+            result = 'no'
+
+            def _for(plate_patch, image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+
+                def _for(pizza_patch, image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+                    inside_horiz = and_expr(pizza_patch.horizontal_center >= plate_patch.left, pizza_patch.horizontal_center <= plate_patch.right)
+                    inside_vert = and_expr(pizza_patch.vertical_center >= plate_patch.lower, pizza_patch.vertical_center <= plate_patch.upper)
+                    is_on_plate = and_expr(inside_horiz, inside_vert)
+
+                    def _if(image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+                        mushroom_patches = pizza_patch.find('mushroom')
+
+                        def _if(image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result):
+                            result = 'yes'
+                            return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+                        image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result = if_stmt(_if, None, len(mushroom_patches) > 0, (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result))
+                        return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+                    image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result = if_stmt(_if, None, is_on_plate, (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result))
+                    return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+                image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result = for_stmt(_for, pizza_patches, (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result))
+                return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+            image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result = for_stmt(_for, plate_patches, (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result))
+            return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+        image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result = if_stmt(_if, _else, len(pizza_patches) == 0, (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result))
+        return (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result)
+    image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result = if_stmt(_if, _else, len(plate_patches) == 0, (image_patch, inside_horiz, inside_vert, is_on_plate, mushroom_patches, pizza_patches, plate_patches, result))
+    return result

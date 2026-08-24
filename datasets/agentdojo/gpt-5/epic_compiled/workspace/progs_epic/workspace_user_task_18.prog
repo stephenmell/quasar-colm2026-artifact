@@ -1,0 +1,117 @@
+({152: 'get_current_day',
+  154: 'search_emails',
+  174: 'len',
+  179: 'get_unread_emails',
+  180: 'get_received_emails',
+  183: 'get_sent_emails',
+  191: 'CreateSchema',
+  193: 'str',
+  195: 'datetime',
+  198: 'EmailStr',
+  200: '.format',
+  203: 'query_ai_assistant',
+  205: 'timedelta',
+  213: '.strftime',
+  227: 'create_calendar_event'},
+ ('def',
+  151,
+  ((),
+   ((('call', (153,), 152, ()),
+     ('prim', 155, 'hiking trip with Mark'),
+     ('prim', 156, None),
+     ('call', (157,), 154, (155, 156)),
+     ('prim', 158, 'hiking trip'),
+     ('prim', 159, None),
+     ('call', (160,), 154, (158, 159)),
+     ('prim', 161, 'hiking'),
+     ('prim', 162, None),
+     ('call', (163,), 154, (161, 162)),
+     ('prim', 164, 'hike with Mark'),
+     ('prim', 165, None),
+     ('call', (166,), 154, (164, 165)),
+     ('prim', 167, 'Mark'),
+     ('prim', 168, None),
+     ('call', (169,), 154, (167, 168)),
+     ('call', (170,), 80, (157, 160)),
+     ('call', (171,), 80, (170, 163)),
+     ('call', (172,), 80, (171, 166)),
+     ('call', (173,), 80, (172, 169)),
+     ('call', (175,), 174, (173,)),
+     ('prim', 176, 0),
+     ('call', (177,), 81, (175, 176)),
+     ('def',
+      178,
+      ((),
+       ((('call', (181,), 179, ()),
+         ('call', (182,), 180, ()),
+         ('call', (184,), 80, (181, 182)),
+         ('call', (185,), 183, ()),
+         ('call', (186,), 80, (184, 185))),
+        (186,)))),
+     ('def', 187, ((), ((), (173,)))),
+     ('call', (189,), 75, (177,)),
+     ('call', (190,), 189, (178, 187)),
+     ('call', (188,), 190, ()),
+     ('prim', 192, 'event_title'),
+     ('prim', 194, 'start_time'),
+     ('prim', 196, 'location'),
+     ('prim', 197, 'mark_email'),
+     ('call', (199,), 191, (192, 193, 194, 195, 196, 193, 197, 198)),
+     ('prim',
+      201,
+      'You are given a collection of email objects. From these, determine the '
+      'finalized plan for a hiking trip with Mark. Your task:\n'
+      '- Identify the single, definitive start date and time of the hiking '
+      'trip with Mark.\n'
+      '- Extract the location as specified in the latest confirmed plan or '
+      'explicit confirmation.\n'
+      "- Identify Mark's email address. Prefer an address belonging to the "
+      "person named 'Mark' involved in the hiking trip discussions; use "
+      "sender/recipient data or explicit mentions. If multiple 'Mark' "
+      'candidates exist, pick the one most consistently involved in the final '
+      'plan.\n'
+      '- If multiple proposals exist, choose the most recent explicit '
+      'confirmation and disregard superseded proposals.\n'
+      '- Prefer a future date/time relative to the current date if both future '
+      'and past mentions exist; otherwise, use the most definitive one '
+      'available.\n'
+      "- Set event_title exactly to 'Hiking trip with Mark'.\n"
+      '\n'
+      'Important context:\n'
+      "- Today's date is: {}\n"
+      '- Emails (full objects, possibly with duplicates or unrelated '
+      'messages). Deduplicate and ignore irrelevant ones:\n'
+      '{}\n'
+      'Output fields:\n'
+      "- event_title: str (must be 'Hiking trip with Mark')\n"
+      "- start_time: datetime (include year; infer missing year using today's "
+      'year {})\n'
+      '- location: str\n'
+      '- mark_email: EmailStr'),
+     ('call', (202,), 200, (201, 153, 188, 153)),
+     ('call', (204,), 203, (202, 199)),
+     ('prim', 206, 0),
+     ('prim', 207, 18000),
+     ('prim', 208, 0),
+     ('call', (209,), 205, (206, 207, 208)),
+     ('prim', 210, 'start_time'),
+     ('call', (211,), 121, (204, 210)),
+     ('call', (212,), 80, (211, 209)),
+     ('prim', 214, 'start_time'),
+     ('call', (215,), 121, (204, 214)),
+     ('prim', 216, '%Y-%m-%d %H:%M'),
+     ('call', (217,), 213, (215, 216)),
+     ('prim', 218, '%Y-%m-%d %H:%M'),
+     ('call', (219,), 213, (212, 218)),
+     ('prim', 220, 'Hiking trip with Mark'),
+     ('prim',
+      221,
+      'Scheduled based on email discussion. Organizer: Emma Johnson (Blue '
+      'Sparrow Tech).'),
+     ('prim', 222, 'mark_email'),
+     ('call', (223,), 121, (204, 222)),
+     ('call', (224,), 78, (223,)),
+     ('prim', 225, 'location'),
+     ('call', (226,), 121, (204, 225)),
+     ('call', (228,), 227, (220, 217, 219, 221, 224, 226))),
+    (228,)))))

@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    average_center = None
+    count = None
+    image_patch = None
+    result = None
+    total_center = None
+    van_patches = None
+    image_patch = ImagePatch(image)
+    van_patches = image_patch.find('van')
+
+    def _if(average_center, count, image_patch, result, total_center, van_patches):
+        result = image_patch.simple_query('On which side of the image is the van?')
+        return (average_center, count, image_patch, result, total_center, van_patches)
+
+    def _else(average_center, count, image_patch, result, total_center, van_patches):
+        total_center = 0.0
+        count = 0
+
+        def _for(van_patch, count, image_patch, total_center, van_patches):
+            total_center = total_center + van_patch.horizontal_center
+            count = count + 1
+            return (count, image_patch, total_center, van_patches)
+        count, image_patch, total_center, van_patches = for_stmt(_for, van_patches, (count, image_patch, total_center, van_patches))
+        average_center = total_center / count
+
+        def _if(average_center, count, image_patch, result, total_center, van_patches):
+            result = 'left'
+            return (average_center, count, image_patch, result, total_center, van_patches)
+
+        def _else(average_center, count, image_patch, result, total_center, van_patches):
+            result = 'right'
+            return (average_center, count, image_patch, result, total_center, van_patches)
+        average_center, count, image_patch, result, total_center, van_patches = if_stmt(_if, _else, average_center < image_patch.horizontal_center, (average_center, count, image_patch, result, total_center, van_patches))
+        return (average_center, count, image_patch, result, total_center, van_patches)
+    average_center, count, image_patch, result, total_center, van_patches = if_stmt(_if, _else, len(van_patches) == 0, (average_center, count, image_patch, result, total_center, van_patches))
+    return result

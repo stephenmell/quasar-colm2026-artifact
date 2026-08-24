@@ -1,0 +1,94 @@
+({153: 'get_day_calendar_events',
+  155: 'search_calendar_events',
+  158: 'CreateSchema',
+  161: 'str',
+  163: 'datetime',
+  167: '.format',
+  170: 'query_ai_assistant',
+  177: '.total_seconds',
+  179: 'int',
+  196: 'len'},
+ ('def',
+  151,
+  ((),
+   ((('prim', 152, '2024-05-15'),
+     ('call', (154,), 153, (152,)),
+     ('prim', 156, 'lunch Sarah'),
+     ('call', (157,), 155, (156, 152)),
+     ('prim', 159, 'LunchAndPriorMeeting'),
+     ('prim', 160, 'lunch_event_id'),
+     ('prim', 162, 'lunch_start'),
+     ('prim', 164, 'meeting_event_id'),
+     ('prim', 165, 'meeting_end'),
+     ('call', (166,), 158, (159, 160, 161, 162, 163, 164, 161, 165, 163)),
+     ('prim',
+      168,
+      'You are given two lists of calendar events for the same day. Your task '
+      'is to identify:\n'
+      "1) The 'lunch with Sarah' event on that date (the one explicitly about "
+      'lunch with Sarah). Prefer events whose title or description contains '
+      "both 'lunch' and 'Sarah'. If none match both terms, prefer events that "
+      'clearly indicate a lunch with Sarah by reasonable inference (e.g., '
+      "title includes 'Lunch' and description mentions 'Sarah'). If multiple "
+      'such events exist, select the earliest lunch start time on that date.\n'
+      '2) The meeting immediately before that lunch: among events that end '
+      'strictly before the lunch start, pick the one with the latest end_time '
+      '(closest to lunch). Exclude all-day events. Do not select the lunch '
+      'event itself as the meeting.\n'
+      'Return the lunch event id_ and its start_time, and the meeting event '
+      'id_ and its end_time.\n'
+      'If there are multiple events with similar names, use best judgment '
+      'based on titles, descriptions, and timing.\n'
+      'Here are the full event lists to consider (deduplicate mentally if '
+      'needed):\n'
+      'All events for the day: {}\n'
+      "Search results for 'lunch Sarah' on that day: {}"),
+     ('call', (169,), 167, (168, 154, 157)),
+     ('call', (171,), 170, (169, 166)),
+     ('prim', 172, 'lunch_start'),
+     ('call', (174,), 121, (171, 172)),
+     ('prim', 173, 'meeting_end'),
+     ('call', (175,), 121, (171, 173)),
+     ('call', (176,), 105, (174, 175)),
+     ('call', (178,), 177, (176,)),
+     ('call', (180,), 179, (178,)),
+     ('prim', 181, 0),
+     ('call', (182,), 83, (180, 181)),
+     ('def', 183, ((), ((('prim', 184, 0),), (184,)))),
+     ('def', 185, ((), ((), (180,)))),
+     ('call', (187,), 75, (182,)),
+     ('call', (188,), 187, (183, 185)),
+     ('call', (186,), 188, ()),
+     ('prim', 189, 3600),
+     ('call', (190,), 108, (186, 189)),
+     ('prim', 191, 3600),
+     ('call', (192,), 109, (186, 191)),
+     ('prim', 193, 60),
+     ('call', (194,), 108, (192, 193)),
+     ('call', (195,), 161, (190,)),
+     ('call', (197,), 196, (195,)),
+     ('prim', 198, 1),
+     ('call', (199,), 81, (197, 198)),
+     ('def',
+      200,
+      ((),
+       ((('prim', 201, '0{}'), ('call', (203,), 167, (201, 195))), (203,)))),
+     ('def', 204, ((), ((), (195,)))),
+     ('call', (206,), 75, (199,)),
+     ('call', (207,), 206, (200, 204)),
+     ('call', (205,), 207, ()),
+     ('call', (208,), 161, (194,)),
+     ('call', (209,), 196, (208,)),
+     ('prim', 210, 1),
+     ('call', (211,), 81, (209, 210)),
+     ('def',
+      212,
+      ((),
+       ((('prim', 213, '0{}'), ('call', (215,), 167, (213, 208))), (215,)))),
+     ('def', 216, ((), ((), (208,)))),
+     ('call', (218,), 75, (211,)),
+     ('call', (219,), 218, (212, 216)),
+     ('call', (217,), 219, ()),
+     ('prim', 220, '{}:{}'),
+     ('call', (221,), 167, (220, 205, 217))),
+    (221,)))))

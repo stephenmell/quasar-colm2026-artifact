@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find("dog")
+    # If no dog is found, query directly
+    if len(dog_patches) == 0:
+        return image_patch.simple_query("Are there any girls to the left of the dog that wears a collar?")
+    # Filter dogs that are wearing a collar
+    collar_dogs = []
+    for dog_patch in dog_patches:
+        if dog_patch.verify_property("dog", "wearing a collar"):
+            collar_dogs.append(dog_patch)
+    if len(collar_dogs) == 0:
+        return "no"
+    girl_patches = image_patch.find("girl")
+    if len(girl_patches) == 0:
+        return "no"
+    # Check if any girl is to the left of any collar-wearing dog
+    for dog_patch in collar_dogs:
+        for girl_patch in girl_patches:
+            if girl_patch.horizontal_center < dog_patch.horizontal_center:
+                return "yes"
+    return "no"

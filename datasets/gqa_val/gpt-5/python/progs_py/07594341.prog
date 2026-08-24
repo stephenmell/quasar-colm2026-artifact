@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    statue_patches = image_patch.find("statue")
+    if len(statue_patches) == 0:
+        return image_patch.simple_query("What is the vehicle to the right of the statue?")
+    vehicle_patches = image_patch.find("vehicle")
+    if len(vehicle_patches) == 0:
+        return image_patch.simple_query("What is the vehicle to the right of the statue?")
+    statue_patch = statue_patches[0]
+    right_vehicles = [v for v in vehicle_patches if v.horizontal_center > statue_patch.horizontal_center]
+    if len(right_vehicles) == 0:
+        return image_patch.simple_query("What is the vehicle to the right of the statue?")
+    right_vehicles.sort(key=lambda v: v.horizontal_center - statue_patch.horizontal_center)
+    return right_vehicles[0].simple_query("What is this?")

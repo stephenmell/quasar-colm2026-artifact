@@ -1,0 +1,27 @@
+Stage: agentdojo_eval.exec_with_return
+Error: 1 validation error for Email
+recipients.0
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/AgentDojo/pipeline_run_agentdojo.py", line 295, in main
+    exec_result = exec_locals.get("execute_command")()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "travel_user_task_7.prog", line 72, in execute_command
+  File "/home/sm1/projects/conformal_viper/AgentDojo/tools/suite_common.py", line 40, in wrapper
+    return f(**kwargs_with_deps, **named_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 193, in send_email
+    return inbox.send_email(recipients, subject, body, parsed_attachments, cc, bcc)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 88, in send_email
+    new_email = Email(
+                ^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/site-packages/pydantic/main.py", line 214, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Email
+recipients.0
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type

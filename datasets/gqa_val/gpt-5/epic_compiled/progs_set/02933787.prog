@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    image_patch = None
+    left_side_nightstands = None
+    nightstand_patches = None
+    result = None
+    right_area_patch = None
+    selected_nightstand = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    nightstand_patches = image_patch.find('nightstand')
+
+    def _if(image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand):
+        result = image_patch.simple_query('Are there beds to the right of the nightstand on the left side?')
+        return (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand)
+
+    def _else(image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand):
+        left_side_nightstands = ()
+
+        def _for(ns, image_patch, left_side_nightstands, nightstand_patches, result):
+
+            def _if(image_patch, left_side_nightstands, nightstand_patches, result):
+                left_side_nightstands = left_side_nightstands + (ns,)
+                return (image_patch, left_side_nightstands, nightstand_patches, result)
+            image_patch, left_side_nightstands, nightstand_patches, result = if_stmt(_if, None, ns.horizontal_center < image_patch.horizontal_center, (image_patch, left_side_nightstands, nightstand_patches, result))
+            return (image_patch, left_side_nightstands, nightstand_patches, result)
+        image_patch, left_side_nightstands, nightstand_patches, result = for_stmt(_for, nightstand_patches, (image_patch, left_side_nightstands, nightstand_patches, result))
+
+        def _if(image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand):
+            result = image_patch.simple_query('Are there beds to the right of the nightstand on the left side?')
+            return (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand)
+
+        def _else(image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand):
+            selected_nightstand = left_side_nightstands[0]
+
+            def _for(ns, image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand):
+
+                def _if(image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand):
+                    selected_nightstand = ns
+                    return (image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand)
+                image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand = if_stmt(_if, None, ns.horizontal_center < selected_nightstand.horizontal_center, (image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand))
+                return (image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand)
+            image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand = for_stmt(_for, left_side_nightstands, (image_patch, left_side_nightstands, nightstand_patches, result, selected_nightstand))
+            right_area_patch = image_patch.crop(selected_nightstand.right, image_patch.lower, image_patch.right, image_patch.upper)
+
+            def _if(image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand):
+                result = 'yes'
+                return (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand)
+
+            def _else(image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand):
+                result = 'no'
+                return (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand)
+            image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand = if_stmt(_if, _else, right_area_patch.exists('bed'), (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand))
+            return (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand)
+        image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand = if_stmt(_if, _else, len(left_side_nightstands) == 0, (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand))
+        return (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand)
+    image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand = if_stmt(_if, _else, len(nightstand_patches) == 0, (image_patch, left_side_nightstands, nightstand_patches, result, right_area_patch, selected_nightstand))
+    return result

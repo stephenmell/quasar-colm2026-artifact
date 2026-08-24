@@ -1,0 +1,17 @@
+# Are there any tomatoes on the plate?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    if len(plate_patches) == 0:
+        # If no plate is found, query the image directly
+        return image_patch.simple_query("Are there any tomatoes on the plate?")
+    tomato_patches = image_patch.find("tomato")
+    if len(tomato_patches) == 0:
+        return "no"
+    # Check if any tomato center lies within any plate's bounding box
+    for plate_patch in plate_patches:
+        for tomato_patch in tomato_patches:
+            if (plate_patch.left <= tomato_patch.horizontal_center <= plate_patch.right and
+                plate_patch.lower <= tomato_patch.vertical_center <= plate_patch.upper):
+                return "yes"
+    return "no"

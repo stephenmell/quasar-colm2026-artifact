@@ -1,0 +1,32 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    car_patches = image_patch.find("car")
+    bicycle_patches = image_patch.find("bicycle")
+    truck_patches = image_patch.find("truck")
+
+    if len(car_patches) == 0 or len(bicycle_patches) == 0 or len(truck_patches) == 0:
+        result = image_patch.simple_query("Are the little car that is to the left of the bicycle and the truck both white?")
+    else:
+        bicycle_patch = bicycle_patches[0]
+
+        # Select the smallest car that is to the left of the bicycle (as a proxy for "little")
+        selected_car_patch = None
+        smallest_area = None
+        for car_patch in car_patches:
+            is_left_of_bicycle = car_patch.horizontal_center < bicycle_patch.horizontal_center
+            if is_left_of_bicycle:
+                area = car_patch.width * car_patch.height
+                if smallest_area is None or area < smallest_area:
+                    smallest_area = area
+                    selected_car_patch = car_patch
+
+        if selected_car_patch is None:
+            result = image_patch.simple_query("Are the little car that is to the left of the bicycle and the truck both white?")
+        else:
+            car_white = selected_car_patch.verify_property("car", "white")
+            truck_white = truck_patches[0].verify_property("truck", "white")
+            result = bool_to_yesno(car_white and truck_white)
+
+    return result

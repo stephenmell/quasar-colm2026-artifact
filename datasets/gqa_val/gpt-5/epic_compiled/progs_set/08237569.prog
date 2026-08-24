@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    fence_patches = None
+    image_patch = None
+    is_brown = None
+    result = None
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find('fence')
+
+    def _if(fence_patches, image_patch, is_brown, result):
+        result = image_patch.simple_query('Is there any fence in the picture that is not brown?')
+        return (fence_patches, image_patch, is_brown, result)
+
+    def _else(fence_patches, image_patch, is_brown, result):
+        result = 'no'
+
+        def _for(fence_patch, fence_patches, image_patch, is_brown, result):
+            is_brown = fence_patch.verify_property('fence', 'brown')
+
+            def _if(fence_patches, image_patch, is_brown, result):
+                result = 'yes'
+                return (fence_patches, image_patch, is_brown, result)
+            fence_patches, image_patch, is_brown, result = if_stmt(_if, None, not_expr(is_brown), (fence_patches, image_patch, is_brown, result))
+            return (fence_patches, image_patch, is_brown, result)
+        fence_patches, image_patch, is_brown, result = for_stmt(_for, fence_patches, (fence_patches, image_patch, is_brown, result))
+        return (fence_patches, image_patch, is_brown, result)
+    fence_patches, image_patch, is_brown, result = if_stmt(_if, _else, len(fence_patches) == 0, (fence_patches, image_patch, is_brown, result))
+    return result

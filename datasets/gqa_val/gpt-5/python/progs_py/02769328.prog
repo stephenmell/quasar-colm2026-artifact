@@ -1,0 +1,35 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    chair_patches = image_patch.find("chair")
+    window_patches = image_patch.find("window")
+
+    # If key reference objects aren't reliably detected, ask directly
+    if len(chair_patches) == 0 or len(window_patches) == 0:
+        return image_patch.simple_query("Do you see end tables to the left of the chair below the window?")
+
+    end_table_patches = image_patch.find("end table")
+    if len(end_table_patches) == 0:
+        # Fallback to generic "table" if "end table" not detected
+        end_table_patches = image_patch.find("table")
+        if len(end_table_patches) == 0:
+            return "no"
+
+    # Consider chairs that are below any window
+    chairs_below_a_window = []
+    for chair in chair_patches:
+        for window in window_patches:
+            if chair.vertical_center > window.vertical_center:
+                chairs_below_a_window.append(chair)
+                break
+
+    if len(chairs_below_a_window) == 0:
+        return image_patch.simple_query("Do you see end tables to the left of the chair below the window?")
+
+    # Check if any end table is to the left of any such chair
+    for chair in chairs_below_a_window:
+        for end_table in end_table_patches:
+            if end_table.horizontal_center < chair.horizontal_center:
+                return "yes"
+
+    return "no"

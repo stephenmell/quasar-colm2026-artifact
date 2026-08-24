@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    pan_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pan_patches = image_patch.find('pan')
+
+    def _if(image_patch, pan_patches, result):
+        result = image_patch.simple_query('Is this a round pan?')
+        return (image_patch, pan_patches, result)
+
+    def _else(image_patch, pan_patches, result):
+        result = 'no'
+
+        def _for(pan_patch, image_patch, pan_patches, result):
+
+            def _if(image_patch, pan_patches, result):
+                result = 'yes'
+                return (image_patch, pan_patches, result)
+            image_patch, pan_patches, result = if_stmt(_if, None, pan_patch.verify_property('pan', 'round'), (image_patch, pan_patches, result))
+            return (image_patch, pan_patches, result)
+        image_patch, pan_patches, result = for_stmt(_for, pan_patches, (image_patch, pan_patches, result))
+        return (image_patch, pan_patches, result)
+    image_patch, pan_patches, result = if_stmt(_if, _else, len(pan_patches) == 0, (image_patch, pan_patches, result))
+    return result

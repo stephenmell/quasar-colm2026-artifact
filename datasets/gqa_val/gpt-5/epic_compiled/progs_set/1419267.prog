@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    dome_exists = None
+    dome_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    dome_exists = image_patch.exists('dome')
+
+    def _if(dome_exists, dome_patches, image_patch, result):
+        result = image_patch.simple_query('Does the dome look small?')
+        return (dome_exists, dome_patches, image_patch, result)
+
+    def _else(dome_exists, dome_patches, image_patch, result):
+        dome_patches = image_patch.find('dome')
+        result = 'no'
+
+        def _for(dome_patch, dome_exists, dome_patches, image_patch, result):
+
+            def _if(dome_exists, dome_patches, image_patch, result):
+                result = 'yes'
+                return (dome_exists, dome_patches, image_patch, result)
+            dome_exists, dome_patches, image_patch, result = if_stmt(_if, None, dome_patch.verify_property('dome', 'small'), (dome_exists, dome_patches, image_patch, result))
+            return (dome_exists, dome_patches, image_patch, result)
+        dome_exists, dome_patches, image_patch, result = for_stmt(_for, dome_patches, (dome_exists, dome_patches, image_patch, result))
+        return (dome_exists, dome_patches, image_patch, result)
+    dome_exists, dome_patches, image_patch, result = if_stmt(_if, _else, not_expr(dome_exists), (dome_exists, dome_patches, image_patch, result))
+    return result

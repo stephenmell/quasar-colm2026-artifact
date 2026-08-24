@@ -1,0 +1,18 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_snowboard = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_snowboard = image_patch.exists('snowboard')
+
+    def _if(image_patch, is_snowboard):
+        is_snowboard = image_patch.exists('snowboards')
+        return (image_patch, is_snowboard)
+    image_patch, is_snowboard = if_stmt(_if, None, not_expr(is_snowboard), (image_patch, is_snowboard))
+
+    def _if(image_patch, is_snowboard):
+        is_snowboard = image_patch.exists('snow board')
+        return (image_patch, is_snowboard)
+    image_patch, is_snowboard = if_stmt(_if, None, not_expr(is_snowboard), (image_patch, is_snowboard))
+    result = bool_to_yesno(is_snowboard)
+    return result

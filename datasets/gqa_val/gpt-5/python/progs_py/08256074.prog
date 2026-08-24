@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find("curtain")
+    # If no curtain is found, ask directly
+    if len(curtain_patches) == 0:
+        return image_patch.simple_query("Do you see a plate to the right of the white curtain?")
+    # Filter to white curtains
+    white_curtains = []
+    for curtain_patch in curtain_patches:
+        if curtain_patch.verify_property("curtain", "white") or curtain_patch.simple_query("Is the curtain white?") == "yes":
+            white_curtains.append(curtain_patch)
+    if len(white_curtains) == 0:
+        return image_patch.simple_query("Do you see a plate to the right of the white curtain?")
+    # Find plates
+    plate_patches = image_patch.find("plate")
+    if len(plate_patches) == 0:
+        return "no"
+    # Check if any plate is to the right of any white curtain
+    for plate_patch in plate_patches:
+        for curtain_patch in white_curtains:
+            if plate_patch.horizontal_center > curtain_patch.horizontal_center:
+                return "yes"
+    return "no"

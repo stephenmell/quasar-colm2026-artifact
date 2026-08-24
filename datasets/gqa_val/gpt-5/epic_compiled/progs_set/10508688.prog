@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    found_standing = None
+    giraffe_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find('giraffe')
+    result = 'no'
+
+    def _if(found_standing, giraffe_patches, image_patch, result):
+        result = image_patch.simple_query('Does the giraffe that is standing look brown?')
+        return (found_standing, giraffe_patches, image_patch, result)
+
+    def _else(found_standing, giraffe_patches, image_patch, result):
+        found_standing = False
+
+        def _for(giraffe_patch, found_standing, giraffe_patches, image_patch, result):
+
+            def _if(found_standing, giraffe_patches, image_patch, result):
+                found_standing = True
+
+                def _if(found_standing, giraffe_patches, image_patch, result):
+                    result = 'yes'
+                    return (found_standing, giraffe_patches, image_patch, result)
+                found_standing, giraffe_patches, image_patch, result = if_stmt(_if, None, giraffe_patch.verify_property('giraffe', 'brown'), (found_standing, giraffe_patches, image_patch, result))
+                return (found_standing, giraffe_patches, image_patch, result)
+            found_standing, giraffe_patches, image_patch, result = if_stmt(_if, None, giraffe_patch.verify_property('giraffe', 'standing'), (found_standing, giraffe_patches, image_patch, result))
+            return (found_standing, giraffe_patches, image_patch, result)
+        found_standing, giraffe_patches, image_patch, result = for_stmt(_for, giraffe_patches, (found_standing, giraffe_patches, image_patch, result))
+
+        def _if(found_standing, giraffe_patches, image_patch, result):
+            result = image_patch.simple_query('Does the giraffe that is standing look brown?')
+            return (found_standing, giraffe_patches, image_patch, result)
+        found_standing, giraffe_patches, image_patch, result = if_stmt(_if, None, not_expr(found_standing), (found_standing, giraffe_patches, image_patch, result))
+        return (found_standing, giraffe_patches, image_patch, result)
+    found_standing, giraffe_patches, image_patch, result = if_stmt(_if, _else, len(giraffe_patches) == 0, (found_standing, giraffe_patches, image_patch, result))
+    return result

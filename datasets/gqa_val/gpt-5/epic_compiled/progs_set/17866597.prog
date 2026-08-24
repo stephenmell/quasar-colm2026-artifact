@@ -1,0 +1,75 @@
+def execute_command(image) -> str:
+    best_overlap = None
+    book_patches = None
+    chosen_patch = None
+    height_overlap = None
+    image_patch = None
+    left_max = None
+    lower_max = None
+    overlap_area = None
+    result = None
+    right_min = None
+    shelf_patch = None
+    shelf_patches = None
+    upper_min = None
+    width_overlap = None
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find('book')
+    result = None
+
+    def _if(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+        result = image_patch.simple_query('Where in this photo is the book on the shelf, in the bottom or in the top?')
+        return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+
+    def _else(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+        shelf_patches = image_patch.find('shelf')
+        chosen_patch = book_patches[0]
+
+        def _if(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+            pass
+            return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+
+        def _else(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+            shelf_patch = shelf_patches[0]
+            best_overlap = -1
+
+            def _for(book_patch, best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+                left_max = book_patch.left if book_patch.left > shelf_patch.left else shelf_patch.left
+                right_min = book_patch.right if book_patch.right < shelf_patch.right else shelf_patch.right
+                width_overlap = right_min - left_max
+
+                def _if(best_overlap, book_patches, chosen_patch, image_patch, left_max, result, right_min, shelf_patch, shelf_patches, width_overlap):
+                    width_overlap = 0
+                    return (best_overlap, book_patches, chosen_patch, image_patch, left_max, result, right_min, shelf_patch, shelf_patches, width_overlap)
+                best_overlap, book_patches, chosen_patch, image_patch, left_max, result, right_min, shelf_patch, shelf_patches, width_overlap = if_stmt(_if, None, width_overlap < 0, (best_overlap, book_patches, chosen_patch, image_patch, left_max, result, right_min, shelf_patch, shelf_patches, width_overlap))
+                lower_max = book_patch.lower if book_patch.lower > shelf_patch.lower else shelf_patch.lower
+                upper_min = book_patch.upper if book_patch.upper < shelf_patch.upper else shelf_patch.upper
+                height_overlap = upper_min - lower_max
+
+                def _if(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+                    height_overlap = 0
+                    return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+                best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap = if_stmt(_if, None, height_overlap < 0, (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap))
+                overlap_area = width_overlap * height_overlap
+
+                def _if(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+                    best_overlap = overlap_area
+                    chosen_patch = book_patch
+                    return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+                best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap = if_stmt(_if, None, overlap_area > best_overlap, (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap))
+                return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+            best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap = for_stmt(_for, book_patches, (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap))
+            return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+        best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap = if_stmt(_if, _else, len(shelf_patches) == 0, (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap))
+
+        def _if(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+            result = 'bottom'
+            return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+
+        def _else(best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap):
+            result = 'top'
+            return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+        best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap = if_stmt(_if, _else, chosen_patch.vertical_center < image_patch.vertical_center, (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap))
+        return (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap)
+    best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap = if_stmt(_if, _else, len(book_patches) == 0, (best_overlap, book_patches, chosen_patch, height_overlap, image_patch, left_max, lower_max, overlap_area, result, right_min, shelf_patch, shelf_patches, upper_min, width_overlap))
+    return result

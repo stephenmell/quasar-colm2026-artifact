@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    horse_patch = None
+    horse_patches = None
+    image_patch = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    horse_patches = image_patch.find('horse')
+
+    def _if(horse_patch, horse_patches, image_patch, result, woman_patches):
+        result = image_patch.simple_query('Do you see any woman to the left of the horse?')
+        return (horse_patch, horse_patches, image_patch, result, woman_patches)
+
+    def _else(horse_patch, horse_patches, image_patch, result, woman_patches):
+        horse_patch = horse_patches[0]
+        woman_patches = image_patch.find('woman')
+
+        def _if(horse_patch, horse_patches, image_patch, result, woman_patches):
+            result = 'no'
+            return (horse_patch, horse_patches, image_patch, result, woman_patches)
+
+        def _else(horse_patch, horse_patches, image_patch, result, woman_patches):
+            result = 'no'
+
+            def _for(woman_patch, horse_patch, horse_patches, image_patch, result, woman_patches):
+
+                def _if(horse_patch, horse_patches, image_patch, result, woman_patches):
+                    result = 'yes'
+                    return (horse_patch, horse_patches, image_patch, result, woman_patches)
+                horse_patch, horse_patches, image_patch, result, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center < horse_patch.horizontal_center, (horse_patch, horse_patches, image_patch, result, woman_patches))
+                return (horse_patch, horse_patches, image_patch, result, woman_patches)
+            horse_patch, horse_patches, image_patch, result, woman_patches = for_stmt(_for, woman_patches, (horse_patch, horse_patches, image_patch, result, woman_patches))
+            return (horse_patch, horse_patches, image_patch, result, woman_patches)
+        horse_patch, horse_patches, image_patch, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (horse_patch, horse_patches, image_patch, result, woman_patches))
+        return (horse_patch, horse_patches, image_patch, result, woman_patches)
+    horse_patch, horse_patches, image_patch, result, woman_patches = if_stmt(_if, _else, len(horse_patches) == 0, (horse_patch, horse_patches, image_patch, result, woman_patches))
+    return result

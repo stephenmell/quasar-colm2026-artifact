@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find('chair')
+    result = 'no'
+
+    def _if(chair_patches, image_patch, result):
+        result = image_patch.simple_query('Do you see any chair there that is white?')
+        return (chair_patches, image_patch, result)
+
+    def _else(chair_patches, image_patch, result):
+
+        def _for(chair_patch, chair_patches, image_patch, result):
+
+            def _if(chair_patches, image_patch, result):
+                result = 'yes'
+                return (chair_patches, image_patch, result)
+            chair_patches, image_patch, result = if_stmt(_if, None, chair_patch.verify_property('chair', 'white'), (chair_patches, image_patch, result))
+            return (chair_patches, image_patch, result)
+        chair_patches, image_patch, result = for_stmt(_for, chair_patches, (chair_patches, image_patch, result))
+        return (chair_patches, image_patch, result)
+    chair_patches, image_patch, result = if_stmt(_if, _else, len(chair_patches) == 0, (chair_patches, image_patch, result))
+    return result

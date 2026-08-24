@@ -1,0 +1,46 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    scene_label = image_patch.best_text_match(("outdoor scene", "indoor scene"))
+    if scene_label == "outdoor scene":
+        result = "yes"
+    elif scene_label == "indoor scene":
+        result = "no"
+    else:
+        outdoor_objects = ("sky", "tree", "mountain", "grass", "beach", "ocean", "sea", "snow", "river", "lake", "cloud", "street", "road", "sidewalk", "park", "field", "sand", "forest")
+        indoor_objects = ("ceiling", "sofa", "couch", "bed", "lamp", "television", "cabinet", "sink", "toilet", "stove", "microwave", "refrigerator", "bookshelf", "desk", "table", "chair", "window", "door", "wall", "floor", "carpet")
+
+        is_outdoor = False
+        for obj in outdoor_objects:
+            if not is_outdoor:
+                if image_patch.exists(obj):
+                    is_outdoor = True
+
+        is_indoor = False
+        for obj in indoor_objects:
+            if not is_indoor:
+                if image_patch.exists(obj):
+                    is_indoor = True
+
+        if is_outdoor and not is_indoor:
+            result = "yes"
+        elif is_indoor and not is_outdoor:
+            result = "no"
+        else:
+            answer = image_patch.simple_query("Is it an outdoors scene?")
+            if answer == "yes":
+                result = "yes"
+            elif answer == "no":
+                result = "no"
+            else:
+                alt_answer = image_patch.simple_query("Is this photo taken outdoors?")
+                if alt_answer == "yes":
+                    result = "yes"
+                elif alt_answer == "no":
+                    result = "no"
+                else:
+                    yn = image_patch.best_text_match(("yes", "no"))
+                    if yn == "yes" or yn == "no":
+                        result = yn
+    return result

@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    any_helmet_found = None
+    camera_patches = None
+    helmet_patches = None
+    image_patch = None
+    player_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    player_patches = image_patch.find('player')
+
+    def _if(any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+        result = image_patch.simple_query('Are there any cameras to the left of the helmet that the player is wearing?')
+        return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+
+    def _else(any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+        camera_patches = image_patch.find('camera')
+
+        def _if(any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+            result = 'no'
+            return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+
+        def _else(any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+            any_helmet_found = False
+
+            def _for(player_patch, any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+                helmet_patches = player_patch.find('helmet')
+
+                def _if(any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+                    any_helmet_found = True
+                    return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+                any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = if_stmt(_if, None, len(helmet_patches) > 0, (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+
+                def _for(helmet_patch, any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+
+                    def _for(camera_patch, any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+
+                        def _if(any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+                            result = 'yes'
+                            return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+                        any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = if_stmt(_if, None, camera_patch.horizontal_center < helmet_patch.horizontal_center, (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+                        return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+                    any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = for_stmt(_for, camera_patches, (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+                    return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+                any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = for_stmt(_for, helmet_patches, (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+                return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+            any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = for_stmt(_for, player_patches, (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+
+            def _if(any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result):
+                result = image_patch.simple_query('Are there any cameras to the left of the helmet that the player is wearing?')
+                return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+            any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = if_stmt(_if, None, not_expr(any_helmet_found), (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+            return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+        any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = if_stmt(_if, _else, len(camera_patches) == 0, (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+        return (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result)
+    any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result = if_stmt(_if, _else, len(player_patches) == 0, (any_helmet_found, camera_patches, helmet_patches, image_patch, player_patches, result))
+    return result

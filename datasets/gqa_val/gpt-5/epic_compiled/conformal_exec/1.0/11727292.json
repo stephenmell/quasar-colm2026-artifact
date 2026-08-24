@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      null,
+      "Horse",
+      "Dog",
+      "Unknown animal"
+    ]
+  },
+  "time_ns": 16369247021
+}

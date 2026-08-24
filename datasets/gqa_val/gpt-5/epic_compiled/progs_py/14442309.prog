@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find("bird")
+
+    if len(bird_patches) == 0:
+        result = image_patch.simple_query("Is there a giraffe to the left of the bird on the right side?")
+    else:
+        # Choose the bird on the right side if available, otherwise the rightmost bird
+        selected_bird = None
+        for bird_patch in bird_patches:
+            if bird_patch.horizontal_center > image_patch.horizontal_center:
+                if selected_bird is None or bird_patch.horizontal_center > selected_bird.horizontal_center:
+                    selected_bird = bird_patch
+        if selected_bird is None:
+            selected_bird = bird_patches[0]
+            for bird_patch in bird_patches:
+                if bird_patch.horizontal_center > selected_bird.horizontal_center:
+                    selected_bird = bird_patch
+
+        giraffe_patches = image_patch.find("giraffe")
+        if len(giraffe_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for giraffe_patch in giraffe_patches:
+                if giraffe_patch.horizontal_center < selected_bird.horizontal_center:
+                    result = "yes"
+    return result

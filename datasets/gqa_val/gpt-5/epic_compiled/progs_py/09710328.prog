@@ -1,0 +1,7 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_wetsuit = image_patch.exists("wetsuit")
+    if not is_wetsuit:
+        is_wetsuit = image_patch.exists("wetsuits") or image_patch.exists("wet suit") or image_patch.exists("wet suits")
+    result = bool_to_yesno(is_wetsuit)
+    return result

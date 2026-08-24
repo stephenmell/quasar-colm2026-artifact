@@ -1,0 +1,37 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    result = "no"
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("Do you see bags to the right of the woman on the left?")
+    else:
+        leftmost_index = 0
+        leftmost_x = None
+        idx = 0
+        for wp in woman_patches:
+            if leftmost_x is None:
+                leftmost_x = wp.horizontal_center
+                leftmost_index = idx
+            else:
+                if wp.horizontal_center < leftmost_x:
+                    leftmost_x = wp.horizontal_center
+                    leftmost_index = idx
+            idx = idx + 1
+        left_woman = woman_patches[leftmost_index]
+        bag_like_names = ("bag", "backpack", "handbag", "purse", "shopping bag", "paper bag", "plastic bag", "luggage")
+        bag_patches = ()
+        for name in bag_like_names:
+            found = image_patch.find(name)
+            bag_patches = bag_patches + found
+        if len(bag_patches) == 0:
+            result = "no"
+        else:
+            has_right = False
+            for bag_patch in bag_patches:
+                if bag_patch.horizontal_center > left_woman.horizontal_center:
+                    has_right = True
+            if has_right:
+                result = "yes"
+            else:
+                result = "no"
+    return result

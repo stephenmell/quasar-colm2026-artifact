@@ -1,0 +1,47 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2392663",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "nightstand"
+      ],
+      [
+        [
+          356,
+          383,
+          375,
+          394
+        ]
+      ],
+      9867564964
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2392663",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Are there beds to the right of the nightstand on the left side?"
+      ],
+      "No.",
+      1491217927
+    ]
+  ],
+  "best_text_match": []
+}

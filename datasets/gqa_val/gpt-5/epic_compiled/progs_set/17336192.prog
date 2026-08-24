@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    clock_patches = None
+    has_bowl = None
+    has_white_clock = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_white_clock = False
+
+    def _if(clock_patches, has_white_clock, image_patch):
+        clock_patches = image_patch.find('clock')
+
+        def _for(clock_patch, clock_patches, has_white_clock, image_patch):
+
+            def _if(clock_patches, has_white_clock, image_patch):
+                has_white_clock = True
+                return (clock_patches, has_white_clock, image_patch)
+            clock_patches, has_white_clock, image_patch = if_stmt(_if, None, clock_patch.verify_property('clock', 'white'), (clock_patches, has_white_clock, image_patch))
+            return (clock_patches, has_white_clock, image_patch)
+        clock_patches, has_white_clock, image_patch = for_stmt(_for, clock_patches, (clock_patches, has_white_clock, image_patch))
+        return (clock_patches, has_white_clock, image_patch)
+    clock_patches, has_white_clock, image_patch = if_stmt(_if, None, image_patch.exists('clock'), (clock_patches, has_white_clock, image_patch))
+    has_bowl = image_patch.exists('bowl')
+    result = bool_to_yesno(or_expr(has_white_clock, has_bowl))
+    return result

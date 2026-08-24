@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    has_red = None
+    image_patch = None
+    microwave_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    microwave_patches = image_patch.find('microwave')
+
+    def _if(has_red, image_patch, microwave_patches, result):
+        result = image_patch.simple_query('Does the microwave have red color?')
+        return (has_red, image_patch, microwave_patches, result)
+
+    def _else(has_red, image_patch, microwave_patches, result):
+        has_red = False
+
+        def _for(microwave_patch, has_red, image_patch, microwave_patches):
+
+            def _if(has_red, image_patch, microwave_patches):
+                has_red = True
+                return (has_red, image_patch, microwave_patches)
+            has_red, image_patch, microwave_patches = if_stmt(_if, None, microwave_patch.verify_property('microwave', 'red'), (has_red, image_patch, microwave_patches))
+            return (has_red, image_patch, microwave_patches)
+        has_red, image_patch, microwave_patches = for_stmt(_for, microwave_patches, (has_red, image_patch, microwave_patches))
+        result = bool_to_yesno(has_red)
+        return (has_red, image_patch, microwave_patches, result)
+    has_red, image_patch, microwave_patches, result = if_stmt(_if, _else, len(microwave_patches) == 0, (has_red, image_patch, microwave_patches, result))
+    return result

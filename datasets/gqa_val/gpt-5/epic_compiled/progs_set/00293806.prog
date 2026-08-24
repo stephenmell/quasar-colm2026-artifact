@@ -1,0 +1,26 @@
+def execute_command(image) -> str:
+    has_cell_phone = None
+    has_mobile_phone = None
+    has_phone = None
+    has_telephone = None
+    has_tv = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_tv = image_patch.exists('television')
+
+    def _if(has_tv, image_patch):
+        has_tv = image_patch.exists('tv')
+        return (has_tv, image_patch)
+    has_tv, image_patch = if_stmt(_if, None, not_expr(has_tv), (has_tv, image_patch))
+    has_telephone = image_patch.exists('telephone')
+
+    def _if(has_cell_phone, has_mobile_phone, has_phone, has_telephone, has_tv, image_patch):
+        has_cell_phone = image_patch.exists('cell phone')
+        has_mobile_phone = image_patch.exists('mobile phone')
+        has_phone = image_patch.exists('phone')
+        has_telephone = or_expr(has_cell_phone, or_expr(has_mobile_phone, has_phone))
+        return (has_cell_phone, has_mobile_phone, has_phone, has_telephone, has_tv, image_patch)
+    has_cell_phone, has_mobile_phone, has_phone, has_telephone, has_tv, image_patch = if_stmt(_if, None, not_expr(has_telephone), (has_cell_phone, has_mobile_phone, has_phone, has_telephone, has_tv, image_patch))
+    result = bool_to_yesno(or_expr(has_tv, has_telephone))
+    return result

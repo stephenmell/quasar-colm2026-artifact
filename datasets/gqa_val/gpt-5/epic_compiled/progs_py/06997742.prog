@@ -1,0 +1,5 @@
+# Is there a lamp in the picture?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = bool_to_yesno(image_patch.exists("lamp"))
+    return result

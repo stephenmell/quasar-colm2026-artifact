@@ -1,0 +1,41 @@
+# Are both the lid and the toilet the same color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try to find the lid (prefer "toilet lid", fallback to "lid")
+    lid_patches = image_patch.find("toilet lid")
+    if len(lid_patches) == 0:
+        lid_patches = image_patch.find("lid")
+
+    toilet_patches = image_patch.find("toilet")
+
+    # If either object isn't detected, ask the question directly
+    if len(lid_patches) == 0 or len(toilet_patches) == 0:
+        return image_patch.simple_query("Are both the lid and the toilet the same color?")
+
+    lid_patch = lid_patches[0]
+    toilet_patch = toilet_patches[0]
+
+    # Use a palette of common colors for robust matching
+    colors = [
+        "white", "off white", "black", "gray", "grey", "silver",
+        "brown", "beige", "cream",
+        "yellow", "orange", "red", "pink", "purple",
+        "blue", "green", "teal", "turquoise", "maroon", "gold"
+    ]
+
+    lid_color = lid_patch.best_text_match(colors).lower()
+    toilet_color = toilet_patch.best_text_match(colors).lower()
+
+    # Normalize minor variants
+    def normalize(c: str) -> str:
+        c = c.strip().lower()
+        if c in ["grey"]:
+            return "gray"
+        if c in ["off white", "off-white"]:
+            return "white"
+        return c
+
+    if normalize(lid_color) == normalize(toilet_color):
+        return "yes"
+    return "no"

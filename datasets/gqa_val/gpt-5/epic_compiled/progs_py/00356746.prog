@@ -1,0 +1,41 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Find the bottle made of plastic
+    bottle_patches = image_patch.find("bottle")
+    selected_bottle_patch = None
+    if len(bottle_patches) > 0:
+        for bottle_patch in bottle_patches:
+            is_plastic = bottle_patch.verify_property("bottle", "plastic")
+            if is_plastic and selected_bottle_patch is None:
+                selected_bottle_patch = bottle_patch
+
+    if selected_bottle_patch is None:
+        result = image_patch.simple_query("Is the blue bag to the left or to the right of the bottle made of plastic?")
+    else:
+        # Find blue bag(s)
+        bag_patches = image_patch.find("bag")
+        if len(bag_patches) == 0:
+            result = image_patch.simple_query("Is the blue bag to the left or to the right of the bottle made of plastic?")
+        else:
+            best_bag_patch = None
+            best_delta = None
+            for bag_patch in bag_patches:
+                is_blue = bag_patch.verify_property("bag", "blue")
+                if is_blue:
+                    delta = abs(bag_patch.horizontal_center - selected_bottle_patch.horizontal_center)
+                    if best_delta is None or delta < best_delta:
+                        best_delta = delta
+                        best_bag_patch = bag_patch
+            if best_bag_patch is None:
+                result = image_patch.simple_query("Is the blue bag to the left or to the right of the bottle made of plastic?")
+            else:
+                if best_bag_patch.horizontal_center < selected_bottle_patch.horizontal_center:
+                    result = "left"
+                else:
+                    result = "right"
+
+    if not result:
+        result = image_patch.simple_query("Is the blue bag to the left or to the right of the bottle made of plastic?")
+    return result

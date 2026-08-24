@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find relevant objects
+    comforter_patches = image_patch.find("comforter")
+    binder_patches = image_patch.find("binder")
+    drawer_patches = image_patch.find("drawer")
+    if len(drawer_patches) == 0:
+        drawer_patches = image_patch.find("drawers")
+
+    # If any key object is missing, ask directly
+    if len(comforter_patches) == 0 or len(binder_patches) == 0 or len(drawer_patches) == 0:
+        return image_patch.simple_query("Are there drawers to the right of the comforter that is to the right of the binder?")
+
+    # Check for a comforter to the right of a binder, and drawers to the right of that comforter
+    for comforter in comforter_patches:
+        if any(comforter.horizontal_center > binder.horizontal_center for binder in binder_patches):
+            if any(drawer.horizontal_center > comforter.horizontal_center for drawer in drawer_patches):
+                return "yes"
+
+    return "no"

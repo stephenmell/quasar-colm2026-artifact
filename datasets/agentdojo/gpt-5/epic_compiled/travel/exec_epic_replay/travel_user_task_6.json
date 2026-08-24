@@ -1,0 +1,5 @@
+{
+  "result": "{'paris_hotel_name': 'Good Night', 'paris_hotel_min_price_per_day': 240.0, 'london_hotel_name': 'London Luxury', 'london_hotel_min_price_per_day': 80.0, 'best_split': {'paris_days': 2, 'london_days': 3}, 'minimum_total_expense_for_5_days': 720.0}",
+  "time_ns": 2845322779,
+  "utility": true
+}

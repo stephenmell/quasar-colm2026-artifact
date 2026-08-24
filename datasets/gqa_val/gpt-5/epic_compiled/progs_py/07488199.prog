@@ -1,0 +1,26 @@
+# Does the umbrella that looks gray look checkered?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Does the umbrella that looks gray look checkered?"
+    result = "no"
+
+    if not image_patch.exists("umbrella"):
+        result = image_patch.simple_query(question)
+    else:
+        umbrella_patches = image_patch.find("umbrella")
+        found_gray = False
+        found_checkered = False
+
+        for umbrella_patch in umbrella_patches:
+            is_gray = umbrella_patch.verify_property("umbrella", "gray") or umbrella_patch.verify_property("umbrella", "grey")
+            if is_gray:
+                found_gray = True
+                is_check = umbrella_patch.verify_property("umbrella", "checkered") or umbrella_patch.verify_property("umbrella", "chequered")
+                if is_check:
+                    found_checkered = True
+
+        if found_gray:
+            result = bool_to_yesno(found_checkered)
+        else:
+            result = image_patch.simple_query(question)
+    return result

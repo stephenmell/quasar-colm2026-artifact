@@ -1,0 +1,29 @@
+Stage: agentdojo_eval.exec_with_return
+Error: 
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper_artifact/run_agentdojo.py", line 363, in main
+    exec_result = agentdojo_eval.exec_with_return(code, exec_globals, exec_locals)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/eval.py", line 22, in exec_with_return
+    exec(ast.unparse(a), globals, locals)
+  File "<string>", line 31, in <module>
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/assistant_replay.py", line 110, in recorded
+    result = real_fn(query, output_schema)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/camel_assistant.py", line 69, in query_ai_assistant_sync
+    return asyncio.run(query_ai_assistant_async(query, output_schema))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/home/sm1/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/camel_assistant.py", line 37, in query_ai_assistant_async
+    assert issubclass(output_schema, pydantic.BaseModel)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

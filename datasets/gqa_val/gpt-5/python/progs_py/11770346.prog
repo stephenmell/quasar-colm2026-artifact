@@ -1,0 +1,34 @@
+# Do you see any cars to the left of the vehicle that is waiting?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    vehicle_patches = image_patch.find("vehicle")
+    if len(vehicle_patches) == 0:
+        # Fallback: ask directly
+        return image_patch.simple_query("Do you see any cars to the left of the vehicle that is waiting?")
+
+    # Identify vehicles that are waiting
+    waiting_vehicles = []
+    for v_patch in vehicle_patches:
+        is_waiting = v_patch.verify_property("vehicle", "waiting")
+        # Fallback to a direct yes/no query if needed
+        if not is_waiting:
+            is_waiting = (v_patch.simple_query("Is the vehicle waiting?") == "yes")
+        if is_waiting:
+            waiting_vehicles.append(v_patch)
+
+    if len(waiting_vehicles) == 0:
+        # If we can't identify a waiting vehicle, ask directly
+        return image_patch.simple_query("Do you see any cars to the left of the vehicle that is waiting?")
+
+    car_patches = image_patch.find("car")
+    if len(car_patches) == 0:
+        return "no"
+
+    # Check if any car is to the left (by center) of any waiting vehicle
+    for wv in waiting_vehicles:
+        for car in car_patches:
+            if car.horizontal_center < wv.horizontal_center:
+                return "yes"
+
+    return "no"

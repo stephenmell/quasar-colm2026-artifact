@@ -1,0 +1,63 @@
+({1996: 'context', 1999: 'llm_query', 2014: 'return_result'},
+ ('def',
+  1994,
+  ((),
+   ((('prim', 1995, ''),
+     ('def',
+      1997,
+      ((2005, 1998),
+       ((('prim',
+          2000,
+          'You are given one document. Determine if it contains or implies the '
+          'same series as described by the following plot points. If it does, '
+          'extract the series name and match the plot points with evidence '
+          '(season/Episode mentions, character names). If it does not, just '
+          'say it does not match.\n'
+          '\n'
+          'Target plot points to match:\n'
+          '1) Early in Season 1: after a tense moment when one lead assumes '
+          "they won't be spending time together due to a "
+          'sensitive/sensitive-topic issue, the other gets upset. Friends '
+          'convince the first person to take their partner out on a date to '
+          'make things right.\n'
+          "2) One of the final episodes of Season 3: the male lead's roommate "
+          'makes a sacrifice.\n'
+          '3) Midway through Season 4: the female lead returns home for the '
+          "birth of a family member's baby, but instead of focusing on the "
+          'event, she unexpectedly reconnects with someone from the past.\n'
+          'Constraint: The show has fewer than 10 seasons.\n'
+          '\n'
+          'For this single document, output in this format:\n'
+          '- Match: Yes/No/Unclear\n'
+          '- Candidate series name(s): ...\n'
+          '- Evidence (quotes with season/episode if present) mapping to each '
+          'plot point 1, 2, 3.\n'
+          '- Notes: any helpful disambiguation clues (character names, '
+          'locations, network, year).\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2001,), 80, (2000, 1998)),
+         ('prim', 2002, '\nEND_DOCUMENT'),
+         ('call', (2003,), 80, (2001, 2002)),
+         ('call', (2004,), 1999, (2003,)),
+         ('prim', 2006, '\n\n=== Document Analysis ===\n'),
+         ('call', (2007,), 80, (2005, 2006)),
+         ('call', (2008,), 80, (2007, 2004))),
+        (2008,)))),
+     ('call', (2010,), 79, (1996,)),
+     ('call', (2009,), 2010, (1995, 1997)),
+     ('prim',
+      2011,
+      "You are deciding the single best series that fits the user's three plot "
+      'points, using only the summarized document analyses below. Prefer '
+      'candidates where all three plot points are clearly evidenced '
+      '(season/episode and character names) and the series has fewer than 10 '
+      'seasons. If multiple, choose the one with the strongest evidence and '
+      'widest alignment with the sequence (S1 early, S3 near end, S4 mid). '
+      'Then output only the series title, nothing else.\n'
+      '\n'
+      'DOCUMENT ANALYSES:\n'),
+     ('call', (2012,), 80, (2011, 2009)),
+     ('call', (2013,), 1999, (2012,)),
+     ('call', (2015,), 2014, (2013,))),
+    (2015,)))))

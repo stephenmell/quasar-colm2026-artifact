@@ -1,0 +1,54 @@
+def execute_command(image) -> str:
+    curtain_patches = None
+    image_patch = None
+    is_maroon = None
+    is_red = None
+    is_right_of_any_curtain = None
+    picture_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find('curtain')
+
+    def _if(curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result):
+        result = image_patch.simple_query('Are there any pictures to the right of the curtain that looks red and maroon?')
+        return (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result)
+
+    def _else(curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result):
+        picture_patches = image_patch.find('picture')
+
+        def _if(curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result):
+            result = 'no'
+            return (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result)
+
+        def _else(curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result):
+            result = 'no'
+
+            def _for(picture_patch, curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result):
+                is_right_of_any_curtain = False
+
+                def _for(curtain_patch, curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result):
+
+                    def _if(curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result):
+                        is_right_of_any_curtain = True
+                        return (curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result)
+                    curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result = if_stmt(_if, None, picture_patch.horizontal_center > curtain_patch.horizontal_center, (curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result))
+                    return (curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result)
+                curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result = for_stmt(_for, curtain_patches, (curtain_patches, image_patch, is_right_of_any_curtain, picture_patches, result))
+
+                def _if(curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result):
+                    is_red = picture_patch.verify_property('picture', 'red')
+                    is_maroon = picture_patch.verify_property('picture', 'maroon')
+
+                    def _if(curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result):
+                        result = 'yes'
+                        return (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result)
+                    curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result = if_stmt(_if, None, and_expr(is_red, is_maroon), (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result))
+                    return (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result)
+                curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result = if_stmt(_if, None, is_right_of_any_curtain, (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result))
+                return (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result)
+            curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result = for_stmt(_for, picture_patches, (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result))
+            return (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result)
+        curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result = if_stmt(_if, _else, len(picture_patches) == 0, (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result))
+        return (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result)
+    curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result = if_stmt(_if, _else, len(curtain_patches) == 0, (curtain_patches, image_patch, is_maroon, is_red, is_right_of_any_curtain, picture_patches, result))
+    return result

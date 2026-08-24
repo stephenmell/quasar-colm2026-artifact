@@ -1,0 +1,53 @@
+def execute_command(image) -> str:
+    chair_names = None
+    chair_patches = None
+    drawer_names = None
+    drawer_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    drawer_names = ('drawer', 'drawers', 'dresser', 'chest of drawers')
+
+    def _for(name, drawer_names, drawer_patches, image_patch, result):
+
+        def _if(drawer_names, drawer_patches, image_patch, result):
+            drawer_patches = image_patch.find(name)
+
+            def _for(drawer_patch, drawer_names, drawer_patches, image_patch, result):
+
+                def _if(drawer_names, drawer_patches, image_patch, result):
+                    result = 'yes'
+                    return (drawer_names, drawer_patches, image_patch, result)
+                drawer_names, drawer_patches, image_patch, result = if_stmt(_if, None, drawer_patch.verify_property(name, 'brown'), (drawer_names, drawer_patches, image_patch, result))
+                return (drawer_names, drawer_patches, image_patch, result)
+            drawer_names, drawer_patches, image_patch, result = for_stmt(_for, drawer_patches, (drawer_names, drawer_patches, image_patch, result))
+            return (drawer_names, drawer_patches, image_patch, result)
+        drawer_names, drawer_patches, image_patch, result = if_stmt(_if, None, image_patch.exists(name), (drawer_names, drawer_patches, image_patch, result))
+        return (drawer_names, drawer_patches, image_patch, result)
+    drawer_names, drawer_patches, image_patch, result = for_stmt(_for, drawer_names, (drawer_names, drawer_patches, image_patch, result))
+    chair_names = ('chair', 'chairs', 'armchair')
+
+    def _for(name, chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result):
+
+        def _if(chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result):
+            chair_patches = image_patch.find(name)
+
+            def _for(chair_patch, chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result):
+
+                def _if(chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result):
+                    result = 'yes'
+                    return (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result)
+                chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result = if_stmt(_if, None, chair_patch.verify_property(name, 'brown'), (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result))
+                return (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result)
+            chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result = for_stmt(_for, chair_patches, (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result))
+            return (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result)
+        chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result = if_stmt(_if, None, image_patch.exists(name), (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result))
+        return (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result)
+    chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result = for_stmt(_for, chair_names, (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result))
+
+    def _if(chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result):
+        result = image_patch.simple_query('Do you see brown drawers or chairs?')
+        return (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result)
+    chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result = if_stmt(_if, None, result == 'no', (chair_names, chair_patches, drawer_names, drawer_patches, image_patch, result))
+    return result

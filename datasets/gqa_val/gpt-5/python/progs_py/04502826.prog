@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_collar = (
+        image_patch.exists("collar")
+        or image_patch.exists("collars")
+        or image_patch.exists("dog collar")
+        or image_patch.exists("cat collar")
+        or image_patch.exists("shirt collar")
+    )
+    return bool_to_yesno(has_collar)

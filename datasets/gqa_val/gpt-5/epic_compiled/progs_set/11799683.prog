@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    gate_patches = None
+    image_patch = None
+    is_small = None
+    is_wooden = None
+    result = None
+    image_patch = ImagePatch(image)
+    gate_patches = image_patch.find('gate')
+
+    def _if(gate_patches, image_patch, is_small, is_wooden, result):
+        result = image_patch.simple_query('Is the gate small and wooden?')
+        return (gate_patches, image_patch, is_small, is_wooden, result)
+
+    def _else(gate_patches, image_patch, is_small, is_wooden, result):
+        result = 'no'
+
+        def _for(gate_patch, gate_patches, image_patch, is_small, is_wooden, result):
+            is_small = gate_patch.verify_property('gate', 'small')
+            is_wooden = gate_patch.verify_property('gate', 'wooden')
+
+            def _if(gate_patches, image_patch, is_small, is_wooden, result):
+                result = 'yes'
+                return (gate_patches, image_patch, is_small, is_wooden, result)
+            gate_patches, image_patch, is_small, is_wooden, result = if_stmt(_if, None, and_expr(is_small, is_wooden), (gate_patches, image_patch, is_small, is_wooden, result))
+            return (gate_patches, image_patch, is_small, is_wooden, result)
+        gate_patches, image_patch, is_small, is_wooden, result = for_stmt(_for, gate_patches, (gate_patches, image_patch, is_small, is_wooden, result))
+        return (gate_patches, image_patch, is_small, is_wooden, result)
+    gate_patches, image_patch, is_small, is_wooden, result = if_stmt(_if, _else, len(gate_patches) == 0, (gate_patches, image_patch, is_small, is_wooden, result))
+    return result

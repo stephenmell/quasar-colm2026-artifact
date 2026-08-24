@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    answer = None
+    image_patch = None
+    person_exists = None
+    person_patches = None
+    result = None
+    surfboard_exists = None
+    image_patch = ImagePatch(image)
+    person_exists = image_patch.exists('person')
+    surfboard_exists = image_patch.exists('surfboard')
+
+    def _if(answer, image_patch, person_exists, person_patches, result, surfboard_exists):
+        result = image_patch.simple_query('Is the person on the surfboard?')
+        return (answer, image_patch, person_exists, person_patches, result, surfboard_exists)
+
+    def _else(answer, image_patch, person_exists, person_patches, result, surfboard_exists):
+        result = 'no'
+        person_patches = image_patch.find('person')
+
+        def _for(person_patch, answer, image_patch, person_exists, person_patches, result, surfboard_exists):
+            answer = person_patch.simple_query('Is this person on a surfboard?')
+
+            def _if(answer, image_patch, person_exists, person_patches, result, surfboard_exists):
+                result = 'yes'
+                return (answer, image_patch, person_exists, person_patches, result, surfboard_exists)
+            answer, image_patch, person_exists, person_patches, result, surfboard_exists = if_stmt(_if, None, answer == 'yes', (answer, image_patch, person_exists, person_patches, result, surfboard_exists))
+            return (answer, image_patch, person_exists, person_patches, result, surfboard_exists)
+        answer, image_patch, person_exists, person_patches, result, surfboard_exists = for_stmt(_for, person_patches, (answer, image_patch, person_exists, person_patches, result, surfboard_exists))
+
+        def _if(answer, image_patch, person_exists, person_patches, result, surfboard_exists):
+            result = image_patch.simple_query('Is the person on the surfboard?')
+            return (answer, image_patch, person_exists, person_patches, result, surfboard_exists)
+        answer, image_patch, person_exists, person_patches, result, surfboard_exists = if_stmt(_if, None, result == 'no', (answer, image_patch, person_exists, person_patches, result, surfboard_exists))
+        return (answer, image_patch, person_exists, person_patches, result, surfboard_exists)
+    answer, image_patch, person_exists, person_patches, result, surfboard_exists = if_stmt(_if, _else, or_expr(not person_exists, not surfboard_exists), (answer, image_patch, person_exists, person_patches, result, surfboard_exists))
+    return result

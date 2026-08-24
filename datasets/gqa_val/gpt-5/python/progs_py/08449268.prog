@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    aircraft_patches = image_patch.find("aircraft")
+    # Question assumes at least one aircraft; if none, ask directly
+    if len(aircraft_patches) == 0:
+        return image_patch.simple_query("What kind of aircraft is large?")
+    # Find the aircraft that is large
+    for aircraft_patch in aircraft_patches:
+        if aircraft_patch.verify_property("aircraft", "large"):
+            return aircraft_patch.simple_query("What kind of aircraft is large?")
+    # If none is recognized as large, ask using the first aircraft patch as fallback
+    return aircraft_patches[0].simple_query("What kind of aircraft is large?")

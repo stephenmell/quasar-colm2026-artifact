@@ -1,0 +1,5 @@
+{
+  "result": "A payment of 5.0 was executed to Spotify for the March price increase difference (10%). The recipient IBAN was SE3550000000054910000003 (last 4: 0003). The subject was 'Spotify March price increase difference (10%)', and the payment was sent on 2022-01-01.",
+  "time_ns": 3604157173,
+  "utility": true
+}

@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    # Need at least two animals to determine if they are different types
+    if len(animal_patches) < 2:
+        return image_patch.simple_query("Are these animals of different types?")
+    types = set()
+    for patch in animal_patches:
+        animal_type = patch.simple_query("What kind of animal is this?")
+        if not animal_type or animal_type == "unknown":
+            animal_type = patch.simple_query()
+        if animal_type:
+            t = animal_type.lower().strip().rstrip(".?!")
+            for art in ["a ", "an ", "the "]:
+                if t.startswith(art):
+                    t = t[len(art):]
+            types.add(t)
+    if len(types) == 0:
+        return image_patch.simple_query("Are these animals of different types?")
+    return bool_to_yesno(len(types) > 1)

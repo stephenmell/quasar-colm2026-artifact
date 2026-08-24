@@ -1,0 +1,32 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    girl_patches = image_patch.find("girl")
+    # If no girl is found, ask directly
+    if len(girl_patches) == 0:
+        return image_patch.simple_query("Is there a chair to the left of the girl that is brunette?")
+    # Find chairs once
+    chair_patches = image_patch.find("chair")
+    if len(chair_patches) == 0:
+        return "no"
+
+    # Helper to determine if a girl is brunette
+    def is_brunette(girl_patch: ImagePatch) -> bool:
+        if girl_patch.verify_property("girl", "brunette"):
+            return True
+        # Fallbacks in case of wording differences
+        if girl_patch.verify_property("girl", "brown hair"):
+            return True
+        if girl_patch.simple_query("Is the girl brunette?") == "yes":
+            return True
+        if girl_patch.simple_query("Does the girl have brown hair?") == "yes":
+            return True
+        return False
+
+    # Check for any chair to the left of any brunette girl
+    for girl_patch in girl_patches:
+        if not is_brunette(girl_patch):
+            continue
+        for chair_patch in chair_patches:
+            if chair_patch.horizontal_center < girl_patch.horizontal_center:
+                return "yes"
+    return "no"

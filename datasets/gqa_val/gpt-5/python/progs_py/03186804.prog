@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find("vehicle")
+    water_patches = image_patch.find("water")
+    # If we can't find either anchor, ask directly
+    if len(vehicle_patches) == 0 or len(water_patches) == 0:
+        return image_patch.simple_query("Does the vehicle near the water look short and brown?")
+
+    from math import hypot
+    # Define "near" as center distance less than a quarter of the image's max dimension
+    near_threshold = 0.25 * max(image_patch.width, image_patch.height)
+
+    for v in vehicle_patches:
+        for w in water_patches:
+            dx = abs(v.horizontal_center - w.horizontal_center)
+            dy = abs(v.vertical_center - w.vertical_center)
+            if hypot(dx, dy) <= near_threshold:
+                is_short = v.verify_property("vehicle", "short")
+                is_brown = v.verify_property("vehicle", "brown")
+                if is_short and is_brown:
+                    return "yes"
+    return "no"

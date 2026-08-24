@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, there is tall grass in the scene.",
+      "yes",
+      "No, there is no tall grass in the scene.",
+      "no"
+    ]
+  },
+  "time_ns": 10244474727
+}

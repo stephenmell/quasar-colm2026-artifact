@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    answer = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+
+    def _if(answer, image_patch, result):
+        result = 'yes'
+        return (answer, image_patch, result)
+
+    def _else(answer, image_patch, result):
+        answer = image_patch.simple_query('Is it a forest?')
+
+        def _if(answer, image_patch, result):
+            result = 'yes'
+            return (answer, image_patch, result)
+
+        def _else(answer, image_patch, result):
+            result = 'no'
+            return (answer, image_patch, result)
+        answer, image_patch, result = if_stmt(_if, _else, answer == 'yes', (answer, image_patch, result))
+        return (answer, image_patch, result)
+    answer, image_patch, result = if_stmt(_if, _else, image_patch.exists('forest'), (answer, image_patch, result))
+    return result

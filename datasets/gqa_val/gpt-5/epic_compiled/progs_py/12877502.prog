@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    if len(plate_patches) == 0:
+        result = image_patch.simple_query("Are there any mushrooms on the pizza that is on the plate?")
+    else:
+        pizza_patches = image_patch.find("pizza")
+        if len(pizza_patches) == 0:
+            result = image_patch.simple_query("Are there any mushrooms on the pizza that is on the plate?")
+        else:
+            result = "no"
+            for plate_patch in plate_patches:
+                for pizza_patch in pizza_patches:
+                    inside_horiz = (pizza_patch.horizontal_center >= plate_patch.left) and (pizza_patch.horizontal_center <= plate_patch.right)
+                    inside_vert = (pizza_patch.vertical_center >= plate_patch.lower) and (pizza_patch.vertical_center <= plate_patch.upper)
+                    is_on_plate = inside_horiz and inside_vert
+                    if is_on_plate:
+                        mushroom_patches = pizza_patch.find("mushroom")
+                        if len(mushroom_patches) > 0:
+                            result = "yes"
+    return result

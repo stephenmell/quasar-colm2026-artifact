@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    book_patches = None
+    image_patch = None
+    magazine_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    magazine_patches = image_patch.find('magazine')
+
+    def _if(book_patches, image_patch, magazine_patches, result):
+        result = image_patch.simple_query('Is the magazine to the right of a book?')
+        return (book_patches, image_patch, magazine_patches, result)
+
+    def _else(book_patches, image_patch, magazine_patches, result):
+        book_patches = image_patch.find('book')
+
+        def _if(book_patches, image_patch, magazine_patches, result):
+            result = 'no'
+            return (book_patches, image_patch, magazine_patches, result)
+
+        def _else(book_patches, image_patch, magazine_patches, result):
+            result = 'no'
+
+            def _for(magazine_patch, book_patches, image_patch, magazine_patches, result):
+
+                def _for(book_patch, book_patches, image_patch, magazine_patches, result):
+
+                    def _if(book_patches, image_patch, magazine_patches, result):
+                        result = 'yes'
+                        return (book_patches, image_patch, magazine_patches, result)
+                    book_patches, image_patch, magazine_patches, result = if_stmt(_if, None, magazine_patch.horizontal_center > book_patch.horizontal_center, (book_patches, image_patch, magazine_patches, result))
+                    return (book_patches, image_patch, magazine_patches, result)
+                book_patches, image_patch, magazine_patches, result = for_stmt(_for, book_patches, (book_patches, image_patch, magazine_patches, result))
+                return (book_patches, image_patch, magazine_patches, result)
+            book_patches, image_patch, magazine_patches, result = for_stmt(_for, magazine_patches, (book_patches, image_patch, magazine_patches, result))
+            return (book_patches, image_patch, magazine_patches, result)
+        book_patches, image_patch, magazine_patches, result = if_stmt(_if, _else, len(book_patches) == 0, (book_patches, image_patch, magazine_patches, result))
+        return (book_patches, image_patch, magazine_patches, result)
+    book_patches, image_patch, magazine_patches, result = if_stmt(_if, _else, len(magazine_patches) == 0, (book_patches, image_patch, magazine_patches, result))
+    return result

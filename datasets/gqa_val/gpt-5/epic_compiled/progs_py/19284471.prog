@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for brown drawers (include a few common synonyms)
+    drawer_names = ("drawer", "drawers", "dresser", "chest of drawers")
+    for name in drawer_names:
+        if image_patch.exists(name):
+            drawer_patches = image_patch.find(name)
+            for drawer_patch in drawer_patches:
+                if drawer_patch.verify_property(name, "brown"):
+                    result = "yes"
+
+    # Check for brown chairs (include a common synonym)
+    chair_names = ("chair", "chairs", "armchair")
+    for name in chair_names:
+        if image_patch.exists(name):
+            chair_patches = image_patch.find(name)
+            for chair_patch in chair_patches:
+                if chair_patch.verify_property(name, "brown"):
+                    result = "yes"
+
+    # Fallback: ask directly if not confidently found
+    if result == "no":
+        result = image_patch.simple_query("Do you see brown drawers or chairs?")
+    return result

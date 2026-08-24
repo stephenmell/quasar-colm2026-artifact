@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    food_patches = None
+    image_patch = None
+    is_orange = None
+    result = None
+    stove_patches = None
+    image_patch = ImagePatch(image)
+    food_patches = image_patch.find('food')
+
+    def _if(food_patches, image_patch, is_orange, result, stove_patches):
+        result = image_patch.simple_query('Are there any stoves to the right of the food that looks orange?')
+        return (food_patches, image_patch, is_orange, result, stove_patches)
+
+    def _else(food_patches, image_patch, is_orange, result, stove_patches):
+        stove_patches = image_patch.find('stove')
+
+        def _if(food_patches, image_patch, is_orange, result, stove_patches):
+            result = 'no'
+            return (food_patches, image_patch, is_orange, result, stove_patches)
+
+        def _else(food_patches, image_patch, is_orange, result, stove_patches):
+            result = 'no'
+
+            def _for(food_patch, food_patches, image_patch, is_orange, result, stove_patches):
+                is_orange = food_patch.verify_property('food', 'orange')
+
+                def _if(food_patches, image_patch, is_orange, result, stove_patches):
+
+                    def _for(stove_patch, food_patches, image_patch, is_orange, result, stove_patches):
+
+                        def _if(food_patches, image_patch, is_orange, result, stove_patches):
+                            result = 'yes'
+                            return (food_patches, image_patch, is_orange, result, stove_patches)
+                        food_patches, image_patch, is_orange, result, stove_patches = if_stmt(_if, None, stove_patch.horizontal_center > food_patch.horizontal_center, (food_patches, image_patch, is_orange, result, stove_patches))
+                        return (food_patches, image_patch, is_orange, result, stove_patches)
+                    food_patches, image_patch, is_orange, result, stove_patches = for_stmt(_for, stove_patches, (food_patches, image_patch, is_orange, result, stove_patches))
+                    return (food_patches, image_patch, is_orange, result, stove_patches)
+                food_patches, image_patch, is_orange, result, stove_patches = if_stmt(_if, None, is_orange, (food_patches, image_patch, is_orange, result, stove_patches))
+                return (food_patches, image_patch, is_orange, result, stove_patches)
+            food_patches, image_patch, is_orange, result, stove_patches = for_stmt(_for, food_patches, (food_patches, image_patch, is_orange, result, stove_patches))
+            return (food_patches, image_patch, is_orange, result, stove_patches)
+        food_patches, image_patch, is_orange, result, stove_patches = if_stmt(_if, _else, len(stove_patches) == 0, (food_patches, image_patch, is_orange, result, stove_patches))
+        return (food_patches, image_patch, is_orange, result, stove_patches)
+    food_patches, image_patch, is_orange, result, stove_patches = if_stmt(_if, _else, len(food_patches) == 0, (food_patches, image_patch, is_orange, result, stove_patches))
+    return result

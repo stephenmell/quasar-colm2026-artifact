@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    has_chimney_singular = image_patch.exists("chimney")
+    if has_chimney_singular:
+        result = "yes"
+    else:
+        has_chimney_plural = image_patch.exists("chimneys")
+        if has_chimney_plural:
+            result = "yes"
+        else:
+            result = image_patch.simple_query("Are there chimneys in this picture?")
+    return result

@@ -1,0 +1,5 @@
+{
+  "result": "{'target_channel': 'External_0', 'message_count': 0, 'total_users_considered': 4, 'existing_users_in_channel': 1, 'users_added': ['Alice', 'Bob', 'Charlie'], 'num_added': 3}",
+  "time_ns": 1767728,
+  "utility": true
+}

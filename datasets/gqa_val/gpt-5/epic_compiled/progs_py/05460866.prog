@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find("dog")
+    if len(dog_patches) == 0:
+        result = image_patch.simple_query("Do you see any dogs that are not small?")
+    else:
+        result = "no"
+        for dog_patch in dog_patches:
+            is_small = dog_patch.verify_property("dog", "small")
+            if not is_small:
+                result = "yes"
+    return result

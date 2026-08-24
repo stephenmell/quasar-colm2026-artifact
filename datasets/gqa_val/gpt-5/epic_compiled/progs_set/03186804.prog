@@ -1,0 +1,60 @@
+def execute_command(image) -> str:
+    dist2 = None
+    dx = None
+    dy = None
+    image_patch = None
+    is_brown = None
+    is_near = None
+    is_short = None
+    result = None
+    threshold = None
+    threshold2 = None
+    vehicle_patches = None
+    water_patches = None
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find('vehicle')
+    water_patches = image_patch.find('water')
+
+    def _if(dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches):
+        result = image_patch.simple_query('Does the vehicle near the water look short and brown?')
+        return (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches)
+
+    def _else(dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches):
+        result = 'no'
+        threshold = min(image_patch.width, image_patch.height) * 0.25
+        threshold2 = threshold * threshold
+
+        def _for(vehicle_patch, dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches):
+            is_near = False
+
+            def _for(water_patch, dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches):
+                dx = vehicle_patch.horizontal_center - water_patch.horizontal_center
+                dy = vehicle_patch.vertical_center - water_patch.vertical_center
+                dist2 = dx * dx + dy * dy
+
+                def _if(dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches):
+                    is_near = or_expr(True, is_near)
+                    return (dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches)
+
+                def _else(dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches):
+                    is_near = or_expr(is_near, False)
+                    return (dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches)
+                dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches = if_stmt(_if, _else, dist2 <= threshold2, (dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches))
+                return (dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches)
+            dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches = for_stmt(_for, water_patches, (dist2, dx, dy, image_patch, is_near, result, threshold, threshold2, vehicle_patches, water_patches))
+
+            def _if(dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches):
+                is_short = vehicle_patch.verify_property('vehicle', 'short')
+                is_brown = vehicle_patch.verify_property('vehicle', 'brown')
+
+                def _if(dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches):
+                    result = 'yes'
+                    return (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches)
+                dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches = if_stmt(_if, None, and_expr(is_short, is_brown), (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches))
+                return (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches)
+            dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches = if_stmt(_if, None, is_near, (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches))
+            return (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches)
+        dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches = for_stmt(_for, vehicle_patches, (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches))
+        return (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches)
+    dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches = if_stmt(_if, _else, or_expr(len(vehicle_patches) == 0, len(water_patches) == 0), (dist2, dx, dy, image_patch, is_brown, is_near, is_short, result, threshold, threshold2, vehicle_patches, water_patches))
+    return result

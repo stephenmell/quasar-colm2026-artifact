@@ -1,0 +1,11 @@
+context_info = ()
+for d in context:
+    result = llm_query("You are given a document. Identify if it mentions a consumer brand that matches ALL of the following clues. If it does, extract the details. If not, respond with nothing.\n\nClues:\n- The brand was founded in the 2000s (years 2000-2009) and specifically in a year immediately after an Olympic year (i.e., 2001, 2005, or 2009).\n- One of the co-founders had a background in merchandising (e.g., worked in merchandising at a retailer/brand or studied merchandising).\n- The brand sells directly to customers without a middleman (DTC/direct-to-consumer focus).\n- The inspiration for the shape of their best-selling product as of 2023 came from a particular sport's classic gear (e.g., a saddle from equestrian sport, a bowling bag from bowling, etc.).\n- In 2019, the brand was on track to increase its sales revenue by over 65% compared to the previous year.\n\nIf the document contains such a brand, provide the following, using the exact headers:\nBrand:\nFounding Year:\nAfter Which Olympic Year:\nCo-founder With Merchandising Background (Name and details):\nDirect-to-consumer Evidence (quote or paraphrase with quote):\nBest-selling Product as of 2023 (name):\nShape Inspiration (sport and gear):\n2019 Sales Growth Evidence (quote):\nSignature Design (name of the brand’s signature design):\nKey Quotes (verbatim excerpts that substantiate the above):\n\nIf multiple brands are mentioned, give entries for each that satisfies ALL clues. If none match, output nothing.\n\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT")
+    context_info = context_info + (result,)
+
+combined = "\n\n---\n\n".join(context_info)
+
+final_prompt = "From the extracted entries below, identify the single brand that satisfies ALL clues. Then answer this question: What is the brand’s signature design?\n\nOnly output the signature design as a short phrase (e.g., 'saddle bag', 'cat-eye sunglasses', 'half-moon bag'). Do not include the brand name or any extra words.\n\nEXTRACTED ENTRIES:\n" + combined
+
+answer = llm_query(final_prompt)
+return_result(answer)

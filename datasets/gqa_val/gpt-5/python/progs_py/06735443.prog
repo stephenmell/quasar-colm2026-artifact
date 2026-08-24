@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_bed = image_patch.exists("bed")
+    is_bear = image_patch.exists("bear") or image_patch.exists("teddy bear")
+    return bool_to_yesno(is_bed or is_bear)

@@ -1,0 +1,28 @@
+def execute_command(image) -> str:
+    answer = None
+    image_patch = None
+    questions = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    questions = ('Which place is it?', 'What place is this?', 'Where is this?', 'What is this place?')
+
+    def _for(q, answer, image_patch, questions, result):
+
+        def _if(answer, image_patch, questions, result):
+            answer = image_patch.simple_query(q)
+
+            def _if(answer, image_patch, questions, result):
+                result = answer
+                return (answer, image_patch, questions, result)
+            answer, image_patch, questions, result = if_stmt(_if, None, answer, (answer, image_patch, questions, result))
+            return (answer, image_patch, questions, result)
+        answer, image_patch, questions, result = if_stmt(_if, None, not_expr(result), (answer, image_patch, questions, result))
+        return (answer, image_patch, questions, result)
+    answer, image_patch, questions, result = for_stmt(_for, questions, (answer, image_patch, questions, result))
+
+    def _if(answer, image_patch, questions, result):
+        result = image_patch.simple_query('Which place is it?')
+        return (answer, image_patch, questions, result)
+    answer, image_patch, questions, result = if_stmt(_if, None, not_expr(result), (answer, image_patch, questions, result))
+    return result

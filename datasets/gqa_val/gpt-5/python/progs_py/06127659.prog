@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_knives = image_patch.exists("knife") or image_patch.exists("knives")
+    has_chopsticks = any(image_patch.exists(name) for name in ["chopstick", "chopsticks", "chop stick", "chop sticks"])
+    return bool_to_yesno(has_knives and has_chopsticks)

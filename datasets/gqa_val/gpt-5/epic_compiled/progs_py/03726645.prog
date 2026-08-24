@@ -1,0 +1,25 @@
+# Are there any bags to the left of the man that is to the left of the curtain?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    man_patches = image_patch.find("man")
+    curtain_patches = image_patch.find("curtain")
+
+    if len(man_patches) == 0 or len(curtain_patches) == 0:
+        result = image_patch.simple_query("Are there any bags to the left of the man that is to the left of the curtain?")
+    else:
+        bag_patches = image_patch.find("bag")
+        if len(bag_patches) == 0:
+            result = "no"
+        else:
+            for man_patch in man_patches:
+                man_left_of_any_curtain = False
+                for curtain_patch in curtain_patches:
+                    if man_patch.horizontal_center < curtain_patch.horizontal_center:
+                        man_left_of_any_curtain = True
+                if man_left_of_any_curtain:
+                    for bag_patch in bag_patches:
+                        if bag_patch.horizontal_center < man_patch.horizontal_center:
+                            result = "yes"
+    return result

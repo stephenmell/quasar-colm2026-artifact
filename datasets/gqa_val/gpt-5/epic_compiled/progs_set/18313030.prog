@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    flag_exists = None
+    flag_patches = None
+    image_patch = None
+    result = None
+    sword_exists = None
+    sword_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    sword_exists = image_patch.exists('sword')
+    flag_exists = image_patch.exists('flag')
+
+    def _if(flag_exists, image_patch, result, sword_exists, sword_patches):
+        sword_patches = image_patch.find('sword')
+
+        def _for(sword_patch, flag_exists, image_patch, result, sword_exists, sword_patches):
+
+            def _if(flag_exists, image_patch, result, sword_exists, sword_patches):
+                result = 'yes'
+                return (flag_exists, image_patch, result, sword_exists, sword_patches)
+            flag_exists, image_patch, result, sword_exists, sword_patches = if_stmt(_if, None, sword_patch.verify_property('sword', 'yellow'), (flag_exists, image_patch, result, sword_exists, sword_patches))
+            return (flag_exists, image_patch, result, sword_exists, sword_patches)
+        flag_exists, image_patch, result, sword_exists, sword_patches = for_stmt(_for, sword_patches, (flag_exists, image_patch, result, sword_exists, sword_patches))
+        return (flag_exists, image_patch, result, sword_exists, sword_patches)
+    flag_exists, image_patch, result, sword_exists, sword_patches = if_stmt(_if, None, sword_exists, (flag_exists, image_patch, result, sword_exists, sword_patches))
+
+    def _if(flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches):
+        flag_patches = image_patch.find('flag')
+
+        def _for(flag_patch, flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches):
+
+            def _if(flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches):
+                result = 'yes'
+                return (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches)
+            flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches = if_stmt(_if, None, flag_patch.verify_property('flag', 'yellow'), (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches))
+            return (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches)
+        flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches = for_stmt(_for, flag_patches, (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches))
+        return (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches)
+    flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches = if_stmt(_if, None, flag_exists, (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches))
+
+    def _if(flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches):
+        result = image_patch.simple_query('Is there any yellow sword or flag?')
+        return (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches)
+    flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches = if_stmt(_if, None, and_expr(not sword_exists, not flag_exists), (flag_exists, flag_patches, image_patch, result, sword_exists, sword_patches))
+    return result

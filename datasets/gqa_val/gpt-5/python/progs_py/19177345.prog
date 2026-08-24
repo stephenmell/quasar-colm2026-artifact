@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_umbrella = image_patch.exists("umbrella")
+    fence_patches = image_patch.find("fence")
+    is_orange_fence = any(fence_patch.verify_property("fence", "orange") for fence_patch in fence_patches)
+    return bool_to_yesno(is_orange_fence or is_umbrella)

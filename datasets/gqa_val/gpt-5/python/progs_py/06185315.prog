@@ -1,0 +1,30 @@
+# Is the broccoli to the left of the brown food?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find broccoli
+    broccoli_patches = image_patch.find("broccoli")
+    if len(broccoli_patches) == 0:
+        # If no broccoli is found, query the image directly
+        return image_patch.simple_query("Is the broccoli to the left of the brown food?")
+
+    # Find brown food: try explicit query first
+    brown_food_patches = image_patch.find("brown food")
+    if len(brown_food_patches) == 0:
+        # Fallback: find food and filter by brown color property
+        food_patches = image_patch.find("food")
+        brown_food_patches = []
+        for food_patch in food_patches:
+            if food_patch.verify_property("food", "brown"):
+                brown_food_patches.append(food_patch)
+
+    if len(brown_food_patches) == 0:
+        # If no brown food found, ask directly
+        return image_patch.simple_query("Is the broccoli to the left of the brown food?")
+
+    # Check if any broccoli is to the left of any brown food
+    for broccoli_patch in broccoli_patches:
+        for brown_food_patch in brown_food_patches:
+            if broccoli_patch.horizontal_center < brown_food_patch.horizontal_center:
+                return "yes"
+    return "no"

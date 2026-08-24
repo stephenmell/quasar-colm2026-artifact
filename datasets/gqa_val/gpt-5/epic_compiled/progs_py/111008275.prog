@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_sack = image_patch.exists("sack")
+    is_glass = image_patch.exists("glass")
+    result = bool_to_yesno(is_sack or is_glass)
+    return result

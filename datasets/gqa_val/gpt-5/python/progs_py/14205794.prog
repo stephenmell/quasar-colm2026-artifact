@@ -1,0 +1,7 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    if len(plate_patches) == 0:
+        return image_patch.simple_query("Are the plates on the right side of the picture?")
+    avg_horizontal_center = sum(p.horizontal_center for p in plate_patches) / len(plate_patches)
+    return "yes" if avg_horizontal_center > image_patch.horizontal_center else "no"

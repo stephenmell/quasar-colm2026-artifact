@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    best_dx = None
+    chosen_towel = None
+    dx = None
+    image_patch = None
+    result = None
+    rug_patch = None
+    rug_patches = None
+    towel_patches = None
+    image_patch = ImagePatch(image)
+    rug_patches = image_patch.find('rug')
+    towel_patches = image_patch.find('towel')
+
+    def _if(best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches):
+        result = image_patch.simple_query('Is the towel to the left of the rug white or green?')
+        return (best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches)
+
+    def _else(best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches):
+        rug_patch = rug_patches[0]
+        chosen_towel = None
+        best_dx = None
+
+        def _for(towel_patch, best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches):
+
+            def _if(best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches):
+                dx = rug_patch.horizontal_center - towel_patch.horizontal_center
+
+                def _if(best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches):
+                    chosen_towel = towel_patch
+                    best_dx = dx
+                    return (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches)
+
+                def _else(best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches):
+
+                    def _if(best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches):
+                        chosen_towel = towel_patch
+                        best_dx = dx
+                        return (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches)
+                    best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches = if_stmt(_if, None, dx < best_dx, (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches))
+                    return (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches)
+                best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches = if_stmt(_if, _else, chosen_towel is None, (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches))
+                return (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches)
+            best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches = if_stmt(_if, None, towel_patch.horizontal_center < rug_patch.horizontal_center, (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches))
+            return (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches)
+        best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches = for_stmt(_for, towel_patches, (best_dx, chosen_towel, dx, image_patch, rug_patch, rug_patches, towel_patches))
+
+        def _if(best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches):
+            result = image_patch.simple_query('Is the towel to the left of the rug white or green?')
+            return (best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches)
+
+        def _else(best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches):
+            result = chosen_towel.best_text_match(('white', 'green'))
+            return (best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches)
+        best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches = if_stmt(_if, _else, chosen_towel is None, (best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches))
+        return (best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches)
+    best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches = if_stmt(_if, _else, or_expr(len(rug_patches) == 0, len(towel_patches) == 0), (best_dx, chosen_towel, dx, image_patch, result, rug_patch, rug_patches, towel_patches))
+    return result

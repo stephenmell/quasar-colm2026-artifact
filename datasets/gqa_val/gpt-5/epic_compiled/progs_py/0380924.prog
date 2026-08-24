@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    telephone_patches = image_patch.find("telephone")
+    if len(telephone_patches) == 0:
+        result = image_patch.simple_query("Is the telephone to the left of a pillow?")
+    else:
+        pillow_patches = image_patch.find("pillow")
+        if len(pillow_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for telephone_patch in telephone_patches:
+                for pillow_patch in pillow_patches:
+                    if telephone_patch.horizontal_center < pillow_patch.horizontal_center:
+                        result = "yes"
+    return result

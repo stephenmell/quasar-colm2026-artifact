@@ -1,0 +1,97 @@
+def execute_command(image) -> str:
+    any_right = None
+    candidate_tomato_patches = None
+    dish_patches = None
+    egg_patches = None
+    filtered_tomato_patches = None
+    image_patch = None
+    plate_patches = None
+    result = None
+    search_area_patch = None
+    sliced_tomato_patches = None
+    tomato_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    dish_patches = image_patch.find('dish')
+    search_area_patch = None
+
+    def _if(dish_patches, image_patch, plate_patches, result, search_area_patch):
+        search_area_patch = dish_patches[0]
+        return (dish_patches, image_patch, plate_patches, result, search_area_patch)
+
+    def _else(dish_patches, image_patch, plate_patches, result, search_area_patch):
+        plate_patches = image_patch.find('plate')
+
+        def _if(dish_patches, image_patch, plate_patches, result, search_area_patch):
+            search_area_patch = plate_patches[0]
+            return (dish_patches, image_patch, plate_patches, result, search_area_patch)
+        dish_patches, image_patch, plate_patches, result, search_area_patch = if_stmt(_if, None, len(plate_patches) > 0, (dish_patches, image_patch, plate_patches, result, search_area_patch))
+        return (dish_patches, image_patch, plate_patches, result, search_area_patch)
+    dish_patches, image_patch, plate_patches, result, search_area_patch = if_stmt(_if, _else, len(dish_patches) > 0, (dish_patches, image_patch, plate_patches, result, search_area_patch))
+
+    def _if(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+        result = image_patch.simple_query('Are there any eggs to the right of the sliced tomato on the dish?')
+        return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+
+    def _else(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+        sliced_tomato_patches = search_area_patch.find('sliced tomato')
+        candidate_tomato_patches = sliced_tomato_patches
+
+        def _if(candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+            tomato_patches = search_area_patch.find('tomato')
+            filtered_tomato_patches = ()
+
+            def _for(tomato_patch, candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+
+                def _if(candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+                    filtered_tomato_patches = filtered_tomato_patches + (tomato_patch,)
+                    return (candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+                candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = if_stmt(_if, None, tomato_patch.verify_property('tomato', 'sliced'), (candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+                return (candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+            candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = for_stmt(_for, tomato_patches, (candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+            candidate_tomato_patches = filtered_tomato_patches
+            return (candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+        candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = if_stmt(_if, None, len(candidate_tomato_patches) == 0, (candidate_tomato_patches, dish_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+        egg_patches = search_area_patch.find('egg')
+
+        def _if(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+            result = image_patch.simple_query('Are there any eggs to the right of the sliced tomato on the dish?')
+            return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+
+        def _else(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+
+            def _if(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+                result = 'no'
+                return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+
+            def _else(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+                any_right = False
+
+                def _for(tomato_patch, any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+
+                    def _for(egg_patch, any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+
+                        def _if(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+                            any_right = True
+                            return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+                        any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = if_stmt(_if, None, egg_patch.horizontal_center > tomato_patch.horizontal_center, (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+                        return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+                    any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = for_stmt(_for, egg_patches, (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+                    return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+                any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = for_stmt(_for, candidate_tomato_patches, (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+
+                def _if(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+                    result = 'yes'
+                    return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+
+                def _else(any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches):
+                    result = 'no'
+                    return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+                any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = if_stmt(_if, _else, any_right, (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+                return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+            any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = if_stmt(_if, _else, len(egg_patches) == 0, (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+            return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+        any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = if_stmt(_if, _else, len(candidate_tomato_patches) == 0, (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+        return (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches)
+    any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches = if_stmt(_if, _else, not_expr(search_area_patch), (any_right, candidate_tomato_patches, dish_patches, egg_patches, filtered_tomato_patches, image_patch, plate_patches, result, search_area_patch, sliced_tomato_patches, tomato_patches))
+    return result

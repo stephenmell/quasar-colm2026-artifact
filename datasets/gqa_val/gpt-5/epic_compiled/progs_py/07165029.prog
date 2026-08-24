@@ -1,0 +1,66 @@
+# Is the large train to the right of the signal light that looks gray?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Is the large train to the right of the signal light that looks gray?"
+    result = "no"
+
+    train_patches = image_patch.find("train")
+    if len(train_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        # Select the large train via property if possible, else by largest area
+        large_train_candidates = ()
+        for tpatch in train_patches:
+            if tpatch.verify_property("train", "large"):
+                large_train_candidates = large_train_candidates + (tpatch,)
+        selected_train = None
+        if len(large_train_candidates) == 1:
+            selected_train = large_train_candidates[0]
+        else:
+            source_trains = large_train_candidates if len(large_train_candidates) > 0 else train_patches
+            best_area = -1
+            best_train = None
+            for tpatch in source_trains:
+                area = tpatch.width * tpatch.height
+                if area > best_area:
+                    best_area = area
+                    best_train = tpatch
+            selected_train = best_train
+
+        # Find gray signal light candidates across multiple possible names
+        signal_names = ("signal light", "traffic light", "signal", "light", "railroad signal")
+        all_signal_pairs = ()
+        for sname in signal_names:
+            found_signals = image_patch.find(sname)
+            for spatch in found_signals:
+                all_signal_pairs = all_signal_pairs + ((spatch, sname),)
+
+        if len(all_signal_pairs) == 0:
+            result = image_patch.simple_query(question)
+        else:
+            gray_signal_pairs = ()
+            for pair in all_signal_pairs:
+                spatch = pair[0]
+                sname = pair[1]
+                is_gray = spatch.verify_property(sname, "gray") or spatch.verify_property(sname, "grey")
+                if is_gray:
+                    gray_signal_pairs = gray_signal_pairs + (pair,)
+
+            if len(gray_signal_pairs) == 0:
+                result = image_patch.simple_query(question)
+            else:
+                # Choose the gray signal closest horizontally to the selected train
+                chosen_signal = gray_signal_pairs[0][0]
+                min_dist = abs(selected_train.horizontal_center - chosen_signal.horizontal_center)
+                for pair in gray_signal_pairs:
+                    spatch = pair[0]
+                    dist = abs(selected_train.horizontal_center - spatch.horizontal_center)
+                    if dist < min_dist:
+                        min_dist = dist
+                        chosen_signal = spatch
+
+                if selected_train.horizontal_center > chosen_signal.horizontal_center:
+                    result = "yes"
+                else:
+                    result = "no"
+    return result

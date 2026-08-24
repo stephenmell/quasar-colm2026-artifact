@@ -1,0 +1,38 @@
+def execute_command(image) -> str:
+    best_distance = None
+    chosen_plate = None
+    current_distance = None
+    image_patch = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    plate_patches = image_patch.find('plate')
+
+    def _if(best_distance, chosen_plate, current_distance, image_patch, plate_patches, result):
+        result = image_patch.simple_query('What type of furniture is that plate on, a table or a cabinet?')
+        return (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result)
+
+    def _else(best_distance, chosen_plate, current_distance, image_patch, plate_patches, result):
+        chosen_plate = plate_patches[0]
+        best_distance = abs(chosen_plate.horizontal_center - image_patch.horizontal_center) + abs(chosen_plate.vertical_center - image_patch.vertical_center)
+
+        def _for(plate_patch, best_distance, chosen_plate, current_distance, image_patch, plate_patches, result):
+            current_distance = abs(plate_patch.horizontal_center - image_patch.horizontal_center) + abs(plate_patch.vertical_center - image_patch.vertical_center)
+
+            def _if(best_distance, chosen_plate, current_distance, image_patch, plate_patches, result):
+                chosen_plate = plate_patch
+                best_distance = current_distance
+                return (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result)
+            best_distance, chosen_plate, current_distance, image_patch, plate_patches, result = if_stmt(_if, None, current_distance < best_distance, (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result))
+            return (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result)
+        best_distance, chosen_plate, current_distance, image_patch, plate_patches, result = for_stmt(_for, plate_patches, (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result))
+        result = chosen_plate.simple_query('What type of furniture is that plate on, a table or a cabinet?')
+        return (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result)
+    best_distance, chosen_plate, current_distance, image_patch, plate_patches, result = if_stmt(_if, _else, len(plate_patches) == 0, (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result))
+
+    def _if(best_distance, chosen_plate, current_distance, image_patch, plate_patches, result):
+        result = image_patch.best_text_match(('table', 'cabinet'))
+        return (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result)
+    best_distance, chosen_plate, current_distance, image_patch, plate_patches, result = if_stmt(_if, None, not_expr(result), (best_distance, chosen_plate, current_distance, image_patch, plate_patches, result))
+    return result

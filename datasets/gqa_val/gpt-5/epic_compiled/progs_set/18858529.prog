@@ -1,0 +1,65 @@
+def execute_command(image) -> str:
+    camera_patches = None
+    dist_sq = None
+    dx = None
+    dy = None
+    image_patch = None
+    ipod_patches = None
+    is_pink_ipod = None
+    result = None
+    threshold = None
+    threshold_sq = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    ipod_patches = image_patch.find('ipod')
+
+    def _if(camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+        result = image_patch.simple_query('Are there cameras near the ipod that looks pink?')
+        return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+
+    def _else(camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+        camera_patches = image_patch.find('camera')
+
+        def _if(camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+            result = 'no'
+            return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+
+        def _else(camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+            threshold = 0.2 * max(image_patch.width, image_patch.height)
+            threshold_sq = threshold * threshold
+
+            def _for(ipod_patch, camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+                is_pink_ipod = ipod_patch.verify_property('ipod', 'pink')
+
+                def _if(camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+
+                    def _for(camera_patch, camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+                        dx = camera_patch.horizontal_center - ipod_patch.horizontal_center
+
+                        def _if(camera_patches, dx, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+                            dx = -dx
+                            return (camera_patches, dx, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+                        camera_patches, dx, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = if_stmt(_if, None, dx < 0, (camera_patches, dx, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+                        dy = camera_patch.vertical_center - ipod_patch.vertical_center
+
+                        def _if(camera_patches, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+                            dy = -dy
+                            return (camera_patches, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+                        camera_patches, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = if_stmt(_if, None, dy < 0, (camera_patches, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+                        dist_sq = dx * dx + dy * dy
+
+                        def _if(camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq):
+                            result = 'yes'
+                            return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+                        camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = if_stmt(_if, None, dist_sq <= threshold_sq, (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+                        return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+                    camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = for_stmt(_for, camera_patches, (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+                    return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+                camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = if_stmt(_if, None, is_pink_ipod, (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+                return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+            camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = for_stmt(_for, ipod_patches, (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+            return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+        camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = if_stmt(_if, _else, len(camera_patches) == 0, (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+        return (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq)
+    camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq = if_stmt(_if, _else, len(ipod_patches) == 0, (camera_patches, dist_sq, dx, dy, image_patch, ipod_patches, is_pink_ipod, result, threshold, threshold_sq))
+    return result

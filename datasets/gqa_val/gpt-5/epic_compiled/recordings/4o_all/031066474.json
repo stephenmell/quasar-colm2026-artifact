@@ -1,0 +1,65 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2384693",
+          [
+            0,
+            0,
+            500,
+            355
+          ]
+        ],
+        "furniture"
+      ],
+      [
+        [
+          6,
+          6,
+          105,
+          79
+        ]
+      ],
+      10487672647
+    ]
+  ],
+  "verify_property": [
+    [
+      [
+        [
+          "2384693",
+          [
+            6,
+            6,
+            105,
+            79
+          ]
+        ],
+        "furniture",
+        "decorative"
+      ],
+      false,
+      1039235813
+    ]
+  ],
+  "simple_query": [
+    [
+      [
+        [
+          "2384693",
+          [
+            6,
+            6,
+            105,
+            79
+          ]
+        ],
+        "What type of furniture is this?"
+      ],
+      "It appears to be a cabinet or armoire.",
+      653620502
+    ]
+  ],
+  "best_text_match": []
+}

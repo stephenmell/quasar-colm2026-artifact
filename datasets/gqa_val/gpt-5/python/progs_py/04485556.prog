@@ -1,0 +1,12 @@
+# Are there white towels in this image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    towel_patches = image_patch.find("towel")
+    # If no towels are found, ask directly
+    if len(towel_patches) == 0:
+        return image_patch.simple_query("Are there white towels in this image?")
+    # Check if any detected towel is white
+    for towel_patch in towel_patches:
+        if towel_patch.verify_property("towel", "white"):
+            return "yes"
+    return "no"

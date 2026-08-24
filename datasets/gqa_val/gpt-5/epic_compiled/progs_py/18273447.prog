@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check if any table exists
+    if not image_patch.exists("table"):
+        result = image_patch.simple_query("Is there a table that is not made of wood?")
+    else:
+        table_patches = image_patch.find("table")
+        found_non_wood = False
+        for table_patch in table_patches:
+            is_wood = table_patch.verify_property("table", "wood")
+            if not is_wood:
+                found_non_wood = True
+        if found_non_wood:
+            result = "yes"
+        else:
+            result = "no"
+    return result

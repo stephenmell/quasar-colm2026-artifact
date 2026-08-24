@@ -1,0 +1,28 @@
+# Are both the fence and the shoe the same color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find("fence")
+    shoe_patches = image_patch.find("shoe")
+
+    if len(fence_patches) == 0 or len(shoe_patches) == 0:
+        result = image_patch.simple_query("Are both the fence and the shoe the same color?")
+    else:
+        color_options = ("white", "black", "brown", "red", "orange", "yellow", "green", "blue",
+                         "purple", "pink", "gray", "grey", "tan", "beige", "gold", "silver")
+
+        fence_colors = ()
+        for fence_patch in fence_patches:
+            fence_color = fence_patch.best_text_match(color_options)
+            fence_colors = fence_colors + (fence_color,)
+
+        shoe_colors = ()
+        for shoe_patch in shoe_patches:
+            shoe_color = shoe_patch.best_text_match(color_options)
+            shoe_colors = shoe_colors + (shoe_color,)
+
+        result = "no"
+        for fc in fence_colors:
+            for sc in shoe_colors:
+                if fc == sc:
+                    result = "yes"
+    return result

@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    cap_patches = None
+    deer_patches = None
+    diag = None
+    dist = None
+    dx = None
+    dy = None
+    image_patch = None
+    result = None
+    threshold = None
+    image_patch = ImagePatch(image)
+    deer_patches = image_patch.find('deer')
+    cap_patches = image_patch.find('cap')
+
+    def _if(cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold):
+        result = image_patch.simple_query('Are there deer near the cap?')
+        return (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold)
+
+    def _else(cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold):
+        result = 'no'
+        diag = (image_patch.width * image_patch.width + image_patch.height * image_patch.height) ** 0.5
+        threshold = 0.25 * diag
+
+        def _for(deer_patch, cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold):
+
+            def _for(cap_patch, cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold):
+                dx = deer_patch.horizontal_center - cap_patch.horizontal_center
+                dy = deer_patch.vertical_center - cap_patch.vertical_center
+                dist = (dx * dx + dy * dy) ** 0.5
+
+                def _if(cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold):
+                    result = 'yes'
+                    return (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold)
+                cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold = if_stmt(_if, None, dist <= threshold, (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold))
+                return (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold)
+            cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold = for_stmt(_for, cap_patches, (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold))
+            return (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold)
+        cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold = for_stmt(_for, deer_patches, (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold))
+        return (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold)
+    cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold = if_stmt(_if, _else, or_expr(len(deer_patches) == 0, len(cap_patches) == 0), (cap_patches, deer_patches, diag, dist, dx, dy, image_patch, result, threshold))
+    return result

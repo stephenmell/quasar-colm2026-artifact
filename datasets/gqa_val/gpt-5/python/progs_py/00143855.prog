@@ -1,0 +1,46 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    house_patches = image_patch.find("house")
+    zebra_patches = image_patch.find("zebra")
+
+    # If either object isn't clearly found, ask directly
+    if len(house_patches) == 0 or len(zebra_patches) == 0:
+        return image_patch.simple_query("Is the house different in color than the zebra?")
+
+    house_patch = house_patches[0]
+    zebra_patch = zebra_patches[0]
+
+    # Common color set to check
+    colors = [
+        "white", "black", "gray", "red", "blue", "green", "yellow",
+        "orange", "brown", "pink", "purple", "gold", "silver", "beige", "tan"
+    ]
+
+    # Try property-based color detection
+    house_colors = {c for c in colors if house_patch.verify_property("house", c)}
+    zebra_colors = {c for c in colors if zebra_patch.verify_property("zebra", c)}
+
+    # If both color sets detected, compare intersections
+    if len(house_colors) > 0 and len(zebra_colors) > 0:
+        return "no" if len(house_colors.intersection(zebra_colors)) > 0 else "yes"
+
+    # Fallback: ask for color textually and parse colors mentioned
+    house_color_text = house_patch.simple_query("What color is the house?")
+    zebra_color_text = zebra_patch.simple_query("What color is the zebra?")
+
+    def extract_colors(text):
+        t = (text or "").lower()
+        found = {c for c in colors if c in t}
+        return found
+
+    hc = extract_colors(house_color_text)
+    zc = extract_colors(zebra_color_text)
+
+    if len(hc) > 0 and len(zc) > 0:
+        return "no" if len(hc.intersection(zc)) > 0 else "yes"
+
+    # Last resort: compare raw answers if both exist, else ask directly
+    if house_color_text and zebra_color_text:
+        return "no" if house_color_text.strip().lower() == zebra_color_text.strip().lower() else "yes"
+
+    return image_patch.simple_query("Is the house different in color than the zebra?")

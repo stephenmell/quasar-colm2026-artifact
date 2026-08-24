@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    mirror_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    mirror_patches = image_patch.find('mirror')
+
+    def _if(image_patch, mirror_patches, result):
+        result = image_patch.simple_query('Is the mirror large?')
+        return (image_patch, mirror_patches, result)
+
+    def _else(image_patch, mirror_patches, result):
+        result = 'no'
+
+        def _for(mirror_patch, image_patch, mirror_patches, result):
+
+            def _if(image_patch, mirror_patches, result):
+                result = 'yes'
+                return (image_patch, mirror_patches, result)
+            image_patch, mirror_patches, result = if_stmt(_if, None, mirror_patch.verify_property('mirror', 'large'), (image_patch, mirror_patches, result))
+            return (image_patch, mirror_patches, result)
+        image_patch, mirror_patches, result = for_stmt(_for, mirror_patches, (image_patch, mirror_patches, result))
+        return (image_patch, mirror_patches, result)
+    image_patch, mirror_patches, result = if_stmt(_if, _else, len(mirror_patches) == 0, (image_patch, mirror_patches, result))
+    return result

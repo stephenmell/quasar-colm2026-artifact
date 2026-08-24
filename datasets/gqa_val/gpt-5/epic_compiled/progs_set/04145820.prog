@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    couch_patches = None
+    image_patch = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    couch_patches = image_patch.find('couch')
+
+    def _if(couch_patches, image_patch, man_patches, result):
+        result = image_patch.simple_query('Are there any men to the left of the brown couch?')
+        return (couch_patches, image_patch, man_patches, result)
+
+    def _else(couch_patches, image_patch, man_patches, result):
+        man_patches = image_patch.find('man')
+
+        def _if(couch_patches, image_patch, man_patches, result):
+            result = 'no'
+            return (couch_patches, image_patch, man_patches, result)
+
+        def _else(couch_patches, image_patch, man_patches, result):
+
+            def _for(couch_patch, couch_patches, image_patch, man_patches, result):
+
+                def _if(couch_patches, image_patch, man_patches, result):
+
+                    def _for(man_patch, couch_patches, image_patch, man_patches, result):
+
+                        def _if(couch_patches, image_patch, man_patches, result):
+                            result = 'yes'
+                            return (couch_patches, image_patch, man_patches, result)
+                        couch_patches, image_patch, man_patches, result = if_stmt(_if, None, man_patch.horizontal_center < couch_patch.horizontal_center, (couch_patches, image_patch, man_patches, result))
+                        return (couch_patches, image_patch, man_patches, result)
+                    couch_patches, image_patch, man_patches, result = for_stmt(_for, man_patches, (couch_patches, image_patch, man_patches, result))
+                    return (couch_patches, image_patch, man_patches, result)
+                couch_patches, image_patch, man_patches, result = if_stmt(_if, None, couch_patch.verify_property('couch', 'brown'), (couch_patches, image_patch, man_patches, result))
+                return (couch_patches, image_patch, man_patches, result)
+            couch_patches, image_patch, man_patches, result = for_stmt(_for, couch_patches, (couch_patches, image_patch, man_patches, result))
+            return (couch_patches, image_patch, man_patches, result)
+        couch_patches, image_patch, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (couch_patches, image_patch, man_patches, result))
+        return (couch_patches, image_patch, man_patches, result)
+    couch_patches, image_patch, man_patches, result = if_stmt(_if, _else, len(couch_patches) == 0, (couch_patches, image_patch, man_patches, result))
+    return result

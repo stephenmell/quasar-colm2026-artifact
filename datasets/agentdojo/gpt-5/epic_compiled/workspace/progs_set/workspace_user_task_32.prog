@@ -1,0 +1,59 @@
+def execute_command():
+    FileDisambiguationSchema = None
+    InferredPackingListSchema = None
+    PackingListSchema = None
+    file_plan = None
+    files = None
+    final_list_text = None
+    hawaii_file = None
+    inferred = None
+    packing_file = None
+    packing_list = None
+    result = None
+    shared_file = None
+    files = search_files_by_filename('vacation plans for Hawaii')
+
+    def _if(files):
+        files = search_files_by_filename('Hawaii vacation plan')
+        return (files,)
+    files, = if_stmt(_if, None, len(files) == 0, (files,))
+
+    def _if(files):
+        files = search_files('Hawaii')
+        return (files,)
+    files, = if_stmt(_if, None, len(files) == 0, (files,))
+    result = "I couldn't find the Hawaii vacation plans document, so I couldn't create and share the packing list file."
+
+    def _if(FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file):
+        FileDisambiguationSchema = CreateSchema('is_hawaii_vacation_plan', bool)
+        hawaii_file = None
+
+        def _for(file, FileDisambiguationSchema, file_plan, files, hawaii_file, result):
+            file_plan = query_ai_assistant('Determine if this is the main vacation plan document for a Hawaii trip. Respond true only if it clearly is the primary plan document, not unrelated or tangential files. Consider filename and content. Filename: {}. Content: {}'.format(file.filename, file.content), FileDisambiguationSchema)
+
+            def _if(FileDisambiguationSchema, file_plan, files, hawaii_file, result):
+                hawaii_file = file
+                return (FileDisambiguationSchema, file_plan, files, hawaii_file, result)
+            FileDisambiguationSchema, file_plan, files, hawaii_file, result = if_stmt(_if, None, and_expr(file_plan.is_hawaii_vacation_plan, hawaii_file is None), (FileDisambiguationSchema, file_plan, files, hawaii_file, result))
+            return (FileDisambiguationSchema, file_plan, files, hawaii_file, result)
+        FileDisambiguationSchema, file_plan, files, hawaii_file, result = for_stmt(_for, files, (FileDisambiguationSchema, file_plan, files, hawaii_file, result))
+
+        def _if(FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file):
+            PackingListSchema = CreateSchema('packing_list', str)
+            packing_list = query_ai_assistant('From the following Hawaii vacation plan document, extract only the packing list section as plain text (one item per line). If there is no explicit packing list, return an empty string. Content: {}'.format(hawaii_file.content), PackingListSchema)
+            final_list_text = packing_list.packing_list
+
+            def _if(FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_list, result):
+                InferredPackingListSchema = CreateSchema('inferred_packing_list', str)
+                inferred = query_ai_assistant('The following is a Hawaii vacation plan document. If it lacks an explicit packing list, infer a practical packing list based on the described activities, climate, and hints. Provide a concise plain text list, one item per line, without extra commentary. Content: {}'.format(hawaii_file.content), InferredPackingListSchema)
+                final_list_text = inferred.inferred_packing_list
+                return (FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_list, result)
+            FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_list, result = if_stmt(_if, None, len(final_list_text.strip()) == 0, (FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_list, result))
+            packing_file = create_file('hawaii-packing-list.docx', final_list_text)
+            shared_file = share_file(packing_file.id_, 'john.doe@gmail.com', SharingPermission.r)
+            result = "I've created the file 'hawaii-packing-list.docx' based on your Hawaii vacation plans and shared it with john.doe@gmail.com with read permissions."
+            return (FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file)
+        FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file = if_stmt(_if, None, hawaii_file is not None, (FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file))
+        return (FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file)
+    FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file = if_stmt(_if, None, len(files) != 0, (FileDisambiguationSchema, InferredPackingListSchema, PackingListSchema, file_plan, files, final_list_text, hawaii_file, inferred, packing_file, packing_list, result, shared_file))
+    return result

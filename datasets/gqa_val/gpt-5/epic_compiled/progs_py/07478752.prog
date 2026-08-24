@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    blinds_patches = image_patch.find("blinds")
+    if len(blinds_patches) == 0:
+        blinds_patches = image_patch.find("blind")
+    if len(blinds_patches) == 0:
+        result = image_patch.simple_query("Are the blinds closed or open?")
+    else:
+        result = blinds_patches[0].best_text_match(("closed", "open"))
+    return result

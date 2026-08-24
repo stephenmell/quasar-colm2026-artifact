@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find("shirt")
+    if len(shirt_patches) == 0:
+        result = image_patch.simple_query("Is the color of the shirt white?")
+    else:
+        result = "no"
+        for shirt_patch in shirt_patches:
+            if shirt_patch.verify_property("shirt", "white"):
+                result = "yes"
+    return result

@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Does the shirt have the same color as the hydrant?"
+
+    shirt_patches = image_patch.find("shirt")
+    hydrant_patches = image_patch.find("hydrant")
+    if len(hydrant_patches) == 0:
+        hydrant_patches = image_patch.find("fire hydrant")
+
+    if len(shirt_patches) == 0 or len(hydrant_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        colors = ("red", "yellow", "blue", "green", "black", "white", "brown", "gray", "grey", "orange", "pink", "purple", "gold", "silver", "tan", "beige")
+        result = "no"
+        for shirt_patch in shirt_patches:
+            shirt_color = shirt_patch.best_text_match(colors)
+            if shirt_color == "grey":
+                shirt_color = "gray"
+            for hydrant_patch in hydrant_patches:
+                hydrant_color = hydrant_patch.best_text_match(colors)
+                if hydrant_color == "grey":
+                    hydrant_color = "gray"
+                if shirt_color == hydrant_color and len(shirt_color) > 0:
+                    result = "yes"
+    return result

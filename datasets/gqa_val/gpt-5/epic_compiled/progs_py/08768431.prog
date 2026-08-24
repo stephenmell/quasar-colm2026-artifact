@@ -1,0 +1,11 @@
+# Are there glasses?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_glasses = image_patch.exists("glasses")
+    has_sunglasses = image_patch.exists("sunglasses")
+
+    if has_glasses or has_sunglasses:
+        result = "yes"
+    else:
+        result = image_patch.simple_query("Are there glasses?")
+    return result

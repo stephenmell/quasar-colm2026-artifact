@@ -1,0 +1,5 @@
+{
+  "result": "A scheduled transaction was updated, specifically the transaction with ID 7. No one-time payments were processed and no new scheduled transactions were created.",
+  "time_ns": 4005910828,
+  "utility": true
+}

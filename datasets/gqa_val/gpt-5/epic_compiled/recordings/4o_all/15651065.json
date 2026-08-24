@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2391287",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "What is the woman walking on?"
+      ],
+      "The woman is skiing on snow.",
+      1311584453
+    ]
+  ],
+  "best_text_match": []
+}

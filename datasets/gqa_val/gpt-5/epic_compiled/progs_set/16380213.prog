@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    fence_exists = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    fence_exists = image_patch.exists('fence')
+
+    def _if(fence_exists, image_patch, result):
+        result = 'yes'
+        return (fence_exists, image_patch, result)
+
+    def _else(fence_exists, image_patch, result):
+        result = image_patch.simple_query('Are there fences in this photo?')
+        return (fence_exists, image_patch, result)
+    fence_exists, image_patch, result = if_stmt(_if, _else, fence_exists, (fence_exists, image_patch, result))
+    return result

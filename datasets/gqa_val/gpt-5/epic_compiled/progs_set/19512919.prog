@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    found = None
+    image_patch = None
+    racket_names = None
+    result = None
+    image_patch = ImagePatch(image)
+    racket_names = ('racket', 'racquet', 'tennis racket', 'tennis racquet', 'badminton racket', 'squash racket')
+    found = False
+
+    def _for(name, found, image_patch, racket_names):
+
+        def _if(found, image_patch, racket_names):
+            found = True
+            return (found, image_patch, racket_names)
+        found, image_patch, racket_names = if_stmt(_if, None, image_patch.exists(name), (found, image_patch, racket_names))
+        return (found, image_patch, racket_names)
+    found, image_patch, racket_names = for_stmt(_for, racket_names, (found, image_patch, racket_names))
+    result = bool_to_yesno(found)
+    return result

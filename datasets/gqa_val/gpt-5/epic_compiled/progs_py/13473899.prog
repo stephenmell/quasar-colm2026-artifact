@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fork_patches = image_patch.find("fork")
+    if len(fork_patches) == 0:
+        result = image_patch.simple_query("Does the fork have black color?")
+    else:
+        has_black = False
+        for fork_patch in fork_patches:
+            if fork_patch.verify_property("fork", "black"):
+                has_black = True
+        result = bool_to_yesno(has_black)
+    return result

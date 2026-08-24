@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    answer = None
+    image_patch = None
+    lowered = None
+    possible_names = None
+    result = None
+    seen = None
+    image_patch = ImagePatch(image)
+    possible_names = ('cat', 'kitten', 'kitty', 'feline')
+    seen = False
+
+    def _for(name, image_patch, possible_names, seen):
+
+        def _if(image_patch, possible_names, seen):
+            seen = True
+            return (image_patch, possible_names, seen)
+        image_patch, possible_names, seen = if_stmt(_if, None, image_patch.exists(name), (image_patch, possible_names, seen))
+        return (image_patch, possible_names, seen)
+    image_patch, possible_names, seen = for_stmt(_for, possible_names, (image_patch, possible_names, seen))
+
+    def _if(answer, image_patch, lowered, possible_names, result, seen):
+        result = 'yes'
+        return (answer, image_patch, lowered, possible_names, result, seen)
+
+    def _else(answer, image_patch, lowered, possible_names, result, seen):
+        answer = image_patch.simple_query('Do you see any cats?')
+
+        def _if(answer, image_patch, lowered, possible_names, seen):
+            lowered = answer.lower()
+            return (answer, image_patch, lowered, possible_names, seen)
+
+        def _else(answer, image_patch, lowered, possible_names, seen):
+            lowered = ''
+            return (answer, image_patch, lowered, possible_names, seen)
+        answer, image_patch, lowered, possible_names, seen = if_stmt(_if, _else, isinstance(answer, str), (answer, image_patch, lowered, possible_names, seen))
+
+        def _if(answer, image_patch, lowered, possible_names, result, seen):
+            result = 'yes'
+            return (answer, image_patch, lowered, possible_names, result, seen)
+
+        def _else(answer, image_patch, lowered, possible_names, result, seen):
+
+            def _if(answer, image_patch, lowered, possible_names, result, seen):
+                result = 'no'
+                return (answer, image_patch, lowered, possible_names, result, seen)
+
+            def _else(answer, image_patch, lowered, possible_names, result, seen):
+                result = 'no'
+                return (answer, image_patch, lowered, possible_names, result, seen)
+            answer, image_patch, lowered, possible_names, result, seen = if_stmt(_if, _else, lowered == 'no', (answer, image_patch, lowered, possible_names, result, seen))
+            return (answer, image_patch, lowered, possible_names, result, seen)
+        answer, image_patch, lowered, possible_names, result, seen = if_stmt(_if, _else, lowered == 'yes', (answer, image_patch, lowered, possible_names, result, seen))
+        return (answer, image_patch, lowered, possible_names, result, seen)
+    answer, image_patch, lowered, possible_names, result, seen = if_stmt(_if, _else, seen, (answer, image_patch, lowered, possible_names, result, seen))
+    return result

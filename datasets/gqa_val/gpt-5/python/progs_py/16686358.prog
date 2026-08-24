@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Check for fences (no material constraint)
+    if image_patch.exists("fence") or image_patch.exists("fences"):
+        return "yes"
+    # Check for metal trash cans
+    trash_can_aliases = ["trash can", "trashcan", "garbage can", "trash bin", "bin"]
+    for name in trash_can_aliases:
+        patches = image_patch.find(name)
+        for patch in patches:
+            if patch.verify_property(name, "metal"):
+                return "yes"
+    # Fallback: ask directly if detections failed
+    return image_patch.simple_query("Are there metal trash cans or fences?")

@@ -1,0 +1,18 @@
+# Is the person on the surfboard?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_exists = image_patch.exists("person")
+    surfboard_exists = image_patch.exists("surfboard")
+
+    if (not person_exists) or (not surfboard_exists):
+        result = image_patch.simple_query("Is the person on the surfboard?")
+    else:
+        result = "no"
+        person_patches = image_patch.find("person")
+        for person_patch in person_patches:
+            answer = person_patch.simple_query("Is this person on a surfboard?")
+            if answer == "yes":
+                result = "yes"
+        if result == "no":
+            result = image_patch.simple_query("Is the person on the surfboard?")
+    return result

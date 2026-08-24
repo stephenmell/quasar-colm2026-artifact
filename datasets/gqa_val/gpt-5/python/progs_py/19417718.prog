@@ -1,0 +1,41 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Is the white van to the right or to the left of the vehicle in the middle of the picture?"
+
+    # Find white van(s)
+    van_patches = image_patch.find("van")
+    white_vans = []
+    for van_patch in van_patches:
+        if van_patch.verify_property("van", "white") or (van_patch.simple_query("Is the van white?") == "yes"):
+            white_vans.append(van_patch)
+    if len(white_vans) == 0:
+        # If no white van is found, ask directly
+        return image_patch.simple_query(question)
+    # Choose the most prominent white van (largest area)
+    white_van_patch = max(white_vans, key=lambda p: p.width * p.height)
+
+    # Find the vehicle in the middle of the picture
+    vehicle_candidates = image_patch.find("vehicle")
+    if len(vehicle_candidates) == 0:
+        # Fallback to common vehicle types
+        for cls in ["car", "truck", "bus", "automobile", "suv", "van"]:
+            vehicle_candidates.extend(image_patch.find(cls))
+    if len(vehicle_candidates) == 0:
+        return image_patch.simple_query(question)
+
+    # Pick the vehicle whose center is closest to the image center
+    center_x = image_patch.horizontal_center
+    central_vehicle = min(vehicle_candidates, key=lambda p: abs(p.horizontal_center - center_x))
+
+    # If the central vehicle is the same as the white van, ask directly
+    if (central_vehicle.left == white_van_patch.left and
+        central_vehicle.right == white_van_patch.right and
+        central_vehicle.upper == white_van_patch.upper and
+        central_vehicle.lower == white_van_patch.lower):
+        return image_patch.simple_query(question)
+
+    # Compare horizontal positions
+    if white_van_patch.horizontal_center > central_vehicle.horizontal_center:
+        return "right"
+    else:
+        return "left"

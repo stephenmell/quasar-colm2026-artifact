@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    image_patch = None
+    knife_on_table = None
+    knife_patches = None
+    knives_on_table = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    table_patches = image_patch.find('table')
+    knife_on_table = None
+
+    def _if(image_patch, knife_on_table, knives_on_table, result, table_patches):
+
+        def _for(table_patch, image_patch, knife_on_table, knives_on_table, result, table_patches):
+            knives_on_table = table_patch.find('knife')
+
+            def _if(image_patch, knife_on_table, knives_on_table, result, table_patches):
+                knife_on_table = knives_on_table[0]
+                return (image_patch, knife_on_table, knives_on_table, result, table_patches)
+            image_patch, knife_on_table, knives_on_table, result, table_patches = if_stmt(_if, None, and_expr(len(knives_on_table) > 0, knife_on_table is None), (image_patch, knife_on_table, knives_on_table, result, table_patches))
+            return (image_patch, knife_on_table, knives_on_table, result, table_patches)
+        image_patch, knife_on_table, knives_on_table, result, table_patches = for_stmt(_for, table_patches, (image_patch, knife_on_table, knives_on_table, result, table_patches))
+
+        def _if(image_patch, knife_on_table, knives_on_table, result, table_patches):
+            result = knife_on_table.best_text_match(('silver', 'brown'))
+            return (image_patch, knife_on_table, knives_on_table, result, table_patches)
+        image_patch, knife_on_table, knives_on_table, result, table_patches = if_stmt(_if, None, knife_on_table is not None, (image_patch, knife_on_table, knives_on_table, result, table_patches))
+        return (image_patch, knife_on_table, knives_on_table, result, table_patches)
+    image_patch, knife_on_table, knives_on_table, result, table_patches = if_stmt(_if, None, len(table_patches) > 0, (image_patch, knife_on_table, knives_on_table, result, table_patches))
+
+    def _if(image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches):
+        knife_patches = image_patch.find('knife')
+
+        def _if(image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches):
+            result = knife_patches[0].best_text_match(('silver', 'brown'))
+            return (image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches)
+        image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches = if_stmt(_if, None, len(knife_patches) > 0, (image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches))
+        return (image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches)
+    image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches = if_stmt(_if, None, not_expr(result), (image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches))
+
+    def _if(image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches):
+        result = image_patch.simple_query('What color is the knife on the table, silver or brown?')
+        return (image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches)
+    image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches = if_stmt(_if, None, not_expr(result), (image_patch, knife_on_table, knife_patches, knives_on_table, result, table_patches))
+    return result

@@ -1,0 +1,1 @@
+{"image_b64": "iVBORw0KGgoAAAANSUhEUgAAAAYAAAAFCAIAAADpOgqxAAAAaklEQVR4nAFfAKD/AdGAuhASEb/Rwsbq1XKMfCYmIQLo8eVnj3HVB+tOZFZydXPX2t0C9hT8vt/EFy4eLjYy3NzcnpmeAPDv6yklJgEAAgQNCh0mIVI9TALw8vDb29oJAQIZDBDk2t8OBgmjniqhGfotggAAAABJRU5ErkJggg==", "query": "Is this a helmet?", "result": "[\n    { \"answer\": \"Yes\", \"score\": 0.70 },\n    { \"answer\": \"No\", \"score\": 0.30 }\n]"}

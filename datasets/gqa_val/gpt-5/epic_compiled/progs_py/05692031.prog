@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_bench = image_patch.exists("bench")
+    has_benches = image_patch.exists("benches")
+    result = bool_to_yesno(has_bench or has_benches)
+    return result

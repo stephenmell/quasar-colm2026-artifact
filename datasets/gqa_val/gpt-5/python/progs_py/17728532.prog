@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Check for a red can
+    can_patches = image_patch.find("can")
+    is_red_can = any(can_patch.verify_property("can", "red") for can_patch in can_patches)
+
+    # Check for a plate (any color)
+    is_plate = image_patch.exists("plate")
+
+    return bool_to_yesno(is_red_can or is_plate)

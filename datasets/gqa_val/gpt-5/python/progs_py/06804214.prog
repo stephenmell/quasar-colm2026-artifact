@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    suit_patches = image_patch.find("suit")
+    # Question assumes only one suit patch
+    if len(suit_patches) == 0:
+        # If no suit is found, query the image directly
+        return image_patch.simple_query("What color does the suit have?")
+    return suit_patches[0].simple_query("What color does the suit have?")

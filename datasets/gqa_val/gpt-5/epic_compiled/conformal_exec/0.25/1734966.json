@@ -1,0 +1,12 @@
+{
+  "result": {
+    "_possibilities": [
+      "The catcher is signaling to the pitcher.",
+      "Catching a ball",
+      "Catching a pitch",
+      "Preparing to throw",
+      "The catcher is crouching and preparing to catch a pitch."
+    ]
+  },
+  "time_ns": 8333104543
+}

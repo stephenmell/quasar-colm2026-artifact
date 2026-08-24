@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2380179",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "cloud"
+      ],
+      [],
+      13793671351
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2380179",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Are the clouds thin and white?"
+      ],
+      "I can't see the clouds in the image.",
+      1622021689
+    ]
+  ],
+  "best_text_match": []
+}

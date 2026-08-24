@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    found = None
+    image_patch = None
+    result = None
+    track_names = None
+    track_patches = None
+    train_patches = None
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find('train')
+    track_patches = ()
+    track_names = ('track', 'tracks', 'railroad track', 'train track', 'train tracks', 'railway', 'railway track', 'rail')
+
+    def _for(name, found, image_patch, track_names, track_patches, train_patches):
+        found = image_patch.find(name)
+
+        def _if(found, image_patch, track_names, track_patches, train_patches):
+            track_patches = track_patches + found
+            return (found, image_patch, track_names, track_patches, train_patches)
+        found, image_patch, track_names, track_patches, train_patches = if_stmt(_if, None, len(found) > 0, (found, image_patch, track_names, track_patches, train_patches))
+        return (found, image_patch, track_names, track_patches, train_patches)
+    found, image_patch, track_names, track_patches, train_patches = for_stmt(_for, track_names, (found, image_patch, track_names, track_patches, train_patches))
+
+    def _if(found, image_patch, result, track_names, track_patches, train_patches):
+        result = image_patch.simple_query('Is the train above the tracks?')
+        return (found, image_patch, result, track_names, track_patches, train_patches)
+
+    def _else(found, image_patch, result, track_names, track_patches, train_patches):
+        result = 'no'
+
+        def _for(train_patch, found, image_patch, result, track_names, track_patches, train_patches):
+
+            def _for(track_patch, found, image_patch, result, track_names, track_patches, train_patches):
+
+                def _if(found, image_patch, result, track_names, track_patches, train_patches):
+                    result = 'yes'
+                    return (found, image_patch, result, track_names, track_patches, train_patches)
+                found, image_patch, result, track_names, track_patches, train_patches = if_stmt(_if, None, train_patch.vertical_center > track_patch.vertical_center, (found, image_patch, result, track_names, track_patches, train_patches))
+                return (found, image_patch, result, track_names, track_patches, train_patches)
+            found, image_patch, result, track_names, track_patches, train_patches = for_stmt(_for, track_patches, (found, image_patch, result, track_names, track_patches, train_patches))
+            return (found, image_patch, result, track_names, track_patches, train_patches)
+        found, image_patch, result, track_names, track_patches, train_patches = for_stmt(_for, train_patches, (found, image_patch, result, track_names, track_patches, train_patches))
+        return (found, image_patch, result, track_names, track_patches, train_patches)
+    found, image_patch, result, track_names, track_patches, train_patches = if_stmt(_if, _else, or_expr(len(train_patches) == 0, len(track_patches) == 0), (found, image_patch, result, track_names, track_patches, train_patches))
+    return result

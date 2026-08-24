@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    statue_patches = image_patch.find("statue")
+    if len(statue_patches) == 0:
+        result = image_patch.simple_query("What is the vehicle to the right of the statue?")
+    else:
+        statue_patch = statue_patches[0]
+        right_area_patch = image_patch.crop(statue_patch.right, statue_patch.lower, image_patch.right, statue_patch.upper)
+        vehicle_patches = right_area_patch.find("vehicle")
+        if len(vehicle_patches) == 0:
+            vehicle_types = ("car", "bus", "truck", "motorcycle", "bike", "bicycle", "scooter", "van", "taxi", "train", "tram", "trolley", "subway", "airplane")
+            found_patch = None
+            for vt in vehicle_types:
+                patches = right_area_patch.find(vt)
+                if len(patches) > 0 and not found_patch:
+                    found_patch = patches[0]
+            if found_patch:
+                result = found_patch.simple_query("What vehicle is this?")
+            else:
+                result = right_area_patch.simple_query("What is the vehicle to the right of the statue?")
+        else:
+            result = vehicle_patches[0].simple_query("What vehicle is this?")
+    return result

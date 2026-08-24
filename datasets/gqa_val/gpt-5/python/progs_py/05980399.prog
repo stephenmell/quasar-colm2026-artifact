@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        # If no person is found, ask directly
+        return image_patch.simple_query("Is there a frisbee to the right of the person on the right?")
+    # Select the rightmost person
+    rightmost_person = max(person_patches, key=lambda p: p.horizontal_center)
+    frisbee_patches = image_patch.find("frisbee")
+    if len(frisbee_patches) == 0:
+        return "no"
+    for frisbee_patch in frisbee_patches:
+        if frisbee_patch.horizontal_center > rightmost_person.horizontal_center:
+            return "yes"
+    return "no"

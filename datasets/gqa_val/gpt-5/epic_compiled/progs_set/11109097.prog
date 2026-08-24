@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_antelope = None
+    has_zebra = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_zebra = image_patch.exists('zebra')
+    has_antelope = image_patch.exists('antelope')
+    result = bool_to_yesno(and_expr(has_zebra, has_antelope))
+    return result

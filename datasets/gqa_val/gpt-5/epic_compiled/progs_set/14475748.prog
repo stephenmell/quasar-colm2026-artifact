@@ -1,0 +1,24 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    skier_patches = None
+    image_patch = ImagePatch(image)
+    skier_patches = image_patch.find('skier')
+
+    def _if(image_patch, result, skier_patches):
+        result = image_patch.simple_query('On which side is the skier, the right or the left?')
+        return (image_patch, result, skier_patches)
+
+    def _else(image_patch, result, skier_patches):
+
+        def _if(image_patch, result, skier_patches):
+            result = 'right'
+            return (image_patch, result, skier_patches)
+
+        def _else(image_patch, result, skier_patches):
+            result = 'left'
+            return (image_patch, result, skier_patches)
+        image_patch, result, skier_patches = if_stmt(_if, _else, skier_patches[0].horizontal_center > image_patch.horizontal_center, (image_patch, result, skier_patches))
+        return (image_patch, result, skier_patches)
+    image_patch, result, skier_patches = if_stmt(_if, _else, len(skier_patches) == 0, (image_patch, result, skier_patches))
+    return result

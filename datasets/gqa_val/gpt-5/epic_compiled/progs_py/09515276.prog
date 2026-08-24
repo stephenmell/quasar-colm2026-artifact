@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("What color does the t-shirt the woman is wearing have?")
+    else:
+        for woman_patch in woman_patches:
+            selected_clothing_patch = None
+            selected_label = None
+            clothing_names = ("t-shirt", "t shirt", "tshirt", "tee shirt", "tee", "shirt")
+            for name in clothing_names:
+                clothing_patches = woman_patch.find(name)
+                if len(clothing_patches) > 0 and selected_clothing_patch is None:
+                    selected_clothing_patch = clothing_patches[0]
+                    selected_label = name
+            if selected_clothing_patch is not None and not result:
+                question = f"What color is the {selected_label}?"
+                color = selected_clothing_patch.simple_query(question)
+                if color:
+                    result = color
+            if not result:
+                color2 = woman_patch.simple_query("What color is the t-shirt the woman is wearing?")
+                if color2:
+                    result = color2
+
+    if not result:
+        result = image_patch.simple_query("What color does the t-shirt the woman is wearing have?")
+    return result

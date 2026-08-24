@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find("chair")
+    # If no chair is found, query the image directly
+    if len(chair_patches) == 0:
+        return image_patch.simple_query("Is there a chair that is not orange?")
+    for chair_patch in chair_patches:
+        if not chair_patch.verify_property("chair", "orange"):
+            return "yes"
+    return "no"

@@ -1,0 +1,67 @@
+def execute_command(image) -> str:
+    found_red_right = None
+    guy_patches = None
+    image_patch = None
+    is_red = None
+    is_right_of_any_ski = None
+    man_patches = None
+    person_patches = None
+    potential_guys = None
+    result = None
+    ski_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    ski_patches = image_patch.find('skis')
+
+    def _if(image_patch, result, ski_patches):
+        ski_patches = image_patch.find('ski')
+        return (image_patch, result, ski_patches)
+    image_patch, result, ski_patches = if_stmt(_if, None, len(ski_patches) == 0, (image_patch, result, ski_patches))
+    man_patches = image_patch.find('man')
+    guy_patches = image_patch.find('guy')
+    person_patches = image_patch.find('person')
+    potential_guys = man_patches + guy_patches + person_patches
+
+    def _if(found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+        result = image_patch.simple_query('Are there any guys to the right of the skis that look red?')
+        return (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+
+    def _else(found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+        found_red_right = False
+
+        def _for(guy_patch, found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+            is_right_of_any_ski = False
+
+            def _for(ski_patch, found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+
+                def _if(found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+                    is_right_of_any_ski = True
+                    return (found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+                found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = if_stmt(_if, None, guy_patch.horizontal_center > ski_patch.horizontal_center, (found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+                return (found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+            found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = for_stmt(_for, ski_patches, (found_red_right, guy_patches, image_patch, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+
+            def _if(found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+                is_red = False
+
+                def _for(name, found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+
+                    def _if(found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+                        is_red = True
+                        return (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+                    found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = if_stmt(_if, None, guy_patch.verify_property(name, 'red'), (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+                    return (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+                found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = for_stmt(_for, ('man', 'person', 'guy'), (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+
+                def _if(found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches):
+                    found_red_right = True
+                    return (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+                found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = if_stmt(_if, None, is_red, (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+                return (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+            found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = if_stmt(_if, None, is_right_of_any_ski, (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+            return (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+        found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = for_stmt(_for, potential_guys, (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+        result = bool_to_yesno(found_red_right)
+        return (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches)
+    found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches = if_stmt(_if, _else, or_expr(len(ski_patches) == 0, len(potential_guys) == 0), (found_red_right, guy_patches, image_patch, is_red, is_right_of_any_ski, man_patches, person_patches, potential_guys, result, ski_patches))
+    return result

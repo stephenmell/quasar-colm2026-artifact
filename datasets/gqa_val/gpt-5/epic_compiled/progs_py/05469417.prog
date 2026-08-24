@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find all persons to identify the blond person
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        # If no persons are found, ask directly
+        result = image_patch.simple_query("Are there men to the right of the person that looks blond?")
+    else:
+        blond_person_patch = None
+        for person_patch in person_patches:
+            is_blond = person_patch.verify_property("person", "blond")
+            is_blonde = person_patch.verify_property("person", "blonde")
+            has_blond_hair = person_patch.verify_property("person", "blond hair")
+            has_blonde_hair = person_patch.verify_property("person", "blonde hair")
+            if (is_blond or is_blonde or has_blond_hair or has_blonde_hair) and blond_person_patch is None:
+                blond_person_patch = person_patch
+
+        if blond_person_patch is None:
+            # If no blond-looking person is identified, ask directly
+            result = image_patch.simple_query("Are there men to the right of the person that looks blond?")
+        else:
+            # Look for men to the right of the identified blond person
+            man_patches = image_patch.find("man")
+            if len(man_patches) > 0:
+                result = "no"
+                for man_patch in man_patches:
+                    if man_patch.horizontal_center > blond_person_patch.horizontal_center:
+                        result = "yes"
+            else:
+                result = "no"
+    return result

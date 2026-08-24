@@ -1,0 +1,13 @@
+# Does the microwave have red color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    microwave_patches = image_patch.find("microwave")
+    if len(microwave_patches) == 0:
+        result = image_patch.simple_query("Does the microwave have red color?")
+    else:
+        has_red = False
+        for microwave_patch in microwave_patches:
+            if microwave_patch.verify_property("microwave", "red"):
+                has_red = True
+        result = bool_to_yesno(has_red)
+    return result

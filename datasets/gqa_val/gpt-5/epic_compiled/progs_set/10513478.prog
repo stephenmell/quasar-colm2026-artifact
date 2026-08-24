@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    elephant_patches = None
+    image_patch = None
+    result = None
+    statue_patches = None
+    image_patch = ImagePatch(image)
+    statue_patches = image_patch.find('statue')
+
+    def _if(elephant_patches, image_patch, result, statue_patches):
+        result = image_patch.simple_query('Do you see an elephant to the right of the statue?')
+        return (elephant_patches, image_patch, result, statue_patches)
+
+    def _else(elephant_patches, image_patch, result, statue_patches):
+        elephant_patches = image_patch.find('elephant')
+
+        def _if(elephant_patches, image_patch, result, statue_patches):
+            result = 'no'
+            return (elephant_patches, image_patch, result, statue_patches)
+
+        def _else(elephant_patches, image_patch, result, statue_patches):
+            result = 'no'
+
+            def _for(elephant_patch, elephant_patches, image_patch, result, statue_patches):
+
+                def _for(statue_patch, elephant_patches, image_patch, result, statue_patches):
+
+                    def _if(elephant_patches, image_patch, result, statue_patches):
+                        result = 'yes'
+                        return (elephant_patches, image_patch, result, statue_patches)
+                    elephant_patches, image_patch, result, statue_patches = if_stmt(_if, None, elephant_patch.horizontal_center > statue_patch.horizontal_center, (elephant_patches, image_patch, result, statue_patches))
+                    return (elephant_patches, image_patch, result, statue_patches)
+                elephant_patches, image_patch, result, statue_patches = for_stmt(_for, statue_patches, (elephant_patches, image_patch, result, statue_patches))
+                return (elephant_patches, image_patch, result, statue_patches)
+            elephant_patches, image_patch, result, statue_patches = for_stmt(_for, elephant_patches, (elephant_patches, image_patch, result, statue_patches))
+            return (elephant_patches, image_patch, result, statue_patches)
+        elephant_patches, image_patch, result, statue_patches = if_stmt(_if, _else, len(elephant_patches) == 0, (elephant_patches, image_patch, result, statue_patches))
+        return (elephant_patches, image_patch, result, statue_patches)
+    elephant_patches, image_patch, result, statue_patches = if_stmt(_if, _else, len(statue_patches) == 0, (elephant_patches, image_patch, result, statue_patches))
+    return result

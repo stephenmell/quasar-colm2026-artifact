@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2385173",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "animal"
+      ],
+      [],
+      8894418914
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2385173",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "Is the animal that is not little bending or standing?"
+      ],
+      "Standing.",
+      1738728883
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,54 @@
+def execute_command(image) -> str:
+    direct_answer = None
+    flag_patches = None
+    image_patch = None
+    is_american = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+
+    def _if(direct_answer, flag_patches, image_patch, is_american, result):
+        result = 'yes'
+        return (direct_answer, flag_patches, image_patch, is_american, result)
+
+    def _else(direct_answer, flag_patches, image_patch, is_american, result):
+
+        def _if(direct_answer, flag_patches, image_patch, is_american, result):
+            flag_patches = image_patch.find('flag')
+            is_american = False
+
+            def _for(flag_patch, flag_patches, image_patch, is_american, result):
+
+                def _if(flag_patches, image_patch, is_american, result):
+                    is_american = True
+                    return (flag_patches, image_patch, is_american, result)
+                flag_patches, image_patch, is_american, result = if_stmt(_if, None, flag_patch.verify_property('flag', 'American'), (flag_patches, image_patch, is_american, result))
+                return (flag_patches, image_patch, is_american, result)
+            flag_patches, image_patch, is_american, result = for_stmt(_for, flag_patches, (flag_patches, image_patch, is_american, result))
+
+            def _if(flag_patches, image_patch, is_american, result):
+                result = 'yes'
+                return (flag_patches, image_patch, is_american, result)
+
+            def _else(flag_patches, image_patch, is_american, result):
+                result = 'no'
+                return (flag_patches, image_patch, is_american, result)
+            flag_patches, image_patch, is_american, result = if_stmt(_if, _else, is_american, (flag_patches, image_patch, is_american, result))
+            return (direct_answer, flag_patches, image_patch, is_american, result)
+
+        def _else(direct_answer, flag_patches, image_patch, is_american, result):
+            direct_answer = image_patch.simple_query('Are there any American flags?')
+
+            def _if(direct_answer, image_patch, result):
+                result = 'yes'
+                return (direct_answer, image_patch, result)
+
+            def _else(direct_answer, image_patch, result):
+                result = 'no'
+                return (direct_answer, image_patch, result)
+            direct_answer, image_patch, result = if_stmt(_if, _else, direct_answer == 'yes', (direct_answer, image_patch, result))
+            return (direct_answer, flag_patches, image_patch, is_american, result)
+        direct_answer, flag_patches, image_patch, is_american, result = if_stmt(_if, _else, image_patch.exists('flag'), (direct_answer, flag_patches, image_patch, is_american, result))
+        return (direct_answer, flag_patches, image_patch, is_american, result)
+    direct_answer, flag_patches, image_patch, is_american, result = if_stmt(_if, _else, image_patch.exists('American flag'), (direct_answer, flag_patches, image_patch, is_american, result))
+    return result

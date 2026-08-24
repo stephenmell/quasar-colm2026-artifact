@@ -1,0 +1,63 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2358556",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "man"
+      ],
+      [
+        [
+          28,
+          215,
+          50,
+          288
+        ]
+      ],
+      11076499872
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2358556",
+          [
+            28,
+            215,
+            50,
+            288
+          ]
+        ],
+        "Is the man carrying a backpack?"
+      ],
+      "Yes.",
+      841677578
+    ],
+    [
+      [
+        [
+          "2358556",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is the bus to the right of the man that is carrying a backpack?"
+      ],
+      "Yes.",
+      935950303
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,64 @@
+# Does the gate have a different color than the tee shirt?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    gate_patches = image_patch.find("gate")
+
+    tshirt_patches = image_patch.find("tee shirt")
+    if len(tshirt_patches) == 0:
+        tshirt_patches = image_patch.find("t-shirt")
+    if len(tshirt_patches) == 0:
+        tshirt_patches = image_patch.find("tshirt")
+    if len(tshirt_patches) == 0:
+        tshirt_patches = image_patch.find("shirt")
+
+    if len(gate_patches) == 0 or len(tshirt_patches) == 0:
+        return image_patch.simple_query("Does the gate have a different color than the tee shirt?")
+
+    gate = gate_patches[0]
+    tshirt = tshirt_patches[0]
+
+    gate_color = gate.simple_query("What color is the gate?")
+    shirt_color = tshirt.simple_query("What color is the tee shirt?")
+
+    def normalize_color(c: str) -> str:
+        import re
+        if not isinstance(c, str):
+            return ""
+        c = re.sub(r"[^a-z\s]", "", c.strip().lower())
+        tokens = c.split()
+        if not tokens:
+            return ""
+        basic_colors = {
+            "white","black","red","orange","yellow","green","blue","purple",
+            "pink","brown","gray","grey","gold","silver","tan","beige"
+        }
+        two_word_colors = {
+            "light blue","dark blue","light green","dark green",
+            "light brown","dark brown","light gray","dark gray",
+            "light grey","dark grey"
+        }
+        for i in range(len(tokens)-1):
+            phrase = tokens[i] + " " + tokens[i+1]
+            if phrase in two_word_colors:
+                return phrase
+        for t in tokens:
+            if t in basic_colors:
+                return t
+        return tokens[-1]
+
+    gc = normalize_color(gate_color)
+    sc = normalize_color(shirt_color)
+
+    if gc and sc:
+        return "yes" if gc != sc else "no"
+
+    if sc:
+        same = gate.verify_property("gate", sc)
+        return "no" if same else "yes"
+
+    if gc:
+        same = tshirt.verify_property("tee shirt", gc) or tshirt.verify_property("shirt", gc)
+        return "no" if same else "yes"
+
+    return image_patch.simple_query("Does the gate have a different color than the tee shirt?")

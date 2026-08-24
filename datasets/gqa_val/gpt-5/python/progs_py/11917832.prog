@@ -1,0 +1,4 @@
+image_patch = ImagePatch(image)
+    is_dumpster = image_patch.exists("dumpster")
+    is_kite = image_patch.exists("kite")
+    return bool_to_yesno(is_dumpster or is_kite)

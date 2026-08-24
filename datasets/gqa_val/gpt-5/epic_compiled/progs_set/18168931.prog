@@ -1,0 +1,71 @@
+def execute_command(image) -> str:
+    ball_patches = None
+    ball_right_of_any_racket = None
+    considered_player_patches = None
+    image_patch = None
+    player_patches = None
+    racket_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    racket_patches = image_patch.find('racket')
+
+    def _if(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+        result = image_patch.simple_query('Do you see any players to the right of the ball that is to the right of the racket?')
+        return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+
+    def _else(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+        ball_patches = image_patch.find('ball')
+
+        def _if(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+            result = 'no'
+            return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+
+        def _else(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+            player_patches = image_patch.find('player')
+            considered_player_patches = player_patches
+
+            def _if(ball_patches, considered_player_patches, image_patch, player_patches, racket_patches, result):
+                considered_player_patches = image_patch.find('person')
+                return (ball_patches, considered_player_patches, image_patch, player_patches, racket_patches, result)
+            ball_patches, considered_player_patches, image_patch, player_patches, racket_patches, result = if_stmt(_if, None, len(considered_player_patches) == 0, (ball_patches, considered_player_patches, image_patch, player_patches, racket_patches, result))
+
+            def _if(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+                result = 'no'
+                return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+
+            def _else(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+
+                def _for(ball_patch, ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+                    ball_right_of_any_racket = False
+
+                    def _for(racket_patch, ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+
+                        def _if(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+                            ball_right_of_any_racket = True
+                            return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+                        ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = if_stmt(_if, None, ball_patch.horizontal_center > racket_patch.horizontal_center, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+                        return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+                    ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = for_stmt(_for, racket_patches, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+
+                    def _if(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+
+                        def _for(player_patch, ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+
+                            def _if(ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result):
+                                result = 'yes'
+                                return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+                            ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = if_stmt(_if, None, player_patch.horizontal_center > ball_patch.horizontal_center, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+                            return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+                        ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = for_stmt(_for, considered_player_patches, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+                        return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+                    ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = if_stmt(_if, None, ball_right_of_any_racket, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+                    return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+                ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = for_stmt(_for, ball_patches, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+                return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+            ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = if_stmt(_if, _else, len(considered_player_patches) == 0, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+            return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+        ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = if_stmt(_if, _else, len(ball_patches) == 0, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+        return (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result)
+    ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result = if_stmt(_if, _else, len(racket_patches) == 0, (ball_patches, ball_right_of_any_racket, considered_player_patches, image_patch, player_patches, racket_patches, result))
+    return result

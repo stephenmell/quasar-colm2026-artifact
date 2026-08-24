@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Direct detections for common phrasings
+    if (image_patch.exists("american flag")
+        or image_patch.exists("us flag")
+        or image_patch.exists("usa flag")
+        or image_patch.exists("united states flag")):
+        return "yes"
+    # Check generic flags and verify the "american" property
+    flag_patches = image_patch.find("flag")
+    for flag_patch in flag_patches:
+        if flag_patch.verify_property("flag", "american"):
+            return "yes"
+    # Fallback: ask directly
+    return image_patch.simple_query("Are there any American flags?")

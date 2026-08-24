@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    horse_patches = None
+    image_patch = None
+    person_patches = None
+    result = None
+    rightmost_person = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(horse_patches, image_patch, person_patches, result, rightmost_person):
+        result = image_patch.simple_query('Do you see any horses to the left of the person on the right side of the image?')
+        return (horse_patches, image_patch, person_patches, result, rightmost_person)
+
+    def _else(horse_patches, image_patch, person_patches, result, rightmost_person):
+        rightmost_person = person_patches[0]
+
+        def _for(person, image_patch, person_patches, rightmost_person):
+
+            def _if(image_patch, person_patches, rightmost_person):
+                rightmost_person = person
+                return (image_patch, person_patches, rightmost_person)
+            image_patch, person_patches, rightmost_person = if_stmt(_if, None, person.horizontal_center > rightmost_person.horizontal_center, (image_patch, person_patches, rightmost_person))
+            return (image_patch, person_patches, rightmost_person)
+        image_patch, person_patches, rightmost_person = for_stmt(_for, person_patches, (image_patch, person_patches, rightmost_person))
+        horse_patches = image_patch.find('horse')
+
+        def _if(horse_patches, image_patch, person_patches, result, rightmost_person):
+            result = 'no'
+            return (horse_patches, image_patch, person_patches, result, rightmost_person)
+
+        def _else(horse_patches, image_patch, person_patches, result, rightmost_person):
+            result = 'no'
+
+            def _for(horse, horse_patches, image_patch, person_patches, result, rightmost_person):
+
+                def _if(horse_patches, image_patch, person_patches, result, rightmost_person):
+                    result = 'yes'
+                    return (horse_patches, image_patch, person_patches, result, rightmost_person)
+                horse_patches, image_patch, person_patches, result, rightmost_person = if_stmt(_if, None, horse.horizontal_center < rightmost_person.horizontal_center, (horse_patches, image_patch, person_patches, result, rightmost_person))
+                return (horse_patches, image_patch, person_patches, result, rightmost_person)
+            horse_patches, image_patch, person_patches, result, rightmost_person = for_stmt(_for, horse_patches, (horse_patches, image_patch, person_patches, result, rightmost_person))
+            return (horse_patches, image_patch, person_patches, result, rightmost_person)
+        horse_patches, image_patch, person_patches, result, rightmost_person = if_stmt(_if, _else, len(horse_patches) == 0, (horse_patches, image_patch, person_patches, result, rightmost_person))
+        return (horse_patches, image_patch, person_patches, result, rightmost_person)
+    horse_patches, image_patch, person_patches, result, rightmost_person = if_stmt(_if, _else, len(person_patches) == 0, (horse_patches, image_patch, person_patches, result, rightmost_person))
+    return result

@@ -1,0 +1,63 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2363242",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "person"
+      ],
+      [
+        [
+          68,
+          22,
+          413,
+          266
+        ]
+      ],
+      15604658902
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2363242",
+          [
+            68,
+            22,
+            413,
+            266
+          ]
+        ],
+        "Is the person sitting on the seat?"
+      ],
+      "Yes.",
+      1501055823
+    ],
+    [
+      [
+        [
+          "2363242",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Are there any rackets to the left of the person that sits on the seat?"
+      ],
+      "No.",
+      963703479
+    ]
+  ],
+  "best_text_match": []
+}

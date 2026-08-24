@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    chosen_dresser = None
+    dresser_patches = None
+    image_patch = None
+    left_area_patch = None
+    left_bound = None
+    lower_bound = None
+    result = None
+    right_bound = None
+    upper_bound = None
+    image_patch = ImagePatch(image)
+    dresser_patches = image_patch.find('dresser')
+
+    def _if(chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound):
+        result = image_patch.simple_query('What is the piece of furniture to the left of the dresser?')
+        return (chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound)
+
+    def _else(chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound):
+        chosen_dresser = dresser_patches[0]
+
+        def _for(dp, chosen_dresser, dresser_patches, image_patch):
+
+            def _if(chosen_dresser, dresser_patches, image_patch):
+                chosen_dresser = dp
+                return (chosen_dresser, dresser_patches, image_patch)
+            chosen_dresser, dresser_patches, image_patch = if_stmt(_if, None, dp.horizontal_center < chosen_dresser.horizontal_center, (chosen_dresser, dresser_patches, image_patch))
+            return (chosen_dresser, dresser_patches, image_patch)
+        chosen_dresser, dresser_patches, image_patch = for_stmt(_for, dresser_patches, (chosen_dresser, dresser_patches, image_patch))
+        left_bound = image_patch.left
+        right_bound = chosen_dresser.left
+        lower_bound = image_patch.lower
+        upper_bound = image_patch.upper
+
+        def _if(chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound):
+            result = image_patch.simple_query('What is the piece of furniture to the left of the dresser?')
+            return (chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound)
+
+        def _else(chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound):
+            left_area_patch = image_patch.crop(left_bound, lower_bound, right_bound, upper_bound)
+            result = left_area_patch.simple_query('What piece of furniture is there?')
+            return (chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound)
+        chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound = if_stmt(_if, _else, right_bound <= left_bound + 1, (chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound))
+        return (chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound)
+    chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound = if_stmt(_if, _else, len(dresser_patches) == 0, (chosen_dresser, dresser_patches, image_patch, left_area_patch, left_bound, lower_bound, result, right_bound, upper_bound))
+    return result

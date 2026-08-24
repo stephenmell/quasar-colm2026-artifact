@@ -1,0 +1,69 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    post_patches = image_patch.find("post")
+    bike_patches = image_patch.find("bike")
+
+    # If either object isn't found, ask the question directly
+    if len(post_patches) == 0 or len(bike_patches) == 0:
+        return image_patch.simple_query("Is the color of the post different than the bike?")
+
+    post_patch = post_patches[0]
+    bike_patch = bike_patches[0]
+
+    # Ask for colors of each object
+    post_color_ans = post_patch.simple_query("What color is the post?")
+    bike_color_ans = bike_patch.simple_query("What color is the bike?")
+
+    def normalize_color(ans: str) -> str:
+        if not isinstance(ans, str):
+            return ""
+        s = ans.strip().lower().replace("-", " ")
+        # Synonym mapping
+        synonyms = {
+            "grey": "gray",
+            "charcoal": "gray",
+            "navy": "blue",
+            "turquoise": "blue",
+            "aqua": "blue",
+            "cyan": "blue",
+            "teal": "green",
+            "violet": "purple",
+            "lavender": "purple",
+            "magenta": "pink",
+            "fuchsia": "pink",
+            "burgundy": "red",
+            "maroon": "red",
+            "tan": "brown",
+            "khaki": "brown",
+            "beige": "brown",
+            "ivory": "white",
+            "cream": "white",
+            "off white": "white",
+            "offwhite": "white",
+            "blonde": "yellow",
+            "amber": "yellow",
+            "lime": "green",
+            "olive": "green",
+            "golden": "gold",
+        }
+        for k, v in synonyms.items():
+            if k in s:
+                return v
+
+        base_colors = ["black","white","gray","grey","red","orange","yellow","green","blue","purple","pink","brown","gold","silver"]
+        canonical = {"grey": "gray"}
+        for c in base_colors:
+            if c in s:
+                return canonical.get(c, c)
+
+        return s
+
+    post_color = normalize_color(post_color_ans)
+    bike_color = normalize_color(bike_color_ans)
+
+    # If color extraction failed, ask directly
+    if not post_color or not bike_color:
+        return image_patch.simple_query("Is the color of the post different than the bike?")
+
+    return "yes" if post_color != bike_color else "no"

@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    detected = None
+    exists_here = None
+    furniture_types = None
+    image_patch = None
+    man_patch = None
+    man_patches = None
+    result = None
+    right_area_patch = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch):
+        result = image_patch.simple_query('What kind of furniture is to the right of the man?')
+        return (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch)
+
+    def _else(detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch):
+        man_patch = man_patches[0]
+        right_area_patch = image_patch.crop(man_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+        furniture_types = ('chair', 'sofa', 'couch', 'table', 'desk', 'bed', 'bench', 'stool', 'cabinet', 'dresser', 'shelf', 'bookshelf', 'nightstand', 'ottoman', 'armchair', 'counter', 'cupboard')
+        detected = None
+
+        def _for(furn, detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch):
+            exists_here = right_area_patch.exists(furn)
+
+            def _if(detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch):
+                detected = furn
+                return (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch)
+            detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch = if_stmt(_if, None, and_expr(exists_here, detected is None), (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch))
+            return (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch)
+        detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch = for_stmt(_for, furniture_types, (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, right_area_patch))
+
+        def _if(detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch):
+            result = detected
+            return (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch)
+
+        def _else(detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch):
+            result = right_area_patch.simple_query('What kind of furniture is here?')
+            return (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch)
+        detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch = if_stmt(_if, _else, detected, (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch))
+        return (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch)
+    detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch = if_stmt(_if, _else, len(man_patches) == 0, (detected, exists_here, furniture_types, image_patch, man_patch, man_patches, result, right_area_patch))
+    return result

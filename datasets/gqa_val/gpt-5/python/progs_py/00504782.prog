@@ -1,0 +1,9 @@
+# Is there grass that is fresh?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    grass_patches = image_patch.find("grass")
+    if len(grass_patches) == 0:
+        # If no grass is found, query the image directly
+        return image_patch.simple_query("Is there grass that is fresh?")
+    is_fresh_grass = any(grass_patch.verify_property("grass", "fresh") for grass_patch in grass_patches)
+    return bool_to_yesno(is_fresh_grass)

@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umbrella_exists = False
+    for name in ("umbrella", "umbrellas"):
+        if image_patch.exists(name):
+            umbrella_exists = True
+    racket_exists = False
+    for name in ("racket", "tennis racket", "rackets", "tennis rackets"):
+        if image_patch.exists(name):
+            racket_exists = True
+    result = bool_to_yesno(umbrella_exists and racket_exists)
+    return result

@@ -1,0 +1,9 @@
+# What is the color of the bowl?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bowl_patches = image_patch.find("bowl")
+    if len(bowl_patches) == 0:
+        result = image_patch.simple_query("What is the color of the bowl?")
+    else:
+        result = bowl_patches[0].simple_query("What is the color of the bowl?")
+    return result

@@ -1,0 +1,30 @@
+def execute_command(image) -> str:
+    batter_patch = None
+    batter_patches = None
+    image_patch = None
+    player_patch = None
+    player_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    batter_patches = image_patch.find('batter')
+    player_patches = image_patch.find('baseball player')
+
+    def _if(batter_patch, batter_patches, image_patch, player_patch, player_patches, result):
+        result = image_patch.simple_query('Is the batter to the left or to the right of the baseball player?')
+        return (batter_patch, batter_patches, image_patch, player_patch, player_patches, result)
+
+    def _else(batter_patch, batter_patches, image_patch, player_patch, player_patches, result):
+        batter_patch = batter_patches[0]
+        player_patch = player_patches[0]
+
+        def _if(batter_patch, batter_patches, image_patch, player_patch, player_patches, result):
+            result = 'left'
+            return (batter_patch, batter_patches, image_patch, player_patch, player_patches, result)
+
+        def _else(batter_patch, batter_patches, image_patch, player_patch, player_patches, result):
+            result = 'right'
+            return (batter_patch, batter_patches, image_patch, player_patch, player_patches, result)
+        batter_patch, batter_patches, image_patch, player_patch, player_patches, result = if_stmt(_if, _else, batter_patch.horizontal_center < player_patch.horizontal_center, (batter_patch, batter_patches, image_patch, player_patch, player_patches, result))
+        return (batter_patch, batter_patches, image_patch, player_patch, player_patches, result)
+    batter_patch, batter_patches, image_patch, player_patch, player_patches, result = if_stmt(_if, _else, or_expr(len(batter_patches) == 0, len(player_patches) == 0), (batter_patch, batter_patches, image_patch, player_patch, player_patches, result))
+    return result

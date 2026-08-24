@@ -1,0 +1,11 @@
+context_info = ()
+i = 0
+for d in context:
+    i = i + 1
+    q = "You are analyzing one document from a larger corpus to answer a concrete query.\n\nQuery:\nGive me the name of the school that the below actress was expelled from.\n\nThe actress has the following attributes:\n- She is both a singer and a songwriter.\n- Her stage name begins with the same initial as her first name.\n- She is 163 cm tall as of December 2023 and was born between 1995 and 2005.\n- She originally wanted to become a teacher or a nun.\n- She left her home country with her parents when she was a kid.\n\nInstructions:\nFrom THIS SINGLE DOCUMENT ONLY, do the following:\n1) Identify any person(s) described who satisfy ALL or MOST of these clues. If none, write: None.\n2) For each candidate, extract as structured bullets: full name, stage name, birth year, height, whether singer AND songwriter, whether an actress, migration detail (left home country with parents as a child), any statement about wanting to be a teacher or a nun, and any mention of being expelled from a school.\n3) If the document states they were expelled, extract the EXACT name of the school and quote the sentence(s) where this is stated.\n4) Provide concise outputs in the format:\nCandidate: <full name> (stage name: <stage name>)\nSchool expelled from: <school name or Unknown>\nEvidence quotes: <verbatim quotes from the document proving the expulsion and matching clues>\n\nDocument:\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT"
+    r = llm_query(q)
+    context_info = context_info + ("Document_" + str(i) + " analysis:\n" + r,)
+
+combined = "Here are the extractions from all documents:\n" + "\n\n".join(context_info) + "\n\nTask: Based on the above, determine the single most likely actress matching ALL the clues and give ONLY the exact name of the school she was expelled from (no extra words, no punctuation, no explanations). If multiple schools are listed, choose the one directly tied to the candidate who best fits ALL clues. Output only the school name."
+final_answer = llm_query(combined)
+return_result(final_answer)

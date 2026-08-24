@@ -1,0 +1,7 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find("fence")
+    if len(fence_patches) == 0:
+        return image_patch.simple_query("Does the fence look metallic?")
+    is_metallic = any(patch.verify_property("fence", "metallic") for patch in fence_patches)
+    return bool_to_yesno(is_metallic)

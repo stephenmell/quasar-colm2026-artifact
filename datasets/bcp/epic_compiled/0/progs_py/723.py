@@ -1,0 +1,8 @@
+context_info = ()
+for d in context:
+    result = llm_query("Here is a document:\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT\nScan the document for an athlete who matches the following description (partial matches are acceptable if clearly referring to the same person):\n- Teenage athlete born in 2004\n- Represented a country at a major global sports event held every 4 years (e.g., the Olympic Games)\n- Set a national record that broke a previous national record which had stood for 14 years\n- First gained significant attention by representing the country at a championship in 2019\n- As part of a scholarship for talented athletes, moved abroad to a city that is home to one of the largest mosques in Europe (as of 2019), and that mosque was completed in the early 2000s\nIf the document mentions such an athlete (even if only some of these details are present but clearly refer to the same individual), provide a concise extraction with:\n- Athlete name\n- Country represented\n- Sport/event and the 14-year national record detail\n- 2019 championship detail\n- Scholarship and city moved to; if possible, identify the mosque and its completion year\nAlso include short verbatim quotes from the document that support these details. If the document is not relevant, output nothing.")
+    context_info = context_info + (result,)
+
+aggregation_prompt = "Below are extractions from documents (some may be empty). Identify the athlete that best fits all the clues and answer the question: What country did the athlete represent?\nReturn only the country name, nothing else.\n\nEXTRACTIONS:\n" + "\n\n".join(context_info)
+final_answer = llm_query(aggregation_prompt)
+return_result(final_answer.strip())

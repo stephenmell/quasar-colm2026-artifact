@@ -1,0 +1,24 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_fridge = None
+    is_refrigerator = None
+    oven_patch = None
+    oven_patches = None
+    result = None
+    right_area_patch = None
+    image_patch = ImagePatch(image)
+    oven_patches = image_patch.find('oven')
+
+    def _if(image_patch, is_fridge, is_refrigerator, oven_patch, oven_patches, result, right_area_patch):
+        result = image_patch.simple_query('Do you see refrigerators to the right of the oven?')
+        return (image_patch, is_fridge, is_refrigerator, oven_patch, oven_patches, result, right_area_patch)
+
+    def _else(image_patch, is_fridge, is_refrigerator, oven_patch, oven_patches, result, right_area_patch):
+        oven_patch = oven_patches[0]
+        right_area_patch = image_patch.crop(oven_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+        is_refrigerator = right_area_patch.exists('refrigerator')
+        is_fridge = right_area_patch.exists('fridge')
+        result = bool_to_yesno(or_expr(is_refrigerator, is_fridge))
+        return (image_patch, is_fridge, is_refrigerator, oven_patch, oven_patches, result, right_area_patch)
+    image_patch, is_fridge, is_refrigerator, oven_patch, oven_patches, result, right_area_patch = if_stmt(_if, _else, len(oven_patches) == 0, (image_patch, is_fridge, is_refrigerator, oven_patch, oven_patches, result, right_area_patch))
+    return result

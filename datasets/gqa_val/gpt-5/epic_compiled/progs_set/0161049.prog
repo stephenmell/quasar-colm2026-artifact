@@ -1,0 +1,80 @@
+def execute_command(image) -> str:
+    bowl_patches = None
+    delta = None
+    image_patch = None
+    leftmost_utensil = None
+    min_delta = None
+    result = None
+    right_of_leftmost = None
+    utensil_patches = None
+    image_patch = ImagePatch(image)
+    utensil_patches = image_patch.find('utensil')
+
+    def _if(bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches):
+        result = image_patch.simple_query('Do you see bowls to the right of the utensil that is to the right of the utensil?')
+        return (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches)
+
+    def _else(bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches):
+        leftmost_utensil = utensil_patches[0]
+
+        def _for(utensil_patch, image_patch, leftmost_utensil, utensil_patches):
+
+            def _if(image_patch, leftmost_utensil, utensil_patches):
+                leftmost_utensil = utensil_patch
+                return (image_patch, leftmost_utensil, utensil_patches)
+            image_patch, leftmost_utensil, utensil_patches = if_stmt(_if, None, utensil_patch.horizontal_center < leftmost_utensil.horizontal_center, (image_patch, leftmost_utensil, utensil_patches))
+            return (image_patch, leftmost_utensil, utensil_patches)
+        image_patch, leftmost_utensil, utensil_patches = for_stmt(_for, utensil_patches, (image_patch, leftmost_utensil, utensil_patches))
+        right_of_leftmost = None
+        min_delta = None
+
+        def _for(utensil_patch, delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches):
+
+            def _if(delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches):
+                delta = utensil_patch.horizontal_center - leftmost_utensil.horizontal_center
+
+                def _if(delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches):
+                    right_of_leftmost = utensil_patch
+                    min_delta = delta
+                    return (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches)
+                delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches = if_stmt(_if, None, or_expr(min_delta is None, delta < min_delta), (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches))
+                return (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches)
+            delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches = if_stmt(_if, None, utensil_patch.horizontal_center > leftmost_utensil.horizontal_center, (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches))
+            return (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches)
+        delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches = for_stmt(_for, utensil_patches, (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches))
+
+        def _if(delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches):
+            right_of_leftmost = utensil_patches[0]
+
+            def _for(utensil_patch, delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches):
+
+                def _if(delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches):
+                    right_of_leftmost = utensil_patch
+                    return (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches)
+                delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches = if_stmt(_if, None, utensil_patch.horizontal_center > right_of_leftmost.horizontal_center, (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches))
+                return (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches)
+            delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches = for_stmt(_for, utensil_patches, (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches))
+            return (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches)
+        delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches = if_stmt(_if, None, right_of_leftmost is None, (delta, image_patch, leftmost_utensil, min_delta, right_of_leftmost, utensil_patches))
+        bowl_patches = image_patch.find('bowl')
+
+        def _if(bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches):
+            result = 'no'
+            return (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches)
+
+        def _else(bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches):
+            result = 'no'
+
+            def _for(bowl_patch, bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches):
+
+                def _if(bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches):
+                    result = 'yes'
+                    return (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches)
+                bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches = if_stmt(_if, None, bowl_patch.horizontal_center > right_of_leftmost.horizontal_center, (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches))
+                return (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches)
+            bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches = for_stmt(_for, bowl_patches, (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches))
+            return (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches)
+        bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches = if_stmt(_if, _else, len(bowl_patches) == 0, (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches))
+        return (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches)
+    bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches = if_stmt(_if, _else, len(utensil_patches) < 2, (bowl_patches, delta, image_patch, leftmost_utensil, min_delta, result, right_of_leftmost, utensil_patches))
+    return result

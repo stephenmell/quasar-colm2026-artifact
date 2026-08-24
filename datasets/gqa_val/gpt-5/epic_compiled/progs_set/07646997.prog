@@ -1,0 +1,64 @@
+def execute_command(image) -> str:
+    best_bicycle = None
+    best_bus = None
+    best_dist = None
+    bicycle_patches = None
+    bus_patches = None
+    dist = None
+    dx = None
+    dy = None
+    image_patch = None
+    red_bus_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find('bus')
+    bicycle_patches = image_patch.find('bicycle')
+    red_bus_patches = ()
+
+    def _for(bus_patch, bicycle_patches, bus_patches, image_patch, red_bus_patches):
+
+        def _if(bicycle_patches, bus_patches, image_patch, red_bus_patches):
+            red_bus_patches = red_bus_patches + (bus_patch,)
+            return (bicycle_patches, bus_patches, image_patch, red_bus_patches)
+        bicycle_patches, bus_patches, image_patch, red_bus_patches = if_stmt(_if, None, bus_patch.verify_property('bus', 'red'), (bicycle_patches, bus_patches, image_patch, red_bus_patches))
+        return (bicycle_patches, bus_patches, image_patch, red_bus_patches)
+    bicycle_patches, bus_patches, image_patch, red_bus_patches = for_stmt(_for, bus_patches, (bicycle_patches, bus_patches, image_patch, red_bus_patches))
+
+    def _if(best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result):
+        result = image_patch.simple_query('Is the red bus to the left or to the right of the bicycle?')
+        return (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result)
+
+    def _else(best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result):
+        best_bus = None
+        best_bicycle = None
+        best_dist = None
+
+        def _for(rb, best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches):
+
+            def _for(bc, best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches):
+                dx = rb.horizontal_center - bc.horizontal_center
+                dy = rb.vertical_center - bc.vertical_center
+                dist = dx * dx + dy * dy
+
+                def _if(best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches):
+                    best_dist = dist
+                    best_bus = rb
+                    best_bicycle = bc
+                    return (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches)
+                best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches = if_stmt(_if, None, or_expr(best_dist is None, dist < best_dist), (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches))
+                return (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches)
+            best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches = for_stmt(_for, bicycle_patches, (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches))
+            return (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches)
+        best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches = for_stmt(_for, red_bus_patches, (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches))
+
+        def _if(best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result):
+            result = 'left'
+            return (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result)
+
+        def _else(best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result):
+            result = 'right'
+            return (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result)
+        best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result = if_stmt(_if, _else, best_bus.horizontal_center < best_bicycle.horizontal_center, (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result))
+        return (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result)
+    best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result = if_stmt(_if, _else, or_expr(len(red_bus_patches) == 0, len(bicycle_patches) == 0), (best_bicycle, best_bus, best_dist, bicycle_patches, bus_patches, dist, dx, dy, image_patch, red_bus_patches, result))
+    return result

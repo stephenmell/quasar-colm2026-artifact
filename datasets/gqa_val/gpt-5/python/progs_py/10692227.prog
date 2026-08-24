@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Who is wearing the cap?")
+    # Check each person to see who is wearing a cap
+    for person_patch in person_patches:
+        if person_patch.simple_query("Is the person wearing a cap?") == "yes":
+            return person_patch.simple_query("Who is wearing the cap?")
+    # If none detected wearing a cap, ask about the first person
+    return person_patches[0].simple_query("Who is wearing the cap?")

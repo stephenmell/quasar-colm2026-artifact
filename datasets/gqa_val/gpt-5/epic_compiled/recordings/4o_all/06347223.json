@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2395361",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Is the tomato on a bun?"
+      ],
+      "No.",
+      1383047092
+    ]
+  ],
+  "best_text_match": []
+}

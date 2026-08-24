@@ -1,0 +1,20 @@
+# Are there either any white plates or mugs?
+def execute_command(image) -> str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for white plates
+    if image_patch.exists("plate"):
+        plate_patches = image_patch.find("plate")
+        for plate_patch in plate_patches:
+            if plate_patch.verify_property("plate", "white"):
+                result = "yes"
+
+    # Check for white mugs
+    if image_patch.exists("mug"):
+        mug_patches = image_patch.find("mug")
+        for mug_patch in mug_patches:
+            if mug_patch.verify_property("mug", "white"):
+                result = "yes"
+
+    return result

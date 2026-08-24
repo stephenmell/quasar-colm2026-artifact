@@ -1,0 +1,10 @@
+# Do you see a helmet there?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    helmet_found = False
+    helmet_names = ("helmet", "hard hat", "bike helmet", "motorcycle helmet")
+    for name in helmet_names:
+        if image_patch.exists(name):
+            helmet_found = True
+    result = bool_to_yesno(helmet_found)
+    return result

@@ -1,0 +1,37 @@
+# What is the man to the right of the glasses doing, walking or standing?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    glasses_patches = image_patch.find("glasses")
+    if len(glasses_patches) == 0:
+        result = image_patch.simple_query("What is the man to the right of the glasses doing, walking or standing?")
+    else:
+        best_man_patch = None
+        best_distance = None
+
+        for glasses_patch in glasses_patches:
+            right_area_patch = image_patch.crop(glasses_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            man_patches = right_area_patch.find("man")
+            if len(man_patches) > 0:
+                for man_patch in man_patches:
+                    global_center = right_area_patch.left + man_patch.horizontal_center
+                    distance = global_center - glasses_patch.right
+                    is_better = False
+                    if best_distance is None:
+                        is_better = True
+                    else:
+                        if distance < best_distance:
+                            is_better = True
+                    if is_better:
+                        best_distance = distance
+                        best_man_patch = man_patch
+
+        if best_man_patch:
+            result = best_man_patch.best_text_match(("walking", "standing"))
+        else:
+            result = image_patch.simple_query("What is the man to the right of the glasses doing, walking or standing?")
+
+    if not result:
+        result = image_patch.simple_query("What is the man to the right of the glasses doing, walking or standing?")
+    return result

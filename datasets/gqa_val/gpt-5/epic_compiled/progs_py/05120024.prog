@@ -1,0 +1,49 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Are there guys to the right of the man who is to the right of the people?"
+    result = image_patch.simple_query(question)
+
+    # Determine the horizontal boundary (right edge) of "the people"
+    group_right = None
+    got_group = False
+
+    people_patches = image_patch.find("people")
+    if len(people_patches) > 0:
+        group_right = people_patches[0].right
+        got_group = True
+    else:
+        person_patches = image_patch.find("person")
+        if len(person_patches) > 0:
+            max_right = None
+            for pp in person_patches:
+                if max_right is None or pp.right > max_right:
+                    max_right = pp.right
+            group_right = max_right
+            got_group = True
+
+    if got_group:
+        # Find the man (or guy) that is to the right of the people, pick the closest one
+        man_patches = image_patch.find("man")
+        guy_patches = image_patch.find("guy")
+        all_men = man_patches + guy_patches
+
+        if len(all_men) > 0:
+            selected_man = None
+            selected_center = None
+            for mp in all_men:
+                if mp.horizontal_center > group_right:
+                    if selected_man is None or mp.horizontal_center < selected_center:
+                        selected_man = mp
+                        selected_center = mp.horizontal_center
+
+            # If such a man exists, check for guys to his right
+            if selected_man is not None:
+                right_area = image_patch.crop(selected_man.right, image_patch.lower, image_patch.right, image_patch.upper)
+                guys_right = right_area.find("guy")
+                men_right = right_area.find("man")
+                if len(guys_right) > 0 or len(men_right) > 0:
+                    result = "yes"
+                else:
+                    result = "no"
+
+    return result

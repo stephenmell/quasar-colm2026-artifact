@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    boat_exists = None
+    boat_patches = None
+    flag_exists = None
+    flag_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    flag_exists = image_patch.exists('flag')
+
+    def _if(flag_exists, flag_patches, image_patch, result):
+        flag_patches = image_patch.find('flag')
+
+        def _for(flag_patch, flag_exists, flag_patches, image_patch, result):
+
+            def _if(flag_exists, flag_patches, image_patch, result):
+                result = 'yes'
+                return (flag_exists, flag_patches, image_patch, result)
+            flag_exists, flag_patches, image_patch, result = if_stmt(_if, None, flag_patch.verify_property('flag', 'small'), (flag_exists, flag_patches, image_patch, result))
+            return (flag_exists, flag_patches, image_patch, result)
+        flag_exists, flag_patches, image_patch, result = for_stmt(_for, flag_patches, (flag_exists, flag_patches, image_patch, result))
+        return (flag_exists, flag_patches, image_patch, result)
+    flag_exists, flag_patches, image_patch, result = if_stmt(_if, None, flag_exists, (flag_exists, flag_patches, image_patch, result))
+
+    def _if(boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result):
+        boat_exists = image_patch.exists('boat')
+
+        def _if(boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result):
+            boat_patches = image_patch.find('boat')
+
+            def _for(boat_patch, boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result):
+
+                def _if(boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result):
+                    result = 'yes'
+                    return (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result)
+                boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result = if_stmt(_if, None, boat_patch.verify_property('boat', 'small'), (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result))
+                return (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result)
+            boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result = for_stmt(_for, boat_patches, (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result))
+            return (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result)
+        boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result = if_stmt(_if, None, boat_exists, (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result))
+        return (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result)
+    boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result = if_stmt(_if, None, result == 'no', (boat_exists, boat_patches, flag_exists, flag_patches, image_patch, result))
+    return result

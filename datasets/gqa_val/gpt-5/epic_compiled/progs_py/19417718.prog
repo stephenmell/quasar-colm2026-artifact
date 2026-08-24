@@ -1,0 +1,51 @@
+# Is the white van to the right or to the left of the vehicle in the middle of the picture?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Find the white van (choose the one closest to image center if multiple)
+    van_patches = image_patch.find("van")
+    white_van_patch = None
+    white_van_dist2 = None
+    if len(van_patches) > 0:
+        img_cx = image_patch.horizontal_center
+        img_cy = image_patch.vertical_center
+        for vp in van_patches:
+            is_white_van = vp.verify_property("van", "white")
+            if is_white_van:
+                dx_v = vp.horizontal_center - img_cx
+                dy_v = vp.vertical_center - img_cy
+                d2_v = dx_v * dx_v + dy_v * dy_v
+                if white_van_patch is None or d2_v < white_van_dist2:
+                    white_van_patch = vp
+                    white_van_dist2 = d2_v
+
+    # Find the vehicle in the middle of the picture (closest to image center among common vehicle types)
+    vehicle_types = ("vehicle", "car", "truck", "bus", "van", "suv")
+    all_vehicle_patches = ()
+    for vt in vehicle_types:
+        found_patches = image_patch.find(vt)
+        all_vehicle_patches = all_vehicle_patches + found_patches
+
+    center_vehicle_patch = None
+    center_vehicle_dist2 = None
+    if len(all_vehicle_patches) > 0:
+        img_cx = image_patch.horizontal_center
+        img_cy = image_patch.vertical_center
+        for vp in all_vehicle_patches:
+            dx = vp.horizontal_center - img_cx
+            dy = vp.vertical_center - img_cy
+            d2 = dx * dx + dy * dy
+            if center_vehicle_patch is None or d2 < center_vehicle_dist2:
+                center_vehicle_patch = vp
+                center_vehicle_dist2 = d2
+
+    # Determine relative position or fall back to direct query
+    if white_van_patch is not None and center_vehicle_patch is not None:
+        if white_van_patch.horizontal_center > center_vehicle_patch.horizontal_center:
+            result = "right"
+        else:
+            result = "left"
+    else:
+        result = image_patch.simple_query("Is the white van to the right or to the left of the vehicle in the middle of the picture?")
+    return result

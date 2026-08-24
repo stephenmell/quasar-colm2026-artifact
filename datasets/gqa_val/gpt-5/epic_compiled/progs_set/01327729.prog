@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    bread_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bread_patches = image_patch.find('bread')
+
+    def _if(bread_patches, image_patch, result):
+        result = image_patch.simple_query('Is there a brown bread in this scene?')
+        return (bread_patches, image_patch, result)
+
+    def _else(bread_patches, image_patch, result):
+        result = 'no'
+
+        def _for(bread_patch, bread_patches, image_patch, result):
+
+            def _if(bread_patches, image_patch, result):
+                result = 'yes'
+                return (bread_patches, image_patch, result)
+            bread_patches, image_patch, result = if_stmt(_if, None, bread_patch.verify_property('bread', 'brown'), (bread_patches, image_patch, result))
+            return (bread_patches, image_patch, result)
+        bread_patches, image_patch, result = for_stmt(_for, bread_patches, (bread_patches, image_patch, result))
+        return (bread_patches, image_patch, result)
+    bread_patches, image_patch, result = if_stmt(_if, _else, len(bread_patches) == 0, (bread_patches, image_patch, result))
+    return result

@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    jacket_patches = image_patch.find("jacket")
+    # Question assumes at least one jacket; if none, ask directly
+    if len(jacket_patches) == 0:
+        return image_patch.simple_query("Does the jacket look gray?")
+    # If any detected jacket looks gray, answer yes
+    for jacket_patch in jacket_patches:
+        if jacket_patch.verify_property("jacket", "gray"):
+            return "yes"
+    return "no"

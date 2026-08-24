@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    box_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    box_patches = image_patch.find('box')
+
+    def _if(box_patches, image_patch, result):
+        result = image_patch.simple_query('What color do you think the box is?')
+        return (box_patches, image_patch, result)
+
+    def _else(box_patches, image_patch, result):
+        result = box_patches[0].simple_query('What color is the box?')
+        return (box_patches, image_patch, result)
+    box_patches, image_patch, result = if_stmt(_if, _else, len(box_patches) == 0, (box_patches, image_patch, result))
+    return result

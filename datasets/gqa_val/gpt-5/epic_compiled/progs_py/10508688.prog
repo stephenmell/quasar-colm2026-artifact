@@ -1,0 +1,17 @@
+# Does the giraffe that is standing look brown?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find("giraffe")
+    result = "no"
+    if len(giraffe_patches) == 0:
+        result = image_patch.simple_query("Does the giraffe that is standing look brown?")
+    else:
+        found_standing = False
+        for giraffe_patch in giraffe_patches:
+            if giraffe_patch.verify_property("giraffe", "standing"):
+                found_standing = True
+                if giraffe_patch.verify_property("giraffe", "brown"):
+                    result = "yes"
+        if not found_standing:
+            result = image_patch.simple_query("Does the giraffe that is standing look brown?")
+    return result

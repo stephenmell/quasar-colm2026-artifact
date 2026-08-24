@@ -1,0 +1,16 @@
+Stage: other execution error
+Error: 'AbstractTupleUnion' object has no attribute '__len__'
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "13704637.prog", line 38, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 188, in abstract_if_stmt
+    lvars = else_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "13704637.prog", line 36, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 218, in abstract_len
+    return x.__len__()
+           ^^^^^^^^^
+AttributeError: 'AbstractTupleUnion' object has no attribute '__len__'. Did you mean: '__le__'?

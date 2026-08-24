@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find men in the image
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        # If no man is found, ask directly
+        return image_patch.simple_query("Is the bus to the right of the man that is carrying a backpack?")
+    # Identify the man carrying a backpack
+    carrying_man = None
+    for man_patch in man_patches:
+        if man_patch.simple_query("Is the man carrying a backpack?") == "yes":
+            carrying_man = man_patch
+            break
+        # Fallback: detect a backpack within the man's crop
+        if len(man_patch.find("backpack")) > 0:
+            carrying_man = man_patch
+            break
+    if carrying_man is None:
+        # If no such man is identified, ask directly
+        return image_patch.simple_query("Is the bus to the right of the man that is carrying a backpack?")
+    # Find bus(es) and check position relative to the identified man
+    bus_patches = image_patch.find("bus")
+    if len(bus_patches) == 0:
+        return "no"
+    for bus_patch in bus_patches:
+        if bus_patch.horizontal_center > carrying_man.horizontal_center:
+            return "yes"
+    return "no"

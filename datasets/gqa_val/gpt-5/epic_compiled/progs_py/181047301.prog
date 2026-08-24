@@ -1,0 +1,10 @@
+# Is the pasture green?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pasture_patches = image_patch.find("pasture")
+    if len(pasture_patches) == 0:
+        result = image_patch.simple_query("Is the pasture green?")
+    else:
+        is_green = pasture_patches[0].verify_property("pasture", "green")
+        result = bool_to_yesno(is_green)
+    return result

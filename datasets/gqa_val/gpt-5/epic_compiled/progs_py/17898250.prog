@@ -1,0 +1,49 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find stuffed animals (use common synonyms)
+    stuffed_animals = image_patch.find("stuffed animal")
+    teddy_bears = image_patch.find("teddy bear")
+    plush_toys = image_patch.find("plush toy")
+    stuffed_patches = stuffed_animals + teddy_bears + plush_toys
+
+    # Find speakers
+    speaker_patches = image_patch.find("speaker")
+
+    # If we can't identify both stuffed animals and a speaker, ask directly
+    if len(stuffed_patches) == 0 or len(speaker_patches) == 0:
+        result = image_patch.simple_query("Do you see shelves to the right of the speaker the stuffed animals are around of?")
+    else:
+        # Choose the speaker closest to any stuffed animal
+        chosen_speaker = None
+        best_dist = None
+        for sp in speaker_patches:
+            local_best = None
+            for sa in stuffed_patches:
+                dx = sa.horizontal_center - sp.horizontal_center
+                dy = sa.vertical_center - sp.vertical_center
+                d2 = dx * dx + dy * dy
+                if local_best is None or d2 < local_best:
+                    local_best = d2
+            if best_dist is None or (local_best is not None and local_best < best_dist):
+                best_dist = local_best
+                chosen_speaker = sp
+
+        # Find shelves
+        shelves_singular = image_patch.find("shelf")
+        shelves_plural = image_patch.find("shelves")
+        shelf_patches = shelves_singular + shelves_plural
+
+        if len(shelf_patches) == 0 or chosen_speaker is None:
+            result = image_patch.simple_query("Do you see shelves to the right of the speaker the stuffed animals are around of?")
+        else:
+            found_right = False
+            for shelf_patch in shelf_patches:
+                if shelf_patch.horizontal_center > chosen_speaker.horizontal_center:
+                    found_right = True
+            if found_right:
+                result = "yes"
+            else:
+                result = "no"
+    return result

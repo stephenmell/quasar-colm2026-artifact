@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    found_happy = None
+    image_patch = None
+    is_happy = None
+    person_patches = None
+    result = None
+    riding_answer = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(found_happy, image_patch, is_happy, person_patches, result, riding_answer):
+        result = image_patch.simple_query('Is the happy person riding on a skateboard?')
+        return (found_happy, image_patch, is_happy, person_patches, result, riding_answer)
+
+    def _else(found_happy, image_patch, is_happy, person_patches, result, riding_answer):
+        result = 'no'
+        found_happy = False
+
+        def _for(person_patch, found_happy, image_patch, is_happy, person_patches, result, riding_answer):
+            is_happy = person_patch.verify_property('person', 'happy')
+
+            def _if(found_happy, image_patch, is_happy, person_patches, result, riding_answer):
+                found_happy = True
+                riding_answer = person_patch.simple_query('Is the person riding on a skateboard?')
+
+                def _if(found_happy, image_patch, is_happy, person_patches, result, riding_answer):
+                    result = 'yes'
+                    return (found_happy, image_patch, is_happy, person_patches, result, riding_answer)
+                found_happy, image_patch, is_happy, person_patches, result, riding_answer = if_stmt(_if, None, riding_answer == 'yes', (found_happy, image_patch, is_happy, person_patches, result, riding_answer))
+                return (found_happy, image_patch, is_happy, person_patches, result, riding_answer)
+            found_happy, image_patch, is_happy, person_patches, result, riding_answer = if_stmt(_if, None, is_happy, (found_happy, image_patch, is_happy, person_patches, result, riding_answer))
+            return (found_happy, image_patch, is_happy, person_patches, result, riding_answer)
+        found_happy, image_patch, is_happy, person_patches, result, riding_answer = for_stmt(_for, person_patches, (found_happy, image_patch, is_happy, person_patches, result, riding_answer))
+
+        def _if(found_happy, image_patch, is_happy, person_patches, result, riding_answer):
+            result = image_patch.simple_query('Is the happy person riding on a skateboard?')
+            return (found_happy, image_patch, is_happy, person_patches, result, riding_answer)
+        found_happy, image_patch, is_happy, person_patches, result, riding_answer = if_stmt(_if, None, not_expr(found_happy), (found_happy, image_patch, is_happy, person_patches, result, riding_answer))
+        return (found_happy, image_patch, is_happy, person_patches, result, riding_answer)
+    found_happy, image_patch, is_happy, person_patches, result, riding_answer = if_stmt(_if, _else, len(person_patches) == 0, (found_happy, image_patch, is_happy, person_patches, result, riding_answer))
+    return result

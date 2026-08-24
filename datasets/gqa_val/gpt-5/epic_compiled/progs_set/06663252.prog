@@ -1,0 +1,112 @@
+def execute_command(image) -> str:
+    best_distance = None
+    box_patches = None
+    candidate_box = None
+    candidate_x = None
+    distance = None
+    drink_labels = None
+    drink_patches_all = None
+    image_patch = None
+    label_matches = None
+    result = None
+    selected_drink = None
+    image_patch = ImagePatch(image)
+    result = None
+    box_patches = image_patch.find('box')
+
+    def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+        result = image_patch.simple_query('What is the drink to the left of the box in the bottom part of the image?')
+        return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+
+    def _else(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+        candidate_box = None
+        candidate_x = None
+
+        def _for(box_patch, box_patches, candidate_box, candidate_x, image_patch, result):
+
+            def _if(box_patches, candidate_box, candidate_x, image_patch, result):
+
+                def _if(box_patches, candidate_box, candidate_x, image_patch, result):
+                    candidate_box = box_patch
+                    candidate_x = box_patch.horizontal_center
+                    return (box_patches, candidate_box, candidate_x, image_patch, result)
+
+                def _else(box_patches, candidate_box, candidate_x, image_patch, result):
+
+                    def _if(box_patches, candidate_box, candidate_x, image_patch, result):
+                        candidate_box = box_patch
+                        candidate_x = box_patch.horizontal_center
+                        return (box_patches, candidate_box, candidate_x, image_patch, result)
+                    box_patches, candidate_box, candidate_x, image_patch, result = if_stmt(_if, None, box_patch.horizontal_center < candidate_x, (box_patches, candidate_box, candidate_x, image_patch, result))
+                    return (box_patches, candidate_box, candidate_x, image_patch, result)
+                box_patches, candidate_box, candidate_x, image_patch, result = if_stmt(_if, _else, candidate_box is None, (box_patches, candidate_box, candidate_x, image_patch, result))
+                return (box_patches, candidate_box, candidate_x, image_patch, result)
+            box_patches, candidate_box, candidate_x, image_patch, result = if_stmt(_if, None, box_patch.vertical_center < image_patch.vertical_center, (box_patches, candidate_box, candidate_x, image_patch, result))
+            return (box_patches, candidate_box, candidate_x, image_patch, result)
+        box_patches, candidate_box, candidate_x, image_patch, result = for_stmt(_for, box_patches, (box_patches, candidate_box, candidate_x, image_patch, result))
+
+        def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+            result = image_patch.simple_query('What is the drink to the left of the box in the bottom part of the image?')
+            return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+
+        def _else(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+            drink_labels = ('drink', 'bottle', 'cup', 'glass', 'wine glass', 'mug', 'can', 'soda can', 'beer', 'coffee cup')
+            drink_patches_all = ()
+
+            def _for(label, box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result):
+                label_matches = image_patch.find(label)
+
+                def _if(box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result):
+                    drink_patches_all = drink_patches_all + label_matches
+                    return (box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result)
+                box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result = if_stmt(_if, None, len(label_matches) > 0, (box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result))
+                return (box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result)
+            box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result = for_stmt(_for, drink_labels, (box_patches, candidate_box, candidate_x, drink_labels, drink_patches_all, image_patch, label_matches, result))
+
+            def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+                result = image_patch.simple_query('What is the drink to the left of the box in the bottom part of the image?')
+                return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+
+            def _else(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+                selected_drink = None
+                best_distance = None
+
+                def _for(drink_patch, best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+
+                    def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+
+                        def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+                            distance = candidate_box.horizontal_center - drink_patch.horizontal_center
+
+                            def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+                                selected_drink = drink_patch
+                                best_distance = distance
+                                return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+                            best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, None, or_expr(best_distance is None, distance < best_distance), (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+                            return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+                        best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, None, drink_patch.vertical_center < image_patch.vertical_center, (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+                        return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+                    best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, None, drink_patch.horizontal_center < candidate_box.horizontal_center, (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+                    return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+                best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = for_stmt(_for, drink_patches_all, (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+
+                def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+                    result = image_patch.simple_query('What is the drink to the left of the box in the bottom part of the image?')
+                    return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+
+                def _else(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+                    result = selected_drink.simple_query('What is the drink?')
+                    return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+                best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, _else, not_expr(selected_drink), (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+                return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+            best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, _else, len(drink_patches_all) == 0, (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+            return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+        best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, _else, not_expr(candidate_box), (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+        return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+    best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, _else, len(box_patches) == 0, (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+
+    def _if(best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink):
+        result = image_patch.simple_query('What is the drink to the left of the box in the bottom part of the image?')
+        return (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink)
+    best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink = if_stmt(_if, None, not_expr(result), (best_distance, box_patches, candidate_box, candidate_x, distance, drink_labels, drink_patches_all, image_patch, label_matches, result, selected_drink))
+    return result

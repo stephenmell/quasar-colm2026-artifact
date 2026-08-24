@@ -1,0 +1,22 @@
+# Do you see either spatulas or plates that are made of metal?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    found_any = False
+    object_types = ("spatula", "plate")
+
+    for obj in object_types:
+        obj_exists = image_patch.exists(obj)
+        if obj_exists:
+            found_any = True
+            obj_patches = image_patch.find(obj)
+            for obj_patch in obj_patches:
+                has_metal = obj_patch.verify_property(obj, "metal")
+                if not has_metal:
+                    has_metal = obj_patch.verify_property(obj, "made of metal")
+                if has_metal:
+                    result = "yes"
+
+    if not found_any:
+        result = image_patch.simple_query("Do you see either spatulas or plates that are made of metal?")
+    return result

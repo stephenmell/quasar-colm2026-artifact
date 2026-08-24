@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pot_patches = image_patch.find("pot")
+    # Question assumes pot as the reference object
+    if len(pot_patches) == 0:
+        # If no pot is found, query the image directly
+        return image_patch.simple_query("Is the pot to the right of tea?")
+    tea_patches = image_patch.find("tea")
+    if len(tea_patches) == 0:
+        return "no"
+    for pot_patch in pot_patches:
+        for tea_patch in tea_patches:
+            if pot_patch.horizontal_center > tea_patch.horizontal_center:
+                return "yes"
+    return "no"

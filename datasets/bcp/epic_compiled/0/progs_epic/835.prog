@@ -1,0 +1,103 @@
+({185: 'context', 188: 'llm_query', 206: '.join', 221: 'return_result'},
+ ('def',
+  183,
+  ((),
+   ((('call', (184,), -1, ()),
+     ('def',
+      186,
+      ((201, 187),
+       ((('prim',
+          189,
+          'You are given one context document. Extract any musician(s) '
+          'described in it who could match ALL of the following attributes '
+          '(explicitly or implicitly). Then identify any band(s) they formed '
+          'between 1970 and 1990.\n'
+          'Attributes to match:\n'
+          '- Played in a rock band that sold over 100 million records\n'
+          '- Began performing professionally in their teen years\n'
+          '- Was married three times\n'
+          '- Has one daughter and one son\n'
+          '- Attended art college\n'
+          '- Worked in a boutique\n'
+          '\n'
+          'For each candidate musician in this document:\n'
+          '- Musician:\n'
+          '- Evidence for each attribute (quote or paraphrase from the '
+          'document):\n'
+          '  * 100M+ rock band they played in (name + any sales mention):\n'
+          '  * Began performing professionally in teen years:\n'
+          '  * Married three times (names or years if given):\n'
+          '  * One daughter and one son (names if given):\n'
+          '  * Attended art college (which one, if stated):\n'
+          '  * Worked in a boutique (what boutique, if stated):\n'
+          '- Band(s) they formed between 1970 and 1990 (band name and '
+          'formation year), if stated in the document:\n'
+          '- Confidence (High/Medium/Low) for this musician matching all '
+          'attributes based on this document.\n'
+          '\n'
+          'Document:\n'
+          'BEGIN\n'),
+         ('call', (190,), 118, (187,)),
+         ('prim',
+          191,
+          '\n'
+          'END\n'
+          '\n'
+          'If the document does not discuss any musician matching multiple '
+          "attributes, reply with 'No relevant musician found in this "
+          "document.'"),
+         ('def',
+          197,
+          ((192, 193),
+           ((('call', (194,), 193, (192, 189)),
+             ('call', (195,), 193, (194, 190)),
+             ('call', (196,), 193, (195, 191))),
+            (196,)))),
+         ('prim', 198, ''),
+         ('call', (199,), 197, (198, 80)),
+         ('call', (200,), 188, (199,)),
+         ('call', (202,), -1, (200,)),
+         ('call', (203,), 80, (201, 202))),
+        (203,)))),
+     ('call', (205,), 79, (185,)),
+     ('call', (204,), 205, (184, 186)),
+     ('prim', 207, '\n\n---\n\n'),
+     ('call', (208,), 206, (207, 204)),
+     ('prim',
+      209,
+      'You are given extractions from multiple documents about potential '
+      'musicians who meet this set of attributes and the bands they formed:\n'
+      'ATTRIBUTES:\n'
+      '- Played in a rock band that sold over 100 million records\n'
+      '- Began performing professionally in their teen years\n'
+      '- Was married three times\n'
+      '- Has one daughter and one son\n'
+      '- Attended art college\n'
+      '- Worked in a boutique\n'
+      '\n'
+      'TASK:\n'
+      'From the extractions below, identify the single best match for the '
+      'musician who satisfies these attributes and name the band they formed '
+      'between 1970 and 1990. Output ONLY the band name, nothing else.\n'
+      '\n'
+      'EXTRACTIONS:\n'),
+     ('call', (210,), 118, (208,)),
+     ('prim',
+      211,
+      '\n'
+      '\n'
+      'Remember: Output only the band name formed between 1970 and 1990 by the '
+      'musician who matches the attributes. Do not include any explanation or '
+      'extra words.'),
+     ('def',
+      217,
+      ((212, 213),
+       ((('call', (214,), 213, (212, 209)),
+         ('call', (215,), 213, (214, 210)),
+         ('call', (216,), 213, (215, 211))),
+        (216,)))),
+     ('prim', 218, ''),
+     ('call', (219,), 217, (218, 80)),
+     ('call', (220,), 188, (219,)),
+     ('call', (222,), 221, (220,))),
+    (222,)))))

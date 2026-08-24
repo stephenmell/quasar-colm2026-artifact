@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find("pillow")
+    if len(pillow_patches) == 0:
+        # If no pillow is found, query the image directly
+        return image_patch.simple_query("Is the pillow brown?")
+    is_brown = any(pillow_patch.verify_property("pillow", "brown") for pillow_patch in pillow_patches)
+    return bool_to_yesno(is_brown)

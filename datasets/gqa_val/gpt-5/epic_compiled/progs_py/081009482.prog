@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find("bird")
+    water_patches = image_patch.find("water")
+
+    if len(bird_patches) == 0 or len(water_patches) == 0:
+        result = image_patch.simple_query("Are there any birds above the water?")
+    else:
+        result = "no"
+        for bird_patch in bird_patches:
+            is_above_any_water = False
+            for water_patch in water_patches:
+                if bird_patch.vertical_center < water_patch.vertical_center:
+                    is_above_any_water = True
+            if is_above_any_water:
+                result = "yes"
+    return result

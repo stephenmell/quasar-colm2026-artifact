@@ -1,0 +1,114 @@
+def execute_command(image) -> str:
+    best_distance = None
+    chosen_gap = None
+    chosen_man = None
+    chosen_wg = None
+    distance = None
+    gap = None
+    image_patch = None
+    is_left_of_any_pillow = None
+    man_patches = None
+    min_gap = None
+    pillow_patches = None
+    question = None
+    result = None
+    valid_wine_glasses = None
+    wine_glass_patches = None
+    image_patch = ImagePatch(image)
+    question = 'Is the man to the left or to the right of the wine glass that is to the left of the pillow?'
+    result = None
+    man_patches = image_patch.find('man')
+    wine_glass_patches = image_patch.find('wine glass')
+    pillow_patches = image_patch.find('pillow')
+
+    def _if(best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+        valid_wine_glasses = ()
+
+        def _for(wg, image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+            is_left_of_any_pillow = False
+
+            def _for(pillow, image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+
+                def _if(image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                    is_left_of_any_pillow = True
+                    return (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+                image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, wg.horizontal_center < pillow.horizontal_center, (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+                return (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+            image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = for_stmt(_for, pillow_patches, (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+
+            def _if(image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                valid_wine_glasses = valid_wine_glasses + (wg,)
+                return (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+            image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, is_left_of_any_pillow, (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+            return (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+        image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = for_stmt(_for, wine_glass_patches, (image_patch, is_left_of_any_pillow, man_patches, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+
+        def _if(best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+            chosen_wg = valid_wine_glasses[0]
+            chosen_gap = None
+
+            def _for(wg, chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                min_gap = None
+
+                def _for(pillow, chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+
+                    def _if(chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                        gap = pillow.horizontal_center - wg.horizontal_center
+
+                        def _if(chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                            min_gap = gap
+                            return (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+                        chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, or_expr(min_gap is None, gap < min_gap), (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+                        return (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+                    chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, pillow.horizontal_center > wg.horizontal_center, (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+                    return (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+                chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = for_stmt(_for, pillow_patches, (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+
+                def _if(chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                    chosen_gap = min_gap
+                    chosen_wg = wg
+                    return (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+
+                def _else(chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+
+                    def _if(chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                        chosen_gap = min_gap
+                        chosen_wg = wg
+                        return (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+                    chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, and_expr(min_gap is not None, min_gap < chosen_gap), (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+                    return (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+                chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, _else, chosen_gap is None, (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+                return (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+            chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = for_stmt(_for, valid_wine_glasses, (chosen_gap, chosen_wg, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+            chosen_man = man_patches[0]
+            best_distance = abs(chosen_man.horizontal_center - chosen_wg.horizontal_center)
+
+            def _for(man, best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                distance = abs(man.horizontal_center - chosen_wg.horizontal_center)
+
+                def _if(best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                    best_distance = distance
+                    chosen_man = man
+                    return (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+                best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, distance < best_distance, (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+                return (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+            best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = for_stmt(_for, man_patches, (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+
+            def _if(best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                result = 'left'
+                return (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+
+            def _else(best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+                result = 'right'
+                return (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+            best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, _else, chosen_man.horizontal_center < chosen_wg.horizontal_center, (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+            return (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+        best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, len(valid_wine_glasses) > 0, (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+        return (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+    best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, and_expr(len(man_patches) > 0, and_expr(len(wine_glass_patches) > 0, len(pillow_patches) > 0)), (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+
+    def _if(best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches):
+        result = image_patch.simple_query(question)
+        return (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches)
+    best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches = if_stmt(_if, None, not_expr(result), (best_distance, chosen_gap, chosen_man, chosen_wg, distance, gap, image_patch, is_left_of_any_pillow, man_patches, min_gap, pillow_patches, question, result, valid_wine_glasses, wine_glass_patches))
+    return result

@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cell_phone_terms = ("cell phone", "cellphone", "mobile phone", "smartphone", "smart phone")
+    laptop_terms = ("laptop", "laptop computer", "notebook computer")
+    
+    is_cell_phone = False
+    for term in cell_phone_terms:
+        if image_patch.exists(term):
+            is_cell_phone = True
+    is_laptop = False
+    for term in laptop_terms:
+        if image_patch.exists(term):
+            is_laptop = True
+
+    result = bool_to_yesno(is_cell_phone and is_laptop)
+    return result

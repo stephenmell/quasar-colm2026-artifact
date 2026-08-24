@@ -1,0 +1,73 @@
+def execute_command(image) -> str:
+    image_patch = None
+    remote_patches = None
+    result = None
+    right_side_sofa_exists = None
+    rightmost_center = None
+    rightmost_sofa_patch = None
+    sofa_patches = None
+    sofa_right_patch = None
+    image_patch = ImagePatch(image)
+    sofa_patches = image_patch.find('sofa')
+
+    def _if(image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+        result = image_patch.simple_query('Do you see any remote controls to the left of the sofa that is on the right side?')
+        return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+
+    def _else(image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+        sofa_right_patch = None
+        rightmost_sofa_patch = None
+        rightmost_center = None
+        right_side_sofa_exists = False
+
+        def _for(sofa_patch, image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+
+            def _if(image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+                rightmost_sofa_patch = sofa_patch
+                rightmost_center = sofa_patch.horizontal_center
+                return (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+            image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, None, or_expr(rightmost_center is None, sofa_patch.horizontal_center > rightmost_center), (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+
+            def _if(image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+                right_side_sofa_exists = True
+
+                def _if(image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+                    sofa_right_patch = sofa_patch
+                    return (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+                image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, None, or_expr(sofa_right_patch is None, sofa_patch.horizontal_center > sofa_right_patch.horizontal_center), (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+                return (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+            image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, None, sofa_patch.horizontal_center > image_patch.horizontal_center, (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+            return (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+        image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = for_stmt(_for, sofa_patches, (image_patch, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+
+        def _if(image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+            result = image_patch.simple_query('Do you see any remote controls to the left of the sofa that is on the right side?')
+            return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+
+        def _else(image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+            result = 'no'
+            remote_patches = ()
+
+            def _if(image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+                remote_patches = remote_patches + image_patch.find('remote control')
+                return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+            image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, None, image_patch.exists('remote control'), (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+
+            def _if(image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+                remote_patches = remote_patches + image_patch.find('remote')
+                return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+            image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, None, image_patch.exists('remote'), (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+
+            def _for(remote_patch, image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+
+                def _if(image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch):
+                    result = 'yes'
+                    return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+                image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, None, remote_patch.horizontal_center < sofa_right_patch.horizontal_center, (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+                return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+            image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = for_stmt(_for, remote_patches, (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+            return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+        image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, _else, not_expr(right_side_sofa_exists), (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+        return (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch)
+    image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch = if_stmt(_if, _else, len(sofa_patches) == 0, (image_patch, remote_patches, result, right_side_sofa_exists, rightmost_center, rightmost_sofa_patch, sofa_patches, sofa_right_patch))
+    return result

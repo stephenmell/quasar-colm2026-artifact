@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Attempt to find goggles using several synonymous object names
+    goggles_patches = ()
+    name_options = ("goggles", "goggle", "swimming goggles", "ski goggles", "safety goggles")
+    for name in name_options:
+        found = image_patch.find(name)
+        if len(found) > 0:
+            goggles_patches = goggles_patches + found
+
+    if len(goggles_patches) == 0:
+        # If no goggles are found, ask directly
+        result = image_patch.simple_query("Are there any goggles in the photo that are orange?")
+    else:
+        any_orange = False
+        for goggles_patch in goggles_patches:
+            is_orange_here = False
+            for name in name_options:
+                if goggles_patch.verify_property(name, "orange"):
+                    is_orange_here = True
+            if is_orange_here:
+                any_orange = True
+        if any_orange:
+            result = "yes"
+    return result

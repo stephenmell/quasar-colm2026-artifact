@@ -1,0 +1,20 @@
+Stage: other execution error
+Error: can only concatenate tuple (not "AbstractTuple") to tuple
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "19176702.prog", line 21, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 169, in abstract_for_loop
+    return concrete_for_loop(for_body, l, lvars)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 156, in concrete_for_loop
+    lvars = for_body(x, *lvars)
+            ^^^^^^^^^^^^^^^^^^^
+  File "19176702.prog", line 19, in _for
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 190, in abstract_if_stmt
+    lvars_t = then_body(*lvars)
+              ^^^^^^^^^^^^^^^^^
+  File "19176702.prog", line 17, in _if
+TypeError: can only concatenate tuple (not "AbstractTuple") to tuple

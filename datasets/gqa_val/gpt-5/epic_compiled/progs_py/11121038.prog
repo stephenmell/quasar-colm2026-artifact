@@ -1,0 +1,4 @@
+# What is the man in front of?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    return image_patch.simple_query("What is the man in front of?")

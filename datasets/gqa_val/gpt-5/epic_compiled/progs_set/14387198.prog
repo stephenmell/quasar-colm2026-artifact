@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    image_patch = None
+    person_patches = None
+    result = None
+    suv_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    suv_patches = image_patch.find('suv')
+
+    def _if(image_patch, result, suv_patches):
+        suv_patches = image_patch.find('SUV')
+        return (image_patch, result, suv_patches)
+    image_patch, result, suv_patches = if_stmt(_if, None, len(suv_patches) == 0, (image_patch, result, suv_patches))
+
+    def _if(animal_patches, image_patch, person_patches, result, suv_patches):
+        result = image_patch.simple_query('Are there people to the right of the animals that are to the right of the SUV?')
+        return (animal_patches, image_patch, person_patches, result, suv_patches)
+
+    def _else(animal_patches, image_patch, person_patches, result, suv_patches):
+        animal_patches = image_patch.find('animal')
+        person_patches = image_patch.find('person')
+
+        def _for(suv_patch, animal_patches, image_patch, person_patches, result, suv_patches):
+
+            def _for(animal_patch, animal_patches, image_patch, person_patches, result, suv_patches):
+
+                def _if(animal_patches, image_patch, person_patches, result, suv_patches):
+
+                    def _for(person_patch, animal_patches, image_patch, person_patches, result, suv_patches):
+
+                        def _if(animal_patches, image_patch, person_patches, result, suv_patches):
+                            result = 'yes'
+                            return (animal_patches, image_patch, person_patches, result, suv_patches)
+                        animal_patches, image_patch, person_patches, result, suv_patches = if_stmt(_if, None, person_patch.horizontal_center > animal_patch.horizontal_center, (animal_patches, image_patch, person_patches, result, suv_patches))
+                        return (animal_patches, image_patch, person_patches, result, suv_patches)
+                    animal_patches, image_patch, person_patches, result, suv_patches = for_stmt(_for, person_patches, (animal_patches, image_patch, person_patches, result, suv_patches))
+                    return (animal_patches, image_patch, person_patches, result, suv_patches)
+                animal_patches, image_patch, person_patches, result, suv_patches = if_stmt(_if, None, animal_patch.horizontal_center > suv_patch.horizontal_center, (animal_patches, image_patch, person_patches, result, suv_patches))
+                return (animal_patches, image_patch, person_patches, result, suv_patches)
+            animal_patches, image_patch, person_patches, result, suv_patches = for_stmt(_for, animal_patches, (animal_patches, image_patch, person_patches, result, suv_patches))
+            return (animal_patches, image_patch, person_patches, result, suv_patches)
+        animal_patches, image_patch, person_patches, result, suv_patches = for_stmt(_for, suv_patches, (animal_patches, image_patch, person_patches, result, suv_patches))
+        return (animal_patches, image_patch, person_patches, result, suv_patches)
+    animal_patches, image_patch, person_patches, result, suv_patches = if_stmt(_if, _else, len(suv_patches) == 0, (animal_patches, image_patch, person_patches, result, suv_patches))
+    return result

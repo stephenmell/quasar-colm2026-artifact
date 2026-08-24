@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    door_patches = image_patch.find("door")
+    if len(door_patches) == 0:
+        result = image_patch.simple_query("Do you see any door in this photo that is not brown?")
+    else:
+        result = "no"
+        for door_patch in door_patches:
+            is_brown = door_patch.verify_property("door", "brown")
+            if not is_brown:
+                result = "yes"
+    return result

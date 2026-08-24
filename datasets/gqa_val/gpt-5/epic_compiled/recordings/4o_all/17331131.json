@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2357399",
+          [
+            0,
+            0,
+            500,
+            374
+          ]
+        ],
+        "animal"
+      ],
+      [],
+      7583890429
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2357399",
+          [
+            0,
+            0,
+            500,
+            374
+          ]
+        ],
+        "What color is the animal above the box?"
+      ],
+      "The animal is brown with darker stripes.",
+      1721696179
+    ]
+  ],
+  "best_text_match": []
+}

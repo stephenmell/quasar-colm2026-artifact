@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    bag_like_objects = None
+    image_patch = None
+    result = None
+    seen = None
+    image_patch = ImagePatch(image)
+    bag_like_objects = ('bag', 'bags', 'backpack', 'handbag', 'purse', 'shopping bag', 'tote', 'tote bag', 'duffel bag', 'briefcase', 'suitcase', 'luggage')
+    seen = False
+
+    def _for(name, bag_like_objects, image_patch, seen):
+
+        def _if(bag_like_objects, image_patch, seen):
+            seen = True
+            return (bag_like_objects, image_patch, seen)
+        bag_like_objects, image_patch, seen = if_stmt(_if, None, image_patch.exists(name), (bag_like_objects, image_patch, seen))
+        return (bag_like_objects, image_patch, seen)
+    bag_like_objects, image_patch, seen = for_stmt(_for, bag_like_objects, (bag_like_objects, image_patch, seen))
+    result = bool_to_yesno(seen)
+    return result

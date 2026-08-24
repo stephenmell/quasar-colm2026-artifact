@@ -1,0 +1,32 @@
+# Are there any women in this scene?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Direct existence checks for common terms
+    is_woman = image_patch.exists("woman")
+    is_women = image_patch.exists("women")
+    is_girl = image_patch.exists("girl")
+    is_girls = image_patch.exists("girls")
+
+    if is_woman or is_women or is_girl or is_girls:
+        result = "yes"
+    else:
+        # Fallback: check if any detected person is female
+        person_patches = image_patch.find("person")
+        found_female = False
+        if len(person_patches) > 0:
+            for person_patch in person_patches:
+                has_female_prop = person_patch.verify_property("person", "female")
+                has_woman_prop = person_patch.verify_property("person", "woman")
+                if has_female_prop or has_woman_prop:
+                    found_female = True
+            if found_female:
+                result = "yes"
+            else:
+                # If no female identified among persons, ask directly
+                result = image_patch.simple_query("Are there any women in this scene?")
+        else:
+            # If no persons detected, ask directly
+            result = image_patch.simple_query("Are there any women in this scene?")
+    return result

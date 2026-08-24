@@ -1,0 +1,47 @@
+# Is the plastic cup to the left or to the right of the person that is wearing a shirt?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Is the plastic cup to the left or to the right of the person that is wearing a shirt?"
+    person_patches = image_patch.find("person")
+
+    if len(person_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        wearing_person = None
+        for person_patch in person_patches:
+            is_wearing_shirt = (person_patch.simple_query("Is the person wearing a shirt?") == "yes")
+            if is_wearing_shirt and wearing_person is None:
+                wearing_person = person_patch
+
+        if wearing_person is None:
+            result = image_patch.simple_query(question)
+        else:
+            cup_patches = image_patch.find("cup")
+            plastic_cup_candidates = ()
+            for cup_patch in cup_patches:
+                if cup_patch.verify_property("cup", "plastic"):
+                    plastic_cup_candidates = plastic_cup_candidates + (cup_patch,)
+
+            if len(plastic_cup_candidates) == 0:
+                plastic_cup_patches = image_patch.find("plastic cup")
+            else:
+                plastic_cup_patches = plastic_cup_candidates
+
+            if len(plastic_cup_patches) == 0:
+                result = image_patch.simple_query(question)
+            else:
+                best_diff = None
+                best_side = None
+                for pcup in plastic_cup_patches:
+                    diff = abs(pcup.horizontal_center - wearing_person.horizontal_center)
+                    if best_diff is None or diff < best_diff:
+                        best_diff = diff
+                        if pcup.horizontal_center < wearing_person.horizontal_center:
+                            best_side = "left"
+                        else:
+                            best_side = "right"
+                if best_side is None:
+                    result = image_patch.simple_query(question)
+                else:
+                    result = best_side
+    return result

@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bus_patches = image_patch.find("bus")
+    # Need at least two buses to determine "the bus to the right of the other bus"
+    if len(bus_patches) < 2:
+        return image_patch.simple_query("How does the bus to the right of the other bus look, purple or white?")
+    # Choose the bus with the greater horizontal center (to the right)
+    buses_sorted = sorted(bus_patches, key=lambda p: p.horizontal_center)
+    right_bus = buses_sorted[-1]
+    return right_bus.best_text_match(["purple", "white"])

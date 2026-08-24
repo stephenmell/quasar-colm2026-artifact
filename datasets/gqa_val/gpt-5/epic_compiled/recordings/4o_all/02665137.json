@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2357229",
+          [
+            0,
+            0,
+            500,
+            326
+          ]
+        ],
+        "What is the water in front of?"
+      ],
+      "The water is in front of a silhouette of a person in a boat, with mountains in the background.",
+      1402479097
+    ]
+  ],
+  "best_text_match": []
+}

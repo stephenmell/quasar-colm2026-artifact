@@ -1,0 +1,33 @@
+# Do you see men to the left of the beverage?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Collect beverage candidates using common synonyms
+    beverage_terms = ("beverage", "drink", "bottle", "cup", "glass", "mug", "can")
+    beverage_patches = ()
+    for term in beverage_terms:
+        term_patches = image_patch.find(term)
+        if len(term_patches) > 0:
+            beverage_patches = beverage_patches + term_patches
+
+    # If no beverage-like object is detected, ask directly
+    if len(beverage_patches) == 0:
+        result = image_patch.simple_query("Do you see men to the left of the beverage?")
+    else:
+        # Look for men using common synonyms
+        man_terms = ("man", "men", "guy", "male")
+        man_patches = ()
+        for term in man_terms:
+            term_patches = image_patch.find(term)
+            if len(term_patches) > 0:
+                man_patches = man_patches + term_patches
+
+        if len(man_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for beverage_patch in beverage_patches:
+                for man_patch in man_patches:
+                    if man_patch.horizontal_center < beverage_patch.horizontal_center:
+                        result = "yes"
+    return result

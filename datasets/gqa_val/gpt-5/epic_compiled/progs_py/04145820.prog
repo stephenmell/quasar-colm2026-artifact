@@ -1,0 +1,19 @@
+# Are there any men to the left of the brown couch?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    couch_patches = image_patch.find("couch")
+
+    if len(couch_patches) == 0:
+        result = image_patch.simple_query("Are there any men to the left of the brown couch?")
+    else:
+        man_patches = image_patch.find("man")
+        if len(man_patches) == 0:
+            result = "no"
+        else:
+            for couch_patch in couch_patches:
+                if couch_patch.verify_property("couch", "brown"):
+                    for man_patch in man_patches:
+                        if man_patch.horizontal_center < couch_patch.horizontal_center:
+                            result = "yes"
+    return result

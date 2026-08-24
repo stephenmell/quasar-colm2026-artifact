@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    hair_patches = image_patch.find("hair")
+    if len(hair_patches) == 0:
+        person_patches = image_patch.find("person")
+        if len(person_patches) == 0:
+            result = image_patch.simple_query("Is the hair blond or brown?")
+        else:
+            max_area = -1
+            chosen_person = None
+            for person_patch in person_patches:
+                area = person_patch.width * person_patch.height
+                if area > max_area:
+                    max_area = area
+                    chosen_person = person_patch
+            if chosen_person is None:
+                result = image_patch.simple_query("Is the hair blond or brown?")
+            else:
+                result = chosen_person.best_text_match(("blond", "brown"))
+    else:
+        max_area = -1
+        chosen_hair = None
+        for hair_patch in hair_patches:
+            area = hair_patch.width * hair_patch.height
+            if area > max_area:
+                max_area = area
+                chosen_hair = hair_patch
+        result = chosen_hair.best_text_match(("blond", "brown"))
+    return result

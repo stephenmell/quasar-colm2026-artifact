@@ -1,0 +1,59 @@
+def execute_command(image) -> str:
+    colors = None
+    compared_any = None
+    house_color = None
+    house_patches = None
+    image_patch = None
+    result = None
+    truck_color = None
+    truck_patches = None
+    image_patch = ImagePatch(image)
+    truck_patches = image_patch.find('truck')
+    house_patches = image_patch.find('house')
+    result = 'no'
+
+    def _if(colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+        result = image_patch.simple_query('Is the color of the truck different than the house?')
+        return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+
+    def _else(colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+        colors = ('white', 'black', 'gray', 'grey', 'red', 'blue', 'green', 'yellow', 'orange', 'brown', 'purple', 'pink', 'gold', 'silver', 'beige', 'tan', 'maroon', 'teal', 'cyan', 'magenta', 'navy', 'violet')
+        compared_any = False
+
+        def _for(truck_patch, colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+            truck_color = truck_patch.best_text_match(colors)
+
+            def _for(house_patch, colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+                house_color = house_patch.best_text_match(colors)
+
+                def _if(colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+                    compared_any = True
+
+                    def _if(colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+                        truck_color = 'gray'
+                        return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+                    colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = if_stmt(_if, None, truck_color == 'grey', (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+
+                    def _if(colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+                        house_color = 'gray'
+                        return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+                    colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = if_stmt(_if, None, house_color == 'grey', (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+
+                    def _if(colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+                        result = 'yes'
+                        return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+                    colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = if_stmt(_if, None, truck_color != house_color, (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+                    return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+                colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = if_stmt(_if, None, and_expr(truck_color, house_color), (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+                return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+            colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = for_stmt(_for, house_patches, (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+            return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+        colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = for_stmt(_for, truck_patches, (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+
+        def _if(colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches):
+            result = image_patch.simple_query('Is the color of the truck different than the house?')
+            return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+        colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = if_stmt(_if, None, not_expr(compared_any), (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+        return (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches)
+    colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches = if_stmt(_if, _else, or_expr(len(truck_patches) == 0, len(house_patches) == 0), (colors, compared_any, house_color, house_patches, image_patch, result, truck_color, truck_patches))
+    return result

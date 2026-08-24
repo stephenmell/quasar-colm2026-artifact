@@ -1,0 +1,5 @@
+{
+  "result": "{'hotel': 'City Hub', 'address': '1-1-1 Nishi-Shinjuku, Shinjuku-ku, Tokyo 160-0023, Japan', 'rating': 4.3, 'minimum_price': 100.0, 'event_created': True, 'event_id': '2'}",
+  "time_ns": 10647795,
+  "utility": true
+}

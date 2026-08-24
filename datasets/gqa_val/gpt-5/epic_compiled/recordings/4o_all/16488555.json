@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2321052",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "device"
+      ],
+      [],
+      10368626847
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2321052",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is there a pillow to the right of the device on the left?"
+      ],
+      "Yes.",
+      1305113305
+    ]
+  ],
+  "best_text_match": []
+}

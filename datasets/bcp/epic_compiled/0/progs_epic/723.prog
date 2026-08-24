@@ -1,0 +1,64 @@
+({2181: 'context',
+  2184: 'llm_query',
+  2195: '.join',
+  2201: 'return_result',
+  2202: '.strip'},
+ ('def',
+  2179,
+  ((),
+   ((('call', (2180,), -1, ()),
+     ('def',
+      2182,
+      ((2190, 2183),
+       ((('prim', 2185, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (2186,), 80, (2185, 2183)),
+         ('prim',
+          2187,
+          '\n'
+          'END_DOCUMENT\n'
+          'Scan the document for an athlete who matches the following '
+          'description (partial matches are acceptable if clearly referring to '
+          'the same person):\n'
+          '- Teenage athlete born in 2004\n'
+          '- Represented a country at a major global sports event held every 4 '
+          'years (e.g., the Olympic Games)\n'
+          '- Set a national record that broke a previous national record which '
+          'had stood for 14 years\n'
+          '- First gained significant attention by representing the country at '
+          'a championship in 2019\n'
+          '- As part of a scholarship for talented athletes, moved abroad to a '
+          'city that is home to one of the largest mosques in Europe (as of '
+          '2019), and that mosque was completed in the early 2000s\n'
+          'If the document mentions such an athlete (even if only some of '
+          'these details are present but clearly refer to the same '
+          'individual), provide a concise extraction with:\n'
+          '- Athlete name\n'
+          '- Country represented\n'
+          '- Sport/event and the 14-year national record detail\n'
+          '- 2019 championship detail\n'
+          '- Scholarship and city moved to; if possible, identify the mosque '
+          'and its completion year\n'
+          'Also include short verbatim quotes from the document that support '
+          'these details. If the document is not relevant, output nothing.'),
+         ('call', (2188,), 80, (2186, 2187)),
+         ('call', (2189,), 2184, (2188,)),
+         ('call', (2191,), -1, (2189,)),
+         ('call', (2192,), 80, (2190, 2191))),
+        (2192,)))),
+     ('call', (2194,), 79, (2181,)),
+     ('call', (2193,), 2194, (2180, 2182)),
+     ('prim',
+      2197,
+      'Below are extractions from documents (some may be empty). Identify the '
+      'athlete that best fits all the clues and answer the question: What '
+      'country did the athlete represent?\n'
+      'Return only the country name, nothing else.\n'
+      '\n'
+      'EXTRACTIONS:\n'),
+     ('prim', 2196, '\n\n'),
+     ('call', (2198,), 2195, (2196, 2193)),
+     ('call', (2199,), 80, (2197, 2198)),
+     ('call', (2200,), 2184, (2199,)),
+     ('call', (2203,), 2202, (2200,)),
+     ('call', (2204,), 2201, (2203,))),
+    (2204,)))))

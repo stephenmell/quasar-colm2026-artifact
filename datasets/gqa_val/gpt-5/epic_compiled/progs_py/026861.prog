@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+    hair_patches = image_patch.find("hair")
+
+    if len(hair_patches) == 0:
+        person_patches = image_patch.find("person")
+        if len(person_patches) == 0:
+            result = image_patch.simple_query("Is the hair brown or blond?")
+        else:
+            result = person_patches[0].best_text_match(("brown", "blond"))
+    else:
+        result = hair_patches[0].best_text_match(("brown", "blond"))
+    return result

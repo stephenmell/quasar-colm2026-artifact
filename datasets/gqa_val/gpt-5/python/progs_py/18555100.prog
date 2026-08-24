@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    floor_lamp_patches = image_patch.find("floor lamp")
+    # If no floor lamp is found, ask directly
+    if len(floor_lamp_patches) == 0:
+        return image_patch.simple_query("Is there a coffee table to the left of the floor lamp that is on the right?")
+    # Choose the floor lamp on the right (rightmost)
+    right_floor_lamp = max(floor_lamp_patches, key=lambda p: p.horizontal_center)
+    # Ensure this floor lamp is actually on the right side of the image
+    if right_floor_lamp.horizontal_center <= image_patch.horizontal_center:
+        return "no"
+    # Look for coffee tables and check if any is to the left of the right floor lamp
+    coffee_table_patches = image_patch.find("coffee table")
+    if len(coffee_table_patches) == 0:
+        return "no"
+    for coffee_table_patch in coffee_table_patches:
+        if coffee_table_patch.horizontal_center < right_floor_lamp.horizontal_center:
+            return "yes"
+    return "no"

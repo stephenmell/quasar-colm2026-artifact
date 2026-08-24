@@ -1,0 +1,29 @@
+# Does the field look grassy and green?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    field_patches = image_patch.find("field")
+
+    if len(field_patches) == 0:
+        result = image_patch.simple_query("Does the field look grassy and green?")
+    else:
+        grassy_and_green = False
+        for field_patch in field_patches:
+            is_grassy = field_patch.verify_property("field", "grassy")
+            is_green = field_patch.verify_property("field", "green")
+            if is_grassy and is_green:
+                grassy_and_green = True
+
+        if grassy_and_green:
+            result = bool_to_yesno(True)
+        else:
+            grass_patches = image_patch.find("grass")
+            any_green_grass = False
+            if len(grass_patches) > 0:
+                for grass_patch in grass_patches:
+                    if grass_patch.verify_property("grass", "green"):
+                        any_green_grass = True
+            if any_green_grass:
+                result = "yes"
+            else:
+                result = image_patch.simple_query("Does the field look grassy and green?")
+    return result

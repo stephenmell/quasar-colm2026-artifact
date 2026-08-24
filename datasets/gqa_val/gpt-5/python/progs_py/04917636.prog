@@ -1,0 +1,14 @@
+# Do you see any tall snow or grass in the picture?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    snow_patches = image_patch.find("snow")
+    for snow_patch in snow_patches:
+        if snow_patch.verify_property("snow", "tall"):
+            return "yes"
+    grass_patches = image_patch.find("grass")
+    for grass_patch in grass_patches:
+        if grass_patch.verify_property("grass", "tall"):
+            return "yes"
+    if len(snow_patches) == 0 and len(grass_patches) == 0:
+        return image_patch.simple_query("Do you see any tall snow or grass in the picture?")
+    return "no"

@@ -1,0 +1,95 @@
+({1420: 'context', 1427: 'llm_query', 1434: '.join', 1442: 'return_result'},
+ ('def',
+  1418,
+  ((),
+   ((('call', (1419,), -1, ()),
+     ('def',
+      1421,
+      ((1429, 1422),
+       ((('prim',
+          1423,
+          'You are given a document. Determine if it contains information '
+          'about an artist matching all or most of these clues.\n'
+          '\n'
+          'Clues to check:\n'
+          '- Born between 1940 and 1944 inclusive ("early 1940s").\n'
+          '- Began playing piano before age 5.\n'
+          '- Began studies at the Paris Conservatoire at age >6 and <11.\n'
+          '- Was a pupil of Alfred Cortot (the pianist famed for his trio with '
+          'violinist Jacques Thibaud and cellist Pablo Casals).\n'
+          '- Performed Mozart’s Concerto for Two Pianos (K.365), between ages '
+          '>9 and <15, with the composer-pianist Wilhelm Kempff (who died May '
+          '23, 1991), at the Théâtre des Champs-Elysées, under a conductor '
+          'born between 1900 and 1911 inclusive.\n'
+          '\n'
+          'If the document mentions any artist(s) that match all or most of '
+          'the clues, provide for each candidate:\n'
+          '- Artist name\n'
+          '- Birth date/year and how it fits the 1940–1944 window\n'
+          '- Evidence that they began piano before age 5 (quote)\n'
+          '- Evidence they began at the Paris Conservatoire age >6 and <11 '
+          '(quote)\n'
+          '- Evidence they studied with Alfred Cortot (quote)\n'
+          '- Evidence of performing Mozart K.365 with Wilhelm Kempff at '
+          'Théâtre des Champs-Elysées and the conductor’s name (quote); '
+          'include any mention of the conductor’s birth year if present\n'
+          '- The artist’s mother’s full name as written in the document (quote '
+          'and extracted name)\n'
+          '- Any other parental information if present (quotes)\n'
+          '\n'
+          'Use this exact format for any matches:\n'
+          'BEGIN_MATCH\n'
+          'Artist: <name>\n'
+          'Birth: <details>\n'
+          'Piano_before_5: <quote or NONE>\n'
+          'Conservatoire_7_to_10: <quote or NONE>\n'
+          'Pupil_of_Cortot: <quote or NONE>\n'
+          'Mozart_K365_with_Kempff_TCE_and_conductor_1900_1911: <quote or '
+          'NONE>\n'
+          'Mother_full_name: <quote and extracted name or NONE>\n'
+          'Other_notes: <any relevant quotes>\n'
+          'END_MATCH\n'
+          '\n'
+          'If no relevant artist is present, reply exactly NO_MATCH.\n'
+          '\n'
+          'Document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1424,), 80, (1423, 1422)),
+         ('prim', 1425, '\nEND_DOCUMENT'),
+         ('call', (1426,), 80, (1424, 1425)),
+         ('call', (1428,), 1427, (1426,)),
+         ('call', (1430,), -1, (1428,)),
+         ('call', (1431,), 80, (1429, 1430))),
+        (1431,)))),
+     ('call', (1433,), 79, (1420,)),
+     ('call', (1432,), 1433, (1419, 1421)),
+     ('prim',
+      1436,
+      'You will be given extracted candidate matches from multiple documents. '
+      'Your task:\n'
+      '1) Identify the single artist that satisfies all the clues:\n'
+      '   - Born 1940–1944 inclusive\n'
+      '   - Began piano before age 5\n'
+      '   - Entered the Paris Conservatoire at age >6 and <11\n'
+      '   - Pupil of Alfred Cortot (from the Thibaud–Casals–Cortot trio)\n'
+      '   - Performed Mozart’s Concerto for Two Pianos (K.365) between ages >9 '
+      'and <15 with Wilhelm Kempff (d. May 23, 1991) at the Théâtre des '
+      'Champs-Elysées, under a conductor born 1900–1911\n'
+      '2) From the provided quotes, extract the artist’s mother’s full name '
+      'exactly as given.\n'
+      "3) Output ONLY the mother's full name and nothing else.\n"
+      '\n'
+      'Here are the candidate matches and quotes from the context:\n'),
+     ('prim', 1435, '\n\n'),
+     ('call', (1437,), 1434, (1435, 1432)),
+     ('call', (1438,), 80, (1436, 1437)),
+     ('prim',
+      1439,
+      '\n'
+      '\n'
+      "Remember: Output only the mother's full name, with exact spelling from "
+      'the quotes.'),
+     ('call', (1440,), 80, (1438, 1439)),
+     ('call', (1441,), 1427, (1440,)),
+     ('call', (1443,), 1442, (1441,))),
+    (1443,)))))

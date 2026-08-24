@@ -1,0 +1,73 @@
+({1185: 'context', 1196: 'llm_query', 1203: '.join', 1216: 'return_result'},
+ ('def',
+  1182,
+  ((),
+   ((('prim',
+      1183,
+      'Identify the historical novel (published before 2015) with these plot '
+      'points: - The protagonist, while in disguise, is noticed by a girl. - '
+      'Later, the protagonist discovers that the girl is being threatened by '
+      'her brother for allowing him to escape. - A sorceress tells the main '
+      'character that she taught his close companion how to cast a spell. - In '
+      'an intense climax, the protagonist reveals the curse to his love '
+      'interest and tries to eliminate it, but it sticks to him. - In the end, '
+      'the protagonist is encouraged to join hands with his love interest.'),
+     ('call', (1184,), -1, ()),
+     ('def',
+      1186,
+      ((1198, 1187),
+       ((('prim', 1188, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (1189,), 80, (1188, 1187)),
+         ('prim',
+          1190,
+          '\n'
+          'END_DOCUMENT\n'
+          'Based on this document alone, list any historical novel(s) '
+          'published before 2015 that match the following description:\n'),
+         ('call', (1192,), 80, (1189, 1190)),
+         ('call', (1193,), 80, (1192, 1183)),
+         ('prim',
+          1194,
+          '\n'
+          'For each candidate, provide:\n'
+          '- Title, author, year\n'
+          '- Exact quotes or close paraphrases from the document that map to '
+          'each listed plot point (if present in the document)\n'
+          '- A brief justification of why this document supports the match\n'
+          'If the document contains no relevant match, answer exactly: NO '
+          'MATCH'),
+         ('call', (1195,), 80, (1193, 1194)),
+         ('call', (1197,), 1196, (1195,)),
+         ('call', (1199,), -1, (1197,)),
+         ('call', (1200,), 80, (1198, 1199))),
+        (1200,)))),
+     ('call', (1202,), 79, (1185,)),
+     ('call', (1201,), 1202, (1184, 1186)),
+     ('prim', 1205, '\n\n--- DOCUMENT ANALYSIS ---\n\n'),
+     ('prim', 1204, '\n\n'),
+     ('call', (1206,), 1203, (1204, 1201)),
+     ('call', (1207,), 80, (1205, 1206)),
+     ('prim',
+      1208,
+      'You are given analyses extracted from a set of documents. Your task is '
+      "to determine the single best answer to the user's query, based strictly "
+      'on these analyses but also using your broader knowledge to reconcile '
+      'references if needed. The query is:\n'),
+     ('call', (1209,), 80, (1208, 1183)),
+     ('prim', 1210, '\n\nAnalyses:\n'),
+     ('call', (1211,), 80, (1209, 1210)),
+     ('call', (1212,), 80, (1211, 1207)),
+     ('prim',
+      1213,
+      '\n'
+      '\n'
+      'Instructions:\n'
+      '- Determine which historical novel (published before 2015) best matches '
+      'all the specified plot points.\n'
+      '- If multiple titles are mentioned, pick the one that most directly and '
+      'completely fits the description.\n'
+      '- Output ONLY the book title, with no author and no additional text.'),
+     ('call', (1214,), 80, (1212, 1213)),
+     ('call', (1215,), 1196, (1214,)),
+     ('call', (1217,), 1216, (1215,))),
+    (1217,)))))

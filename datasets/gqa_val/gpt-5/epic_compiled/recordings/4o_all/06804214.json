@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2409775",
+          [
+            0,
+            0,
+            500,
+            292
+          ]
+        ],
+        "suit"
+      ],
+      [],
+      11721342094
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2409775",
+          [
+            0,
+            0,
+            500,
+            292
+          ]
+        ],
+        "What color does the suit have?"
+      ],
+      "The suit is black.",
+      1420163215
+    ]
+  ],
+  "best_text_match": []
+}

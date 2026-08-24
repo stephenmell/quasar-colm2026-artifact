@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    car_patch = None
+    car_patches = None
+    image_patch = None
+    result = None
+    truck_patches = None
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find('car')
+
+    def _if(car_patch, car_patches, image_patch, result, truck_patches):
+        result = image_patch.simple_query('Do you see any trucks to the right of the car?')
+        return (car_patch, car_patches, image_patch, result, truck_patches)
+
+    def _else(car_patch, car_patches, image_patch, result, truck_patches):
+        car_patch = car_patches[0]
+        truck_patches = image_patch.find('truck')
+
+        def _if(car_patch, car_patches, image_patch, result, truck_patches):
+            result = 'no'
+            return (car_patch, car_patches, image_patch, result, truck_patches)
+
+        def _else(car_patch, car_patches, image_patch, result, truck_patches):
+            result = 'no'
+
+            def _for(truck_patch, car_patch, car_patches, image_patch, result, truck_patches):
+
+                def _if(car_patch, car_patches, image_patch, result, truck_patches):
+                    result = 'yes'
+                    return (car_patch, car_patches, image_patch, result, truck_patches)
+                car_patch, car_patches, image_patch, result, truck_patches = if_stmt(_if, None, truck_patch.horizontal_center > car_patch.horizontal_center, (car_patch, car_patches, image_patch, result, truck_patches))
+                return (car_patch, car_patches, image_patch, result, truck_patches)
+            car_patch, car_patches, image_patch, result, truck_patches = for_stmt(_for, truck_patches, (car_patch, car_patches, image_patch, result, truck_patches))
+            return (car_patch, car_patches, image_patch, result, truck_patches)
+        car_patch, car_patches, image_patch, result, truck_patches = if_stmt(_if, _else, len(truck_patches) == 0, (car_patch, car_patches, image_patch, result, truck_patches))
+        return (car_patch, car_patches, image_patch, result, truck_patches)
+    car_patch, car_patches, image_patch, result, truck_patches = if_stmt(_if, _else, len(car_patches) == 0, (car_patch, car_patches, image_patch, result, truck_patches))
+    return result

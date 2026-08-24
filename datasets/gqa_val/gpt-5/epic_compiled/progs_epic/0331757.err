@@ -1,0 +1,62 @@
+Traceback (most recent call last):
+
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_translate.py", line 96, in main
+    epics_expr, var_names = epics_syntax.from_python_str(py_code, fn_path)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/epics_syntax.py", line 129, in from_python_str
+    epic = translator.translateToEpic(func_ast, filename, lineno)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 264, in translateToEpic
+    rewriter = RewriteEpic(func_ast, func_filename, func_lineno)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 587, in __init__
+    self.epic_ast = self.visit(func_ast)
+                    ^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 1020, in visit
+    return self.visit(node.body[0])
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 895, in visit
+    statements, return_var, local_vars, args = self.build_block(var, node.body, arg_names=arg_names, var_frame=local_vars)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 786, in build_block
+    term = self.visit(node)
+           ^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 1047, in visit
+    else_statements, else_literal_return_var, else_local_vars, _ = self.build_block(else_var, node.orelse, var_frame={}, from_expression=from_expression)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 786, in build_block
+    term = self.visit(node)
+           ^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 1131, in visit
+    loop_statements_, loop_literal_return_var, loop_local_vars, _ = self.build_block(loop_var, node.body, var_frame=loop_local_vars)
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 786, in build_block
+    term = self.visit(node)
+           ^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 925, in visit
+    out_var = self.visit(node.value)
+              ^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 974, in visit
+    elts.append(self.solidify_var(self.visit(elt)))
+                                  ^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 1516, in visit
+    self._ni(node, "Starred (unpacking) expressions are not supported")
+
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 610, in _ni
+    raise NotImplementedError(f"{what} not supported {loc}{extra}")
+
+NotImplementedError: Starred (unpacking) expressions are not supported not supported at line 15, col 28
+AST: Starred -> Starred(value=Name(id='floor_colors', ctx=Load()), ctx=Load())

@@ -1,0 +1,7 @@
+# Is there a bottle or a cup in the photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_bottle = image_patch.exists("bottle")
+    has_cup = image_patch.exists("cup")
+    result = bool_to_yesno(has_bottle or has_cup)
+    return result

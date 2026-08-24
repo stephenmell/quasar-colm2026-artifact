@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    image_patch = None
+    remote_found = None
+    remote_terms = None
+    result = None
+    tv_found = None
+    tv_terms = None
+    image_patch = ImagePatch(image)
+    tv_terms = ('television', 'tv', 'monitor', 'screen')
+    remote_terms = ('remote control', 'remote')
+    tv_found = False
+
+    def _for(term, image_patch, remote_terms, tv_found, tv_terms):
+
+        def _if(image_patch, remote_terms, tv_found, tv_terms):
+            tv_found = True
+            return (image_patch, remote_terms, tv_found, tv_terms)
+        image_patch, remote_terms, tv_found, tv_terms = if_stmt(_if, None, image_patch.exists(term), (image_patch, remote_terms, tv_found, tv_terms))
+        return (image_patch, remote_terms, tv_found, tv_terms)
+    image_patch, remote_terms, tv_found, tv_terms = for_stmt(_for, tv_terms, (image_patch, remote_terms, tv_found, tv_terms))
+    remote_found = False
+
+    def _for(term, image_patch, remote_found, remote_terms, tv_found, tv_terms):
+
+        def _if(image_patch, remote_found, remote_terms, tv_found, tv_terms):
+            remote_found = True
+            return (image_patch, remote_found, remote_terms, tv_found, tv_terms)
+        image_patch, remote_found, remote_terms, tv_found, tv_terms = if_stmt(_if, None, image_patch.exists(term), (image_patch, remote_found, remote_terms, tv_found, tv_terms))
+        return (image_patch, remote_found, remote_terms, tv_found, tv_terms)
+    image_patch, remote_found, remote_terms, tv_found, tv_terms = for_stmt(_for, remote_terms, (image_patch, remote_found, remote_terms, tv_found, tv_terms))
+    result = bool_to_yesno(or_expr(tv_found, remote_found))
+    return result

@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    found_any = None
+    image_patch = None
+    object_names = None
+    patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found_any = False
+    object_names = ('racket', 'tennis racket', 'badminton racket')
+
+    def _for(obj_name, found_any, image_patch, object_names, patches, result):
+
+        def _if(found_any, image_patch, object_names, patches, result):
+            found_any = True
+            patches = image_patch.find(obj_name)
+
+            def _for(patch, found_any, image_patch, object_names, patches, result):
+
+                def _if(found_any, image_patch, object_names, patches, result):
+                    result = 'yes'
+                    return (found_any, image_patch, object_names, patches, result)
+                found_any, image_patch, object_names, patches, result = if_stmt(_if, None, patch.verify_property(obj_name, 'black'), (found_any, image_patch, object_names, patches, result))
+                return (found_any, image_patch, object_names, patches, result)
+            found_any, image_patch, object_names, patches, result = for_stmt(_for, patches, (found_any, image_patch, object_names, patches, result))
+            return (found_any, image_patch, object_names, patches, result)
+        found_any, image_patch, object_names, patches, result = if_stmt(_if, None, image_patch.exists(obj_name), (found_any, image_patch, object_names, patches, result))
+        return (found_any, image_patch, object_names, patches, result)
+    found_any, image_patch, object_names, patches, result = for_stmt(_for, object_names, (found_any, image_patch, object_names, patches, result))
+
+    def _if(found_any, image_patch, object_names, patches, result):
+        result = image_patch.simple_query('Does that racket look black?')
+        return (found_any, image_patch, object_names, patches, result)
+    found_any, image_patch, object_names, patches, result = if_stmt(_if, None, not_expr(found_any), (found_any, image_patch, object_names, patches, result))
+    return result

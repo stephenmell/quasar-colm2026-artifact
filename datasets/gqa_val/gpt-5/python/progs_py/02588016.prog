@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Contains a spatial relation ("to the right of"), so ask directly
+    return image_patch.simple_query("What is the person that is to the right of the wallet doing?")

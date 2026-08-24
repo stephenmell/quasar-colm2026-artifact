@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    coffee_table_patches = None
+    floor_lamp_patches = None
+    image_patch = None
+    is_right_lamp = None
+    result = None
+    image_patch = ImagePatch(image)
+    floor_lamp_patches = image_patch.find('floor lamp')
+
+    def _if(coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result):
+        result = image_patch.simple_query('Is there a coffee table to the left of the floor lamp that is on the right?')
+        return (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result)
+
+    def _else(coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result):
+        result = 'no'
+        coffee_table_patches = image_patch.find('coffee table')
+
+        def _if(coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result):
+
+            def _for(lamp_patch, coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result):
+                is_right_lamp = lamp_patch.horizontal_center > image_patch.horizontal_center
+
+                def _if(coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result):
+
+                    def _for(table_patch, coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result):
+
+                        def _if(coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result):
+                            result = 'yes'
+                            return (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result)
+                        coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result = if_stmt(_if, None, table_patch.horizontal_center < lamp_patch.horizontal_center, (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result))
+                        return (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result)
+                    coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result = for_stmt(_for, coffee_table_patches, (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result))
+                    return (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result)
+                coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result = if_stmt(_if, None, is_right_lamp, (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result))
+                return (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result)
+            coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result = for_stmt(_for, floor_lamp_patches, (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result))
+            return (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result)
+        coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result = if_stmt(_if, None, len(coffee_table_patches) > 0, (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result))
+        return (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result)
+    coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result = if_stmt(_if, _else, len(floor_lamp_patches) == 0, (coffee_table_patches, floor_lamp_patches, image_patch, is_right_lamp, result))
+    return result

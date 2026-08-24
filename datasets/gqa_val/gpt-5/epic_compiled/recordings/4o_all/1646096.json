@@ -1,0 +1,47 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2362245",
+          [
+            0,
+            0,
+            500,
+            500
+          ]
+        ],
+        "bowl"
+      ],
+      [
+        [
+          37,
+          81,
+          442,
+          346
+        ]
+      ],
+      7602650804
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2362245",
+          [
+            37,
+            81,
+            442,
+            346
+          ]
+        ],
+        "What is the food in the bowl?"
+      ],
+      "The food in the bowl is a type of soup, likely featuring rice noodles and broth.",
+      1195316190
+    ]
+  ],
+  "best_text_match": []
+}

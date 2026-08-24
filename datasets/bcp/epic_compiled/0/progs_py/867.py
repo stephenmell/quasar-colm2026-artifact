@@ -1,0 +1,12 @@
+context_info = ()
+for d in context:
+    result = llm_query("Here is a document:\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT\nAccording to the document, extract any information relevant to the following clues. If the document does not answer a specific clue, omit it. For each relevant person mentioned, structure the output as blocks that begin with 'Person:' followed by their name, and then include bullet points with 'Quotes:' and 'Answer:' entries for any clues found.\nClues to look for:\n- Published a monograph with Manchester University Press between 2020 and 2025. Provide the monograph title and year.\n- In a 2019 interview, said that if their book were adapted into a film, they would want the director whose second and third shorts were named after animals to be in the chair. Identify the director and the animal-titled shorts.\n- Won an award for their work in 2016. Name the award and the work (if provided).\n- Attended a literary festival before 2022. Provide the festival and year.\n- Retold the story of a supernatural being for a podcast project in 2019. Provide the being, project, and date.\n- Provide the title (and year) of their first novel, if the document states it.\nBe precise, quote exact lines where relevant, and keep each 'Person' block self-contained.")
+    context_info = context_info + (result,)
+
+joined = ""
+for r in context_info:
+    joined = joined + "\n---\n" + r
+
+query = "Identify the single individual who satisfies ALL of the following: (1) published a monograph with Manchester University Press between 2020 and 2025, (2) in a 2019 interview said that if their book were adapted to film they would want the director whose second and third shorts were named after animals to be in the chair (this refers to Andrea Arnold, whose shorts were Dog [2001] and Wasp [2003]), (3) won an award in 2016, (4) attended a literary festival before 2022, and (5) retold the story of a supernatural being for a podcast project in 2019. Once you identify the individual, provide ONLY the title of their first novel, and nothing else.\n\nHere are contextual extracts to use:\n" + joined + "\nImportant: Output only the title of the first novel, with no extra words, no quotes, no punctuation around it."
+final_answer = llm_query(query)
+return_result(final_answer)

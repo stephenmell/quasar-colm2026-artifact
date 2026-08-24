@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    image_patch = None
+    is_left = None
+    is_purple = None
+    motorbike_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    motorbike_patches = image_patch.find('motorbike')
+
+    def _if(bag_patches, image_patch, is_left, is_purple, motorbike_patches, result):
+        result = image_patch.simple_query('Do you see a bag to the left of the motorbike that looks purple?')
+        return (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result)
+
+    def _else(bag_patches, image_patch, is_left, is_purple, motorbike_patches, result):
+        bag_patches = image_patch.find('bag')
+
+        def _if(bag_patches, image_patch, is_left, is_purple, motorbike_patches, result):
+            result = 'no'
+            return (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result)
+
+        def _else(bag_patches, image_patch, is_left, is_purple, motorbike_patches, result):
+            result = 'no'
+
+            def _for(motorbike_patch, bag_patches, image_patch, is_left, is_purple, motorbike_patches, result):
+
+                def _for(bag_patch, bag_patches, image_patch, is_left, is_purple, motorbike_patches, result):
+                    is_left = bag_patch.horizontal_center < motorbike_patch.horizontal_center
+                    is_purple = bag_patch.verify_property('bag', 'purple')
+
+                    def _if(bag_patches, image_patch, is_left, is_purple, motorbike_patches, result):
+                        result = 'yes'
+                        return (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result)
+                    bag_patches, image_patch, is_left, is_purple, motorbike_patches, result = if_stmt(_if, None, and_expr(is_left, is_purple), (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result))
+                    return (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result)
+                bag_patches, image_patch, is_left, is_purple, motorbike_patches, result = for_stmt(_for, bag_patches, (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result))
+                return (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result)
+            bag_patches, image_patch, is_left, is_purple, motorbike_patches, result = for_stmt(_for, motorbike_patches, (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result))
+            return (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result)
+        bag_patches, image_patch, is_left, is_purple, motorbike_patches, result = if_stmt(_if, _else, len(bag_patches) == 0, (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result))
+        return (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result)
+    bag_patches, image_patch, is_left, is_purple, motorbike_patches, result = if_stmt(_if, _else, len(motorbike_patches) == 0, (bag_patches, image_patch, is_left, is_purple, motorbike_patches, result))
+    return result

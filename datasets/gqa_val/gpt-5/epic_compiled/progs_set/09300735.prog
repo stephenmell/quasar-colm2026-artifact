@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    ball_patches = None
+    image_patch = None
+    purple_votes = None
+    result = None
+    vote = None
+    white_votes = None
+    image_patch = ImagePatch(image)
+    ball_patches = image_patch.find('ball')
+
+    def _if(ball_patches, image_patch, purple_votes, result, vote, white_votes):
+        result = image_patch.best_text_match(('white', 'purple'))
+        return (ball_patches, image_patch, purple_votes, result, vote, white_votes)
+
+    def _else(ball_patches, image_patch, purple_votes, result, vote, white_votes):
+        white_votes = 0
+        purple_votes = 0
+
+        def _for(ball_patch, ball_patches, image_patch, purple_votes, vote, white_votes):
+            vote = ball_patch.best_text_match(('white', 'purple'))
+
+            def _if(ball_patches, image_patch, purple_votes, vote, white_votes):
+                white_votes = white_votes + 1
+                return (ball_patches, image_patch, purple_votes, vote, white_votes)
+
+            def _else(ball_patches, image_patch, purple_votes, vote, white_votes):
+                purple_votes = purple_votes + 1
+                return (ball_patches, image_patch, purple_votes, vote, white_votes)
+            ball_patches, image_patch, purple_votes, vote, white_votes = if_stmt(_if, _else, vote == 'white', (ball_patches, image_patch, purple_votes, vote, white_votes))
+            return (ball_patches, image_patch, purple_votes, vote, white_votes)
+        ball_patches, image_patch, purple_votes, vote, white_votes = for_stmt(_for, ball_patches, (ball_patches, image_patch, purple_votes, vote, white_votes))
+
+        def _if(ball_patches, image_patch, purple_votes, result, vote, white_votes):
+            result = 'white'
+            return (ball_patches, image_patch, purple_votes, result, vote, white_votes)
+
+        def _else(ball_patches, image_patch, purple_votes, result, vote, white_votes):
+            result = 'purple'
+            return (ball_patches, image_patch, purple_votes, result, vote, white_votes)
+        ball_patches, image_patch, purple_votes, result, vote, white_votes = if_stmt(_if, _else, white_votes >= purple_votes, (ball_patches, image_patch, purple_votes, result, vote, white_votes))
+        return (ball_patches, image_patch, purple_votes, result, vote, white_votes)
+    ball_patches, image_patch, purple_votes, result, vote, white_votes = if_stmt(_if, _else, len(ball_patches) == 0, (ball_patches, image_patch, purple_votes, result, vote, white_votes))
+    return result

@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cabinet_patches = image_patch.find("cabinet")
+    if len(cabinet_patches) == 0:
+        result = image_patch.simple_query("Is there a cabinet in the image that is not white?")
+    else:
+        result = "no"
+        for cabinet_patch in cabinet_patches:
+            is_white = cabinet_patch.verify_property("cabinet", "white")
+            if not is_white:
+                result = "yes"
+    return result

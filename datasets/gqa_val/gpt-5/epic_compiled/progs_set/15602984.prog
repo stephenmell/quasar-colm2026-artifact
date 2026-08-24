@@ -1,0 +1,58 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    container_patches = None
+    image_patch = None
+    is_target_animal = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    container_patches = image_patch.find('container')
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, container_patches, image_patch, is_target_animal, result):
+        result = image_patch.simple_query('Is the container to the left of the animal that is lying on the chair?')
+        return (animal_patches, container_patches, image_patch, is_target_animal, result)
+
+    def _else(animal_patches, container_patches, image_patch, is_target_animal, result):
+
+        def _if(animal_patches, container_patches, image_patch, is_target_animal, result):
+
+            def _for(animal_patch, animal_patches, container_patches, image_patch, is_target_animal, result):
+                is_target_animal = False
+
+                def _if(animal_patches, container_patches, image_patch, is_target_animal, result):
+                    is_target_animal = True
+                    return (animal_patches, container_patches, image_patch, is_target_animal, result)
+
+                def _else(animal_patches, container_patches, image_patch, is_target_animal, result):
+
+                    def _if(animal_patches, container_patches, image_patch, is_target_animal, result):
+
+                        def _if(animal_patches, container_patches, image_patch, is_target_animal, result):
+                            is_target_animal = True
+                            return (animal_patches, container_patches, image_patch, is_target_animal, result)
+                        animal_patches, container_patches, image_patch, is_target_animal, result = if_stmt(_if, None, animal_patch.verify_property('animal', 'on the chair'), (animal_patches, container_patches, image_patch, is_target_animal, result))
+                        return (animal_patches, container_patches, image_patch, is_target_animal, result)
+                    animal_patches, container_patches, image_patch, is_target_animal, result = if_stmt(_if, None, animal_patch.verify_property('animal', 'lying'), (animal_patches, container_patches, image_patch, is_target_animal, result))
+                    return (animal_patches, container_patches, image_patch, is_target_animal, result)
+                animal_patches, container_patches, image_patch, is_target_animal, result = if_stmt(_if, _else, animal_patch.verify_property('animal', 'lying on the chair'), (animal_patches, container_patches, image_patch, is_target_animal, result))
+
+                def _if(animal_patches, container_patches, image_patch, is_target_animal, result):
+
+                    def _for(container_patch, animal_patches, container_patches, image_patch, is_target_animal, result):
+
+                        def _if(animal_patches, container_patches, image_patch, is_target_animal, result):
+                            result = 'yes'
+                            return (animal_patches, container_patches, image_patch, is_target_animal, result)
+                        animal_patches, container_patches, image_patch, is_target_animal, result = if_stmt(_if, None, container_patch.horizontal_center < animal_patch.horizontal_center, (animal_patches, container_patches, image_patch, is_target_animal, result))
+                        return (animal_patches, container_patches, image_patch, is_target_animal, result)
+                    animal_patches, container_patches, image_patch, is_target_animal, result = for_stmt(_for, container_patches, (animal_patches, container_patches, image_patch, is_target_animal, result))
+                    return (animal_patches, container_patches, image_patch, is_target_animal, result)
+                animal_patches, container_patches, image_patch, is_target_animal, result = if_stmt(_if, None, is_target_animal, (animal_patches, container_patches, image_patch, is_target_animal, result))
+                return (animal_patches, container_patches, image_patch, is_target_animal, result)
+            animal_patches, container_patches, image_patch, is_target_animal, result = for_stmt(_for, animal_patches, (animal_patches, container_patches, image_patch, is_target_animal, result))
+            return (animal_patches, container_patches, image_patch, is_target_animal, result)
+        animal_patches, container_patches, image_patch, is_target_animal, result = if_stmt(_if, None, len(container_patches) > 0, (animal_patches, container_patches, image_patch, is_target_animal, result))
+        return (animal_patches, container_patches, image_patch, is_target_animal, result)
+    animal_patches, container_patches, image_patch, is_target_animal, result = if_stmt(_if, _else, len(animal_patches) == 0, (animal_patches, container_patches, image_patch, is_target_animal, result))
+    return result

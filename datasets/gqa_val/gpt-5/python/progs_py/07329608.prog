@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    clock_patches = image_patch.find("clock")
+    # Question assumes only one clock patch
+    if len(clock_patches) == 0:
+        # If no clock is found, query the image directly
+        return image_patch.simple_query("Does the clock look orange?")
+    for clock_patch in clock_patches:
+        if clock_patch.verify_property("clock", "orange"):
+            return "yes"
+    return "no"

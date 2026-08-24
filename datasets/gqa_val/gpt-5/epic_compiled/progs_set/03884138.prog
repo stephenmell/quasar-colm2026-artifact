@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    appliance_patches = None
+    image_patch = None
+    result = None
+    right_area_patch = None
+    toaster_patch = None
+    toaster_patches = None
+    image_patch = ImagePatch(image)
+    toaster_patches = image_patch.find('toaster')
+
+    def _if(appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches):
+        result = image_patch.simple_query('Which type of appliance is to the right of the toaster?')
+        return (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches)
+
+    def _else(appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches):
+        toaster_patch = toaster_patches[0]
+        right_area_patch = image_patch.crop(toaster_patch.right, toaster_patch.lower, image_patch.right, toaster_patch.upper)
+        appliance_patches = right_area_patch.find('appliance')
+
+        def _if(appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches):
+            result = right_area_patch.simple_query('Which type of appliance is to the right of the toaster?')
+
+            def _if(appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches):
+                result = right_area_patch.best_text_match(('microwave', 'oven', 'refrigerator', 'stove', 'coffee maker', 'blender'))
+                return (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches)
+            appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches = if_stmt(_if, None, not_expr(result), (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches))
+            return (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches)
+
+        def _else(appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches):
+            result = appliance_patches[0].simple_query('What type of appliance is this?')
+
+            def _if(appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches):
+                result = right_area_patch.simple_query('Which type of appliance is to the right of the toaster?')
+                return (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches)
+            appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches = if_stmt(_if, None, not_expr(result), (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches))
+            return (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches)
+        appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches = if_stmt(_if, _else, len(appliance_patches) == 0, (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches))
+        return (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches)
+    appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches = if_stmt(_if, _else, len(toaster_patches) == 0, (appliance_patches, image_patch, result, right_area_patch, toaster_patch, toaster_patches))
+    return result

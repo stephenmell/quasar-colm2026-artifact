@@ -1,0 +1,7 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pan_patches = image_patch.find("pan")
+    if len(pan_patches) == 0:
+        return image_patch.simple_query("Is this a round pan?")
+    is_round = any(pan_patch.verify_property("pan", "round") for pan_patch in pan_patches)
+    return bool_to_yesno(is_round)

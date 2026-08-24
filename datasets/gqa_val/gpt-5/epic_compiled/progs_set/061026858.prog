@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    dog_patches = None
+    image_patch = None
+    leftmost_dog = None
+    result = None
+    skateboard_patches = None
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find('dog')
+
+    def _if(dog_patches, image_patch, leftmost_dog, result, skateboard_patches):
+        result = image_patch.simple_query('Is the skateboard to the right of the dog on the left?')
+        return (dog_patches, image_patch, leftmost_dog, result, skateboard_patches)
+
+    def _else(dog_patches, image_patch, leftmost_dog, result, skateboard_patches):
+        leftmost_dog = dog_patches[0]
+
+        def _for(dog_patch, dog_patches, image_patch, leftmost_dog):
+
+            def _if(dog_patches, image_patch, leftmost_dog):
+                leftmost_dog = dog_patch
+                return (dog_patches, image_patch, leftmost_dog)
+            dog_patches, image_patch, leftmost_dog = if_stmt(_if, None, dog_patch.horizontal_center < leftmost_dog.horizontal_center, (dog_patches, image_patch, leftmost_dog))
+            return (dog_patches, image_patch, leftmost_dog)
+        dog_patches, image_patch, leftmost_dog = for_stmt(_for, dog_patches, (dog_patches, image_patch, leftmost_dog))
+        skateboard_patches = image_patch.find('skateboard')
+
+        def _if(dog_patches, image_patch, leftmost_dog, result, skateboard_patches):
+            result = 'no'
+            return (dog_patches, image_patch, leftmost_dog, result, skateboard_patches)
+
+        def _else(dog_patches, image_patch, leftmost_dog, result, skateboard_patches):
+            result = 'no'
+
+            def _for(skateboard_patch, dog_patches, image_patch, leftmost_dog, result, skateboard_patches):
+
+                def _if(dog_patches, image_patch, leftmost_dog, result, skateboard_patches):
+                    result = 'yes'
+                    return (dog_patches, image_patch, leftmost_dog, result, skateboard_patches)
+                dog_patches, image_patch, leftmost_dog, result, skateboard_patches = if_stmt(_if, None, skateboard_patch.horizontal_center > leftmost_dog.horizontal_center, (dog_patches, image_patch, leftmost_dog, result, skateboard_patches))
+                return (dog_patches, image_patch, leftmost_dog, result, skateboard_patches)
+            dog_patches, image_patch, leftmost_dog, result, skateboard_patches = for_stmt(_for, skateboard_patches, (dog_patches, image_patch, leftmost_dog, result, skateboard_patches))
+            return (dog_patches, image_patch, leftmost_dog, result, skateboard_patches)
+        dog_patches, image_patch, leftmost_dog, result, skateboard_patches = if_stmt(_if, _else, len(skateboard_patches) == 0, (dog_patches, image_patch, leftmost_dog, result, skateboard_patches))
+        return (dog_patches, image_patch, leftmost_dog, result, skateboard_patches)
+    dog_patches, image_patch, leftmost_dog, result, skateboard_patches = if_stmt(_if, _else, len(dog_patches) == 0, (dog_patches, image_patch, leftmost_dog, result, skateboard_patches))
+    return result

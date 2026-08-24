@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    stove_patches = image_patch.find("stove")
+    # Question assumes only one stove patch
+    if len(stove_patches) == 0:
+        # If no stove is found, query the image directly
+        return image_patch.simple_query("Is the stove on the left side?")
+    # If any stove is on the left half of the image, answer yes
+    for stove_patch in stove_patches:
+        if stove_patch.horizontal_center < image_patch.horizontal_center:
+            return "yes"
+    return "no"

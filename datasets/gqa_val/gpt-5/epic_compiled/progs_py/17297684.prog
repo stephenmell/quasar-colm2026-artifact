@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    person_patches = image_patch.find("person")
+    sky_patches = image_patch.find("sky")
+
+    # Aggregate possible child detections using tuple concatenation
+    child_synonyms = ("child", "kid", "boy", "girl", "children", "kids")
+    children_patches = ()
+    for name in child_synonyms:
+        children_patches = children_patches + image_patch.find(name)
+
+    if len(person_patches) == 0 or len(sky_patches) == 0:
+        result = image_patch.simple_query("Are there children to the right of the people the sky is above?")
+    else:
+        result = "no"
+        for person_patch in person_patches:
+            sky_above = False
+            for sky_patch in sky_patches:
+                overlap_x = (sky_patch.right > person_patch.left) and (sky_patch.left < person_patch.right)
+                if (sky_patch.vertical_center < person_patch.vertical_center) and overlap_x:
+                    sky_above = True
+            if sky_above:
+                for child_patch in children_patches:
+                    if child_patch.horizontal_center > person_patch.horizontal_center:
+                        result = "yes"
+    return result

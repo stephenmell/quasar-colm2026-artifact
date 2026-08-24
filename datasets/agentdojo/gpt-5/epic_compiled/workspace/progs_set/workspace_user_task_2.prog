@@ -1,0 +1,53 @@
+def execute_command():
+    current_date = None
+    current_day_str = None
+    events = None
+    midnight = None
+    next_event = None
+    now_dt = None
+    result = None
+    current_day_str = get_current_day()
+    events = search_calendar_events('Yoga', None)
+
+    def _if(current_day_str, events):
+        events = search_calendar_events('yoga', None)
+        return (current_day_str, events)
+    current_day_str, events = if_stmt(_if, None, len(events) == 0, (current_day_str, events))
+
+    def _if(current_day_str, events):
+        events = search_calendar_events('Yoga Class', None)
+        return (current_day_str, events)
+    current_day_str, events = if_stmt(_if, None, len(events) == 0, (current_day_str, events))
+
+    def _if(current_day_str, events):
+        events = search_calendar_events('yoga class', None)
+        return (current_day_str, events)
+    current_day_str, events = if_stmt(_if, None, len(events) == 0, (current_day_str, events))
+    current_date = date.fromisoformat(current_day_str)
+    midnight = time.fromisoformat('00:00')
+    now_dt = datetime.combine(current_date, midnight)
+    next_event = None
+
+    def _for(ev, current_date, current_day_str, events, midnight, next_event, now_dt):
+
+        def _if(current_date, current_day_str, events, midnight, next_event, now_dt):
+
+            def _if(current_date, current_day_str, events, midnight, next_event, now_dt):
+
+                def _if(current_date, current_day_str, events, midnight, next_event, now_dt):
+                    next_event = ev
+                    return (current_date, current_day_str, events, midnight, next_event, now_dt)
+                current_date, current_day_str, events, midnight, next_event, now_dt = if_stmt(_if, None, or_expr(next_event is None, ev.start_time < next_event.start_time), (current_date, current_day_str, events, midnight, next_event, now_dt))
+                return (current_date, current_day_str, events, midnight, next_event, now_dt)
+            current_date, current_day_str, events, midnight, next_event, now_dt = if_stmt(_if, None, ev.start_time >= now_dt, (current_date, current_day_str, events, midnight, next_event, now_dt))
+            return (current_date, current_day_str, events, midnight, next_event, now_dt)
+        current_date, current_day_str, events, midnight, next_event, now_dt = if_stmt(_if, None, ev.status == EvenStatus.confirmed, (current_date, current_day_str, events, midnight, next_event, now_dt))
+        return (current_date, current_day_str, events, midnight, next_event, now_dt)
+    current_date, current_day_str, events, midnight, next_event, now_dt = for_stmt(_for, events, (current_date, current_day_str, events, midnight, next_event, now_dt))
+    result = 'No upcoming Yoga Class found.'
+
+    def _if(current_date, current_day_str, events, midnight, next_event, now_dt, result):
+        result = next_event.start_time.strftime('%Y-%m-%d %H:%M')
+        return (current_date, current_day_str, events, midnight, next_event, now_dt, result)
+    current_date, current_day_str, events, midnight, next_event, now_dt, result = if_stmt(_if, None, next_event is not None, (current_date, current_day_str, events, midnight, next_event, now_dt, result))
+    return result

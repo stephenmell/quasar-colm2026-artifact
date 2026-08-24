@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find relevant objects
+    car_patches = image_patch.find("car")
+    person_patches = image_patch.find("person")
+
+    # Aggregate possible bag-like objects to improve recall
+    bag_labels = ("bag", "backpack", "handbag", "purse", "shopping bag", "paper bag", "plastic bag", "tote bag", "duffel bag", "suitcase", "briefcase")
+    bag_patches = ()
+    for label in bag_labels:
+        bag_patches = bag_patches + image_patch.find(label)
+
+    # If we cannot find car or person, ask directly
+    if len(car_patches) == 0 or len(person_patches) == 0:
+        result = image_patch.simple_query("Is there any bag to the right of the person that is to the right of the car?")
+    else:
+        # For any person that is to the right of any car, check if a bag is to the right of that person
+        for person_patch in person_patches:
+            is_right_of_any_car = False
+            for car_patch in car_patches:
+                if person_patch.horizontal_center > car_patch.horizontal_center:
+                    is_right_of_any_car = True
+            if is_right_of_any_car:
+                for bag_patch in bag_patches:
+                    if bag_patch.horizontal_center > person_patch.horizontal_center:
+                        result = "yes"
+    return result

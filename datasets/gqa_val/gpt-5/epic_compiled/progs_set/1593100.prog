@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    binder_patches = None
+    comforter_patches = None
+    drawer_patches = None
+    image_patch = None
+    question = None
+    result = None
+    image_patch = ImagePatch(image)
+    question = 'Are there drawers to the right of the comforter that is to the right of the binder?'
+    binder_patches = image_patch.find('binder')
+    comforter_patches = image_patch.find('comforter')
+    drawer_patches = image_patch.find('drawer') + image_patch.find('drawers')
+
+    def _if(binder_patches, comforter_patches, drawer_patches, image_patch, question, result):
+        result = image_patch.simple_query(question)
+        return (binder_patches, comforter_patches, drawer_patches, image_patch, question, result)
+
+    def _else(binder_patches, comforter_patches, drawer_patches, image_patch, question, result):
+        result = 'no'
+
+        def _for(binder_patch, binder_patches, comforter_patches, drawer_patches, image_patch, question, result):
+
+            def _for(comforter_patch, binder_patches, comforter_patches, drawer_patches, image_patch, question, result):
+
+                def _if(binder_patches, comforter_patches, drawer_patches, image_patch, question, result):
+
+                    def _for(drawer_patch, binder_patches, comforter_patches, drawer_patches, image_patch, question, result):
+
+                        def _if(binder_patches, comforter_patches, drawer_patches, image_patch, question, result):
+                            result = 'yes'
+                            return (binder_patches, comforter_patches, drawer_patches, image_patch, question, result)
+                        binder_patches, comforter_patches, drawer_patches, image_patch, question, result = if_stmt(_if, None, drawer_patch.horizontal_center > comforter_patch.horizontal_center, (binder_patches, comforter_patches, drawer_patches, image_patch, question, result))
+                        return (binder_patches, comforter_patches, drawer_patches, image_patch, question, result)
+                    binder_patches, comforter_patches, drawer_patches, image_patch, question, result = for_stmt(_for, drawer_patches, (binder_patches, comforter_patches, drawer_patches, image_patch, question, result))
+                    return (binder_patches, comforter_patches, drawer_patches, image_patch, question, result)
+                binder_patches, comforter_patches, drawer_patches, image_patch, question, result = if_stmt(_if, None, comforter_patch.horizontal_center > binder_patch.horizontal_center, (binder_patches, comforter_patches, drawer_patches, image_patch, question, result))
+                return (binder_patches, comforter_patches, drawer_patches, image_patch, question, result)
+            binder_patches, comforter_patches, drawer_patches, image_patch, question, result = for_stmt(_for, comforter_patches, (binder_patches, comforter_patches, drawer_patches, image_patch, question, result))
+            return (binder_patches, comforter_patches, drawer_patches, image_patch, question, result)
+        binder_patches, comforter_patches, drawer_patches, image_patch, question, result = for_stmt(_for, binder_patches, (binder_patches, comforter_patches, drawer_patches, image_patch, question, result))
+        return (binder_patches, comforter_patches, drawer_patches, image_patch, question, result)
+    binder_patches, comforter_patches, drawer_patches, image_patch, question, result = if_stmt(_if, _else, or_expr(len(binder_patches) == 0, len(comforter_patches) == 0), (binder_patches, comforter_patches, drawer_patches, image_patch, question, result))
+    return result

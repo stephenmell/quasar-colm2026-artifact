@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2403358",
+          [
+            0,
+            0,
+            500,
+            334
+          ]
+        ],
+        "fence"
+      ],
+      [],
+      13394848419
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2403358",
+          [
+            0,
+            0,
+            500,
+            334
+          ]
+        ],
+        "Are there fences in the photograph?"
+      ],
+      "No.",
+      1230878901
+    ]
+  ],
+  "best_text_match": []
+}

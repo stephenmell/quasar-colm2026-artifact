@@ -1,0 +1,80 @@
+def execute_command(image) -> str:
+    bowl_patches = None
+    dx = None
+    glasses_patches = None
+    happy_bowl = None
+    happy_glasses = None
+    image_patch = None
+    kid_patches = None
+    left_of_bowl_kid = None
+    left_of_glasses_kid = None
+    result = None
+    smallest_dx_bowl = None
+    smallest_dx_glasses = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    kid_patches = image_patch.find('kid')
+    bowl_patches = image_patch.find('bowl')
+    glasses_patches = image_patch.find('glasses')
+
+    def _if(bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+        result = image_patch.simple_query('Are the kid to the left of the bowl and the kid to the left of the glasses both happy?')
+        return (bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+
+    def _else(bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+        left_of_bowl_kid = None
+        smallest_dx_bowl = None
+
+        def _for(kid_patch, bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl):
+
+            def _for(bowl_patch, bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl):
+
+                def _if(bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl):
+                    dx = bowl_patch.horizontal_center - kid_patch.horizontal_center
+
+                    def _if(bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl):
+                        smallest_dx_bowl = dx
+                        left_of_bowl_kid = kid_patch
+                        return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl)
+                    bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl = if_stmt(_if, None, or_expr(smallest_dx_bowl is None, dx < smallest_dx_bowl), (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl))
+                    return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl)
+                bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl = if_stmt(_if, None, kid_patch.horizontal_center < bowl_patch.horizontal_center, (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl))
+                return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl)
+            bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl = for_stmt(_for, bowl_patches, (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl))
+            return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl)
+        bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl = for_stmt(_for, kid_patches, (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, result, smallest_dx_bowl))
+        left_of_glasses_kid = None
+        smallest_dx_glasses = None
+
+        def _for(kid_patch, bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+
+            def _for(glasses_patch, bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+
+                def _if(bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+                    dx = glasses_patch.horizontal_center - kid_patch.horizontal_center
+
+                    def _if(bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+                        smallest_dx_glasses = dx
+                        left_of_glasses_kid = kid_patch
+                        return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+                    bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses = if_stmt(_if, None, or_expr(smallest_dx_glasses is None, dx < smallest_dx_glasses), (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses))
+                    return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+                bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses = if_stmt(_if, None, kid_patch.horizontal_center < glasses_patch.horizontal_center, (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses))
+                return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+            bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses = for_stmt(_for, glasses_patches, (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses))
+            return (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+        bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses = for_stmt(_for, kid_patches, (bowl_patches, dx, glasses_patches, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses))
+
+        def _if(bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+            result = image_patch.simple_query('Are the kid to the left of the bowl and the kid to the left of the glasses both happy?')
+            return (bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+
+        def _else(bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses):
+            happy_bowl = left_of_bowl_kid.verify_property('kid', 'happy')
+            happy_glasses = left_of_glasses_kid.verify_property('kid', 'happy')
+            result = bool_to_yesno(and_expr(happy_bowl, happy_glasses))
+            return (bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+        bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses = if_stmt(_if, _else, or_expr(left_of_bowl_kid is None, left_of_glasses_kid is None), (bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses))
+        return (bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses)
+    bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses = if_stmt(_if, _else, or_expr(len(kid_patches) == 0, or_expr(len(bowl_patches) == 0, len(glasses_patches) == 0)), (bowl_patches, dx, glasses_patches, happy_bowl, happy_glasses, image_patch, kid_patches, left_of_bowl_kid, left_of_glasses_kid, result, smallest_dx_bowl, smallest_dx_glasses))
+    return result

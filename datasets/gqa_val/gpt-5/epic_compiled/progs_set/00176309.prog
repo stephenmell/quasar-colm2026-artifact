@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    door_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    door_patches = image_patch.find('door')
+
+    def _if(door_patches, image_patch, result):
+        result = image_patch.simple_query('What was used to make the door, metal or wood?')
+        return (door_patches, image_patch, result)
+
+    def _else(door_patches, image_patch, result):
+        result = door_patches[0].best_text_match(('metal', 'wood'))
+        return (door_patches, image_patch, result)
+    door_patches, image_patch, result = if_stmt(_if, _else, len(door_patches) == 0, (door_patches, image_patch, result))
+    return result

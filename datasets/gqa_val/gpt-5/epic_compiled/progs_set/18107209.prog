@@ -1,0 +1,59 @@
+def execute_command(image) -> str:
+    cabinet_patches = None
+    cabinets_1 = None
+    cabinets_2 = None
+    cabinets_3 = None
+    cabinets_4 = None
+    draperies_1 = None
+    draperies_2 = None
+    draperies_3 = None
+    draperies_4 = None
+    draperies_5 = None
+    draperies_6 = None
+    draperies_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    draperies_1 = image_patch.find('draperies')
+    draperies_2 = image_patch.find('drapery')
+    draperies_3 = image_patch.find('curtains')
+    draperies_4 = image_patch.find('curtain')
+    draperies_5 = image_patch.find('drapes')
+    draperies_6 = image_patch.find('drape')
+    draperies_patches = draperies_1 + draperies_2 + draperies_3 + draperies_4 + draperies_5 + draperies_6
+
+    def _if(cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result):
+        result = image_patch.simple_query('Do you see cabinets to the right of the draperies?')
+        return (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result)
+
+    def _else(cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result):
+        cabinets_1 = image_patch.find('cabinet')
+        cabinets_2 = image_patch.find('cabinets')
+        cabinets_3 = image_patch.find('cupboard')
+        cabinets_4 = image_patch.find('cupboards')
+        cabinet_patches = cabinets_1 + cabinets_2 + cabinets_3 + cabinets_4
+
+        def _if(cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result):
+            result = 'no'
+            return (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result)
+
+        def _else(cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result):
+            result = 'no'
+
+            def _for(cabinet_patch, cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result):
+
+                def _for(drapery_patch, cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result):
+
+                    def _if(cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result):
+                        result = 'yes'
+                        return (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result)
+                    cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result = if_stmt(_if, None, cabinet_patch.horizontal_center > drapery_patch.horizontal_center, (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result))
+                    return (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result)
+                cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result = for_stmt(_for, draperies_patches, (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result))
+                return (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result)
+            cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result = for_stmt(_for, cabinet_patches, (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result))
+            return (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result)
+        cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result = if_stmt(_if, _else, len(cabinet_patches) == 0, (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result))
+        return (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result)
+    cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result = if_stmt(_if, _else, len(draperies_patches) == 0, (cabinet_patches, cabinets_1, cabinets_2, cabinets_3, cabinets_4, draperies_1, draperies_2, draperies_3, draperies_4, draperies_5, draperies_6, draperies_patches, image_patch, result))
+    return result

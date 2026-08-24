@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    hair_patches = None
+    image_patch = None
+    is_blond = None
+    result = None
+    image_patch = ImagePatch(image)
+    hair_patches = image_patch.find('hair')
+
+    def _if(hair_patches, image_patch, is_blond, result):
+        result = image_patch.simple_query('Does the hair look blond?')
+        return (hair_patches, image_patch, is_blond, result)
+
+    def _else(hair_patches, image_patch, is_blond, result):
+        is_blond = False
+
+        def _for(hair_patch, hair_patches, image_patch, is_blond):
+
+            def _if(hair_patches, image_patch, is_blond):
+                is_blond = True
+                return (hair_patches, image_patch, is_blond)
+            hair_patches, image_patch, is_blond = if_stmt(_if, None, hair_patch.verify_property('hair', 'blond'), (hair_patches, image_patch, is_blond))
+            return (hair_patches, image_patch, is_blond)
+        hair_patches, image_patch, is_blond = for_stmt(_for, hair_patches, (hair_patches, image_patch, is_blond))
+        result = bool_to_yesno(is_blond)
+        return (hair_patches, image_patch, is_blond, result)
+    hair_patches, image_patch, is_blond, result = if_stmt(_if, _else, len(hair_patches) == 0, (hair_patches, image_patch, is_blond, result))
+    return result

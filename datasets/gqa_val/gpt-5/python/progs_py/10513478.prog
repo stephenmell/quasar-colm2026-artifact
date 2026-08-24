@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    statue_patches = image_patch.find("statue")
+    # Question assumes at least one statue
+    if len(statue_patches) == 0:
+        # If no statue is found, query the image directly
+        return image_patch.simple_query("Do you see an elephant to the right of the statue?")
+    elephant_patches = image_patch.find("elephant")
+    if len(elephant_patches) == 0:
+        return "no"
+    for statue_patch in statue_patches:
+        for elephant_patch in elephant_patches:
+            if elephant_patch.horizontal_center > statue_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Do you see catchers to the right of the person that is wearing a mask?")
+    # Collect persons wearing a mask
+    masked_persons = []
+    for person_patch in person_patches:
+        if person_patch.simple_query("Is the person wearing a mask?") == "yes":
+            masked_persons.append(person_patch)
+    # If no masked person is found, ask directly
+    if len(masked_persons) == 0:
+        return image_patch.simple_query("Do you see catchers to the right of the person that is wearing a mask?")
+    catcher_patches = image_patch.find("catcher")
+    if len(catcher_patches) == 0:
+        return "no"
+    # Check if any catcher is to the right of any masked person
+    for masked_person in masked_persons:
+        for catcher_patch in catcher_patches:
+            if catcher_patch.horizontal_center > masked_person.horizontal_center:
+                return "yes"
+    return "no"

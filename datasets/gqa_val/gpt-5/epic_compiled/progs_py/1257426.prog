@@ -1,0 +1,16 @@
+# Is the green grass short or tall?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    grass_patches = image_patch.find("grass")
+    if len(grass_patches) == 0:
+        result = image_patch.simple_query("Is the green grass short or tall?")
+    else:
+        selected_patch = None
+        for grass_patch in grass_patches:
+            if grass_patch.verify_property("grass", "green"):
+                if selected_patch is None:
+                    selected_patch = grass_patch
+        if not selected_patch:
+            selected_patch = grass_patches[0]
+        result = selected_patch.best_text_match(("short", "tall"))
+    return result

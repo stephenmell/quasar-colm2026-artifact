@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2395250",
+          [
+            0,
+            0,
+            411,
+            500
+          ]
+        ],
+        "Is it an outdoors scene?"
+      ],
+      "Yes.",
+      687396740
+    ]
+  ],
+  "best_text_match": []
+}

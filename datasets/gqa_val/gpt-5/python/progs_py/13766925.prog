@@ -1,0 +1,5 @@
+# Which kind of animal is on the desk?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Contains a spatial relation ("on the"), so ask directly
+    return image_patch.simple_query("Which kind of animal is on the desk?")

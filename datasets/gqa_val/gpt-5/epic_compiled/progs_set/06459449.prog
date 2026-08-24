@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    bus_patches = None
+    image_patch = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(bus_patches, image_patch, result, woman_patches):
+        result = image_patch.simple_query('Is the woman to the right of a bus?')
+        return (bus_patches, image_patch, result, woman_patches)
+
+    def _else(bus_patches, image_patch, result, woman_patches):
+        bus_patches = image_patch.find('bus')
+
+        def _if(bus_patches, image_patch, result, woman_patches):
+            result = 'no'
+            return (bus_patches, image_patch, result, woman_patches)
+
+        def _else(bus_patches, image_patch, result, woman_patches):
+            result = 'no'
+
+            def _for(woman_patch, bus_patches, image_patch, result, woman_patches):
+
+                def _for(bus_patch, bus_patches, image_patch, result, woman_patches):
+
+                    def _if(bus_patches, image_patch, result, woman_patches):
+                        result = 'yes'
+                        return (bus_patches, image_patch, result, woman_patches)
+                    bus_patches, image_patch, result, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center > bus_patch.horizontal_center, (bus_patches, image_patch, result, woman_patches))
+                    return (bus_patches, image_patch, result, woman_patches)
+                bus_patches, image_patch, result, woman_patches = for_stmt(_for, bus_patches, (bus_patches, image_patch, result, woman_patches))
+                return (bus_patches, image_patch, result, woman_patches)
+            bus_patches, image_patch, result, woman_patches = for_stmt(_for, woman_patches, (bus_patches, image_patch, result, woman_patches))
+            return (bus_patches, image_patch, result, woman_patches)
+        bus_patches, image_patch, result, woman_patches = if_stmt(_if, _else, len(bus_patches) == 0, (bus_patches, image_patch, result, woman_patches))
+        return (bus_patches, image_patch, result, woman_patches)
+    bus_patches, image_patch, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (bus_patches, image_patch, result, woman_patches))
+    return result

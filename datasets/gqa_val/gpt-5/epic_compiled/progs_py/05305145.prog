@@ -1,0 +1,28 @@
+# Is it a bathroom or a kitchen?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bathroom_indicators = ("toilet", "toilet seat", "bathtub", "shower", "shower head", "shower curtain", "bathroom sink", "toilet paper", "towel rack", "towel", "soap dispenser", "mirror", "bathroom")
+    kitchen_indicators = ("stove", "oven", "range", "cooktop", "microwave", "refrigerator", "fridge", "dishwasher", "kitchen sink", "sink faucet", "range hood", "vent hood", "cabinet", "countertop", "pot", "pan", "kitchen")
+
+    bathroom_score = 0
+    for name in bathroom_indicators:
+        if image_patch.exists(name):
+            bathroom_score = bathroom_score + 1
+
+    kitchen_score = 0
+    for name in kitchen_indicators:
+        if image_patch.exists(name):
+            kitchen_score = kitchen_score + 1
+
+    result = ""
+    if bathroom_score == 0 and kitchen_score == 0:
+        result = image_patch.simple_query("Is it a bathroom or a kitchen?")
+    else:
+        if bathroom_score > kitchen_score:
+            result = "bathroom"
+        else:
+            if kitchen_score > bathroom_score:
+                result = "kitchen"
+            else:
+                result = image_patch.best_text_match(("bathroom", "kitchen"))
+    return result

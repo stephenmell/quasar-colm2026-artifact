@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    car_patches = None
+    image_patch = None
+    is_white = None
+    result = None
+    white_car_patch = None
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find('car')
+    result = None
+    white_car_patch = None
+
+    def _if(car_patches, image_patch, is_white, result, white_car_patch):
+        result = image_patch.simple_query('On which side of the image is the white car?')
+        return (car_patches, image_patch, is_white, result, white_car_patch)
+
+    def _else(car_patches, image_patch, is_white, result, white_car_patch):
+
+        def _for(car_patch, car_patches, image_patch, is_white, result, white_car_patch):
+            is_white = car_patch.verify_property('car', 'white')
+
+            def _if(car_patches, image_patch, is_white, result, white_car_patch):
+                white_car_patch = car_patch
+                return (car_patches, image_patch, is_white, result, white_car_patch)
+            car_patches, image_patch, is_white, result, white_car_patch = if_stmt(_if, None, and_expr(is_white, white_car_patch is None), (car_patches, image_patch, is_white, result, white_car_patch))
+            return (car_patches, image_patch, is_white, result, white_car_patch)
+        car_patches, image_patch, is_white, result, white_car_patch = for_stmt(_for, car_patches, (car_patches, image_patch, is_white, result, white_car_patch))
+
+        def _if(car_patches, image_patch, is_white, result, white_car_patch):
+            result = image_patch.simple_query('On which side of the image is the white car?')
+            return (car_patches, image_patch, is_white, result, white_car_patch)
+
+        def _else(car_patches, image_patch, is_white, result, white_car_patch):
+
+            def _if(car_patches, image_patch, is_white, result, white_car_patch):
+                result = 'left'
+                return (car_patches, image_patch, is_white, result, white_car_patch)
+
+            def _else(car_patches, image_patch, is_white, result, white_car_patch):
+                result = 'right'
+                return (car_patches, image_patch, is_white, result, white_car_patch)
+            car_patches, image_patch, is_white, result, white_car_patch = if_stmt(_if, _else, white_car_patch.horizontal_center < image_patch.horizontal_center, (car_patches, image_patch, is_white, result, white_car_patch))
+            return (car_patches, image_patch, is_white, result, white_car_patch)
+        car_patches, image_patch, is_white, result, white_car_patch = if_stmt(_if, _else, white_car_patch is None, (car_patches, image_patch, is_white, result, white_car_patch))
+        return (car_patches, image_patch, is_white, result, white_car_patch)
+    car_patches, image_patch, is_white, result, white_car_patch = if_stmt(_if, _else, len(car_patches) == 0, (car_patches, image_patch, is_white, result, white_car_patch))
+    return result

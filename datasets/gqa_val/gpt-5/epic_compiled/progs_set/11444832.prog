@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_silver = None
+    mirror_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    mirror_patches = image_patch.find('mirror')
+
+    def _if(image_patch, is_silver, mirror_patches, result):
+        result = image_patch.simple_query('Do you see any mirrors that are not silver?')
+        return (image_patch, is_silver, mirror_patches, result)
+
+    def _else(image_patch, is_silver, mirror_patches, result):
+        result = 'no'
+
+        def _for(mirror_patch, image_patch, is_silver, mirror_patches, result):
+            is_silver = mirror_patch.verify_property('mirror', 'silver')
+
+            def _if(image_patch, is_silver, mirror_patches, result):
+                result = 'yes'
+                return (image_patch, is_silver, mirror_patches, result)
+            image_patch, is_silver, mirror_patches, result = if_stmt(_if, None, not_expr(is_silver), (image_patch, is_silver, mirror_patches, result))
+            return (image_patch, is_silver, mirror_patches, result)
+        image_patch, is_silver, mirror_patches, result = for_stmt(_for, mirror_patches, (image_patch, is_silver, mirror_patches, result))
+        return (image_patch, is_silver, mirror_patches, result)
+    image_patch, is_silver, mirror_patches, result = if_stmt(_if, _else, len(mirror_patches) == 0, (image_patch, is_silver, mirror_patches, result))
+    return result

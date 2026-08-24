@@ -1,0 +1,65 @@
+def execute_command(image) -> str:
+    boat_patches = None
+    car_exists = None
+    image_patch = None
+    left = None
+    lower = None
+    margin_h = None
+    margin_w = None
+    neighborhood_patch = None
+    result = None
+    right = None
+    upper = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    boat_patches = image_patch.find('boat')
+
+    def _if(boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper):
+        result = image_patch.simple_query('Are there any cars next to the boat?')
+        return (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper)
+
+    def _else(boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper):
+        car_exists = image_patch.exists('car')
+
+        def _if(boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper):
+
+            def _for(boat_patch, boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper):
+                margin_w = boat_patch.width // 2
+                margin_h = boat_patch.height // 2
+                left = boat_patch.left - margin_w
+
+                def _if(boat_patches, car_exists, image_patch, left, margin_h, margin_w, result):
+                    left = 0
+                    return (boat_patches, car_exists, image_patch, left, margin_h, margin_w, result)
+                boat_patches, car_exists, image_patch, left, margin_h, margin_w, result = if_stmt(_if, None, left < 0, (boat_patches, car_exists, image_patch, left, margin_h, margin_w, result))
+                right = boat_patch.right + margin_w
+
+                def _if(boat_patches, car_exists, image_patch, left, margin_h, margin_w, result, right):
+                    right = image_patch.right
+                    return (boat_patches, car_exists, image_patch, left, margin_h, margin_w, result, right)
+                boat_patches, car_exists, image_patch, left, margin_h, margin_w, result, right = if_stmt(_if, None, right > image_patch.right, (boat_patches, car_exists, image_patch, left, margin_h, margin_w, result, right))
+                lower = boat_patch.lower - margin_h
+
+                def _if(boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right):
+                    lower = 0
+                    return (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right)
+                boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right = if_stmt(_if, None, lower < 0, (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right))
+                upper = boat_patch.upper + margin_h
+
+                def _if(boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right, upper):
+                    upper = image_patch.upper
+                    return (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right, upper)
+                boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right, upper = if_stmt(_if, None, upper > image_patch.upper, (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, result, right, upper))
+                neighborhood_patch = image_patch.crop(left, lower, right, upper)
+
+                def _if(boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper):
+                    result = 'yes'
+                    return (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper)
+                boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper = if_stmt(_if, None, neighborhood_patch.exists('car'), (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper))
+                return (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper)
+            boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper = for_stmt(_for, boat_patches, (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper))
+            return (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper)
+        boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper = if_stmt(_if, None, car_exists, (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper))
+        return (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper)
+    boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper = if_stmt(_if, _else, len(boat_patches) == 0, (boat_patches, car_exists, image_patch, left, lower, margin_h, margin_w, neighborhood_patch, result, right, upper))
+    return result

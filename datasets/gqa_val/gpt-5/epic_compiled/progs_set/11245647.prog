@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    clothing_names = None
+    clothing_patches = None
+    image_patch = None
+    patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    clothing_patches = image_patch.find('clothing')
+
+    def _if(clothing_patches, image_patch, result):
+
+        def _for(clothing_patch, clothing_patches, image_patch, result):
+
+            def _if(clothing_patches, image_patch, result):
+
+                def _if(clothing_patches, image_patch, result):
+                    result = clothing_patch.simple_query('What is the black clothing item called?')
+                    return (clothing_patches, image_patch, result)
+                clothing_patches, image_patch, result = if_stmt(_if, None, not_expr(result), (clothing_patches, image_patch, result))
+                return (clothing_patches, image_patch, result)
+            clothing_patches, image_patch, result = if_stmt(_if, None, clothing_patch.verify_property('clothing', 'black'), (clothing_patches, image_patch, result))
+            return (clothing_patches, image_patch, result)
+        clothing_patches, image_patch, result = for_stmt(_for, clothing_patches, (clothing_patches, image_patch, result))
+        return (clothing_patches, image_patch, result)
+    clothing_patches, image_patch, result = if_stmt(_if, None, len(clothing_patches) > 0, (clothing_patches, image_patch, result))
+
+    def _if(clothing_names, clothing_patches, image_patch, patches, result):
+        clothing_names = ('shirt', 't-shirt', 'tee', 'jacket', 'coat', 'hoodie', 'sweater', 'dress', 'skirt', 'pants', 'jeans', 'shorts', 'trousers', 'suit', 'blazer', 'vest', 'cardigan', 'tank top', 'top', 'blouse', 'hat', 'cap', 'beanie', 'scarf', 'tie', 'glove', 'gloves', 'sock', 'socks', 'shoe', 'shoes', 'boot', 'boots', 'sandal', 'sandals', 'sneaker', 'sneakers')
+
+        def _for(name, clothing_names, clothing_patches, image_patch, patches, result):
+            patches = image_patch.find(name)
+
+            def _for(p, clothing_names, clothing_patches, image_patch, patches, result):
+
+                def _if(clothing_names, clothing_patches, image_patch, patches, result):
+
+                    def _if(clothing_names, clothing_patches, image_patch, patches, result):
+                        result = p.simple_query('What is the black clothing item called?')
+                        return (clothing_names, clothing_patches, image_patch, patches, result)
+                    clothing_names, clothing_patches, image_patch, patches, result = if_stmt(_if, None, not_expr(result), (clothing_names, clothing_patches, image_patch, patches, result))
+                    return (clothing_names, clothing_patches, image_patch, patches, result)
+                clothing_names, clothing_patches, image_patch, patches, result = if_stmt(_if, None, p.verify_property(name, 'black'), (clothing_names, clothing_patches, image_patch, patches, result))
+                return (clothing_names, clothing_patches, image_patch, patches, result)
+            clothing_names, clothing_patches, image_patch, patches, result = for_stmt(_for, patches, (clothing_names, clothing_patches, image_patch, patches, result))
+            return (clothing_names, clothing_patches, image_patch, patches, result)
+        clothing_names, clothing_patches, image_patch, patches, result = for_stmt(_for, clothing_names, (clothing_names, clothing_patches, image_patch, patches, result))
+        return (clothing_names, clothing_patches, image_patch, patches, result)
+    clothing_names, clothing_patches, image_patch, patches, result = if_stmt(_if, None, not_expr(result), (clothing_names, clothing_patches, image_patch, patches, result))
+
+    def _if(clothing_names, clothing_patches, image_patch, patches, result):
+        result = image_patch.simple_query('What is the black clothing item called?')
+        return (clothing_names, clothing_patches, image_patch, patches, result)
+    clothing_names, clothing_patches, image_patch, patches, result = if_stmt(_if, None, not_expr(result), (clothing_names, clothing_patches, image_patch, patches, result))
+    return result

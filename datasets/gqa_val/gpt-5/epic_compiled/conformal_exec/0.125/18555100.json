@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, there is a coffee table to the left of the floor lamp.",
+      "no",
+      "yes",
+      "No, there is not a coffee table to the left of the floor lamp."
+    ]
+  },
+  "time_ns": 14929074624
+}

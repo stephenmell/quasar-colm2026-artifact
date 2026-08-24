@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_bed = None
+    is_table = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_table = image_patch.exists('table')
+    is_bed = image_patch.exists('bed')
+    result = bool_to_yesno(and_expr(is_table, is_bed))
+    return result

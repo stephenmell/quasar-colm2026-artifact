@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    door_patches = None
+    image_patch = None
+    is_large = None
+    is_open = None
+    large_open_found = None
+    open_found = None
+    question = None
+    result = None
+    image_patch = ImagePatch(image)
+    question = 'Does the open door appear to be large?'
+    door_patches = image_patch.find('door')
+    result = 'no'
+
+    def _if(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+        result = image_patch.simple_query(question)
+        return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+
+    def _else(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+        open_found = False
+        large_open_found = False
+
+        def _for(door_patch, door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+            is_open = door_patch.verify_property('door', 'open')
+
+            def _if(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+                open_found = True
+                is_large = door_patch.verify_property('door', 'large')
+
+                def _if(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+                    large_open_found = True
+                    return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+                door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result = if_stmt(_if, None, is_large, (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result))
+                return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+            door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result = if_stmt(_if, None, is_open, (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result))
+            return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+        door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result = for_stmt(_for, door_patches, (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result))
+
+        def _if(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+            result = 'yes'
+            return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+
+        def _else(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+
+            def _if(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+                result = 'no'
+                return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+
+            def _else(door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result):
+                result = 'no'
+                return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+            door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result = if_stmt(_if, _else, open_found, (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result))
+            return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+        door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result = if_stmt(_if, _else, large_open_found, (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result))
+        return (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result)
+    door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result = if_stmt(_if, _else, len(door_patches) == 0, (door_patches, image_patch, is_large, is_open, large_open_found, open_found, question, result))
+    return result

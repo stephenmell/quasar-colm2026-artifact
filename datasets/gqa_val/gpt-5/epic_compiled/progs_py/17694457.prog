@@ -1,0 +1,24 @@
+# Is the pillow to the right of the nightstand brown or white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    nightstand_patches_primary = image_patch.find("nightstand")
+    nightstand_patches_alt = image_patch.find("night stand")
+    nightstand_patches = nightstand_patches_primary + nightstand_patches_alt
+    pillow_patches = image_patch.find("pillow")
+
+    result = None
+    if len(nightstand_patches) == 0 or len(pillow_patches) == 0:
+        result = image_patch.simple_query("Is the pillow to the right of the nightstand brown or white?")
+    else:
+        found_color = None
+        for nightstand_patch in nightstand_patches:
+            for pillow_patch in pillow_patches:
+                is_right = pillow_patch.horizontal_center > nightstand_patch.horizontal_center
+                if is_right:
+                    if not found_color:
+                        found_color = pillow_patch.best_text_match(("brown", "white"))
+        if not found_color:
+            result = image_patch.simple_query("Is the pillow to the right of the nightstand brown or white?")
+        else:
+            result = found_color
+    return result

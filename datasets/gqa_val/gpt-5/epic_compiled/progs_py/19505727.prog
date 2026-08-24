@@ -1,0 +1,24 @@
+# Is the man to the right of the tennis racket wearing a shirt?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find the tennis racket (try common variants)
+    racket_patches = image_patch.find("tennis racket")
+    if len(racket_patches) == 0:
+        racket_patches = image_patch.find("racket")
+
+    if len(racket_patches) == 0:
+        # If no racket is found, ask directly
+        result = image_patch.simple_query("Is the man to the right of the tennis racket wearing a shirt?")
+    else:
+        # For each racket, look to its right for a man and check if he is wearing a shirt
+        for racket_patch in racket_patches:
+            right_area_patch = image_patch.crop(racket_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            man_patches = right_area_patch.find("man")
+            if len(man_patches) > 0:
+                for man_patch in man_patches:
+                    is_wearing_shirt = (man_patch.simple_query("Is the man wearing a shirt?") == "yes")
+                    if is_wearing_shirt:
+                        result = "yes"
+    return result

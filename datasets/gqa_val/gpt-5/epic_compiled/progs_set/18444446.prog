@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_stroller = None
+    has_umbrella = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_stroller = image_patch.exists('stroller')
+    has_umbrella = image_patch.exists('umbrella')
+    result = bool_to_yesno(and_expr(has_stroller, has_umbrella))
+    return result

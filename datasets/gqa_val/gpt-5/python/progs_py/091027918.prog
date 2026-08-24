@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find small food
+    food_patches = image_patch.find("food")
+    if len(food_patches) == 0:
+        return image_patch.simple_query("Is the small food to the left of the woman that is wearing a coat?")
+    small_food_patches = []
+    for food_patch in food_patches:
+        if food_patch.verify_property("food", "small") or (food_patch.simple_query("Is the food small?") == "yes"):
+            small_food_patches.append(food_patch)
+    if len(small_food_patches) == 0:
+        return "no"
+
+    # Find woman wearing a coat
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        return image_patch.simple_query("Is the small food to the left of the woman that is wearing a coat?")
+    coat_women = []
+    for woman_patch in woman_patches:
+        if woman_patch.verify_property("woman", "wearing a coat") or (woman_patch.simple_query("Is the woman wearing a coat?") == "yes"):
+            coat_women.append(woman_patch)
+    if len(coat_women) == 0:
+        return "no"
+
+    # Check left-of relation
+    for food_patch in small_food_patches:
+        for woman_patch in coat_women:
+            if food_patch.horizontal_center < woman_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,85 @@
+({314: 'context', 317: 'llm_query', 325: 'str', 349: 'return_result'},
+ ('def',
+  311,
+  ((),
+   ((('prim', 312, ''),
+     ('prim', 313, 0),
+     ('def',
+      315,
+      ((340, 316),
+       ((('unpack', (323, 326), 340),
+         ('prim',
+          318,
+          'You are given one document. Extract only if relevant to this '
+          'composite query. Be concise.\n'
+          '\n'
+          'Composite query (the same person must satisfy all constraints):\n'
+          '- Male immigrant to the United States between 1891 and 1899 '
+          '(exclusive bounds of 1890 and 1900).\n'
+          '- Returned to his home country to get married between 1916 and '
+          '1924.\n'
+          '- Was a farmer and a hotelier in Washington state (USA).\n'
+          '- A significant event in his life occurred at a wedding in a hotel '
+          'between 1940 and 1944.\n'
+          '- His name appeared on a historic list in Montana prior to 2023, '
+          'even though his home was not in Montana.\n'
+          '- A game belonging to his family was in a museum as of 2021.\n'
+          '\n'
+          'From the document, identify any candidate(s) who match all or part '
+          'of the above. For each candidate found, provide:\n'
+          '- Person: full name\n'
+          '- Spouse: first name (if given)\n'
+          '- Immigration year(s) evidence (quote)\n'
+          '- Marriage/return-to-home-country timing evidence (quote)\n'
+          '- Occupations and Washington location evidence (quote)\n'
+          '- Wedding-in-hotel significant event 1940–1944 evidence (quote)\n'
+          '- Historic list in Montana evidence (quote; name the list if '
+          'possible)\n'
+          '- Museum artifact (family game) evidence (quote; name the museum if '
+          'possible)\n'
+          'If the document is irrelevant, answer: NONE\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (319,), 80, (318, 316)),
+         ('prim', 320, '\nEND_DOCUMENT'),
+         ('call', (321,), 80, (319, 320)),
+         ('call', (322,), 317, (321,)),
+         ('prim', 324, 'DOC '),
+         ('call', (327,), 80, (323, 324)),
+         ('call', (328,), 325, (326,)),
+         ('call', (329,), 80, (327, 328)),
+         ('prim', 330, ' EXTRACT:\n'),
+         ('call', (331,), 80, (329, 330)),
+         ('call', (332,), 80, (331, 322)),
+         ('prim', 333, '\n'),
+         ('call', (334,), 80, (332, 333)),
+         ('prim', 335, 1),
+         ('call', (336,), 80, (326, 335)),
+         ('pack', 341, (334, 336))),
+        (341,)))),
+     ('pack', 342, (312, 313)),
+     ('call', (343,), 79, (314,)),
+     ('call', (339,), 343, (342, 315)),
+     ('unpack', (337, 338), 339),
+     ('prim',
+      344,
+      'You will be given extractions from multiple documents. Your task: '
+      'identify the single person who satisfies ALL of these constraints:\n'
+      '- Immigrated to the U.S. between 1891 and 1899\n'
+      '- Returned to home country to marry between 1916 and 1924\n'
+      '- Was a farmer and a hotelier in Washington state\n'
+      '- Had a significant event at a wedding in a hotel between 1940 and '
+      '1944\n'
+      '- His name appeared on a historic list in Montana before 2023, though '
+      'he did not live there\n'
+      '- A game belonging to his family was in a museum as of 2021\n'
+      'Then output ONLY the first name of his wife. Output a single word: the '
+      'first name only, no punctuation or extras.\n'
+      '\n'
+      'Here are the document-level extractions:\n'),
+     ('call', (345,), 80, (344, 337)),
+     ('prim', 346, "\nAnswer with the wife's first name only."),
+     ('call', (347,), 80, (345, 346)),
+     ('call', (348,), 317, (347,)),
+     ('call', (350,), 349, (348,))),
+    (350,)))))

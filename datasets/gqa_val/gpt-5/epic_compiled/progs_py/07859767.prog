@@ -1,0 +1,29 @@
+# Does the blue vehicle look small and long?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Consider multiple possible vehicle categories
+    object_types = ("vehicle", "car", "truck", "bus", "van", "suv", "motorcycle", "bicycle", "train")
+    found_any_vehicle = False
+    found_blue_small_long = False
+
+    for obj_type in object_types:
+        patches = image_patch.find(obj_type)
+        if len(patches) > 0:
+            found_any_vehicle = True
+        for patch in patches:
+            is_blue = patch.verify_property(obj_type, "blue")
+            is_small = patch.verify_property(obj_type, "small")
+            is_long = patch.verify_property(obj_type, "long")
+            if is_blue and is_small and is_long:
+                found_blue_small_long = True
+
+    if found_blue_small_long:
+        result = "yes"
+    else:
+        if not found_any_vehicle:
+            result = image_patch.simple_query("Does the blue vehicle look small and long?")
+        else:
+            result = "no"
+    return result

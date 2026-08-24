@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bicycle_patches = image_patch.find("bicycle")
+    if len(bicycle_patches) == 0:
+        return image_patch.simple_query("Are there any cones to the right of the bicycle on the left of the image?")
+    # Consider bicycles on the left half of the image
+    left_side_bicycles = [b for b in bicycle_patches if b.horizontal_center < image_patch.horizontal_center]
+    if len(left_side_bicycles) == 0:
+        return image_patch.simple_query("Are there any cones to the right of the bicycle on the left of the image?")
+    # Choose the leftmost bicycle among those on the left side
+    leftmost_bicycle = min(left_side_bicycles, key=lambda p: p.horizontal_center)
+    # Look for cones (try both "cone" and "traffic cone")
+    cone_patches = image_patch.find("cone")
+    if len(cone_patches) == 0:
+        cone_patches = image_patch.find("traffic cone")
+        if len(cone_patches) == 0:
+            return "no"
+    for cone_patch in cone_patches:
+        if cone_patch.horizontal_center > leftmost_bicycle.horizontal_center:
+            return "yes"
+    return "no"

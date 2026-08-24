@@ -1,0 +1,54 @@
+def execute_command(image) -> str:
+    colors = None
+    hydrant_color = None
+    hydrant_patches = None
+    image_patch = None
+    question = None
+    result = None
+    shirt_color = None
+    shirt_patches = None
+    image_patch = ImagePatch(image)
+    question = 'Does the shirt have the same color as the hydrant?'
+    shirt_patches = image_patch.find('shirt')
+    hydrant_patches = image_patch.find('hydrant')
+
+    def _if(hydrant_patches, image_patch, question, shirt_patches):
+        hydrant_patches = image_patch.find('fire hydrant')
+        return (hydrant_patches, image_patch, question, shirt_patches)
+    hydrant_patches, image_patch, question, shirt_patches = if_stmt(_if, None, len(hydrant_patches) == 0, (hydrant_patches, image_patch, question, shirt_patches))
+
+    def _if(colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches):
+        result = image_patch.simple_query(question)
+        return (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches)
+
+    def _else(colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches):
+        colors = ('red', 'yellow', 'blue', 'green', 'black', 'white', 'brown', 'gray', 'grey', 'orange', 'pink', 'purple', 'gold', 'silver', 'tan', 'beige')
+        result = 'no'
+
+        def _for(shirt_patch, colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches):
+            shirt_color = shirt_patch.best_text_match(colors)
+
+            def _if(colors, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches):
+                shirt_color = 'gray'
+                return (colors, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches)
+            colors, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches = if_stmt(_if, None, shirt_color == 'grey', (colors, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches))
+
+            def _for(hydrant_patch, colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches):
+                hydrant_color = hydrant_patch.best_text_match(colors)
+
+                def _if(colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches):
+                    hydrant_color = 'gray'
+                    return (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches)
+                colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches = if_stmt(_if, None, hydrant_color == 'grey', (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches))
+
+                def _if(colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches):
+                    result = 'yes'
+                    return (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches)
+                colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches = if_stmt(_if, None, and_expr(shirt_color == hydrant_color, len(shirt_color) > 0), (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches))
+                return (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches)
+            colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches = for_stmt(_for, hydrant_patches, (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches))
+            return (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches)
+        colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches = for_stmt(_for, shirt_patches, (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches))
+        return (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches)
+    colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches = if_stmt(_if, _else, or_expr(len(shirt_patches) == 0, len(hydrant_patches) == 0), (colors, hydrant_color, hydrant_patches, image_patch, question, result, shirt_color, shirt_patches))
+    return result

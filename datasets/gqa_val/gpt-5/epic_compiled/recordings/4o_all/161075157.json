@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2334632",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "coke"
+      ],
+      [],
+      7575994582
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2334632",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "What is the piece of furniture to the left of the person that is to the left of the Coke called?"
+      ],
+      "I don't know.",
+      1099806967
+    ]
+  ],
+  "best_text_match": []
+}

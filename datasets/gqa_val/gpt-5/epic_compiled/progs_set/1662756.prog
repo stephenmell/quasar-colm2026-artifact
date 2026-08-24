@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    distance = None
+    dx = None
+    dy = None
+    image_patch = None
+    man_patches = None
+    nearest_distance = None
+    nearest_surfboard = None
+    person_patches = None
+    result = None
+    surfboard_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+    surfboard_patches = image_patch.find('surfboard')
+
+    def _if(distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches):
+        result = image_patch.simple_query('Do you see people to the right of the surfboard that the man is with?')
+        return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches)
+
+    def _else(distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches):
+
+        def _for(man_patch, distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches):
+            nearest_surfboard = None
+            nearest_distance = None
+
+            def _for(surfboard_patch, distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches):
+                dx = abs(man_patch.horizontal_center - surfboard_patch.horizontal_center)
+                dy = abs(man_patch.vertical_center - surfboard_patch.vertical_center)
+                distance = dx + dy
+
+                def _if(distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches):
+                    nearest_distance = distance
+                    nearest_surfboard = surfboard_patch
+                    return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches)
+                distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches = if_stmt(_if, None, or_expr(nearest_distance is None, distance < nearest_distance), (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches))
+                return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches)
+            distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches = for_stmt(_for, surfboard_patches, (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, result, surfboard_patches))
+
+            def _if(distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches):
+                person_patches = image_patch.find('person')
+
+                def _for(person_patch, distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches):
+
+                    def _if(distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches):
+                        result = 'yes'
+                        return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches)
+                    distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches = if_stmt(_if, None, person_patch.horizontal_center > nearest_surfboard.right, (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches))
+                    return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches)
+                distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches = for_stmt(_for, person_patches, (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches))
+                return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches)
+            distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches = if_stmt(_if, None, nearest_surfboard is not None, (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches))
+            return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches)
+        distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches = for_stmt(_for, man_patches, (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches))
+        return (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches)
+    distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches = if_stmt(_if, _else, or_expr(len(man_patches) == 0, len(surfboard_patches) == 0), (distance, dx, dy, image_patch, man_patches, nearest_distance, nearest_surfboard, person_patches, result, surfboard_patches))
+    return result

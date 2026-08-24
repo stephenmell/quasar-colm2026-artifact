@@ -1,0 +1,6 @@
+{
+  "result": "I can\u2019t reliably produce that single line from the provided mix of documents. There isn\u2019t a single, consistent biographical source here that clearly identifies one figure who satisfies all ten clues, nor a clearly matchable \u201cgin-cocktail first name\u201d associate.\n\nPlease do one of the following:\n- Pick one document (or a smaller set) you want me to use, and I\u2019ll generate one-line answers for that source.\n- Tell me which clue set you want prioritized, and I\u2019ll search for the best-fitting figure within a focused subset (e.g., clues 6 and 7 only) and then give the requested line.\n\nIf you want, I can also deliver a concise yes/no/unknown per clue for a specific candidate you name, with exact quoted lines from that source to justify each verdict.",
+  "time_ns": 71349155421,
+  "correct": false,
+  "ground_truth": "Martini, wife"
+}

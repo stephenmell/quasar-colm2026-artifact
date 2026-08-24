@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find('table')
+
+    def _if(image_patch, result, table_patches):
+        result = image_patch.simple_query('What is the table made of?')
+        return (image_patch, result, table_patches)
+
+    def _else(image_patch, result, table_patches):
+        result = table_patches[0].simple_query('What is the table made of?')
+        return (image_patch, result, table_patches)
+    image_patch, result, table_patches = if_stmt(_if, _else, len(table_patches) == 0, (image_patch, result, table_patches))
+    return result

@@ -1,0 +1,40 @@
+Stage: other execution error
+Error: best_text_match not implemented
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "18561799.prog", line 15, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 188, in abstract_if_stmt
+    lvars = else_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "18561799.prog", line 13, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 100, in __call__
+    return do_unary(lambda x: x(*args, **kwargs), self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 52, in do_unary
+    return join_many(f(x) for x in self._possibilities)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 143, in join_many
+    for x in xs:
+             ^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 52, in <genexpr>
+    return join_many(f(x) for x in self._possibilities)
+                     ^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 100, in <lambda>
+    return do_unary(lambda x: x(*args, **kwargs), self)
+                              ^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch.py", line 76, in best_text_match
+    return self.CONTEXT.METHODS.best_text_match(self, option_list, prefix)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/eval/run_utils.py", line 42, in wrapper
+    return asyncio.get_event_loop().run_until_complete(function(*args, **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/imgpatch_conformal.py", line 187, in best_text_match
+    assert False, "best_text_match not implemented"
+           ^^^^^
+AssertionError: best_text_match not implemented

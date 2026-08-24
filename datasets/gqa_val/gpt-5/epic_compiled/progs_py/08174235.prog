@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find("car")
+
+    if len(car_patches) == 0:
+        result = image_patch.simple_query("Is there a bus to the left of the black car?")
+    else:
+        black_car_patches = ()
+        for car_patch in car_patches:
+            if car_patch.verify_property("car", "black"):
+                black_car_patches = black_car_patches + (car_patch,)
+
+        if len(black_car_patches) == 0:
+            result = image_patch.simple_query("Is there a bus to the left of the black car?")
+        else:
+            bus_patches = image_patch.find("bus")
+            if len(bus_patches) == 0:
+                result = "no"
+            else:
+                result = "no"
+                for black_car_patch in black_car_patches:
+                    for bus_patch in bus_patches:
+                        if bus_patch.horizontal_center < black_car_patch.horizontal_center:
+                            result = "yes"
+    return result

@@ -1,0 +1,25 @@
+# Do you see brown drawers or chairs?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Look for brown drawers (try both singular and plural)
+    drawer_names = ["drawer", "drawers"]
+    found_any_drawer = False
+    for name in drawer_names:
+        drawer_patches = image_patch.find(name)
+        if len(drawer_patches) > 0:
+            found_any_drawer = True
+        for drawer_patch in drawer_patches:
+            if drawer_patch.verify_property(name, "brown"):
+                return "yes"
+
+    # If any chair is present (any color), answer yes
+    if image_patch.exists("chair"):
+        return "yes"
+
+    # If neither drawers nor chairs are detected, ask directly
+    if not found_any_drawer:
+        return image_patch.simple_query("Do you see brown drawers or chairs?")
+
+    # Drawers detected but not brown, and no chairs detected
+    return "no"

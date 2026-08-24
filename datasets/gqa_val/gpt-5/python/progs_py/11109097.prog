@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_zebra = image_patch.exists("zebra")
+    has_antelope = image_patch.exists("antelope")
+    return bool_to_yesno(has_zebra and has_antelope)

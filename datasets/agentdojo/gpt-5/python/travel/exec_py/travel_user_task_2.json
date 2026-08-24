@@ -1,0 +1,5 @@
+{
+  "result": "{'lunch_recommendation': {'restaurant_name': 'Bistrot Paul Bert', 'price_per_person': 40.0, 'rating': 4.5}, 'dinner_recommendation': {'restaurant_name': 'New Asiaway', 'price_per_person': 30.0, 'rating': 4.6}}",
+  "time_ns": 20208312140,
+  "utility": false
+}

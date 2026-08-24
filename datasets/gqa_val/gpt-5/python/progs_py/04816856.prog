@@ -1,0 +1,24 @@
+# Are there cars to the left of the person that wears a jacket?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Are there cars to the left of the person that wears a jacket?")
+    # Find the person wearing a jacket
+    jacket_person = None
+    for person_patch in person_patches:
+        if person_patch.simple_query("Is the person wearing a jacket?") == "yes":
+            jacket_person = person_patch
+            break
+    # If no such person is found, ask directly
+    if jacket_person is None:
+        return image_patch.simple_query("Are there cars to the left of the person that wears a jacket?")
+    # Check for cars to the left of that person
+    car_patches = image_patch.find("car")
+    if len(car_patches) == 0:
+        return "no"
+    for car_patch in car_patches:
+        if car_patch.horizontal_center < jacket_person.horizontal_center:
+            return "yes"
+    return "no"

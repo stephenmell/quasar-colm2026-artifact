@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    has_reflected_person = None
+    image_patch = None
+    mirror_patches = None
+    person_abs_center = None
+    person_patches = None
+    result = None
+    van_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    mirror_patches = image_patch.find('mirror')
+
+    def _if(has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches):
+        result = image_patch.simple_query('Are there any vans to the left of the person that is reflected in the mirror?')
+        return (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches)
+
+    def _else(has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches):
+        has_reflected_person = False
+        van_patches = image_patch.find('van')
+
+        def _for(mirror_patch, has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches):
+            person_patches = mirror_patch.find('person')
+
+            def _if(has_reflected_person, image_patch, mirror_patches, person_patches, result, van_patches):
+                has_reflected_person = True
+                return (has_reflected_person, image_patch, mirror_patches, person_patches, result, van_patches)
+            has_reflected_person, image_patch, mirror_patches, person_patches, result, van_patches = if_stmt(_if, None, len(person_patches) > 0, (has_reflected_person, image_patch, mirror_patches, person_patches, result, van_patches))
+
+            def _for(person_patch, has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches):
+                person_abs_center = mirror_patch.left + person_patch.horizontal_center
+
+                def _for(van_patch, has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches):
+
+                    def _if(has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches):
+                        result = 'yes'
+                        return (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches)
+                    has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches = if_stmt(_if, None, van_patch.horizontal_center < person_abs_center, (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches))
+                    return (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches)
+                has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches = for_stmt(_for, van_patches, (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches))
+                return (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches)
+            has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches = for_stmt(_for, person_patches, (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches))
+            return (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches)
+        has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches = for_stmt(_for, mirror_patches, (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches))
+
+        def _if(has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches):
+            result = image_patch.simple_query('Are there any vans to the left of the person that is reflected in the mirror?')
+            return (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches)
+        has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches = if_stmt(_if, None, not_expr(has_reflected_person), (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches))
+        return (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches)
+    has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches = if_stmt(_if, _else, len(mirror_patches) == 0, (has_reflected_person, image_patch, mirror_patches, person_abs_center, person_patches, result, van_patches))
+    return result

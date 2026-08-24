@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ladder_patches = image_patch.find("ladder")
+    result = None
+
+    if len(ladder_patches) == 0:
+        result = image_patch.simple_query("What is the appliance to the left of the ladder?")
+    else:
+        for ladder_patch in ladder_patches:
+            left_area_patch = image_patch.crop(image_patch.left, ladder_patch.lower, ladder_patch.left, ladder_patch.upper)
+            candidate = None
+            if left_area_patch.width > 0 and left_area_patch.height > 0:
+                candidate = left_area_patch.simple_query("What is the appliance?")
+            if not result and candidate:
+                result = candidate
+        if not result:
+            result = image_patch.simple_query("What is the appliance to the left of the ladder?")
+    return result

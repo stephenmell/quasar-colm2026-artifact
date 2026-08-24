@@ -1,0 +1,18 @@
+# Is there a bag to the right of the chair on the table?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    table_patches = image_patch.find("table")
+    if len(table_patches) == 0:
+        result = image_patch.simple_query("Is there a bag to the right of the chair on the table?")
+    else:
+        for table_patch in table_patches:
+            chair_patches = table_patch.find("chair")
+            bag_patches = table_patch.find("bag")
+            if len(chair_patches) > 0 and len(bag_patches) > 0:
+                for chair_patch in chair_patches:
+                    for bag_patch in bag_patches:
+                        if bag_patch.horizontal_center > chair_patch.horizontal_center:
+                            result = "yes"
+    return result

@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find("sky")
+    truck_patches = image_patch.find("truck")
+    # If either object is not found, ask directly
+    if len(sky_patches) == 0 or len(truck_patches) == 0:
+        return image_patch.simple_query("Are both the sky and the truck the same color?")
+    colors = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "brown", "black", "white", "gray", "grey"]
+    sky_color = sky_patches[0].best_text_match(colors)
+    truck_color = truck_patches[0].best_text_match(colors)
+    return "yes" if sky_color == truck_color else "no"

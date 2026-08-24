@@ -1,0 +1,12 @@
+# Does the man wear a coat?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Does the man wear a coat?")
+    else:
+        result = "no"
+        for man_patch in man_patches:
+            if man_patch.simple_query("Is the man wearing a coat?") == "yes":
+                result = "yes"
+    return result

@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    window_patches = image_patch.find("window")
+    chair_patches = image_patch.find("chair")
+    end_table_patches = image_patch.find("end table")
+
+    if len(window_patches) == 0 or len(chair_patches) == 0 or len(end_table_patches) == 0:
+        result = image_patch.simple_query("Do you see end tables to the left of the chair below the window?")
+    else:
+        for window_patch in window_patches:
+            for chair_patch in chair_patches:
+                is_chair_below_window = chair_patch.vertical_center > window_patch.vertical_center
+                if is_chair_below_window:
+                    for end_table_patch in end_table_patches:
+                        is_table_left_of_chair = end_table_patch.horizontal_center < chair_patch.horizontal_center
+                        if is_table_left_of_chair:
+                            result = "yes"
+    return result

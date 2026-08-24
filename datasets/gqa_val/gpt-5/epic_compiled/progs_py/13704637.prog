@@ -1,0 +1,23 @@
+# Of which color are the goggles of the boy?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    boy_patches = image_patch.find("boy")
+    if len(boy_patches) == 0:
+        result = image_patch.simple_query("Of which color are the goggles of the boy?")
+    else:
+        boy_patch = boy_patches[0]
+        goggles_in_boy = boy_patch.find("goggles")
+        if len(goggles_in_boy) == 0:
+            goggles_in_image = image_patch.find("goggles")
+            if len(goggles_in_image) == 0:
+                result = boy_patch.simple_query("Of which color are the goggles of the boy?")
+            else:
+                result = goggles_in_image[0].simple_query("What color are the goggles?")
+        else:
+            result = goggles_in_boy[0].simple_query("What color are the goggles?")
+
+    if not result:
+        result = image_patch.simple_query("Of which color are the goggles of the boy?")
+    return result

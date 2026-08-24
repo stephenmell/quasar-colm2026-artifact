@@ -1,0 +1,86 @@
+({1147: 'context', 1153: 'llm_query', 1161: 'str', 1180: 'return_result'},
+ ('def',
+  1144,
+  ((),
+   ((('prim', 1145, ''),
+     ('prim', 1146, 0),
+     ('def',
+      1148,
+      ((1171, 1149),
+       ((('unpack', (1159, 1150), 1171),
+         ('prim', 1151, 1),
+         ('call', (1152,), 80, (1150, 1151)),
+         ('prim',
+          1154,
+          'You will be given one document. Task: Determine if it mentions an '
+          'athlete who matches ALL or MOST of these traits, and extract '
+          'personal-best data:\n'
+          'Traits to match:\n'
+          '- Born in the 1970s\n'
+          '- Three-time World Half-Marathon champion\n'
+          '- Won their first race at age 21\n'
+          '- Honored by the UN as Person of the Year in their country\n'
+          '- Weighed about 40 kg as of February 2018\n'
+          '- Retired from professional running by 2021\n'
+          '\n'
+          'If the document mentions such an athlete (e.g., Tegla Loroupe, '
+          'Paula Radcliffe, Lornah Kiplagat), identify the athlete and '
+          'extract:\n'
+          '- Athlete name\n'
+          '- Evidence quotes linking to each trait (as available)\n'
+          '- 10,000 m personal best time AND the exact date (day, month, year) '
+          'when that PB was set (explicitly stated in the doc). If date not '
+          'explicit, provide any date clues tied to the PB.\n'
+          '- Any table or infobox entries related to PBs\n'
+          '\n'
+          'Return a compact, structured summary.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1155,), 80, (1154, 1149)),
+         ('prim', 1156, '\nEND_DOCUMENT'),
+         ('call', (1157,), 80, (1155, 1156)),
+         ('call', (1158,), 1153, (1157,)),
+         ('prim', 1160, '\n\n[DOC '),
+         ('call', (1162,), 80, (1159, 1160)),
+         ('call', (1163,), 1161, (1152,)),
+         ('call', (1164,), 80, (1162, 1163)),
+         ('prim', 1165, ' ANALYSIS]\n'),
+         ('call', (1166,), 80, (1164, 1165)),
+         ('call', (1167,), 80, (1166, 1158)),
+         ('pack', 1172, (1167, 1152))),
+        (1172,)))),
+     ('pack', 1173, (1145, 1146)),
+     ('call', (1174,), 79, (1147,)),
+     ('call', (1170,), 1174, (1173, 1148)),
+     ('unpack', (1168, 1169), 1170),
+     ('prim',
+      1175,
+      'You are given extractions from several documents. From these, determine '
+      'which athlete matches ALL the query clues and then provide the exact '
+      'calendar date (day, month, year) when that athlete achieved their '
+      'personal-best performance in the 10,000 m event.\n'
+      '\n'
+      'Query clues:\n'
+      '- Born in the 1970s\n'
+      '- Three-time World Half-Marathon champion\n'
+      '- Won their first race at 21\n'
+      '- Honored by the UN as Person of the Year in their country\n'
+      '- As of February 2018, weighed 40 kg\n'
+      '- As of 2021, retired from professional running\n'
+      '\n'
+      'Likely candidate includes Tegla Loroupe; confirm using the extracts. '
+      'Then, from the matching document excerpts, extract the exact date (day, '
+      'month, year) of the 10,000 m personal best. If multiple dates are '
+      'shown, choose the one explicitly tied to the 10,000 m PB of the matched '
+      'athlete.\n'
+      '\n'
+      'Provide ONLY the date in the format: D Month YYYY (e.g., 7 October '
+      '1998). No extra text.\n'
+      '\n'
+      'BEGIN_EXTRACTS\n'),
+     ('call', (1176,), 80, (1175, 1168)),
+     ('prim', 1177, '\nEND_EXTRACTS'),
+     ('call', (1178,), 80, (1176, 1177)),
+     ('call', (1179,), 1153, (1178,)),
+     ('call', (1181,), 1180, (1179,))),
+    (1181,)))))

@@ -1,0 +1,20 @@
+# Do the shrub and the cloud have a different colors?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shrub_patches = image_patch.find("shrub")
+    cloud_patches = image_patch.find("cloud")
+
+    # If either object isn't found, ask directly
+    if len(shrub_patches) == 0 or len(cloud_patches) == 0:
+        return image_patch.simple_query("Do the shrub and the cloud have a different colors?")
+
+    # Estimate colors via best text match
+    color_options = ["green", "brown", "white", "gray", "blue", "black", "yellow", "red", "orange", "purple", "pink"]
+    shrub_color = shrub_patches[0].best_text_match(color_options)
+    cloud_color = cloud_patches[0].best_text_match(color_options)
+
+    # If unable to determine colors, ask directly
+    if not shrub_color or not cloud_color:
+        return image_patch.simple_query("Do the shrub and the cloud have a different colors?")
+
+    return "yes" if shrub_color != cloud_color else "no"

@@ -1,0 +1,96 @@
+def execute_command(image) -> str:
+    ans_str = None
+    direct_answer = None
+    fisherman_terms = None
+    found = None
+    image_patch = None
+    is_no = None
+    is_yes = None
+    no_tokens = None
+    result = None
+    yes_tokens = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found = False
+    fisherman_terms = ('fisherman', 'fishermen', 'angler', 'fishing man', 'fishing person')
+
+    def _for(term, fisherman_terms, found, image_patch, result):
+
+        def _if(fisherman_terms, found, image_patch, result):
+
+            def _if(fisherman_terms, found, image_patch, result):
+                found = True
+                return (fisherman_terms, found, image_patch, result)
+            fisherman_terms, found, image_patch, result = if_stmt(_if, None, image_patch.exists(term), (fisherman_terms, found, image_patch, result))
+            return (fisherman_terms, found, image_patch, result)
+        fisherman_terms, found, image_patch, result = if_stmt(_if, None, not_expr(found), (fisherman_terms, found, image_patch, result))
+        return (fisherman_terms, found, image_patch, result)
+    fisherman_terms, found, image_patch, result = for_stmt(_for, fisherman_terms, (fisherman_terms, found, image_patch, result))
+
+    def _if(fisherman_terms, found, image_patch, result):
+
+        def _if(fisherman_terms, found, image_patch, result):
+            found = True
+            return (fisherman_terms, found, image_patch, result)
+        fisherman_terms, found, image_patch, result = if_stmt(_if, None, and_expr(image_patch.exists('person'), image_patch.exists('fishing rod')), (fisherman_terms, found, image_patch, result))
+        return (fisherman_terms, found, image_patch, result)
+    fisherman_terms, found, image_patch, result = if_stmt(_if, None, not_expr(found), (fisherman_terms, found, image_patch, result))
+
+    def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+        direct_answer = image_patch.simple_query('Do you see any fishermen?')
+        ans_str = f'{direct_answer}'
+        yes_tokens = ('yes', 'Yes', 'YES', 'y', 'Y', 'yeah', 'Yeah', 'YEAH', 'yep', 'Yep', 'YEP', 'sure', 'Sure', 'SURE', 'true', 'True', 'TRUE')
+        no_tokens = ('no', 'No', 'NO', 'n', 'N', 'nope', 'Nope', 'NOPE', 'nah', 'Nah', 'NAH', 'false', 'False', 'FALSE')
+        is_yes = False
+
+        def _for(tok, ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens):
+
+            def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens):
+
+                def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens):
+                    is_yes = True
+                    return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens)
+                ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, None, ans_str == tok, (ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens))
+                return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens)
+            ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, None, not_expr(is_yes), (ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens))
+            return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens)
+        ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens = for_stmt(_for, yes_tokens, (ans_str, direct_answer, fisherman_terms, found, image_patch, is_yes, no_tokens, result, yes_tokens))
+        is_no = False
+
+        def _for(tok, ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+
+            def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+
+                def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+                    is_no = True
+                    return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+                ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, None, ans_str == tok, (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens))
+                return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+            ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, None, not_expr(is_no), (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens))
+            return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+        ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens = for_stmt(_for, no_tokens, (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens))
+
+        def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+            found = True
+            return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+
+        def _else(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+
+            def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+                found = False
+                return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+            ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, None, is_no, (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens))
+            return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+        ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, _else, is_yes, (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens))
+        return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+    ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, None, not_expr(found), (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens))
+
+    def _if(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+        result = 'yes'
+        return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+
+    def _else(ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens):
+        result = 'no'
+        return (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens)
+    ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens = if_stmt(_if, _else, found, (ans_str, direct_answer, fisherman_terms, found, image_patch, is_no, is_yes, no_tokens, result, yes_tokens))
+    return result

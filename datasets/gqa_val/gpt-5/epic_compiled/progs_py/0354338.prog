@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    object_names = ("ski", "skis")
+    total_found = 0
+
+    for object_name in object_names:
+        patches = image_patch.find(object_name)
+        total_found = total_found + len(patches)
+        for patch in patches:
+            is_gray_american = patch.verify_property(object_name, "gray")
+            is_gray_british = patch.verify_property(object_name, "grey")
+            if is_gray_american or is_gray_british:
+                result = "yes"
+
+    if total_found == 0:
+        result = image_patch.simple_query("Are there any skis in this picture that are gray?")
+    return result

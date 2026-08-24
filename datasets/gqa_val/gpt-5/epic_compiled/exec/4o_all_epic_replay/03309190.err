@@ -1,0 +1,13 @@
+Stage: epics_vipergpt.finalize
+Error: .strip
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 234, in main
+    epic_final = epics_vipergpt.finalize(epics_expr, [image], epics_vipergpt.make_mappings(CONTEXT.METHODS), varnames)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/epics_vipergpt.py", line 92, in finalize
+    epic_expr = translator.translationFinalize(epic_prog, args, mappings)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 283, in translationFinalize
+    raise NameError(name)
+NameError: .strip

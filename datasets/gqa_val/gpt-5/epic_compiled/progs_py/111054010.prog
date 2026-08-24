@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lamp_patches = image_patch.find("lamp")
+    if len(lamp_patches) == 0:
+        result = image_patch.simple_query("Are there any books to the right of the lamp that is on the left?")
+    else:
+        leftmost_lamp = lamp_patches[0]
+        for lamp_patch in lamp_patches:
+            if lamp_patch.horizontal_center < leftmost_lamp.horizontal_center:
+                leftmost_lamp = lamp_patch
+        book_patches = image_patch.find("book")
+        if len(book_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for book_patch in book_patches:
+                if book_patch.horizontal_center > leftmost_lamp.horizontal_center:
+                    result = "yes"
+    return result

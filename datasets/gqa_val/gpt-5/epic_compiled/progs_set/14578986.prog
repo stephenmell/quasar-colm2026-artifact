@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    racket_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(image_patch, racket_patches, result, woman_patches):
+        result = image_patch.simple_query('Is the woman to the left of a racket?')
+        return (image_patch, racket_patches, result, woman_patches)
+
+    def _else(image_patch, racket_patches, result, woman_patches):
+        racket_patches = image_patch.find('racket')
+
+        def _if(image_patch, racket_patches, result, woman_patches):
+            result = 'no'
+            return (image_patch, racket_patches, result, woman_patches)
+
+        def _else(image_patch, racket_patches, result, woman_patches):
+            result = 'no'
+
+            def _for(woman_patch, image_patch, racket_patches, result, woman_patches):
+
+                def _for(racket_patch, image_patch, racket_patches, result, woman_patches):
+
+                    def _if(image_patch, racket_patches, result, woman_patches):
+                        result = 'yes'
+                        return (image_patch, racket_patches, result, woman_patches)
+                    image_patch, racket_patches, result, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center < racket_patch.horizontal_center, (image_patch, racket_patches, result, woman_patches))
+                    return (image_patch, racket_patches, result, woman_patches)
+                image_patch, racket_patches, result, woman_patches = for_stmt(_for, racket_patches, (image_patch, racket_patches, result, woman_patches))
+                return (image_patch, racket_patches, result, woman_patches)
+            image_patch, racket_patches, result, woman_patches = for_stmt(_for, woman_patches, (image_patch, racket_patches, result, woman_patches))
+            return (image_patch, racket_patches, result, woman_patches)
+        image_patch, racket_patches, result, woman_patches = if_stmt(_if, _else, len(racket_patches) == 0, (image_patch, racket_patches, result, woman_patches))
+        return (image_patch, racket_patches, result, woman_patches)
+    image_patch, racket_patches, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (image_patch, racket_patches, result, woman_patches))
+    return result

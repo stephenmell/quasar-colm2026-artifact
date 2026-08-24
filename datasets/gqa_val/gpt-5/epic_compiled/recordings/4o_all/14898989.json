@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2336044",
+          [
+            0,
+            0,
+            500,
+            500
+          ]
+        ],
+        "dress"
+      ],
+      [],
+      15164980223
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2336044",
+          [
+            0,
+            0,
+            500,
+            500
+          ]
+        ],
+        "Is the dress black?"
+      ],
+      "I don't see a dress in the image.",
+      1651050812
+    ]
+  ],
+  "best_text_match": []
+}

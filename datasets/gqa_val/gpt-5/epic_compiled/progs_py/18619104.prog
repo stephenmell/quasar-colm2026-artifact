@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Find appliances and filter those that are metal
+    appliance_patches = image_patch.find("appliance")
+    metal_appliance_patches = ()
+    for appliance_patch in appliance_patches:
+        is_metal = appliance_patch.verify_property("appliance", "metal")
+        if not is_metal:
+            is_metal = appliance_patch.verify_property("appliance", "made of metal")
+        if is_metal:
+            metal_appliance_patches = metal_appliance_patches + (appliance_patch,)
+
+    if len(metal_appliance_patches) == 0:
+        # If no metal appliance is found, ask the question directly
+        result = image_patch.simple_query("Are there any ovens to the left of the appliance made of metal?")
+    else:
+        # Find ovens and check if any are to the left of any metal appliance
+        oven_patches = image_patch.find("oven")
+        if len(oven_patches) == 0:
+            result = "no"
+        else:
+            for oven_patch in oven_patches:
+                for metal_appliance_patch in metal_appliance_patches:
+                    if oven_patch.horizontal_center < metal_appliance_patch.horizontal_center:
+                        result = "yes"
+    return result

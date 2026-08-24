@@ -1,0 +1,27 @@
+# Is the tea to the right of the chairs that are to the right of the dog?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find("dog")
+    # Question assumes only one dog patch
+    if len(dog_patches) == 0:
+        # If no dog is found, query the image directly
+        return image_patch.simple_query("Is the tea to the right of the chairs that are to the right of the dog?")
+    dog_patch = dog_patches[0]
+
+    chair_patches = image_patch.find("chair")
+    # Filter chairs that are to the right of the dog
+    chairs_right_of_dog = [c for c in chair_patches if c.horizontal_center > dog_patch.horizontal_center]
+    if len(chairs_right_of_dog) == 0:
+        return "no"
+
+    # Consider tea to be to the right of the chairs if it's to the right of the rightmost such chair
+    rightmost_chair_x = max(c.horizontal_center for c in chairs_right_of_dog)
+
+    tea_patches = image_patch.find("tea")
+    if len(tea_patches) == 0:
+        return "no"
+
+    for tea_patch in tea_patches:
+        if tea_patch.horizontal_center > rightmost_chair_x:
+            return "yes"
+    return "no"

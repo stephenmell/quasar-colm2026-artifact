@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tower_patches = image_patch.find("tower")
+    wall_patches = image_patch.find("wall")
+    if len(tower_patches) == 0 or len(wall_patches) == 0:
+        return image_patch.simple_query("Does the tower have a different color than the wall?")
+    tower_patch = tower_patches[0]
+    wall_patch = wall_patches[0]
+    colors = ["red", "blue", "green", "yellow", "brown", "black", "white", "gray", "orange", "pink", "purple", "tan", "beige", "gold", "silver", "maroon", "navy", "teal"]
+
+    def detect_color(patch, obj_name):
+        for c in colors:
+            if patch.verify_property(obj_name, c):
+                return c
+        return patch.best_text_match(colors)
+
+    tower_color = detect_color(tower_patch, "tower")
+    wall_color = detect_color(wall_patch, "wall")
+    return bool_to_yesno(tower_color != wall_color)

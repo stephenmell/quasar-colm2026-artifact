@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    player_patches = image_patch.find("player")
+    if len(player_patches) == 0:
+        # If no player is found, ask directly
+        return image_patch.simple_query("Are there any cameras to the left of the helmet that the player is wearing?")
+
+    helmet_patches = image_patch.find("helmet")
+    if len(helmet_patches) == 0:
+        # If no helmet is found, ask directly
+        return image_patch.simple_query("Are there any cameras to the left of the helmet that the player is wearing?")
+
+    # Try to identify the helmet that the player is wearing
+    player_helmet = None
+    for helmet_patch in helmet_patches:
+        if helmet_patch.simple_query("Is the player wearing the helmet?") == "yes":
+            player_helmet = helmet_patch
+            break
+
+    if player_helmet is None:
+        # If we cannot determine which helmet is worn, ask directly
+        return image_patch.simple_query("Are there any cameras to the left of the helmet that the player is wearing?")
+
+    camera_patches = image_patch.find("camera")
+    if len(camera_patches) == 0:
+        return "no"
+
+    for camera_patch in camera_patches:
+        if camera_patch.horizontal_center < player_helmet.horizontal_center:
+            return "yes"
+    return "no"

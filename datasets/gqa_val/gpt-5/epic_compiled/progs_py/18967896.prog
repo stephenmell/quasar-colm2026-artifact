@@ -1,0 +1,51 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Try to locate the dish (or plate) as the search area
+    dish_patches = image_patch.find("dish")
+    search_area_patch = None
+    if len(dish_patches) > 0:
+        search_area_patch = dish_patches[0]
+    else:
+        plate_patches = image_patch.find("plate")
+        if len(plate_patches) > 0:
+            search_area_patch = plate_patches[0]
+
+    if not search_area_patch:
+        # If no dish/plate is found, ask directly
+        result = image_patch.simple_query("Are there any eggs to the right of the sliced tomato on the dish?")
+    else:
+        # Find sliced tomatoes within the dish area
+        sliced_tomato_patches = search_area_patch.find("sliced tomato")
+        candidate_tomato_patches = sliced_tomato_patches
+
+        # If "sliced tomato" not directly detected, look for tomatoes with the "sliced" property
+        if len(candidate_tomato_patches) == 0:
+            tomato_patches = search_area_patch.find("tomato")
+            filtered_tomato_patches = ()
+            for tomato_patch in tomato_patches:
+                if tomato_patch.verify_property("tomato", "sliced"):
+                    filtered_tomato_patches = filtered_tomato_patches + (tomato_patch,)
+            candidate_tomato_patches = filtered_tomato_patches
+
+        # Find eggs within the dish area
+        egg_patches = search_area_patch.find("egg")
+
+        if len(candidate_tomato_patches) == 0:
+            # If we cannot find a sliced tomato on the dish, ask directly
+            result = image_patch.simple_query("Are there any eggs to the right of the sliced tomato on the dish?")
+        else:
+            if len(egg_patches) == 0:
+                result = "no"
+            else:
+                any_right = False
+                for tomato_patch in candidate_tomato_patches:
+                    for egg_patch in egg_patches:
+                        if egg_patch.horizontal_center > tomato_patch.horizontal_center:
+                            any_right = True
+                if any_right:
+                    result = "yes"
+                else:
+                    result = "no"
+    return result

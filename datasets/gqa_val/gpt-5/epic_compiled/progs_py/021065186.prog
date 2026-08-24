@@ -1,0 +1,41 @@
+# Are there women to the left of the man that is reading a paper?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    man_patches = image_patch.find("man")
+    reading_man_patch = None
+
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Are there women to the left of the man that is reading a paper?")
+    else:
+        for man_patch in man_patches:
+            is_reading = False
+            if man_patch.verify_property("man", "reading a paper"):
+                is_reading = True
+            else:
+                if man_patch.verify_property("man", "reading"):
+                    is_reading = True
+                else:
+                    if man_patch.simple_query("Is the man reading a paper?") == "yes":
+                        is_reading = True
+            if is_reading and reading_man_patch is None:
+                reading_man_patch = man_patch
+
+        if not reading_man_patch:
+            result = image_patch.simple_query("Are there women to the left of the man that is reading a paper?")
+        else:
+            woman_patches = image_patch.find("woman")
+            if len(woman_patches) == 0:
+                woman_patches = image_patch.find("women")
+
+            if len(woman_patches) == 0:
+                result = "no"
+            else:
+                is_left = False
+                for woman_patch in woman_patches:
+                    if woman_patch.horizontal_center < reading_man_patch.horizontal_center:
+                        is_left = True
+                result = "yes" if is_left else "no"
+
+    return result

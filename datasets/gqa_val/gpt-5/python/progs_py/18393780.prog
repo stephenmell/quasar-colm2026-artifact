@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    batter_patches = image_patch.find("batter")
+    player_patches = image_patch.find("baseball player")
+
+    # Fallback to a more general label if needed
+    if len(player_patches) == 0:
+        player_patches = image_patch.find("player")
+
+    if len(batter_patches) == 0 or len(player_patches) == 0:
+        # If either is missing, ask directly
+        return image_patch.simple_query("Is the batter to the left or to the right of the baseball player?")
+
+    batter_patch = batter_patches[0]
+    # Choose the baseball player closest to the batter horizontally
+    player_patch = min(player_patches, key=lambda p: abs(p.horizontal_center - batter_patch.horizontal_center))
+
+    if batter_patch.horizontal_center < player_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

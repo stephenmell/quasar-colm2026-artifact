@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2402329",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "What do both the cap and the ceiling have in common?"
+      ],
+      "They both cover something.",
+      1676154688
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        # If no animal is found, query the image directly
+        return image_patch.simple_query("What is the large animal doing?")
+    # Find the animal that is large
+    for animal_patch in animal_patches:
+        if animal_patch.verify_property("animal", "large"):
+            return animal_patch.simple_query("What is the large animal doing?")
+    # If no explicitly large animal is found, ask the image directly
+    return image_patch.simple_query("What is the large animal doing?")

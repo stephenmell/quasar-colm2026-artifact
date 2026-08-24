@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    surfboard_patches = image_patch.find("surfboard")
+
+    # If we can't detect either object, ask directly
+    if len(person_patches) == 0 or len(surfboard_patches) == 0:
+        return image_patch.simple_query("Is the person on the surfboard?")
+
+    # Heuristic: person is "on" the surfboard if horizontally overlapping
+    # and the person's center is above the surfboard's center.
+    for person in person_patches:
+        for board in surfboard_patches:
+            horizontal_overlap = min(person.right, board.right) - max(person.left, board.left)
+            if horizontal_overlap > 0 and person.vertical_center < board.vertical_center:
+                return "yes"
+    return "no"

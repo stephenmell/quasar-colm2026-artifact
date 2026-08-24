@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    catcher_patches = image_patch.find("catcher")
+    # Question assumes only one catcher patch
+    if len(catcher_patches) == 0:
+        # If no catcher is found, query the image directly
+        return image_patch.simple_query("What is the catcher doing?")
+    return catcher_patches[0].simple_query("What is the catcher doing?")

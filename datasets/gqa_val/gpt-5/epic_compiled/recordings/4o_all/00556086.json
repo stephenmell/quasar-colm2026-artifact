@@ -1,0 +1,47 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2321256",
+          [
+            0,
+            0,
+            500,
+            335
+          ]
+        ],
+        "chain"
+      ],
+      [
+        [
+          274,
+          140,
+          306,
+          174
+        ]
+      ],
+      13648219626
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2321256",
+          [
+            274,
+            140,
+            306,
+            174
+          ]
+        ],
+        "What is the chain attached to?"
+      ],
+      "I can't determine what the chain is attached to.",
+      966312803
+    ]
+  ],
+  "best_text_match": []
+}

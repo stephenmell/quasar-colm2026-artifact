@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # If no man is found, ask directly
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Do you see any bulls to the left of the man that is on the right of the image?")
+    # Select the man that is on the right of the image (rightmost man)
+    rightmost_man = max(man_patches, key=lambda p: p.horizontal_center)
+    bull_patches = image_patch.find("bull")
+    for bull_patch in bull_patches:
+        if bull_patch.horizontal_center < rightmost_man.horizontal_center:
+            return "yes"
+    return "no"

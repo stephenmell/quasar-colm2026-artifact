@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    home_patches = image_patch.find("home")
+    if len(home_patches) == 0:
+        home_patches = image_patch.find("house")
+    if len(home_patches) == 0:
+        # If no homes/houses are found, query the image directly
+        return image_patch.simple_query("Are the homes in the bottom of the photo?")
+    midline = image_patch.vertical_center
+    are_all_bottom = all(h.vertical_center < midline for h in home_patches)
+    return bool_to_yesno(are_all_bottom)

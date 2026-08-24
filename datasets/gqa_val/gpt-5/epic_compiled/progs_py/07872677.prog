@@ -1,0 +1,7 @@
+# Is there a woman or a chair in the scene?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_woman = image_patch.exists("woman")
+    has_chair = image_patch.exists("chair")
+    result = bool_to_yesno(has_woman or has_chair)
+    return result

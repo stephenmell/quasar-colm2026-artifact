@@ -1,0 +1,14 @@
+# Is the orange cup on the left?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cup_patches = image_patch.find("cup")
+    if len(cup_patches) == 0:
+        result = image_patch.simple_query("Is the orange cup on the left?")
+    else:
+        result = "no"
+        for cup_patch in cup_patches:
+            is_orange = cup_patch.verify_property("cup", "orange")
+            if is_orange:
+                if cup_patch.horizontal_center < image_patch.horizontal_center:
+                    result = "yes"
+    return result

@@ -1,0 +1,87 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    best_bag_patch = None
+    best_delta = None
+    bottle_patches = None
+    delta = None
+    image_patch = None
+    is_blue = None
+    is_plastic = None
+    result = None
+    selected_bottle_patch = None
+    image_patch = ImagePatch(image)
+    result = None
+    bottle_patches = image_patch.find('bottle')
+    selected_bottle_patch = None
+
+    def _if(bottle_patches, image_patch, is_plastic, result, selected_bottle_patch):
+
+        def _for(bottle_patch, bottle_patches, image_patch, is_plastic, result, selected_bottle_patch):
+            is_plastic = bottle_patch.verify_property('bottle', 'plastic')
+
+            def _if(bottle_patches, image_patch, is_plastic, result, selected_bottle_patch):
+                selected_bottle_patch = bottle_patch
+                return (bottle_patches, image_patch, is_plastic, result, selected_bottle_patch)
+            bottle_patches, image_patch, is_plastic, result, selected_bottle_patch = if_stmt(_if, None, and_expr(is_plastic, selected_bottle_patch is None), (bottle_patches, image_patch, is_plastic, result, selected_bottle_patch))
+            return (bottle_patches, image_patch, is_plastic, result, selected_bottle_patch)
+        bottle_patches, image_patch, is_plastic, result, selected_bottle_patch = for_stmt(_for, bottle_patches, (bottle_patches, image_patch, is_plastic, result, selected_bottle_patch))
+        return (bottle_patches, image_patch, is_plastic, result, selected_bottle_patch)
+    bottle_patches, image_patch, is_plastic, result, selected_bottle_patch = if_stmt(_if, None, len(bottle_patches) > 0, (bottle_patches, image_patch, is_plastic, result, selected_bottle_patch))
+
+    def _if(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+        result = image_patch.simple_query('Is the blue bag to the left or to the right of the bottle made of plastic?')
+        return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+
+    def _else(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+        bag_patches = image_patch.find('bag')
+
+        def _if(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+            result = image_patch.simple_query('Is the blue bag to the left or to the right of the bottle made of plastic?')
+            return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+
+        def _else(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+            best_bag_patch = None
+            best_delta = None
+
+            def _for(bag_patch, bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+                is_blue = bag_patch.verify_property('bag', 'blue')
+
+                def _if(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+                    delta = abs(bag_patch.horizontal_center - selected_bottle_patch.horizontal_center)
+
+                    def _if(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+                        best_delta = delta
+                        best_bag_patch = bag_patch
+                        return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+                    bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = if_stmt(_if, None, or_expr(best_delta is None, delta < best_delta), (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+                    return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+                bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = if_stmt(_if, None, is_blue, (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+                return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+            bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = for_stmt(_for, bag_patches, (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+
+            def _if(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+                result = image_patch.simple_query('Is the blue bag to the left or to the right of the bottle made of plastic?')
+                return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+
+            def _else(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+
+                def _if(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+                    result = 'left'
+                    return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+
+                def _else(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+                    result = 'right'
+                    return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+                bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = if_stmt(_if, _else, best_bag_patch.horizontal_center < selected_bottle_patch.horizontal_center, (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+                return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+            bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = if_stmt(_if, _else, best_bag_patch is None, (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+            return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+        bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = if_stmt(_if, _else, len(bag_patches) == 0, (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+        return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+    bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = if_stmt(_if, _else, selected_bottle_patch is None, (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+
+    def _if(bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch):
+        result = image_patch.simple_query('Is the blue bag to the left or to the right of the bottle made of plastic?')
+        return (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch)
+    bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch = if_stmt(_if, None, not_expr(result), (bag_patches, best_bag_patch, best_delta, bottle_patches, delta, image_patch, is_blue, is_plastic, result, selected_bottle_patch))
+    return result

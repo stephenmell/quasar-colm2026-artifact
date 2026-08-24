@@ -1,0 +1,4 @@
+# Where is the crosswalk?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    return image_patch.simple_query("Where is the crosswalk?")

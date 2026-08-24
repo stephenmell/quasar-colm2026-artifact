@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_short = None
+    result = None
+    rightmost_ski = None
+    ski_patches = None
+    image_patch = ImagePatch(image)
+    ski_patches = image_patch.find('ski')
+
+    def _if(image_patch, is_short, result, rightmost_ski, ski_patches):
+        result = image_patch.simple_query('Does the ski to the right of the other ski have short length?')
+        return (image_patch, is_short, result, rightmost_ski, ski_patches)
+
+    def _else(image_patch, is_short, result, rightmost_ski, ski_patches):
+        rightmost_ski = ski_patches[0]
+
+        def _for(ski_patch, image_patch, rightmost_ski, ski_patches):
+
+            def _if(image_patch, rightmost_ski, ski_patches):
+                rightmost_ski = ski_patch
+                return (image_patch, rightmost_ski, ski_patches)
+            image_patch, rightmost_ski, ski_patches = if_stmt(_if, None, ski_patch.horizontal_center > rightmost_ski.horizontal_center, (image_patch, rightmost_ski, ski_patches))
+            return (image_patch, rightmost_ski, ski_patches)
+        image_patch, rightmost_ski, ski_patches = for_stmt(_for, ski_patches, (image_patch, rightmost_ski, ski_patches))
+        is_short = rightmost_ski.verify_property('ski', 'short')
+        result = bool_to_yesno(is_short)
+        return (image_patch, is_short, result, rightmost_ski, ski_patches)
+    image_patch, is_short, result, rightmost_ski, ski_patches = if_stmt(_if, _else, len(ski_patches) < 2, (image_patch, is_short, result, rightmost_ski, ski_patches))
+    return result

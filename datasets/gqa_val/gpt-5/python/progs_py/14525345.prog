@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find("car")
+    if len(car_patches) == 0:
+        # If no car is found, query the image directly
+        return image_patch.simple_query("Are there men to the right of the car that is crossing the road?")
+    crossing_car_patch = None
+    for car_patch in car_patches:
+        if car_patch.verify_property("car", "crossing the road"):
+            crossing_car_patch = car_patch
+            break
+    if crossing_car_patch is None:
+        # If no car crossing the road is found, query directly
+        return image_patch.simple_query("Are there men to the right of the car that is crossing the road?")
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return "no"
+    for man_patch in man_patches:
+        if man_patch.horizontal_center > crossing_car_patch.horizontal_center:
+            return "yes"
+    return "no"

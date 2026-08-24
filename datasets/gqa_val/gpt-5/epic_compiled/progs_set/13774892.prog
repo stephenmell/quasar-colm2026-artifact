@@ -1,0 +1,64 @@
+def execute_command(image) -> str:
+    area_patch = None
+    image_patch = None
+    left = None
+    lower = None
+    result = None
+    right = None
+    right_area_patch = None
+    road_patches = None
+    train_patch = None
+    train_patches = None
+    truck_patches = None
+    upper = None
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find('train')
+
+    def _if(area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper):
+        result = image_patch.simple_query('Are there trucks to the right of the train on the road?')
+        return (area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper)
+
+    def _else(area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper):
+        result = 'no'
+        train_patch = train_patches[0]
+        road_patches = image_patch.find('road')
+
+        def _if(area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper):
+            right_area_patch = image_patch.crop(train_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            truck_patches = right_area_patch.find('truck')
+
+            def _for(truck_patch, image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches):
+
+                def _if(image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches):
+                    result = 'yes'
+                    return (image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches)
+                image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches = if_stmt(_if, None, truck_patch.verify_property('truck', 'on road'), (image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches))
+                return (image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches)
+            image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches = for_stmt(_for, truck_patches, (image_patch, result, right_area_patch, road_patches, train_patch, train_patches, truck_patches))
+            return (area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper)
+
+        def _else(area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper):
+
+            def _for(road_patch, area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper):
+                left = train_patch.right if train_patch.right > road_patch.left else road_patch.left
+                right = road_patch.right if road_patch.right < image_patch.right else image_patch.right
+                lower = road_patch.lower
+                upper = road_patch.upper
+
+                def _if(area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper):
+                    area_patch = image_patch.crop(left, lower, right, upper)
+                    truck_patches = area_patch.find('truck')
+
+                    def _for(truck_patch, area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper):
+                        result = 'yes'
+                        return (area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper)
+                    area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper = for_stmt(_for, truck_patches, (area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper))
+                    return (area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper)
+                area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper = if_stmt(_if, None, and_expr(left < right, lower < upper), (area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper))
+                return (area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper)
+            area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper = for_stmt(_for, road_patches, (area_patch, image_patch, left, lower, result, right, road_patches, train_patch, train_patches, truck_patches, upper))
+            return (area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper)
+        area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper = if_stmt(_if, _else, len(road_patches) == 0, (area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper))
+        return (area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper)
+    area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper = if_stmt(_if, _else, len(train_patches) == 0, (area_patch, image_patch, left, lower, result, right, right_area_patch, road_patches, train_patch, train_patches, truck_patches, upper))
+    return result

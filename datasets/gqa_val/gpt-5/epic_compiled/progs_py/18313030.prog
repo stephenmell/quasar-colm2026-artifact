@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    sword_exists = image_patch.exists("sword")
+    flag_exists = image_patch.exists("flag")
+
+    if sword_exists:
+        sword_patches = image_patch.find("sword")
+        for sword_patch in sword_patches:
+            if sword_patch.verify_property("sword", "yellow"):
+                result = "yes"
+
+    if flag_exists:
+        flag_patches = image_patch.find("flag")
+        for flag_patch in flag_patches:
+            if flag_patch.verify_property("flag", "yellow"):
+                result = "yes"
+
+    if (not sword_exists) and (not flag_exists):
+        result = image_patch.simple_query("Is there any yellow sword or flag?")
+    return result

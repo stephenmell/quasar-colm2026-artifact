@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2355947",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "woman"
+      ],
+      [],
+      10999887044
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2355947",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "Is the woman looking down or talking?"
+      ],
+      "I can't tell.",
+      1298085256
+    ]
+  ],
+  "best_text_match": []
+}

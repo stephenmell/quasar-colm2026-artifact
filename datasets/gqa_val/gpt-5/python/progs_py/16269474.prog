@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    radio_patches = image_patch.find("radio")
+    # If no radio is found, ask directly
+    if len(radio_patches) == 0:
+        return image_patch.simple_query("Do you see towers to the left of the radio?")
+    # Try to find towers (handle singular/plural)
+    tower_patches = image_patch.find("tower")
+    if len(tower_patches) == 0:
+        tower_patches = image_patch.find("towers")
+    if len(tower_patches) == 0:
+        return "no"
+    for radio_patch in radio_patches:
+        for tower_patch in tower_patches:
+            if tower_patch.horizontal_center < radio_patch.horizontal_center:
+                return "yes"
+    return "no"

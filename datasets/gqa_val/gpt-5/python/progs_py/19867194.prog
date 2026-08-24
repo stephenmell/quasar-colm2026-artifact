@@ -1,0 +1,35 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the water glass (fallback to generic glass if needed)
+    glass_patches = image_patch.find("water glass")
+    if len(glass_patches) == 0:
+        glass_patches = image_patch.find("glass")
+    if len(glass_patches) == 0:
+        # If no glass is found, ask directly
+        return image_patch.simple_query("What is the food that is to the right of the water glass?")
+
+    glass_patch = glass_patches[0]
+
+    # Crop the area to the right of the glass
+    right_crop = image_patch.crop(glass_patch.right, 0, image_patch.width, image_patch.height)
+
+    # Try to find generic 'food' first
+    food_patches = right_crop.find("food")
+    if len(food_patches) > 0:
+        # Choose the leftmost food (closest to the glass within the right crop)
+        food_patches.sort(key=lambda p: p.left)
+        return food_patches[0].simple_query("What is this?")
+
+    # Fallback: try common food categories
+    for food_name in [
+        "sandwich", "pizza", "bread", "cake", "cookie", "salad", "pasta", "noodles",
+        "burger", "hot dog", "fries", "steak", "chicken", "fish", "sushi", "donut",
+        "banana", "apple", "orange", "grapes", "strawberry", "carrot"
+    ]:
+        patches = right_crop.find(food_name)
+        if len(patches) > 0:
+            return patches[0].simple_query("What is this?")
+
+    # Final fallback: ask directly about the right side region
+    return right_crop.simple_query("What is the food that is to the right of the water glass?")

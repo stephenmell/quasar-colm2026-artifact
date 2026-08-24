@@ -1,0 +1,33 @@
+def execute_command(image) -> str:
+    bag_terms = None
+    boy_terms = None
+    image_patch = None
+    is_bag = None
+    is_boy = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    boy_terms = ('boy', 'boys')
+    bag_terms = ('bag', 'bags', 'handbag', 'backpack', 'purse', 'shopping bag')
+    is_boy = False
+
+    def _for(term, bag_terms, boy_terms, image_patch, is_boy, result):
+
+        def _if(bag_terms, boy_terms, image_patch, is_boy, result):
+            is_boy = True
+            return (bag_terms, boy_terms, image_patch, is_boy, result)
+        bag_terms, boy_terms, image_patch, is_boy, result = if_stmt(_if, None, image_patch.exists(term), (bag_terms, boy_terms, image_patch, is_boy, result))
+        return (bag_terms, boy_terms, image_patch, is_boy, result)
+    bag_terms, boy_terms, image_patch, is_boy, result = for_stmt(_for, boy_terms, (bag_terms, boy_terms, image_patch, is_boy, result))
+    is_bag = False
+
+    def _for(term, bag_terms, boy_terms, image_patch, is_bag, is_boy, result):
+
+        def _if(bag_terms, boy_terms, image_patch, is_bag, is_boy, result):
+            is_bag = True
+            return (bag_terms, boy_terms, image_patch, is_bag, is_boy, result)
+        bag_terms, boy_terms, image_patch, is_bag, is_boy, result = if_stmt(_if, None, image_patch.exists(term), (bag_terms, boy_terms, image_patch, is_bag, is_boy, result))
+        return (bag_terms, boy_terms, image_patch, is_bag, is_boy, result)
+    bag_terms, boy_terms, image_patch, is_bag, is_boy, result = for_stmt(_for, bag_terms, (bag_terms, boy_terms, image_patch, is_bag, is_boy, result))
+    result = bool_to_yesno(or_expr(is_boy, is_bag))
+    return result

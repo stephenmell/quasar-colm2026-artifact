@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    catcher_patches = None
+    image_patch = None
+    is_masked = None
+    masked_person_patch = None
+    person_patches = None
+    result = None
+    right_area_patch = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    person_patches = image_patch.find('person')
+
+    def _if(catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch):
+        result = image_patch.simple_query('Do you see catchers to the right of the person that is wearing a mask?')
+        return (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch)
+
+    def _else(catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch):
+        masked_person_patch = None
+
+        def _for(person_patch, image_patch, is_masked, masked_person_patch, person_patches, result):
+            is_masked = person_patch.simple_query('Is the person wearing a mask?') == 'yes'
+
+            def _if(image_patch, is_masked, masked_person_patch, person_patches, result):
+                masked_person_patch = person_patch
+                return (image_patch, is_masked, masked_person_patch, person_patches, result)
+            image_patch, is_masked, masked_person_patch, person_patches, result = if_stmt(_if, None, and_expr(is_masked, masked_person_patch is None), (image_patch, is_masked, masked_person_patch, person_patches, result))
+            return (image_patch, is_masked, masked_person_patch, person_patches, result)
+        image_patch, is_masked, masked_person_patch, person_patches, result = for_stmt(_for, person_patches, (image_patch, is_masked, masked_person_patch, person_patches, result))
+
+        def _if(catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch):
+            result = image_patch.simple_query('Do you see catchers to the right of the person that is wearing a mask?')
+            return (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch)
+
+        def _else(catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch):
+            right_area_patch = image_patch.crop(masked_person_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            catcher_patches = right_area_patch.find('catcher')
+
+            def _if(catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch):
+                catcher_patches = right_area_patch.find('baseball catcher')
+                return (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch)
+            catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch = if_stmt(_if, None, len(catcher_patches) == 0, (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch))
+
+            def _if(catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch):
+                catcher_patches = right_area_patch.find('catchers')
+                return (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch)
+            catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch = if_stmt(_if, None, len(catcher_patches) == 0, (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch))
+
+            def _if(catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch):
+                result = 'yes'
+                return (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch)
+            catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch = if_stmt(_if, None, len(catcher_patches) > 0, (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch))
+            return (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch)
+        catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch = if_stmt(_if, _else, masked_person_patch is None, (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch))
+        return (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch)
+    catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch = if_stmt(_if, _else, len(person_patches) == 0, (catcher_patches, image_patch, is_masked, masked_person_patch, person_patches, result, right_area_patch))
+    return result

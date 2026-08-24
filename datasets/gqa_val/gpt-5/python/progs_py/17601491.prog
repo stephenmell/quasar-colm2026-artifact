@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    knife_patches = image_patch.find("knife")
+    table_patches = image_patch.find("table")
+
+    # If we can't find the required objects, ask directly
+    if len(knife_patches) == 0 or len(table_patches) == 0:
+        return image_patch.simple_query("What color is the knife on the table, silver or brown?")
+
+    # Find a knife whose center lies within a table's bounding box
+    for knife_patch in knife_patches:
+        kx = knife_patch.horizontal_center
+        ky = knife_patch.vertical_center
+        for table_patch in table_patches:
+            if (table_patch.left <= kx <= table_patch.right) and (table_patch.lower <= ky <= table_patch.upper):
+                return knife_patch.best_text_match(["silver", "brown"])
+
+    # Fallback if spatial relation isn't clear
+    return image_patch.simple_query("What color is the knife on the table, silver or brown?")

@@ -1,0 +1,8 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_racket = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_racket = image_patch.exists('racket')
+    result = bool_to_yesno(is_racket)
+    return result

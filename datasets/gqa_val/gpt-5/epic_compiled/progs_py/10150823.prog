@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bed_patches = image_patch.find("bed")
+    lamp_patches = image_patch.find("lamp")
+
+    white_lamp_patches = ()
+    for lamp_patch in lamp_patches:
+        if lamp_patch.verify_property("lamp", "white"):
+            white_lamp_patches = white_lamp_patches + (lamp_patch,)
+
+    if len(bed_patches) == 0 or len(white_lamp_patches) == 0:
+        result = image_patch.simple_query("Is the bed to the left or to the right of the white lamp?")
+    else:
+        bed_patch = bed_patches[0]
+        white_lamp_patch = white_lamp_patches[0]
+        if bed_patch.horizontal_center < white_lamp_patch.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    pillow_patches = None
+    result = None
+    telephone_patches = None
+    image_patch = ImagePatch(image)
+    telephone_patches = image_patch.find('telephone')
+
+    def _if(image_patch, pillow_patches, result, telephone_patches):
+        result = image_patch.simple_query('Is the telephone to the left of a pillow?')
+        return (image_patch, pillow_patches, result, telephone_patches)
+
+    def _else(image_patch, pillow_patches, result, telephone_patches):
+        pillow_patches = image_patch.find('pillow')
+
+        def _if(image_patch, pillow_patches, result, telephone_patches):
+            result = 'no'
+            return (image_patch, pillow_patches, result, telephone_patches)
+
+        def _else(image_patch, pillow_patches, result, telephone_patches):
+            result = 'no'
+
+            def _for(telephone_patch, image_patch, pillow_patches, result, telephone_patches):
+
+                def _for(pillow_patch, image_patch, pillow_patches, result, telephone_patches):
+
+                    def _if(image_patch, pillow_patches, result, telephone_patches):
+                        result = 'yes'
+                        return (image_patch, pillow_patches, result, telephone_patches)
+                    image_patch, pillow_patches, result, telephone_patches = if_stmt(_if, None, telephone_patch.horizontal_center < pillow_patch.horizontal_center, (image_patch, pillow_patches, result, telephone_patches))
+                    return (image_patch, pillow_patches, result, telephone_patches)
+                image_patch, pillow_patches, result, telephone_patches = for_stmt(_for, pillow_patches, (image_patch, pillow_patches, result, telephone_patches))
+                return (image_patch, pillow_patches, result, telephone_patches)
+            image_patch, pillow_patches, result, telephone_patches = for_stmt(_for, telephone_patches, (image_patch, pillow_patches, result, telephone_patches))
+            return (image_patch, pillow_patches, result, telephone_patches)
+        image_patch, pillow_patches, result, telephone_patches = if_stmt(_if, _else, len(pillow_patches) == 0, (image_patch, pillow_patches, result, telephone_patches))
+        return (image_patch, pillow_patches, result, telephone_patches)
+    image_patch, pillow_patches, result, telephone_patches = if_stmt(_if, _else, len(telephone_patches) == 0, (image_patch, pillow_patches, result, telephone_patches))
+    return result

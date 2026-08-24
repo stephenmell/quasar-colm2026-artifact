@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find("vehicle")
+    # If no vehicles are found, ask the image directly
+    if len(vehicle_patches) == 0:
+        return image_patch.simple_query("Which vehicle is green?")
+    # Collect vehicles that are green
+    green_vehicle_patches = []
+    for vehicle_patch in vehicle_patches:
+        if vehicle_patch.verify_property("vehicle", "green"):
+            green_vehicle_patches.append(vehicle_patch)
+    # If none detected as green, ask directly
+    if len(green_vehicle_patches) == 0:
+        return image_patch.simple_query("Which vehicle is green?")
+    # If multiple, choose the largest one
+    largest_green = max(green_vehicle_patches, key=lambda p: p.width * p.height)
+    return largest_green.simple_query("Which vehicle is green?")

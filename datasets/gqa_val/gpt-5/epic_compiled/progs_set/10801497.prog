@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_lamp = None
+    is_mirror = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_mirror = or_expr(image_patch.exists('mirror'), image_patch.exists('mirrors'))
+    is_lamp = or_expr(image_patch.exists('lamp'), image_patch.exists('lamps'))
+    result = bool_to_yesno(or_expr(is_mirror, is_lamp))
+    return result

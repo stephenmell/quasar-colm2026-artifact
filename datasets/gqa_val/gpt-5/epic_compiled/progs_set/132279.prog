@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    image_patch = None
+    man_patches = None
+    pan_patches = None
+    pot_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+    pot_patches = image_patch.find('pot')
+
+    def _if(image_patch, man_patches, pan_patches, pot_patches, result):
+        result = image_patch.simple_query('Do you see any pans to the right of the man the pot is to the right of?')
+        return (image_patch, man_patches, pan_patches, pot_patches, result)
+
+    def _else(image_patch, man_patches, pan_patches, pot_patches, result):
+        pan_patches = image_patch.find('pan')
+
+        def _for(pot_patch, image_patch, man_patches, pan_patches, pot_patches, result):
+
+            def _for(man_patch, image_patch, man_patches, pan_patches, pot_patches, result):
+
+                def _if(image_patch, man_patches, pan_patches, pot_patches, result):
+
+                    def _for(pan_patch, image_patch, man_patches, pan_patches, pot_patches, result):
+
+                        def _if(image_patch, man_patches, pan_patches, pot_patches, result):
+                            result = 'yes'
+                            return (image_patch, man_patches, pan_patches, pot_patches, result)
+                        image_patch, man_patches, pan_patches, pot_patches, result = if_stmt(_if, None, pan_patch.horizontal_center > man_patch.horizontal_center, (image_patch, man_patches, pan_patches, pot_patches, result))
+                        return (image_patch, man_patches, pan_patches, pot_patches, result)
+                    image_patch, man_patches, pan_patches, pot_patches, result = for_stmt(_for, pan_patches, (image_patch, man_patches, pan_patches, pot_patches, result))
+                    return (image_patch, man_patches, pan_patches, pot_patches, result)
+                image_patch, man_patches, pan_patches, pot_patches, result = if_stmt(_if, None, man_patch.horizontal_center < pot_patch.horizontal_center, (image_patch, man_patches, pan_patches, pot_patches, result))
+                return (image_patch, man_patches, pan_patches, pot_patches, result)
+            image_patch, man_patches, pan_patches, pot_patches, result = for_stmt(_for, man_patches, (image_patch, man_patches, pan_patches, pot_patches, result))
+            return (image_patch, man_patches, pan_patches, pot_patches, result)
+        image_patch, man_patches, pan_patches, pot_patches, result = for_stmt(_for, pot_patches, (image_patch, man_patches, pan_patches, pot_patches, result))
+        return (image_patch, man_patches, pan_patches, pot_patches, result)
+    image_patch, man_patches, pan_patches, pot_patches, result = if_stmt(_if, _else, or_expr(len(man_patches) == 0, len(pot_patches) == 0), (image_patch, man_patches, pan_patches, pot_patches, result))
+    return result

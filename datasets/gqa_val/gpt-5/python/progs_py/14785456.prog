@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lamp_patches = image_patch.find("lamp")
+    # Question assumes only one lamp patch
+    if len(lamp_patches) == 0:
+        # If no lamp is found, query the image directly
+        return image_patch.simple_query("Is the lamp on the left?")
+    for lamp_patch in lamp_patches:
+        if lamp_patch.horizontal_center < image_patch.horizontal_center:
+            return "yes"
+    return "no"

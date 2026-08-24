@@ -1,0 +1,32 @@
+Stage: other execution error
+Error: '>' not supported between instances of 'float' and 'NoneType'
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 264, in main
+    epic_exec_result = tuple(semantics.reduce_graph_opportunistic(epic_final))[-1]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 152, in reduce_graph_opportunistic
+    g = reduce_term(f, "bfs", False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 145, in reduce_term
+    return asyncio.get_event_loop().run_until_complete(reduce_term_async(e, tree_policy, blocking_async))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/environments/boreal/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 125, in reduce_term_async
+    new_ops, toucheds = await graph_step(s, ident)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 197, in graph_step
+    return await graph_step_call(s, ident)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 216, in graph_step_call
+    return await graph_step_call_prim(s, call_name, outps, call_ident, call_f, inps, prim_idents[0], prim_idents[1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/graph_semantics.py", line 239, in graph_step_call_prim
+    prim_res : Union[Body, Coroutine[Body, typing.Any, typing.Any]] = cast(f_obj)(*inp_objs)
+                                                                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/translator.py", line 391, in gt
+    return (("prim", prim_var, left > right),), (prim_var,)
+                               ^^^^^^^^^^^^
+TypeError: '>' not supported between instances of 'float' and 'NoneType'

@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    carriage_patches = image_patch.find("carriage")
+    if len(carriage_patches) == 0:
+        result = image_patch.simple_query("Is the black carriage to the left of the brown horse?")
+    else:
+        horse_patches = image_patch.find("horse")
+        if len(horse_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for carriage_patch in carriage_patches:
+                is_black_carriage = carriage_patch.verify_property("carriage", "black")
+                if is_black_carriage:
+                    for horse_patch in horse_patches:
+                        is_brown_horse = horse_patch.verify_property("horse", "brown")
+                        if is_brown_horse:
+                            if carriage_patch.horizontal_center < horse_patch.horizontal_center:
+                                result = "yes"
+    return result

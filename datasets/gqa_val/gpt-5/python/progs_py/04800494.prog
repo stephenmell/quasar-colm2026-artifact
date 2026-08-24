@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_fire_hydrant = image_patch.exists("fire hydrant")
+    is_cigar = image_patch.exists("cigar")
+    return bool_to_yesno(is_fire_hydrant or is_cigar)

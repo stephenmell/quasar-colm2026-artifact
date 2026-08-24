@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    found_female = None
+    has_female_prop = None
+    has_woman_prop = None
+    image_patch = None
+    is_girl = None
+    is_girls = None
+    is_woman = None
+    is_women = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    is_woman = image_patch.exists('woman')
+    is_women = image_patch.exists('women')
+    is_girl = image_patch.exists('girl')
+    is_girls = image_patch.exists('girls')
+
+    def _if(found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+        result = 'yes'
+        return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+
+    def _else(found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+        person_patches = image_patch.find('person')
+        found_female = False
+
+        def _if(found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+
+            def _for(person_patch, found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+                has_female_prop = person_patch.verify_property('person', 'female')
+                has_woman_prop = person_patch.verify_property('person', 'woman')
+
+                def _if(found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+                    found_female = True
+                    return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+                found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result = if_stmt(_if, None, or_expr(has_female_prop, has_woman_prop), (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result))
+                return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+            found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result = for_stmt(_for, person_patches, (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result))
+
+            def _if(found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+                result = 'yes'
+                return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+
+            def _else(found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+                result = image_patch.simple_query('Are there any women in this scene?')
+                return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+            found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result = if_stmt(_if, _else, found_female, (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result))
+            return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+
+        def _else(found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result):
+            result = image_patch.simple_query('Are there any women in this scene?')
+            return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+        found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result = if_stmt(_if, _else, len(person_patches) > 0, (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result))
+        return (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result)
+    found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result = if_stmt(_if, _else, or_expr(is_woman, or_expr(is_women, or_expr(is_girl, is_girls))), (found_female, has_female_prop, has_woman_prop, image_patch, is_girl, is_girls, is_woman, is_women, person_patches, result))
+    return result

@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_boy = None
+    has_fence = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_fence = or_expr(image_patch.exists('fence'), image_patch.exists('fences'))
+    has_boy = or_expr(image_patch.exists('boy'), image_patch.exists('boys'))
+    result = bool_to_yesno(or_expr(has_fence, has_boy))
+    return result

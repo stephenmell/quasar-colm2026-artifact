@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    keyboard_patches = image_patch.find("keyboard")
+    # If either object isn't found, ask directly
+    if len(plate_patches) == 0 or len(keyboard_patches) == 0:
+        return image_patch.simple_query("Is the plate to the left of the keyboard in the bottom part of the image?")
+    # Check if plate is left of keyboard and both are in the bottom part
+    for plate_patch in plate_patches:
+        for keyboard_patch in keyboard_patches:
+            is_left = plate_patch.horizontal_center < keyboard_patch.horizontal_center
+            plate_bottom = plate_patch.vertical_center < image_patch.vertical_center
+            keyboard_bottom = keyboard_patch.vertical_center < image_patch.vertical_center
+            if is_left and plate_bottom and keyboard_bottom:
+                return "yes"
+    return "no"

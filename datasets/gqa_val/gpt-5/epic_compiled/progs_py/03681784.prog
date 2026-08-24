@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    found_any = False
+
+    object_names = ("racket", "tennis racket", "badminton racket")
+    for obj_name in object_names:
+        if image_patch.exists(obj_name):
+            found_any = True
+            patches = image_patch.find(obj_name)
+            for patch in patches:
+                if patch.verify_property(obj_name, "black"):
+                    result = "yes"
+
+    if not found_any:
+        result = image_patch.simple_query("Does that racket look black?")
+    return result

@@ -1,0 +1,16 @@
+# Does the pepper on the cutting board have yellow color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pepper_patches = image_patch.find("pepper")
+    board_patches = image_patch.find("cutting board")
+
+    if len(pepper_patches) == 0 or len(board_patches) == 0:
+        result = image_patch.simple_query("Does the pepper on the cutting board have yellow color?")
+    else:
+        result = "no"
+        for board_patch in board_patches:
+            peppers_on_board = board_patch.find("pepper")
+            for pepper_patch in peppers_on_board:
+                if pepper_patch.verify_property("pepper", "yellow"):
+                    result = "yes"
+    return result

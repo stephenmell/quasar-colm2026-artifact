@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    car_exists = None
+    car_patches = None
+    door_exists = None
+    door_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    car_exists = image_patch.exists('car')
+
+    def _if(car_exists, car_patches, image_patch, result):
+        car_patches = image_patch.find('car')
+
+        def _for(car_patch, car_exists, car_patches, image_patch, result):
+
+            def _if(car_exists, car_patches, image_patch, result):
+                result = 'yes'
+                return (car_exists, car_patches, image_patch, result)
+            car_exists, car_patches, image_patch, result = if_stmt(_if, None, car_patch.verify_property('car', 'gray'), (car_exists, car_patches, image_patch, result))
+            return (car_exists, car_patches, image_patch, result)
+        car_exists, car_patches, image_patch, result = for_stmt(_for, car_patches, (car_exists, car_patches, image_patch, result))
+        return (car_exists, car_patches, image_patch, result)
+    car_exists, car_patches, image_patch, result = if_stmt(_if, None, car_exists, (car_exists, car_patches, image_patch, result))
+    door_exists = image_patch.exists('door')
+
+    def _if(car_exists, car_patches, door_exists, door_patches, image_patch, result):
+        door_patches = image_patch.find('door')
+
+        def _for(door_patch, car_exists, car_patches, door_exists, door_patches, image_patch, result):
+
+            def _if(car_exists, car_patches, door_exists, door_patches, image_patch, result):
+                result = 'yes'
+                return (car_exists, car_patches, door_exists, door_patches, image_patch, result)
+            car_exists, car_patches, door_exists, door_patches, image_patch, result = if_stmt(_if, None, door_patch.verify_property('door', 'gray'), (car_exists, car_patches, door_exists, door_patches, image_patch, result))
+            return (car_exists, car_patches, door_exists, door_patches, image_patch, result)
+        car_exists, car_patches, door_exists, door_patches, image_patch, result = for_stmt(_for, door_patches, (car_exists, car_patches, door_exists, door_patches, image_patch, result))
+        return (car_exists, car_patches, door_exists, door_patches, image_patch, result)
+    car_exists, car_patches, door_exists, door_patches, image_patch, result = if_stmt(_if, None, door_exists, (car_exists, car_patches, door_exists, door_patches, image_patch, result))
+    return result

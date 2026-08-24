@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    boy_patches = None
+    drink_patches = None
+    eating_boy_found = None
+    image_patch = None
+    is_eating_pizza = None
+    result = None
+    term_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    boy_patches = image_patch.find('boy')
+
+    def _if(boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches):
+        result = image_patch.simple_query('Is the drink to the right of the boy that eats a pizza?')
+        return (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches)
+
+    def _else(boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches):
+        drink_patches = ()
+
+        def _for(term, boy_patches, drink_patches, image_patch, result, term_patches):
+            term_patches = image_patch.find(term)
+
+            def _if(boy_patches, drink_patches, image_patch, result, term_patches):
+                drink_patches = drink_patches + term_patches
+                return (boy_patches, drink_patches, image_patch, result, term_patches)
+            boy_patches, drink_patches, image_patch, result, term_patches = if_stmt(_if, None, len(term_patches) > 0, (boy_patches, drink_patches, image_patch, result, term_patches))
+            return (boy_patches, drink_patches, image_patch, result, term_patches)
+        boy_patches, drink_patches, image_patch, result, term_patches = for_stmt(_for, ('drink', 'cup', 'glass', 'bottle', 'can', 'mug'), (boy_patches, drink_patches, image_patch, result, term_patches))
+        eating_boy_found = False
+
+        def _for(boy_patch, boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches):
+            is_eating_pizza = boy_patch.simple_query('Is the boy eating a pizza?') == 'yes'
+
+            def _if(boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches):
+                eating_boy_found = True
+
+                def _for(drink_patch, boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches):
+
+                    def _if(boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches):
+                        result = 'yes'
+                        return (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches)
+                    boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches = if_stmt(_if, None, drink_patch.horizontal_center > boy_patch.horizontal_center, (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches))
+                    return (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches)
+                boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches = for_stmt(_for, drink_patches, (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches))
+                return (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches)
+            boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches = if_stmt(_if, None, is_eating_pizza, (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches))
+            return (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches)
+        boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches = for_stmt(_for, boy_patches, (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches))
+
+        def _if(boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches):
+            result = image_patch.simple_query('Is the drink to the right of the boy that eats a pizza?')
+            return (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches)
+        boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches = if_stmt(_if, None, not_expr(eating_boy_found), (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches))
+        return (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches)
+    boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches = if_stmt(_if, _else, len(boy_patches) == 0, (boy_patches, drink_patches, eating_boy_found, image_patch, is_eating_pizza, result, term_patches))
+    return result

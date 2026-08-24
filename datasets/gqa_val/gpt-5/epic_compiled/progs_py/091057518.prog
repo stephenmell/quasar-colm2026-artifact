@@ -1,0 +1,10 @@
+# Do you see any shelves?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    synonyms = ("shelf", "shelves", "bookshelf", "bookcase", "shelving")
+    found = False
+    for name in synonyms:
+        exists_now = image_patch.exists(name)
+        found = (found or exists_now)
+    result = bool_to_yesno(found)
+    return result

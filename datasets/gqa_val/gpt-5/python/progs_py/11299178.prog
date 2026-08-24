@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    phone_patches = image_patch.find("phone")
+    woman_patches = image_patch.find("woman")
+    # If either object isn't detected, ask directly
+    if len(phone_patches) == 0 or len(woman_patches) == 0:
+        return image_patch.simple_query("Is the woman that is to the right of the phone sitting on a bench?")
+    # Find the woman closest to the right of any phone
+    closest_woman = None
+    min_delta = None
+    for phone_patch in phone_patches:
+        for woman_patch in woman_patches:
+            delta = woman_patch.horizontal_center - phone_patch.horizontal_center
+            if delta > 0 and (min_delta is None or delta < min_delta):
+                min_delta = delta
+                closest_woman = woman_patch
+    if closest_woman is None:
+        return "no"
+    return "yes" if closest_woman.simple_query("Is the woman sitting on a bench?") == "yes" else "no"

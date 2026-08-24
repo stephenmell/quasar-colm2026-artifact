@@ -1,0 +1,23 @@
+# Do you see bags there?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bag_like_objects = (
+        "bag",
+        "bags",
+        "backpack",
+        "handbag",
+        "purse",
+        "shopping bag",
+        "tote",
+        "tote bag",
+        "duffel bag",
+        "briefcase",
+        "suitcase",
+        "luggage",
+    )
+    seen = False
+    for name in bag_like_objects:
+        if image_patch.exists(name):
+            seen = True
+    result = bool_to_yesno(seen)
+    return result

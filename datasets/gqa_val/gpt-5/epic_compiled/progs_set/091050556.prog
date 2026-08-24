@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    helmet_patches = None
+    image_patch = None
+    is_wearing_shoe = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(helmet_patches, image_patch, is_wearing_shoe, person_patches, result):
+        result = image_patch.simple_query('Are there helmets to the left of the person that is wearing a shoe?')
+        return (helmet_patches, image_patch, is_wearing_shoe, person_patches, result)
+
+    def _else(helmet_patches, image_patch, is_wearing_shoe, person_patches, result):
+        result = 'no'
+        helmet_patches = image_patch.find('helmet')
+
+        def _for(person_patch, helmet_patches, image_patch, is_wearing_shoe, person_patches, result):
+            is_wearing_shoe = person_patch.simple_query('Is the person wearing a shoe?') == 'yes'
+
+            def _if(helmet_patches, image_patch, is_wearing_shoe, person_patches, result):
+
+                def _for(helmet_patch, helmet_patches, image_patch, is_wearing_shoe, person_patches, result):
+
+                    def _if(helmet_patches, image_patch, is_wearing_shoe, person_patches, result):
+                        result = 'yes'
+                        return (helmet_patches, image_patch, is_wearing_shoe, person_patches, result)
+                    helmet_patches, image_patch, is_wearing_shoe, person_patches, result = if_stmt(_if, None, helmet_patch.horizontal_center < person_patch.horizontal_center, (helmet_patches, image_patch, is_wearing_shoe, person_patches, result))
+                    return (helmet_patches, image_patch, is_wearing_shoe, person_patches, result)
+                helmet_patches, image_patch, is_wearing_shoe, person_patches, result = for_stmt(_for, helmet_patches, (helmet_patches, image_patch, is_wearing_shoe, person_patches, result))
+                return (helmet_patches, image_patch, is_wearing_shoe, person_patches, result)
+            helmet_patches, image_patch, is_wearing_shoe, person_patches, result = if_stmt(_if, None, is_wearing_shoe, (helmet_patches, image_patch, is_wearing_shoe, person_patches, result))
+            return (helmet_patches, image_patch, is_wearing_shoe, person_patches, result)
+        helmet_patches, image_patch, is_wearing_shoe, person_patches, result = for_stmt(_for, person_patches, (helmet_patches, image_patch, is_wearing_shoe, person_patches, result))
+        return (helmet_patches, image_patch, is_wearing_shoe, person_patches, result)
+    helmet_patches, image_patch, is_wearing_shoe, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (helmet_patches, image_patch, is_wearing_shoe, person_patches, result))
+    return result

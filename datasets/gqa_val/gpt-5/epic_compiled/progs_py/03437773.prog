@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find("chair")
+
+    if len(chair_patches) == 0:
+        result = image_patch.simple_query("Is the sheet to the left of the chair on the left?")
+    else:
+        leftmost_chair = chair_patches[0]
+        for chair_patch in chair_patches:
+            if chair_patch.horizontal_center < leftmost_chair.horizontal_center:
+                leftmost_chair = chair_patch
+
+        sheet_patches = image_patch.find("sheet")
+        if len(sheet_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for sheet_patch in sheet_patches:
+                if sheet_patch.horizontal_center < leftmost_chair.horizontal_center:
+                    result = "yes"
+    return result

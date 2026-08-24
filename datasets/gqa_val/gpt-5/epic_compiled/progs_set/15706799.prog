@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    cheese_patches = None
+    fork_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    cheese_patches = image_patch.find('cheese')
+
+    def _if(cheese_patches, fork_patches, image_patch, result):
+        result = image_patch.simple_query('Are the cheese food to the left of a fork?')
+        return (cheese_patches, fork_patches, image_patch, result)
+
+    def _else(cheese_patches, fork_patches, image_patch, result):
+        result = 'no'
+        fork_patches = image_patch.find('fork')
+
+        def _for(cheese_patch, cheese_patches, fork_patches, image_patch, result):
+
+            def _for(fork_patch, cheese_patches, fork_patches, image_patch, result):
+
+                def _if(cheese_patches, fork_patches, image_patch, result):
+                    result = 'yes'
+                    return (cheese_patches, fork_patches, image_patch, result)
+                cheese_patches, fork_patches, image_patch, result = if_stmt(_if, None, cheese_patch.horizontal_center < fork_patch.horizontal_center, (cheese_patches, fork_patches, image_patch, result))
+                return (cheese_patches, fork_patches, image_patch, result)
+            cheese_patches, fork_patches, image_patch, result = for_stmt(_for, fork_patches, (cheese_patches, fork_patches, image_patch, result))
+            return (cheese_patches, fork_patches, image_patch, result)
+        cheese_patches, fork_patches, image_patch, result = for_stmt(_for, cheese_patches, (cheese_patches, fork_patches, image_patch, result))
+        return (cheese_patches, fork_patches, image_patch, result)
+    cheese_patches, fork_patches, image_patch, result = if_stmt(_if, _else, len(cheese_patches) == 0, (cheese_patches, fork_patches, image_patch, result))
+    return result

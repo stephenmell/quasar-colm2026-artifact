@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    salad_patches = image_patch.find("salad")
+    # If no salad is found, ask directly
+    if len(salad_patches) == 0:
+        return image_patch.simple_query("Is the red salad in the top of the picture?")
+    # Check for any red salad and whether it's in the top part (per convention used above)
+    for salad_patch in salad_patches:
+        if salad_patch.verify_property("salad", "red"):
+            if salad_patch.vertical_center >= image_patch.vertical_center:
+                return "yes"
+    return "no"

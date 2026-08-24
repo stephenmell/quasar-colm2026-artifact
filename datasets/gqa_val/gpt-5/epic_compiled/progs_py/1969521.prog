@@ -1,0 +1,19 @@
+# Is she snowboarding?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    female_found = False
+    subjects = ("woman", "girl")
+
+    for subject in subjects:
+        subject_patches = image_patch.find(subject)
+        if len(subject_patches) > 0:
+            female_found = True
+        for subject_patch in subject_patches:
+            answer = subject_patch.simple_query("Is the " + subject + " snowboarding?")
+            if answer == "yes":
+                result = "yes"
+
+    if not female_found:
+        result = image_patch.simple_query("Is she snowboarding?")
+    return result

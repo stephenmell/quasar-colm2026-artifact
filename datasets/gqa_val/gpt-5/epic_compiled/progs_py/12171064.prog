@@ -1,0 +1,34 @@
+# Are the fridge and the microwave the same color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fridge_patches = image_patch.find("fridge")
+    microwave_patches = image_patch.find("microwave")
+
+    if len(fridge_patches) == 0 or len(microwave_patches) == 0:
+        result = image_patch.simple_query("Are the fridge and the microwave the same color?")
+    else:
+        colors = ("white", "black", "silver", "gray", "grey", "stainless steel", "metal", "metallic",
+                  "red", "blue", "green", "brown", "yellow", "orange", "pink", "purple", "beige", "tan", "gold")
+
+        fridge_color = fridge_patches[0].best_text_match(colors)
+        microwave_color = microwave_patches[0].best_text_match(colors)
+
+        # Normalize common synonyms
+        fc = fridge_color.lower()
+        mc = microwave_color.lower()
+
+        if fc == "grey":
+            fc = "gray"
+        if mc == "grey":
+            mc = "gray"
+
+        if fc == "stainless steel" or fc == "metal" or fc == "metallic":
+            fc = "silver"
+        if mc == "stainless steel" or mc == "metal" or mc == "metallic":
+            mc = "silver"
+
+        if fc == mc:
+            result = "yes"
+        else:
+            result = "no"
+    return result

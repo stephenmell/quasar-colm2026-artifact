@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    giraffe_patches = None
+    has_white = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find('giraffe')
+
+    def _if(giraffe_patches, has_white, image_patch, result):
+        result = image_patch.simple_query('Does the giraffe have white color?')
+        return (giraffe_patches, has_white, image_patch, result)
+
+    def _else(giraffe_patches, has_white, image_patch, result):
+        has_white = False
+
+        def _for(giraffe_patch, giraffe_patches, has_white, image_patch):
+
+            def _if(giraffe_patches, has_white, image_patch):
+                has_white = True
+                return (giraffe_patches, has_white, image_patch)
+            giraffe_patches, has_white, image_patch = if_stmt(_if, None, giraffe_patch.verify_property('giraffe', 'white'), (giraffe_patches, has_white, image_patch))
+            return (giraffe_patches, has_white, image_patch)
+        giraffe_patches, has_white, image_patch = for_stmt(_for, giraffe_patches, (giraffe_patches, has_white, image_patch))
+        result = bool_to_yesno(has_white)
+        return (giraffe_patches, has_white, image_patch, result)
+    giraffe_patches, has_white, image_patch, result = if_stmt(_if, _else, len(giraffe_patches) == 0, (giraffe_patches, has_white, image_patch, result))
+    return result

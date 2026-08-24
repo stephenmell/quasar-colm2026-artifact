@@ -1,0 +1,35 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find SUVs in the image
+    suv_patches = image_patch.find("suv")
+    if len(suv_patches) == 0:
+        # If no SUV is found, ask directly
+        return image_patch.simple_query("Are there any helmets to the right of the silver SUV?")
+
+    # Filter to silver SUVs
+    silver_suvs = []
+    for suv_patch in suv_patches:
+        if suv_patch.verify_property("suv", "silver"):
+            silver_suvs.append(suv_patch)
+        else:
+            # Fallback check via QA if property verification fails
+            if suv_patch.simple_query("Is the SUV silver?") == "yes":
+                silver_suvs.append(suv_patch)
+
+    if len(silver_suvs) == 0:
+        # If no silver SUV identified, ask directly
+        return image_patch.simple_query("Are there any helmets to the right of the silver SUV?")
+
+    # Find helmets
+    helmet_patches = image_patch.find("helmet")
+    if len(helmet_patches) == 0:
+        return "no"
+
+    # Check if any helmet is to the right of any silver SUV
+    for helmet_patch in helmet_patches:
+        for suv_patch in silver_suvs:
+            if helmet_patch.horizontal_center > suv_patch.horizontal_center:
+                return "yes"
+
+    return "no"

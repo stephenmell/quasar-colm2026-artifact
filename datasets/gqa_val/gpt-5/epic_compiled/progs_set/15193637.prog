@@ -1,0 +1,24 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    speaker_patches = None
+    image_patch = ImagePatch(image)
+    speaker_patches = image_patch.find('speaker')
+
+    def _if(image_patch, result, speaker_patches):
+        result = image_patch.simple_query('On which side of the photo is the speaker?')
+        return (image_patch, result, speaker_patches)
+
+    def _else(image_patch, result, speaker_patches):
+
+        def _if(image_patch, result, speaker_patches):
+            result = 'left'
+            return (image_patch, result, speaker_patches)
+
+        def _else(image_patch, result, speaker_patches):
+            result = 'right'
+            return (image_patch, result, speaker_patches)
+        image_patch, result, speaker_patches = if_stmt(_if, _else, speaker_patches[0].horizontal_center < image_patch.horizontal_center, (image_patch, result, speaker_patches))
+        return (image_patch, result, speaker_patches)
+    image_patch, result, speaker_patches = if_stmt(_if, _else, len(speaker_patches) == 0, (image_patch, result, speaker_patches))
+    return result

@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find sofas (or couches as a fallback)
+    sofa_patches = image_patch.find("sofa")
+    if len(sofa_patches) == 0:
+        sofa_patches = image_patch.find("couch")
+    if len(sofa_patches) == 0:
+        # If no sofa is found, ask directly
+        return image_patch.simple_query("Do you see any remote controls to the left of the sofa that is on the right side?")
+    # Choose the sofa that is on the right side (rightmost on the right half if possible)
+    right_side_sofas = [s for s in sofa_patches if s.horizontal_center >= image_patch.horizontal_center]
+    if len(right_side_sofas) > 0:
+        right_sofa = max(right_side_sofas, key=lambda s: s.horizontal_center)
+    else:
+        right_sofa = max(sofa_patches, key=lambda s: s.horizontal_center)
+    # Find remote controls
+    remote_patches = image_patch.find("remote control")
+    if len(remote_patches) == 0:
+        remote_patches = image_patch.find("remote")
+        if len(remote_patches) == 0:
+            return "no"
+    # Check if any remote control is to the left of the chosen sofa
+    for remote_patch in remote_patches:
+        if remote_patch.horizontal_center < right_sofa.horizontal_center:
+            return "yes"
+    return "no"

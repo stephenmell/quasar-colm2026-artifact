@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    mouse_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    mouse_patches = image_patch.find('mouse')
+
+    def _if(image_patch, mouse_patches, result):
+        result = image_patch.simple_query('Does the mouse look blue?')
+        return (image_patch, mouse_patches, result)
+
+    def _else(image_patch, mouse_patches, result):
+        result = 'no'
+
+        def _for(mouse_patch, image_patch, mouse_patches, result):
+
+            def _if(image_patch, mouse_patches, result):
+                result = 'yes'
+                return (image_patch, mouse_patches, result)
+            image_patch, mouse_patches, result = if_stmt(_if, None, mouse_patch.verify_property('mouse', 'blue'), (image_patch, mouse_patches, result))
+            return (image_patch, mouse_patches, result)
+        image_patch, mouse_patches, result = for_stmt(_for, mouse_patches, (image_patch, mouse_patches, result))
+        return (image_patch, mouse_patches, result)
+    image_patch, mouse_patches, result = if_stmt(_if, _else, len(mouse_patches) == 0, (image_patch, mouse_patches, result))
+    return result

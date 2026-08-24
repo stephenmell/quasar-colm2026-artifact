@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    elephant_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    elephant_patches = image_patch.find('elephant')
+
+    def _if(elephant_patches, image_patch, result):
+        result = image_patch.simple_query('Is there an elephant that is small?')
+        return (elephant_patches, image_patch, result)
+
+    def _else(elephant_patches, image_patch, result):
+        result = 'no'
+
+        def _for(elephant_patch, elephant_patches, image_patch, result):
+
+            def _if(elephant_patches, image_patch, result):
+                result = 'yes'
+                return (elephant_patches, image_patch, result)
+            elephant_patches, image_patch, result = if_stmt(_if, None, elephant_patch.verify_property('elephant', 'small'), (elephant_patches, image_patch, result))
+            return (elephant_patches, image_patch, result)
+        elephant_patches, image_patch, result = for_stmt(_for, elephant_patches, (elephant_patches, image_patch, result))
+        return (elephant_patches, image_patch, result)
+    elephant_patches, image_patch, result = if_stmt(_if, _else, len(elephant_patches) == 0, (elephant_patches, image_patch, result))
+    return result

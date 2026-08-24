@@ -1,0 +1,17 @@
+# Does this motorbike look orange?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    found_any = False
+
+    for object_name in ("motorbike", "motorcycle"):
+        patches = image_patch.find(object_name)
+        if len(patches) > 0:
+            found_any = True
+            for patch in patches:
+                if patch.verify_property(object_name, "orange"):
+                    result = "yes"
+
+    if not found_any:
+        result = image_patch.simple_query("Does this motorbike look orange?")
+    return result

@@ -1,0 +1,14 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find("device")
+    if len(device_patches) == 0:
+        result = image_patch.simple_query("Is the black device on the left of the photo?")
+    else:
+        result = "no"
+        for device_patch in device_patches:
+            is_black = device_patch.verify_property("device", "black")
+            is_left = device_patch.horizontal_center < image_patch.horizontal_center
+            if is_black and is_left:
+                result = "yes"
+    return result

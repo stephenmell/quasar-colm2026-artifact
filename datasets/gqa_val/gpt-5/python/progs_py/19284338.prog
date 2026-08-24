@@ -1,0 +1,37 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find stove(s)
+    stove_patches = image_patch.find("stove")
+
+    # Try to find a wood bowl directly
+    wood_bowl_patches = image_patch.find("wood bowl")
+
+    # If not found directly, find bowls and filter by "wood"/"wooden" property
+    if len(wood_bowl_patches) == 0:
+        bowl_patches = image_patch.find("bowl")
+        for bowl_patch in bowl_patches:
+            is_wood = (
+                bowl_patch.verify_property("bowl", "wood")
+                or bowl_patch.verify_property("bowl", "wooden")
+                or (bowl_patch.simple_query("Is the bowl wooden?") == "yes")
+            )
+            if is_wood:
+                wood_bowl_patches.append(bowl_patch)
+
+    # If either object not found, ask directly
+    if len(stove_patches) == 0 or len(wood_bowl_patches) == 0:
+        return image_patch.simple_query("Is the wood bowl to the left or to the right of the stove?")
+
+    # Choose the bowl-stove pair with the smallest horizontal distance
+    best_pair = None
+    best_dist = float("inf")
+    for bowl_patch in wood_bowl_patches:
+        for stove_patch in stove_patches:
+            dist = abs(bowl_patch.horizontal_center - stove_patch.horizontal_center)
+            if dist < best_dist:
+                best_dist = dist
+                best_pair = (bowl_patch, stove_patch)
+
+    bowl_patch, stove_patch = best_pair
+    return "left" if bowl_patch.horizontal_center < stove_patch.horizontal_center else "right"

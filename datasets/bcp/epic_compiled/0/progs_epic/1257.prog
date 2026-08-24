@@ -1,0 +1,94 @@
+({695: 'context',
+  698: 'llm_query',
+  711: '.join',
+  722: 'return_result',
+  723: '.strip'},
+ ('def',
+  693,
+  ((),
+   ((('call', (694,), -1, ()),
+     ('def',
+      696,
+      ((704, 697),
+       ((('prim', 699, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (700,), 80, (699, 697)),
+         ('prim',
+          701,
+          '\n'
+          'END_DOCUMENT\n'
+          'Extract any details relevant to identifying a TV show '
+          '(series/miniseries) that matches ALL of these constraints, and '
+          'provide evidence from the document if present:\n'
+          '- The show is based on a famous novel.\n'
+          '- Somewhere between 5 to 20 years passed from when the author '
+          'started writing the novel to when it was published.\n'
+          '- One of the lead actors in the show was born in a year when U.S. '
+          'GDP per capita was roughly $3,000 (historically about 1960).\n'
+          '- The actors who portrayed the leading pair in the show did not '
+          'work together again for more than a decade after the show.\n'
+          'For any matching show mentioned in the document, list:\n'
+          '- Show title and year\n'
+          '- Novel and author; approximate start-writing year and publication '
+          'year; the gap (years)\n'
+          '- Names and birth years of the two lead actors, and which one was '
+          'born in ~1960\n'
+          '- The protagonist character name and the actor who plays the '
+          "protagonist's father in the show\n"
+          '- Supporting quotes from the document\n'
+          'If the document does not contain relevant info, answer: No relevant '
+          'info.'),
+         ('call', (702,), 80, (700, 701)),
+         ('call', (703,), 698, (702,)),
+         ('call', (705,), -1, (703,)),
+         ('call', (706,), 80, (704, 705))),
+        (706,)))),
+     ('call', (708,), 79, (695,)),
+     ('call', (707,), 708, (694, 696)),
+     ('prim',
+      709,
+      'Solve this riddle using general knowledge (not limited to any single '
+      'document):\n'
+      'Goal: As of 2023, find the name of the actor who plays the father of '
+      'the protagonist of a TV show (series/miniseries, not a film) based on a '
+      'famous novel, given these constraints:\n'
+      '- 5 to 20 years passed from when the author started writing the novel '
+      'to its publication.\n'
+      '- The year in which one of the lead actors in the show was born, the '
+      'U.S. GDP per capita was about $3,000 (historically around 1960).\n'
+      '- The actors who portrayed the leading pair did not work together again '
+      'for more than a decade.\n'
+      'Think step by step: propose the likeliest show, the novel and author, '
+      'estimate the writing start and publication years and the gap; identify '
+      'the leading pair and which one was born in ~1960; then name the '
+      'protagonist’s father character and the actor who plays him in the show. '
+      'End with: Answer: <actor name only>.'),
+     ('call', (710,), 698, (709,)),
+     ('prim', 713, 'Here are document-based extractions:\n'),
+     ('prim', 712, '\n\n'),
+     ('call', (714,), 711, (712, 707)),
+     ('call', (715,), 80, (713, 714)),
+     ('prim', 716, '\n\nHere is a general-knowledge reasoning attempt:\n'),
+     ('call', (717,), 80, (715, 716)),
+     ('call', (718,), 80, (717, 710)),
+     ('prim',
+      719,
+      '\n'
+      '\n'
+      'Based on everything above, answer the user’s question:\n'
+      'As of 2023, can you find out the name of the actor who plays the father '
+      'of the protagonist of a TV show based on a famous novel? The '
+      'constraints are:\n'
+      '- 5 to 20 years passed from when the author started writing the novel '
+      'to when it was published.\n'
+      '- The year in which one of the lead actors in the show was born, the '
+      'U.S. GDP Per Capita was about $3,000 (historically ~1960).\n'
+      '- The actors who portrayed the leading pair in the show did not work '
+      'together again for more than a decade.\n'
+      'Output ONLY the actor’s full name who plays the protagonist’s father in '
+      'that TV show (series/miniseries). No explanations, no extra words, no '
+      'punctuation.'),
+     ('call', (720,), 80, (718, 719)),
+     ('call', (721,), 698, (720,)),
+     ('call', (724,), 723, (721,)),
+     ('call', (725,), 722, (724,))),
+    (725,)))))

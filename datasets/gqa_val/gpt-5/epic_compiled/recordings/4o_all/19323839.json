@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2372130",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "animal"
+      ],
+      [],
+      14803976197
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2372130",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Are these animals of different types?"
+      ],
+      "No, they are the same type of animal.",
+      1188992659
+    ]
+  ],
+  "best_text_match": []
+}

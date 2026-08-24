@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    image_patch = None
+    jeans_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    jeans_patches = image_patch.find('jeans')
+
+    def _if(image_patch, jeans_patches, result):
+        result = image_patch.simple_query('Are the jeans black or blue?')
+        return (image_patch, jeans_patches, result)
+
+    def _else(image_patch, jeans_patches, result):
+        result = jeans_patches[0].best_text_match(('black', 'blue'))
+        return (image_patch, jeans_patches, result)
+    image_patch, jeans_patches, result = if_stmt(_if, _else, len(jeans_patches) == 0, (image_patch, jeans_patches, result))
+    return result

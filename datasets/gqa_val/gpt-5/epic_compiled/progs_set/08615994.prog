@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    image_patch = None
+    number_aliases = None
+    numbers_present = None
+    result = None
+    word_aliases = None
+    words_present = None
+    image_patch = ImagePatch(image)
+    word_aliases = ('letters', 'words', 'text', 'word', 'letter')
+    number_aliases = ('numbers', 'number', 'digits', 'digit', 'numeral', 'numerals')
+    words_present = False
+
+    def _for(alias, image_patch, number_aliases, word_aliases, words_present):
+
+        def _if(image_patch, number_aliases, word_aliases, words_present):
+            words_present = True
+            return (image_patch, number_aliases, word_aliases, words_present)
+        image_patch, number_aliases, word_aliases, words_present = if_stmt(_if, None, image_patch.exists(alias), (image_patch, number_aliases, word_aliases, words_present))
+        return (image_patch, number_aliases, word_aliases, words_present)
+    image_patch, number_aliases, word_aliases, words_present = for_stmt(_for, word_aliases, (image_patch, number_aliases, word_aliases, words_present))
+    numbers_present = False
+
+    def _for(alias, image_patch, number_aliases, numbers_present, word_aliases, words_present):
+
+        def _if(image_patch, number_aliases, numbers_present, word_aliases, words_present):
+            numbers_present = True
+            return (image_patch, number_aliases, numbers_present, word_aliases, words_present)
+        image_patch, number_aliases, numbers_present, word_aliases, words_present = if_stmt(_if, None, image_patch.exists(alias), (image_patch, number_aliases, numbers_present, word_aliases, words_present))
+        return (image_patch, number_aliases, numbers_present, word_aliases, words_present)
+    image_patch, number_aliases, numbers_present, word_aliases, words_present = for_stmt(_for, number_aliases, (image_patch, number_aliases, numbers_present, word_aliases, words_present))
+
+    def _if(image_patch, number_aliases, numbers_present, result, word_aliases, words_present):
+        result = 'yes'
+        return (image_patch, number_aliases, numbers_present, result, word_aliases, words_present)
+
+    def _else(image_patch, number_aliases, numbers_present, result, word_aliases, words_present):
+        result = image_patch.simple_query('Are there both words and numbers in this image?')
+        return (image_patch, number_aliases, numbers_present, result, word_aliases, words_present)
+    image_patch, number_aliases, numbers_present, result, word_aliases, words_present = if_stmt(_if, _else, and_expr(words_present, numbers_present), (image_patch, number_aliases, numbers_present, result, word_aliases, words_present))
+    return result

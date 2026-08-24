@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_wearing_sneakers = None
+    person_patches = None
+    result = None
+    skateboarder_patches = None
+    image_patch = ImagePatch(image)
+    skateboarder_patches = image_patch.find('skateboarder')
+
+    def _if(image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches):
+        result = image_patch.simple_query('Do you see people to the right of the skateboarder that is wearing sneakers?')
+        return (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches)
+
+    def _else(image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches):
+        result = 'no'
+        person_patches = image_patch.find('person')
+
+        def _for(skateboarder_patch, image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches):
+            is_wearing_sneakers = skateboarder_patch.simple_query('Is the skateboarder wearing sneakers?') == 'yes'
+
+            def _if(image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches):
+
+                def _for(person_patch, image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches):
+
+                    def _if(image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches):
+                        result = 'yes'
+                        return (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches)
+                    image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches = if_stmt(_if, None, person_patch.horizontal_center > skateboarder_patch.horizontal_center, (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches))
+                    return (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches)
+                image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches = for_stmt(_for, person_patches, (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches))
+                return (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches)
+            image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches = if_stmt(_if, None, is_wearing_sneakers, (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches))
+            return (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches)
+        image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches = for_stmt(_for, skateboarder_patches, (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches))
+        return (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches)
+    image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches = if_stmt(_if, _else, len(skateboarder_patches) == 0, (image_patch, is_wearing_sneakers, person_patches, result, skateboarder_patches))
+    return result

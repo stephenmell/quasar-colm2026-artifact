@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    image_patch = None
+    leftmost_woman = None
+    purse_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(image_patch, leftmost_woman, purse_patches, result, woman_patches):
+        result = image_patch.simple_query('Are there any purses to the left of the woman on the left side?')
+        return (image_patch, leftmost_woman, purse_patches, result, woman_patches)
+
+    def _else(image_patch, leftmost_woman, purse_patches, result, woman_patches):
+        leftmost_woman = woman_patches[0]
+
+        def _for(w_patch, image_patch, leftmost_woman, woman_patches):
+
+            def _if(image_patch, leftmost_woman, woman_patches):
+                leftmost_woman = w_patch
+                return (image_patch, leftmost_woman, woman_patches)
+            image_patch, leftmost_woman, woman_patches = if_stmt(_if, None, w_patch.horizontal_center < leftmost_woman.horizontal_center, (image_patch, leftmost_woman, woman_patches))
+            return (image_patch, leftmost_woman, woman_patches)
+        image_patch, leftmost_woman, woman_patches = for_stmt(_for, woman_patches, (image_patch, leftmost_woman, woman_patches))
+        purse_patches = image_patch.find('purse')
+
+        def _if(image_patch, leftmost_woman, purse_patches, result, woman_patches):
+            result = 'no'
+            return (image_patch, leftmost_woman, purse_patches, result, woman_patches)
+
+        def _else(image_patch, leftmost_woman, purse_patches, result, woman_patches):
+            result = 'no'
+
+            def _for(purse_patch, image_patch, leftmost_woman, purse_patches, result, woman_patches):
+
+                def _if(image_patch, leftmost_woman, purse_patches, result, woman_patches):
+                    result = 'yes'
+                    return (image_patch, leftmost_woman, purse_patches, result, woman_patches)
+                image_patch, leftmost_woman, purse_patches, result, woman_patches = if_stmt(_if, None, purse_patch.horizontal_center < leftmost_woman.horizontal_center, (image_patch, leftmost_woman, purse_patches, result, woman_patches))
+                return (image_patch, leftmost_woman, purse_patches, result, woman_patches)
+            image_patch, leftmost_woman, purse_patches, result, woman_patches = for_stmt(_for, purse_patches, (image_patch, leftmost_woman, purse_patches, result, woman_patches))
+            return (image_patch, leftmost_woman, purse_patches, result, woman_patches)
+        image_patch, leftmost_woman, purse_patches, result, woman_patches = if_stmt(_if, _else, len(purse_patches) == 0, (image_patch, leftmost_woman, purse_patches, result, woman_patches))
+        return (image_patch, leftmost_woman, purse_patches, result, woman_patches)
+    image_patch, leftmost_woman, purse_patches, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (image_patch, leftmost_woman, purse_patches, result, woman_patches))
+    return result

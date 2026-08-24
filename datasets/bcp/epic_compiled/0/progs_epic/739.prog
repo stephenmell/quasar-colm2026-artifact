@@ -1,0 +1,88 @@
+({2072: 'context', 2079: 'llm_query', 2086: '.join', 2094: 'return_result'},
+ ('def',
+  2070,
+  ((),
+   ((('call', (2071,), -1, ()),
+     ('def',
+      2073,
+      ((2081, 2074),
+       ((('prim', 2075, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (2076,), 80, (2075, 2074)),
+         ('prim',
+          2077,
+          '\n'
+          'END_DOCUMENT\n'
+          '\n'
+          'Your task is to extract only what this document itself states (no '
+          'outside knowledge). We are looking for information relevant to this '
+          'query:\n'
+          '\n'
+          'In a specific European club competition season prior to 2023, three '
+          'players had identical statistics for top scorers, with one player '
+          'being from a rival team. During this season, a particular club '
+          'recorded: highest match attendance in the season on a Wednesday, '
+          'played a total of 13 matches, had the most assists in the season, '
+          'and committed a total of 19 fouls resulting in cards. The club won '
+          'the league. For that club, who scored the first goal for their '
+          'third game in the group stage?\n'
+          '\n'
+          'From the document, extract any of the following if present (only if '
+          'explicitly stated in the document):\n'
+          '- Competition and season (e.g., UEFA Champions League 2014–15).\n'
+          '- The list of top scorers and whether three players were joint '
+          'top-scorers (identical goals), including if one is from a rival '
+          'team of the title-winning club.\n'
+          '- A club that season with all/some of these stats: highest match '
+          'attendance on a Wednesday; total of 13 matches played; most '
+          'assists; 19 fouls resulting in cards; and that the club won the '
+          'competition.\n'
+          '- For that club, list group stage Matchday 1 to Matchday 6 '
+          'opponents and results if available, and specifically identify for '
+          'Matchday 3: opponent, date, scoreline, and who scored the club’s '
+          'first goal (and minute if available).\n'
+          '\n'
+          'Output exactly in this format (include only items the document '
+          'explicitly supports; otherwise omit the field):\n'
+          'Season_and_Competition: <...>\n'
+          'Club: <...>\n'
+          'Top_Scorers: <...>\n'
+          'Highest_Attendance_Wednesday: <...>\n'
+          'Matches_Played_Total: <...>\n'
+          'Most_Assists_Team: <...>\n'
+          'Cards_From_Fouls_Total: <...>\n'
+          'Won_Title: <...>\n'
+          'Group_Matches: <list or description>\n'
+          'Third_Match_First_Scorer: <player name, minute if given>\n'
+          'Evidence: "<verbatim quotes that support the above>"\n'
+          'If the document has none of this, write: No relevant info.'),
+         ('call', (2078,), 80, (2076, 2077)),
+         ('call', (2080,), 2079, (2078,)),
+         ('call', (2082,), -1, (2080,)),
+         ('call', (2083,), 80, (2081, 2082))),
+        (2083,)))),
+     ('call', (2085,), 79, (2072,)),
+     ('call', (2084,), 2085, (2071, 2073)),
+     ('prim',
+      2088,
+      'You are given extractions from multiple documents. Use ONLY these '
+      'extractions (do not use outside knowledge). Identify the single club '
+      "and season that match all of the user's constraints, then answer the "
+      'final question.\n'
+      '\n'
+      'Documents:\n'),
+     ('prim', 2087, '\n\n---\n\n'),
+     ('call', (2089,), 2086, (2087, 2084)),
+     ('call', (2090,), 80, (2088, 2089)),
+     ('prim',
+      2091,
+      '\n'
+      '\n'
+      'User question to answer concisely: In that season, for the club that '
+      'fits all constraints and won the league, who scored the first goal for '
+      "their third game in the group stage? Reply with ONLY the player's full "
+      'name. If the documents do not provide enough information to uniquely '
+      'determine the answer, reply exactly: Insufficient information.'),
+     ('call', (2092,), 80, (2090, 2091)),
+     ('call', (2093,), 2079, (2092,)),
+     ('call', (2095,), 2094, (2093,))),
+    (2095,)))))

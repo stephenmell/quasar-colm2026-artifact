@@ -1,0 +1,64 @@
+def execute_command():
+    conflict_event = None
+    conflict_time = None
+    day_str = None
+    desired_end = None
+    desired_end_str = None
+    desired_start = None
+    desired_start_str = None
+    events = None
+    new_event = None
+    result = None
+    day_str = '2024-05-19'
+    desired_start_str = '2024-05-19 12:00'
+    desired_end_str = '2024-05-19 13:00'
+    desired_start = datetime.strptime(desired_start_str, '%Y-%m-%d %H:%M')
+    desired_end = datetime.strptime(desired_end_str, '%Y-%m-%d %H:%M')
+    events = get_day_calendar_events(day_str)
+    conflict_event = None
+
+    def _for(event, conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+
+        def _if(conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+            pass
+            return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+
+        def _else(conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+
+            def _if(conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+
+                def _if(conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+                    conflict_event = event
+                    return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+                conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events = if_stmt(_if, None, conflict_event is None, (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events))
+                return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+
+            def _else(conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+
+                def _if(conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+
+                    def _if(conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events):
+                        conflict_event = event
+                        return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+                    conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events = if_stmt(_if, None, conflict_event is None, (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events))
+                    return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+                conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events = if_stmt(_if, None, and_expr(event.start_time < desired_end, event.end_time > desired_start), (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events))
+                return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+            conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events = if_stmt(_if, _else, event.all_day, (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events))
+            return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+        conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events = if_stmt(_if, _else, event.status == EvenStatus.canceled, (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events))
+        return (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events)
+    conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events = for_stmt(_for, events, (conflict_event, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events))
+    result = ''
+
+    def _if(conflict_event, conflict_time, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events, new_event, result):
+        new_event = create_calendar_event('Lunch', desired_start_str, desired_end_str, 'Catch up over lunch.', ['sarah.connor@gmail.com'], None)
+        result = "You're free at 12:00 on 2024-05-19. I've scheduled 'Lunch' with Sarah from 12:00 to 13:00 and sent an invite to sarah.connor@gmail.com."
+        return (conflict_event, conflict_time, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events, new_event, result)
+
+    def _else(conflict_event, conflict_time, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events, new_event, result):
+        conflict_time = '{}–{}'.format(conflict_event.start_time.strftime('%H:%M'), conflict_event.end_time.strftime('%H:%M'))
+        result = "You're not free at 12:00 on 2024-05-19. Conflicting event: '{}' ({})".format(conflict_event.title, conflict_time)
+        return (conflict_event, conflict_time, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events, new_event, result)
+    conflict_event, conflict_time, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events, new_event, result = if_stmt(_if, _else, conflict_event is None, (conflict_event, conflict_time, day_str, desired_end, desired_end_str, desired_start, desired_start_str, events, new_event, result))
+    return result

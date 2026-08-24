@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    skateboarder_patches = image_patch.find("skateboarder")
+    # If no skateboarder is found, ask directly
+    if len(skateboarder_patches) == 0:
+        return image_patch.simple_query("Do you see people to the right of the skateboarder that is wearing sneakers?")
+    # Find the skateboarder(s) wearing sneakers
+    sneaker_skateboarders = []
+    for sk_patch in skateboarder_patches:
+        is_wearing = (sk_patch.simple_query("Is the skateboarder wearing sneakers?") == "yes")
+        if not is_wearing:
+            # Try property verification as a fallback
+            try:
+                is_wearing = sk_patch.verify_property("skateboarder", "wearing sneakers")
+            except:
+                is_wearing = False
+        if is_wearing:
+            sneaker_skateboarders.append(sk_patch)
+    # If no skateboarder wearing sneakers is found, ask directly
+    if len(sneaker_skateboarders) == 0:
+        return image_patch.simple_query("Do you see people to the right of the skateboarder that is wearing sneakers?")
+    # Find people
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        person_patches = image_patch.find("people")
+    if len(person_patches) == 0:
+        return "no"
+    # Check if any person is to the right of any sneaker-wearing skateboarder
+    for sk_patch in sneaker_skateboarders:
+        for person_patch in person_patches:
+            if person_patch.horizontal_center > sk_patch.horizontal_center:
+                return "yes"
+    return "no"

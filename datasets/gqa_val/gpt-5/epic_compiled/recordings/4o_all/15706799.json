@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2333742",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "cheese"
+      ],
+      [],
+      14766973947
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2333742",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Are the cheese food to the left of a fork?"
+      ],
+      "Yes.",
+      1006655463
+    ]
+  ],
+  "best_text_match": []
+}

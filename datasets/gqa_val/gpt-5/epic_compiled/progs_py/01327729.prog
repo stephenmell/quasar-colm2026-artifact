@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bread_patches = image_patch.find("bread")
+    if len(bread_patches) == 0:
+        result = image_patch.simple_query("Is there a brown bread in this scene?")
+    else:
+        result = "no"
+        for bread_patch in bread_patches:
+            if bread_patch.verify_property("bread", "brown"):
+                result = "yes"
+    return result

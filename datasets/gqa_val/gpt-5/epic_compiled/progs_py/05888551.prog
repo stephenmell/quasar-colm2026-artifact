@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    person_patches = image_patch.find("person")
+    bicycle_patches = image_patch.find("bicycle")
+
+    if len(person_patches) == 0 or len(bicycle_patches) == 0:
+        result = image_patch.simple_query("Do you see cars to the left of the person that is to the left of the bicycle?")
+    else:
+        car_patches = image_patch.find("car")
+        if len(car_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for bicycle_patch in bicycle_patches:
+                for person_patch in person_patches:
+                    if person_patch.horizontal_center < bicycle_patch.horizontal_center:
+                        for car_patch in car_patches:
+                            if car_patch.horizontal_center < person_patch.horizontal_center:
+                                result = "yes"
+    return result

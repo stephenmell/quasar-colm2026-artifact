@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    cabinet_patches = None
+    image_patch = None
+    is_wood = None
+    mirror_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    cabinet_patches = image_patch.find('cabinet')
+
+    def _if(cabinet_patches, image_patch, is_wood, result):
+
+        def _for(cabinet_patch, cabinet_patches, image_patch, is_wood, result):
+            is_wood = cabinet_patch.verify_property('cabinet', 'wood')
+
+            def _if(cabinet_patches, image_patch, is_wood, result):
+                result = 'yes'
+                return (cabinet_patches, image_patch, is_wood, result)
+            cabinet_patches, image_patch, is_wood, result = if_stmt(_if, None, not_expr(is_wood), (cabinet_patches, image_patch, is_wood, result))
+            return (cabinet_patches, image_patch, is_wood, result)
+        cabinet_patches, image_patch, is_wood, result = for_stmt(_for, cabinet_patches, (cabinet_patches, image_patch, is_wood, result))
+        return (cabinet_patches, image_patch, is_wood, result)
+    cabinet_patches, image_patch, is_wood, result = if_stmt(_if, None, len(cabinet_patches) != 0, (cabinet_patches, image_patch, is_wood, result))
+    mirror_patches = image_patch.find('mirror')
+
+    def _if(cabinet_patches, image_patch, is_wood, mirror_patches, result):
+
+        def _for(mirror_patch, cabinet_patches, image_patch, is_wood, mirror_patches, result):
+            is_wood = mirror_patch.verify_property('mirror', 'wood')
+
+            def _if(cabinet_patches, image_patch, is_wood, mirror_patches, result):
+                result = 'yes'
+                return (cabinet_patches, image_patch, is_wood, mirror_patches, result)
+            cabinet_patches, image_patch, is_wood, mirror_patches, result = if_stmt(_if, None, not_expr(is_wood), (cabinet_patches, image_patch, is_wood, mirror_patches, result))
+            return (cabinet_patches, image_patch, is_wood, mirror_patches, result)
+        cabinet_patches, image_patch, is_wood, mirror_patches, result = for_stmt(_for, mirror_patches, (cabinet_patches, image_patch, is_wood, mirror_patches, result))
+        return (cabinet_patches, image_patch, is_wood, mirror_patches, result)
+    cabinet_patches, image_patch, is_wood, mirror_patches, result = if_stmt(_if, None, len(mirror_patches) != 0, (cabinet_patches, image_patch, is_wood, mirror_patches, result))
+
+    def _if(cabinet_patches, image_patch, is_wood, mirror_patches, result):
+        result = image_patch.simple_query('Are there cabinets or mirrors that are not made of wood?')
+        return (cabinet_patches, image_patch, is_wood, mirror_patches, result)
+    cabinet_patches, image_patch, is_wood, mirror_patches, result = if_stmt(_if, None, and_expr(len(cabinet_patches) == 0, len(mirror_patches) == 0), (cabinet_patches, image_patch, is_wood, mirror_patches, result))
+    return result

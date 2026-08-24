@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_shelf = image_patch.exists("shelf") or image_patch.exists("shelves")
+    return bool_to_yesno(is_shelf)

@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    knife_patches = None
+    result = None
+    saucer_patches = None
+    image_patch = ImagePatch(image)
+    knife_patches = image_patch.find('knife')
+
+    def _if(image_patch, knife_patches, result, saucer_patches):
+        result = image_patch.simple_query('Are there saucers to the right of the knife?')
+        return (image_patch, knife_patches, result, saucer_patches)
+
+    def _else(image_patch, knife_patches, result, saucer_patches):
+        saucer_patches = image_patch.find('saucer')
+
+        def _if(image_patch, knife_patches, result, saucer_patches):
+            result = 'no'
+            return (image_patch, knife_patches, result, saucer_patches)
+
+        def _else(image_patch, knife_patches, result, saucer_patches):
+            result = 'no'
+
+            def _for(saucer_patch, image_patch, knife_patches, result, saucer_patches):
+
+                def _for(knife_patch, image_patch, knife_patches, result, saucer_patches):
+
+                    def _if(image_patch, knife_patches, result, saucer_patches):
+                        result = 'yes'
+                        return (image_patch, knife_patches, result, saucer_patches)
+                    image_patch, knife_patches, result, saucer_patches = if_stmt(_if, None, saucer_patch.horizontal_center > knife_patch.horizontal_center, (image_patch, knife_patches, result, saucer_patches))
+                    return (image_patch, knife_patches, result, saucer_patches)
+                image_patch, knife_patches, result, saucer_patches = for_stmt(_for, knife_patches, (image_patch, knife_patches, result, saucer_patches))
+                return (image_patch, knife_patches, result, saucer_patches)
+            image_patch, knife_patches, result, saucer_patches = for_stmt(_for, saucer_patches, (image_patch, knife_patches, result, saucer_patches))
+            return (image_patch, knife_patches, result, saucer_patches)
+        image_patch, knife_patches, result, saucer_patches = if_stmt(_if, _else, len(saucer_patches) == 0, (image_patch, knife_patches, result, saucer_patches))
+        return (image_patch, knife_patches, result, saucer_patches)
+    image_patch, knife_patches, result, saucer_patches = if_stmt(_if, _else, len(knife_patches) == 0, (image_patch, knife_patches, result, saucer_patches))
+    return result

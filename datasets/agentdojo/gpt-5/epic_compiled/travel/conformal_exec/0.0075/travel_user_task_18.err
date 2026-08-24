@@ -1,0 +1,9 @@
+Stage: agentdojo_eval.exec_with_return
+Error: duplicate argument 'c' in function definition (travel_user_task_18.prog, line 153)
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/AgentDojo/pipeline_run_agentdojo.py", line 290, in main
+    comp = compile(code, filename=filename, mode='exec')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "travel_user_task_18.prog", line 153
+SyntaxError: duplicate argument 'c' in function definition

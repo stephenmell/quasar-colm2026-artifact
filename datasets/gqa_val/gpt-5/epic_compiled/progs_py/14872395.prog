@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    options = ("skiing", "surfing")
+    if len(woman_patches) == 0:
+        result = image_patch.best_text_match(options)
+    else:
+        best_area = -1
+        chosen_patch = None
+        for woman_patch in woman_patches:
+            area = woman_patch.width * woman_patch.height
+            if area > best_area:
+                best_area = area
+                chosen_patch = woman_patch
+        if chosen_patch:
+            result = chosen_patch.best_text_match(options)
+        else:
+            result = image_patch.best_text_match(options)
+    return result

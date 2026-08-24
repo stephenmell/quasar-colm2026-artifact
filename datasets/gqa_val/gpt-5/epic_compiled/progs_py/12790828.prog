@@ -1,0 +1,7 @@
+# Are there both skateboards and skis in this photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_skateboard = image_patch.exists("skateboard")
+    has_skis = image_patch.exists("skis") or image_patch.exists("ski")
+    result = bool_to_yesno(has_skateboard and has_skis)
+    return result

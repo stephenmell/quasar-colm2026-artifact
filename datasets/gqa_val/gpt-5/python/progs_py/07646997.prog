@@ -1,0 +1,28 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find buses and filter to red buses
+    bus_patches = image_patch.find("bus")
+    red_bus_patches = [b for b in bus_patches if b.verify_property("bus", "red")]
+
+    # Find bicycle (try both "bicycle" and "bike")
+    bicycle_patches = image_patch.find("bicycle")
+    if len(bicycle_patches) == 0:
+        bicycle_patches = image_patch.find("bike")
+
+    # If we cannot reliably find the objects, ask directly
+    if len(red_bus_patches) == 0 or len(bicycle_patches) == 0:
+        return image_patch.simple_query("Is the red bus to the left or to the right of the bicycle?")
+
+    # Choose the closest bus-bicycle pair horizontally
+    best_pair = None
+    min_dist = float("inf")
+    for bus_patch in red_bus_patches:
+        for bike_patch in bicycle_patches:
+            d = abs(bus_patch.horizontal_center - bike_patch.horizontal_center)
+            if d < min_dist:
+                min_dist = d
+                best_pair = (bus_patch, bike_patch)
+
+    bus_center = best_pair[0].horizontal_center
+    bike_center = best_pair[1].horizontal_center
+    return "left" if bus_center < bike_center else "right"

@@ -1,0 +1,102 @@
+def execute_command(image) -> str:
+    best_diff = None
+    best_side = None
+    cup_patches = None
+    diff = None
+    image_patch = None
+    is_wearing_shirt = None
+    person_patches = None
+    plastic_cup_candidates = None
+    plastic_cup_patches = None
+    question = None
+    result = None
+    wearing_person = None
+    image_patch = ImagePatch(image)
+    question = 'Is the plastic cup to the left or to the right of the person that is wearing a shirt?'
+    person_patches = image_patch.find('person')
+
+    def _if(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+        result = image_patch.simple_query(question)
+        return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+
+    def _else(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+        wearing_person = None
+
+        def _for(person_patch, image_patch, is_wearing_shirt, person_patches, question, wearing_person):
+            is_wearing_shirt = person_patch.simple_query('Is the person wearing a shirt?') == 'yes'
+
+            def _if(image_patch, is_wearing_shirt, person_patches, question, wearing_person):
+                wearing_person = person_patch
+                return (image_patch, is_wearing_shirt, person_patches, question, wearing_person)
+            image_patch, is_wearing_shirt, person_patches, question, wearing_person = if_stmt(_if, None, and_expr(is_wearing_shirt, wearing_person is None), (image_patch, is_wearing_shirt, person_patches, question, wearing_person))
+            return (image_patch, is_wearing_shirt, person_patches, question, wearing_person)
+        image_patch, is_wearing_shirt, person_patches, question, wearing_person = for_stmt(_for, person_patches, (image_patch, is_wearing_shirt, person_patches, question, wearing_person))
+
+        def _if(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+            result = image_patch.simple_query(question)
+            return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+
+        def _else(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+            cup_patches = image_patch.find('cup')
+            plastic_cup_candidates = ()
+
+            def _for(cup_patch, cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person):
+
+                def _if(cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person):
+                    plastic_cup_candidates = plastic_cup_candidates + (cup_patch,)
+                    return (cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person)
+                cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person = if_stmt(_if, None, cup_patch.verify_property('cup', 'plastic'), (cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person))
+                return (cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person)
+            cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person = for_stmt(_for, cup_patches, (cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, question, wearing_person))
+
+            def _if(cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person):
+                plastic_cup_patches = image_patch.find('plastic cup')
+                return (cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person)
+
+            def _else(cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person):
+                plastic_cup_patches = plastic_cup_candidates
+                return (cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person)
+            cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person = if_stmt(_if, _else, len(plastic_cup_candidates) == 0, (cup_patches, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person))
+
+            def _if(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+                result = image_patch.simple_query(question)
+                return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+
+            def _else(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+                best_diff = None
+                best_side = None
+
+                def _for(pcup, best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person):
+                    diff = abs(pcup.horizontal_center - wearing_person.horizontal_center)
+
+                    def _if(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person):
+                        best_diff = diff
+
+                        def _if(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person):
+                            best_side = 'left'
+                            return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person)
+
+                        def _else(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person):
+                            best_side = 'right'
+                            return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person)
+                        best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person = if_stmt(_if, _else, pcup.horizontal_center < wearing_person.horizontal_center, (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person))
+                        return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person)
+                    best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person = if_stmt(_if, None, or_expr(best_diff is None, diff < best_diff), (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person))
+                    return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person)
+                best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person = for_stmt(_for, plastic_cup_patches, (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, wearing_person))
+
+                def _if(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+                    result = image_patch.simple_query(question)
+                    return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+
+                def _else(best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person):
+                    result = best_side
+                    return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+                best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person = if_stmt(_if, _else, best_side is None, (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person))
+                return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+            best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person = if_stmt(_if, _else, len(plastic_cup_patches) == 0, (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person))
+            return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+        best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person = if_stmt(_if, _else, wearing_person is None, (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person))
+        return (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person)
+    best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person = if_stmt(_if, _else, len(person_patches) == 0, (best_diff, best_side, cup_patches, diff, image_patch, is_wearing_shirt, person_patches, plastic_cup_candidates, plastic_cup_patches, question, result, wearing_person))
+    return result

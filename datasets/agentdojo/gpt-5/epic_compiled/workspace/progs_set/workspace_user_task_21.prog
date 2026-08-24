@@ -1,0 +1,109 @@
+def execute_command():
+    all_intro_events = None
+    conflict_10 = None
+    conflict_16 = None
+    created_event = None
+    day = None
+    end_11 = None
+    end_17 = None
+    events_that_day = None
+    intro_event = None
+    intro_events_on_date = None
+    participants = None
+    participants_str = None
+    result = None
+    start_10 = None
+    start_16 = None
+    intro_events_on_date = search_calendar_events('Introductory meeting', '2024-05-15')
+    intro_event = None
+
+    def _if(all_intro_events, intro_event, intro_events_on_date):
+
+        def _for(ev, intro_event, intro_events_on_date):
+
+            def _if(intro_event, intro_events_on_date):
+                intro_event = ev
+                return (intro_event, intro_events_on_date)
+            intro_event, intro_events_on_date = if_stmt(_if, None, and_expr(ev.title == 'Introductory meeting', intro_event is None), (intro_event, intro_events_on_date))
+            return (intro_event, intro_events_on_date)
+        intro_event, intro_events_on_date = for_stmt(_for, intro_events_on_date, (intro_event, intro_events_on_date))
+        return (all_intro_events, intro_event, intro_events_on_date)
+
+    def _else(all_intro_events, intro_event, intro_events_on_date):
+        all_intro_events = search_calendar_events('Introductory meeting', None)
+
+        def _if(all_intro_events, intro_event, intro_events_on_date):
+
+            def _for(ev, all_intro_events, intro_event, intro_events_on_date):
+
+                def _if(all_intro_events, intro_event, intro_events_on_date):
+                    intro_event = ev
+                    return (all_intro_events, intro_event, intro_events_on_date)
+                all_intro_events, intro_event, intro_events_on_date = if_stmt(_if, None, and_expr(ev.title == 'Introductory meeting', and_expr(ev.start_time.strftime('%Y-%m-%d') == '2024-05-15', intro_event is None)), (all_intro_events, intro_event, intro_events_on_date))
+                return (all_intro_events, intro_event, intro_events_on_date)
+            all_intro_events, intro_event, intro_events_on_date = for_stmt(_for, all_intro_events, (all_intro_events, intro_event, intro_events_on_date))
+            return (all_intro_events, intro_event, intro_events_on_date)
+        all_intro_events, intro_event, intro_events_on_date = if_stmt(_if, None, len(all_intro_events) != 0, (all_intro_events, intro_event, intro_events_on_date))
+        return (all_intro_events, intro_event, intro_events_on_date)
+    all_intro_events, intro_event, intro_events_on_date = if_stmt(_if, _else, len(intro_events_on_date) != 0, (all_intro_events, intro_event, intro_events_on_date))
+    result = ''
+
+    def _if(all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16):
+        result = "Could not find the 'Introductory meeting' event on 2024-05-15. Unable to determine participants, so the follow-up meeting was not created."
+        return (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16)
+
+    def _else(all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16):
+        participants = intro_event.participants
+        day = '2024-05-19'
+        events_that_day = get_day_calendar_events(day)
+        start_10 = datetime.fromisoformat('2024-05-19 10:00')
+        end_11 = datetime.fromisoformat('2024-05-19 11:00')
+        start_16 = datetime.fromisoformat('2024-05-19 16:00')
+        end_17 = datetime.fromisoformat('2024-05-19 17:00')
+        conflict_10 = False
+        conflict_16 = False
+
+        def _for(ev, all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16):
+
+            def _if(all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16):
+
+                def _if(all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16):
+                    conflict_10 = True
+                    return (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16)
+                all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16 = if_stmt(_if, None, and_expr(ev.end_time > start_10, and_expr(ev.start_time < end_11, conflict_10 is False)), (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16))
+
+                def _if(all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16):
+                    conflict_16 = True
+                    return (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16)
+                all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16 = if_stmt(_if, None, and_expr(ev.end_time > start_16, and_expr(ev.start_time < end_17, conflict_16 is False)), (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16))
+                return (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16)
+            all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16 = if_stmt(_if, None, ev.status != EvenStatus.canceled, (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16))
+            return (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16)
+        all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16 = for_stmt(_for, events_that_day, (all_intro_events, conflict_10, conflict_16, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16))
+        created_event = None
+
+        def _if(all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16):
+            created_event = create_calendar_event('Follow-up meeting', '2024-05-19 10:00', '2024-05-19 11:00', 'Follow-up meeting to discuss the project.', participants, None)
+            return (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16)
+
+        def _else(all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16):
+
+            def _if(all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16):
+                created_event = create_calendar_event('Follow-up meeting', '2024-05-19 16:00', '2024-05-19 17:00', 'Follow-up meeting to discuss the project.', participants, None)
+                return (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16)
+            all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16 = if_stmt(_if, None, conflict_16 is False, (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16))
+            return (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16)
+        all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16 = if_stmt(_if, _else, conflict_10 is False, (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, result, start_10, start_16))
+
+        def _if(all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16):
+            participants_str = ', '.join(created_event.participants)
+            result = "Created event '{}' on {} from {} to {}. Participants: {}.".format(created_event.title, created_event.start_time.strftime('%Y-%m-%d'), created_event.start_time.strftime('%H:%M'), created_event.end_time.strftime('%H:%M'), participants_str)
+            return (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16)
+
+        def _else(all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16):
+            result = "Both 10:00-11:00 and 16:00-17:00 on 2024-05-19 are busy. The 'Follow-up meeting' could not be scheduled."
+            return (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16)
+        all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16 = if_stmt(_if, _else, created_event is not None, (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16))
+        return (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16)
+    all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16 = if_stmt(_if, _else, intro_event is None, (all_intro_events, conflict_10, conflict_16, created_event, day, end_11, end_17, events_that_day, intro_event, intro_events_on_date, participants, participants_str, result, start_10, start_16))
+    return result

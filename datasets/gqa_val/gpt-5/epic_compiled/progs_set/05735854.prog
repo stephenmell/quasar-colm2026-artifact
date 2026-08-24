@@ -1,0 +1,77 @@
+def execute_command(image) -> str:
+    alt_long_sleeved = None
+    alt_long_sleeves = None
+    black_wetsuit_long_sleeved = None
+    has_black_wetsuit = None
+    image_patch = None
+    is_black = None
+    is_long_sleeved = None
+    result = None
+    wetsuit_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    wetsuit_patches = image_patch.find('wetsuit')
+
+    def _if(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+        result = image_patch.simple_query('Does the black wetsuit look long sleeved?')
+        return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+
+    def _else(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+        has_black_wetsuit = False
+        black_wetsuit_long_sleeved = False
+
+        def _for(wetsuit_patch, alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+            is_black = wetsuit_patch.verify_property('wetsuit', 'black')
+
+            def _if(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                has_black_wetsuit = True
+                is_long_sleeved = wetsuit_patch.verify_property('wetsuit', 'long sleeved')
+
+                def _if(alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                    alt_long_sleeved = wetsuit_patch.verify_property('wetsuit', 'long-sleeved')
+
+                    def _if(alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                        is_long_sleeved = True
+                        return (alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+                    alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, None, alt_long_sleeved, (alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+                    return (alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+                alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, None, not_expr(is_long_sleeved), (alt_long_sleeved, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+
+                def _if(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                    alt_long_sleeves = wetsuit_patch.verify_property('wetsuit', 'long sleeves')
+
+                    def _if(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                        is_long_sleeved = True
+                        return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+                    alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, None, alt_long_sleeves, (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+                    return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+                alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, None, not_expr(is_long_sleeved), (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+
+                def _if(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                    black_wetsuit_long_sleeved = True
+                    return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+                alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, None, is_long_sleeved, (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+                return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+            alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, None, is_black, (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+            return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+        alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = for_stmt(_for, wetsuit_patches, (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+
+        def _if(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+
+            def _if(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                result = 'yes'
+                return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+
+            def _else(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+                result = 'no'
+                return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+            alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, _else, black_wetsuit_long_sleeved, (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+            return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+
+        def _else(alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches):
+            result = image_patch.simple_query('Does the black wetsuit look long sleeved?')
+            return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+        alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, _else, has_black_wetsuit, (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+        return (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches)
+    alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches = if_stmt(_if, _else, len(wetsuit_patches) == 0, (alt_long_sleeved, alt_long_sleeves, black_wetsuit_long_sleeved, has_black_wetsuit, image_patch, is_black, is_long_sleeved, result, wetsuit_patches))
+    return result

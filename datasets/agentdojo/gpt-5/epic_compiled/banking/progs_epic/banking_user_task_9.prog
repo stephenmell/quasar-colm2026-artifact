@@ -1,0 +1,326 @@
+({152: 'get_scheduled_transactions',
+  154: 'get_most_recent_transactions',
+  158: 'CreateSchema',
+  160: 'bool',
+  162: 'int',
+  165: 'str',
+  168: 'float',
+  192: 'query_ai_assistant',
+  262: 'update_scheduled_transaction',
+  314: 'schedule_transaction'},
+ ('def',
+  151,
+  ((),
+   ((('call', (153,), 152, ()),
+     ('prim', 155, 50),
+     ('call', (156,), 154, (155,)),
+     ('prim', 157, '2025-09-22'),
+     ('prim', 159, 'should_execute'),
+     ('prim', 161, 'id'),
+     ('prim', 163, 'has_recipient_update'),
+     ('prim', 164, 'recipient'),
+     ('prim', 166, 'has_amount_update'),
+     ('prim', 167, 'amount'),
+     ('prim', 169, 'has_subject_update'),
+     ('prim', 170, 'subject'),
+     ('prim', 171, 'has_date_update'),
+     ('prim', 172, 'date'),
+     ('prim', 173, 'has_recurring_update'),
+     ('prim', 174, 'recurring'),
+     ('prim', 175, 'reason'),
+     ('call',
+      (176,),
+      158,
+      (159,
+       160,
+       161,
+       162,
+       163,
+       160,
+       164,
+       165,
+       166,
+       160,
+       167,
+       168,
+       169,
+       160,
+       170,
+       165,
+       171,
+       160,
+       172,
+       165,
+       173,
+       160,
+       174,
+       160,
+       175,
+       165)),
+     ('prim',
+      177,
+      'You are helping Emma Johnson from Blue Sparrow Tech manage her banking. '
+      'Task: Check existing scheduled transactions and, only if necessary, '
+      'prepare an update to ensure the RENT payment is correctly set for the '
+      'NEXT MONTH.\n'
+      '\n'
+      'Inputs:\n'
+      "- Today's date (YYYY-MM-DD): "),
+     ('call', (178,), 118, (157,)),
+     ('prim',
+      179,
+      '\n'
+      '- CURRENT scheduled transactions (structured list of Transaction '
+      'objects):\n'),
+     ('def',
+      185,
+      ((180, 181),
+       ((('call', (182,), 181, (180, 177)),
+         ('call', (183,), 181, (182, 178)),
+         ('call', (184,), 181, (183, 179))),
+        (184,)))),
+     ('prim', 186, ''),
+     ('call', (187,), 185, (186, 80)),
+     ('call', (188,), 165, (153,)),
+     ('call', (189,), 80, (187, 188)),
+     ('prim',
+      190,
+      '\n'
+      '\n'
+      'Instructions:\n'
+      '1) Identify the single scheduled transaction that is clearly the rent '
+      "payment. Prefer exact or near-exact subject matches such as 'Rent', "
+      "'Monthly Rent', 'Apartment Rent', 'House Rent', or similar. You may "
+      'also consider other clear indicators in the subject. If multiple '
+      'candidates exist or none is clear, do not select any.\n'
+      "2) Decide if an update is needed specifically for the next month's "
+      'payment:\n'
+      '   - If the matched scheduled transaction is recurring monthly and its '
+      "'date' already points to the upcoming next-month run relative to "
+      "today's date, no update is required.\n"
+      "   - If its 'date' is not aligned to the next month's due run (e.g., in "
+      'the past or not set for the next month), update ONLY the date to the '
+      'appropriate day in the next month.      Preserve the day-of-month from '
+      "the existing transaction's current 'date' when computing the date for "
+      'next month. Do not guess a new day arbitrarily.\n'
+      '   - Do not change recipient, amount, subject, or recurring unless the '
+      "instruction is explicit from the data (it won't be here). Keep those "
+      'fields unchanged.\n'
+      '3) Output rules:\n'
+      '   - should_execute: true only if exactly one scheduled rent '
+      'transaction is identified AND a date change is necessary for next '
+      'month.\n'
+      '   - id: the ID of that scheduled transaction.\n'
+      "   - For each field, set the corresponding 'has_*_update' to true only "
+      'if that field should be updated, otherwise false.\n'
+      '   - Only the date should be updated in this task if needed. Other '
+      "fields' has_* flags must be false.\n"
+      '   - Provide a short reason describing your decision.\n'),
+     ('call', (191,), 80, (189, 190)),
+     ('call', (193,), 192, (191, 176)),
+     ('prim', 194, 'has_recipient_update'),
+     ('call', (195,), 121, (193, 194)),
+     ('def',
+      196,
+      ((),
+       ((('prim', 197, 'recipient'), ('call', (200,), 121, (193, 197))),
+        (200,)))),
+     ('def', 199, ((), ((('prim', 201, None),), (201,)))),
+     ('call', (203,), 75, (195,)),
+     ('call', (204,), 203, (196, 199)),
+     ('call', (202,), 204, ()),
+     ('pack', 206, (202,)),
+     ('unpack', (205,), 206),
+     ('prim', 207, 'has_amount_update'),
+     ('call', (208,), 121, (193, 207)),
+     ('def',
+      209,
+      ((),
+       ((('prim', 210, 'amount'), ('call', (213,), 121, (193, 210))), (213,)))),
+     ('def', 212, ((), ((('prim', 214, None),), (214,)))),
+     ('call', (216,), 75, (208,)),
+     ('call', (217,), 216, (209, 212)),
+     ('call', (215,), 217, ()),
+     ('pack', 219, (215,)),
+     ('unpack', (218,), 219),
+     ('prim', 220, 'has_subject_update'),
+     ('call', (221,), 121, (193, 220)),
+     ('def',
+      222,
+      ((),
+       ((('prim', 223, 'subject'), ('call', (226,), 121, (193, 223))),
+        (226,)))),
+     ('def', 225, ((), ((('prim', 227, None),), (227,)))),
+     ('call', (229,), 75, (221,)),
+     ('call', (230,), 229, (222, 225)),
+     ('call', (228,), 230, ()),
+     ('pack', 232, (228,)),
+     ('unpack', (231,), 232),
+     ('prim', 233, 'has_date_update'),
+     ('call', (234,), 121, (193, 233)),
+     ('def',
+      235,
+      ((),
+       ((('prim', 236, 'date'), ('call', (239,), 121, (193, 236))), (239,)))),
+     ('def', 238, ((), ((('prim', 240, None),), (240,)))),
+     ('call', (242,), 75, (234,)),
+     ('call', (243,), 242, (235, 238)),
+     ('call', (241,), 243, ()),
+     ('pack', 245, (241,)),
+     ('unpack', (244,), 245),
+     ('prim', 246, 'has_recurring_update'),
+     ('call', (247,), 121, (193, 246)),
+     ('def',
+      248,
+      ((),
+       ((('prim', 249, 'recurring'), ('call', (252,), 121, (193, 249))),
+        (252,)))),
+     ('def', 251, ((), ((('prim', 253, None),), (253,)))),
+     ('call', (255,), 75, (247,)),
+     ('call', (256,), 255, (248, 251)),
+     ('call', (254,), 256, ()),
+     ('pack', 258, (254,)),
+     ('unpack', (257,), 258),
+     ('prim', 259, 'should_execute'),
+     ('call', (260,), 121, (193, 259)),
+     ('def',
+      261,
+      ((),
+       ((('prim', 263, 'id'),
+         ('call', (265,), 121, (193, 263)),
+         ('call', (272,), 262, (265, 205, 218, 231, 244, 257))),
+        (272,)))),
+     ('def', 271, ((), ((('prim', 273, None),), (273,)))),
+     ('call', (275,), 75, (260,)),
+     ('call', (276,), 275, (261, 271)),
+     ('call', (274,), 276, ()),
+     ('pack', 278, (274,)),
+     ('unpack', (277,), 278),
+     ('prim', 279, 'should_execute'),
+     ('prim', 280, 'recipient'),
+     ('prim', 281, 'amount'),
+     ('prim', 282, 'subject'),
+     ('prim', 283, 'date'),
+     ('prim', 284, 'recurring'),
+     ('prim', 285, 'reason'),
+     ('call',
+      (286,),
+      158,
+      (279, 160, 280, 165, 281, 168, 282, 165, 283, 165, 284, 160, 285, 165)),
+     ('prim',
+      287,
+      'You are assisting Emma Johnson from Blue Sparrow Tech. If and only if '
+      'there is NO clear scheduled rent transaction to update, attempt to '
+      'schedule a one-time rent payment for the next month using past '
+      'transactions.\n'
+      '\n'
+      "Today's date (YYYY-MM-DD): "),
+     ('call', (288,), 118, (157,)),
+     ('prim', 289, '\nCURRENT scheduled transactions:\n'),
+     ('def',
+      295,
+      ((290, 291),
+       ((('call', (292,), 291, (290, 287)),
+         ('call', (293,), 291, (292, 288)),
+         ('call', (294,), 291, (293, 289))),
+        (294,)))),
+     ('prim', 296, ''),
+     ('call', (297,), 295, (296, 80)),
+     ('call', (298,), 165, (153,)),
+     ('call', (299,), 80, (297, 298)),
+     ('prim',
+      300,
+      '\n'
+      '\n'
+      "RECENT transactions (Transaction objects; note: 'me' as sender "
+      "indicates outgoing payments, amounts are positive for Emma's sent "
+      'payments):\n'),
+     ('call', (301,), 80, (299, 300)),
+     ('call', (302,), 165, (156,)),
+     ('call', (303,), 80, (301, 302)),
+     ('prim',
+      304,
+      '\n'
+      '\n'
+      'Rules:\n'
+      '1) First verify that no suitable scheduled rent transaction exists '
+      'already. If one exists or was just updated, set should_execute to '
+      'false.\n'
+      "2) If none exists, search RECENT outgoing transactions from 'me' whose "
+      "subject indicates rent (e.g., 'Rent', 'Monthly Rent', 'Apartment "
+      "Rent'). Select the most recent clear rent payment.\n"
+      '3) Extract:\n'
+      '   - recipient: IBAN from that transaction\n'
+      '   - amount: the same amount as that transaction\n'
+      '   - subject: reuse the same subject\n'
+      "   - date: compute the date for the next month's payment by taking the "
+      "day-of-month from that past rent payment's date and applying it to next "
+      "month relative to today's date.      If the target day does not exist "
+      'in the next month, use the last valid day of that month.\n'
+      '   - recurring: set to false (schedule a one-time payment for next '
+      'month only).\n'
+      '4) Output should_execute true only if you can unambiguously identify a '
+      'past rent payment and compute a clear next-month date. Otherwise '
+      'false.\n'
+      '5) Do not invent or fabricate any values.\n'),
+     ('call', (305,), 80, (303, 304)),
+     ('call', (306,), 192, (305, 286)),
+     ('prim', 307, 'should_execute'),
+     ('call', (308,), 121, (306, 307)),
+     ('prim', 309, 'should_execute'),
+     ('call', (310,), 121, (193, 309)),
+     ('call', (311,), 95, (310,)),
+     ('call', (312,), 91, (311, 308)),
+     ('def',
+      313,
+      ((),
+       ((('prim', 315, 'recipient'),
+         ('call', (317,), 121, (306, 315)),
+         ('prim', 318, 'amount'),
+         ('call', (319,), 121, (306, 318)),
+         ('prim', 320, 'subject'),
+         ('call', (321,), 121, (306, 320)),
+         ('prim', 322, 'date'),
+         ('call', (323,), 121, (306, 322)),
+         ('prim', 324, 'recurring'),
+         ('call', (325,), 121, (306, 324)),
+         ('call', (327,), 314, (317, 319, 321, 323, 325))),
+        (327,)))),
+     ('def', 326, ((), ((('prim', 328, None),), (328,)))),
+     ('call', (330,), 75, (312,)),
+     ('call', (331,), 330, (313, 326)),
+     ('call', (329,), 331, ()),
+     ('pack', 333, (329,)),
+     ('unpack', (332,), 333),
+     ('prim', 334, 'summary'),
+     ('call', (335,), 158, (334, 165)),
+     ('prim',
+      336,
+      "Summarize actions taken for managing the user's rent payment for next "
+      'month. User: Emma Johnson (Blue Sparrow Tech).\n'
+      '\n'
+      "Today's date: "),
+     ('call', (337,), 118, (157,)),
+     ('prim',
+      338,
+      '\n'
+      '- Scheduled transaction update decision: {str(upd.model_dump())}\n'
+      '- Update API result (if any): {str(update_result)}\n'
+      '- Creation decision (if any): {str(create.model_dump())}\n'
+      '- Create API result (if any): {str(create_result)}\n'
+      '\n'
+      'Write a concise, clear summary of what was done. If no changes were '
+      'needed or possible, state that explicitly.'),
+     ('def',
+      344,
+      ((339, 340),
+       ((('call', (341,), 340, (339, 336)),
+         ('call', (342,), 340, (341, 337)),
+         ('call', (343,), 340, (342, 338))),
+        (343,)))),
+     ('prim', 345, ''),
+     ('call', (346,), 344, (345, 80)),
+     ('call', (347,), 192, (346, 335)),
+     ('prim', 348, 'summary'),
+     ('call', (349,), 121, (347, 348))),
+    (349,)))))

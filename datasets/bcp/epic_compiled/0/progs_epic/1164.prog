@@ -1,0 +1,72 @@
+({585: 'context', 588: 'llm_query', 599: '.join', 605: 'return_result'},
+ ('def',
+  583,
+  ((),
+   ((('call', (584,), -1, ()),
+     ('def',
+      586,
+      ((594, 587),
+       ((('prim',
+          589,
+          'You are given a document. Identify if it mentions a consumer brand '
+          'that matches ALL of the following clues. If it does, extract the '
+          'details. If not, respond with nothing.\n'
+          '\n'
+          'Clues:\n'
+          '- The brand was founded in the 2000s (years 2000-2009) and '
+          'specifically in a year immediately after an Olympic year (i.e., '
+          '2001, 2005, or 2009).\n'
+          '- One of the co-founders had a background in merchandising (e.g., '
+          'worked in merchandising at a retailer/brand or studied '
+          'merchandising).\n'
+          '- The brand sells directly to customers without a middleman '
+          '(DTC/direct-to-consumer focus).\n'
+          '- The inspiration for the shape of their best-selling product as of '
+          "2023 came from a particular sport's classic gear (e.g., a saddle "
+          'from equestrian sport, a bowling bag from bowling, etc.).\n'
+          '- In 2019, the brand was on track to increase its sales revenue by '
+          'over 65% compared to the previous year.\n'
+          '\n'
+          'If the document contains such a brand, provide the following, using '
+          'the exact headers:\n'
+          'Brand:\n'
+          'Founding Year:\n'
+          'After Which Olympic Year:\n'
+          'Co-founder With Merchandising Background (Name and details):\n'
+          'Direct-to-consumer Evidence (quote or paraphrase with quote):\n'
+          'Best-selling Product as of 2023 (name):\n'
+          'Shape Inspiration (sport and gear):\n'
+          '2019 Sales Growth Evidence (quote):\n'
+          'Signature Design (name of the brand’s signature design):\n'
+          'Key Quotes (verbatim excerpts that substantiate the above):\n'
+          '\n'
+          'If multiple brands are mentioned, give entries for each that '
+          'satisfies ALL clues. If none match, output nothing.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (590,), 80, (589, 587)),
+         ('prim', 591, '\nEND_DOCUMENT'),
+         ('call', (592,), 80, (590, 591)),
+         ('call', (593,), 588, (592,)),
+         ('call', (595,), -1, (593,)),
+         ('call', (596,), 80, (594, 595))),
+        (596,)))),
+     ('call', (598,), 79, (585,)),
+     ('call', (597,), 598, (584, 586)),
+     ('prim', 600, '\n\n---\n\n'),
+     ('call', (601,), 599, (600, 597)),
+     ('prim',
+      602,
+      'From the extracted entries below, identify the single brand that '
+      'satisfies ALL clues. Then answer this question: What is the brand’s '
+      'signature design?\n'
+      '\n'
+      "Only output the signature design as a short phrase (e.g., 'saddle bag', "
+      "'cat-eye sunglasses', 'half-moon bag'). Do not include the brand name "
+      'or any extra words.\n'
+      '\n'
+      'EXTRACTED ENTRIES:\n'),
+     ('call', (603,), 80, (602, 601)),
+     ('call', (604,), 588, (603,)),
+     ('call', (606,), 605, (604,))),
+    (606,)))))

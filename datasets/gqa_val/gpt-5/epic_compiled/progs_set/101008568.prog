@@ -1,0 +1,13 @@
+def execute_command(image) -> str:
+    has_chandelier = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_chandelier = image_patch.exists('chandelier')
+
+    def _if(has_chandelier, image_patch):
+        has_chandelier = image_patch.exists('chandeliers')
+        return (has_chandelier, image_patch)
+    has_chandelier, image_patch = if_stmt(_if, None, not_expr(has_chandelier), (has_chandelier, image_patch))
+    result = bool_to_yesno(has_chandelier)
+    return result

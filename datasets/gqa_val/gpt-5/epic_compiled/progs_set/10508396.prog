@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    box_exists = None
+    faucet_exists = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    faucet_exists = image_patch.exists('faucet')
+    box_exists = image_patch.exists('box')
+    result = bool_to_yesno(or_expr(faucet_exists, box_exists))
+    return result

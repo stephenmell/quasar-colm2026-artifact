@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    boat_patches = image_patch.find("boat")
+    car_patches = image_patch.find("car")
+
+    # If we can't even find a boat, ask directly (relation-heavy question)
+    if len(boat_patches) == 0:
+        return image_patch.simple_query("Are there any cars next to the boat?")
+
+    # If no cars detected at all, answer no
+    if len(car_patches) == 0:
+        return "no"
+
+    # Check spatial proximity: "next to" ~ horizontally near with decent vertical overlap
+    for boat in boat_patches:
+        for car in car_patches:
+            # Vertical overlap ratio
+            v_overlap = min(boat.upper, car.upper) - max(boat.lower, car.lower)
+            min_h = max(1, min(boat.height, car.height))
+            v_overlap_ratio = max(0, v_overlap) / min_h
+
+            # Horizontal center distance threshold
+            h_dist = abs(boat.horizontal_center - car.horizontal_center)
+            near_thresh = 1.2 * max(boat.width, car.width)
+
+            if v_overlap_ratio >= 0.2 and h_dist <= near_thresh:
+                return "yes"
+
+    return "no"

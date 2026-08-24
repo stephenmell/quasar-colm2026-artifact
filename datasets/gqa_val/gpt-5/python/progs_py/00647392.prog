@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tissues_patches = image_patch.find("tissues")
+    monitor_patches = image_patch.find("computer monitor")
+    computer_patches = image_patch.find("computer")
+
+    # If any key object is missing, ask directly
+    if len(tissues_patches) == 0 or len(monitor_patches) == 0 or len(computer_patches) == 0:
+        return image_patch.simple_query("Is there any computer to the left of the computer monitor that is to the left of the tissues?")
+
+    # Check for a computer left of a monitor that is left of the tissues
+    for tissue_patch in tissues_patches:
+        for monitor_patch in monitor_patches:
+            if monitor_patch.horizontal_center < tissue_patch.horizontal_center:
+                for computer_patch in computer_patches:
+                    if computer_patch.horizontal_center < monitor_patch.horizontal_center:
+                        return "yes"
+    return "no"

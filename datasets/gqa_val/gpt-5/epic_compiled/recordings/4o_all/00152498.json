@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2356811",
+          [
+            0,
+            0,
+            500,
+            357
+          ]
+        ],
+        "Is the blue bandana on the white dog?"
+      ],
+      "Yes.",
+      1294057963
+    ]
+  ],
+  "best_text_match": []
+}

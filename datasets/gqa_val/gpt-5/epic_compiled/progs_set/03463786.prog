@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_grass = None
+    has_sand = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_grass = image_patch.exists('grass')
+    has_sand = image_patch.exists('sand')
+    result = bool_to_yesno(and_expr(has_grass, has_sand))
+    return result

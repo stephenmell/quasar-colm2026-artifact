@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    computer_patches = None
+    empty_chair_patches = None
+    filtered = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find('chair')
+    empty_chair_patches = ()
+
+    def _if(chair_patches, empty_chair_patches, filtered, image_patch):
+        filtered = ()
+
+        def _for(chair_patch, chair_patches, empty_chair_patches, filtered, image_patch):
+
+            def _if(chair_patches, empty_chair_patches, filtered, image_patch):
+                filtered = filtered + (chair_patch,)
+                return (chair_patches, empty_chair_patches, filtered, image_patch)
+            chair_patches, empty_chair_patches, filtered, image_patch = if_stmt(_if, None, chair_patch.verify_property('chair', 'empty'), (chair_patches, empty_chair_patches, filtered, image_patch))
+            return (chair_patches, empty_chair_patches, filtered, image_patch)
+        chair_patches, empty_chair_patches, filtered, image_patch = for_stmt(_for, chair_patches, (chair_patches, empty_chair_patches, filtered, image_patch))
+        empty_chair_patches = filtered
+        return (chair_patches, empty_chair_patches, filtered, image_patch)
+    chair_patches, empty_chair_patches, filtered, image_patch = if_stmt(_if, None, len(chair_patches) > 0, (chair_patches, empty_chair_patches, filtered, image_patch))
+
+    def _if(chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result):
+        result = image_patch.simple_query('Is the computer to the right of the empty chair?')
+        return (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result)
+
+    def _else(chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result):
+        computer_patches = image_patch.find('computer')
+
+        def _if(chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result):
+            result = 'no'
+            return (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result)
+
+        def _else(chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result):
+            result = 'no'
+
+            def _for(computer_patch, chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result):
+
+                def _for(empty_chair_patch, chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result):
+
+                    def _if(chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result):
+                        result = 'yes'
+                        return (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result)
+                    chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result = if_stmt(_if, None, computer_patch.horizontal_center > empty_chair_patch.horizontal_center, (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result))
+                    return (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result)
+                chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result = for_stmt(_for, empty_chair_patches, (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result))
+                return (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result)
+            chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result = for_stmt(_for, computer_patches, (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result))
+            return (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result)
+        chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result = if_stmt(_if, _else, len(computer_patches) == 0, (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result))
+        return (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result)
+    chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result = if_stmt(_if, _else, len(empty_chair_patches) == 0, (chair_patches, computer_patches, empty_chair_patches, filtered, image_patch, result))
+    return result

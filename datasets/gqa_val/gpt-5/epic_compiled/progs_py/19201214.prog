@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    toilet_patches = image_patch.find("toilet")
+    if len(toilet_patches) == 0:
+        result = image_patch.simple_query("Which color is the toilet?")
+    else:
+        result = toilet_patches[0].simple_query("Which color is the toilet?")
+    return result

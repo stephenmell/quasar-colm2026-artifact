@@ -1,0 +1,15 @@
+# Do you see a guitar that is not black?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    guitar_exists = image_patch.exists("guitar")
+    if not guitar_exists:
+        result = image_patch.simple_query("Do you see a guitar that is not black?")
+    else:
+        guitar_patches = image_patch.find("guitar")
+        any_non_black = False
+        for guitar_patch in guitar_patches:
+            is_black = guitar_patch.verify_property("guitar", "black")
+            if not is_black:
+                any_non_black = True
+        result = bool_to_yesno(any_non_black)
+    return result

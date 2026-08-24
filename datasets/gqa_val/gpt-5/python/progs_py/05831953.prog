@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Is the plastic cup to the left or to the right of the person that is wearing a shirt?")
+    # Find the person wearing a shirt
+    shirt_person = None
+    for person_patch in person_patches:
+        if person_patch.simple_query("Is the person wearing a shirt?") == "yes":
+            shirt_person = person_patch
+            break
+    if shirt_person is None:
+        # If we can't identify such a person, ask directly
+        return image_patch.simple_query("Is the plastic cup to the left or to the right of the person that is wearing a shirt?")
+    # Find the plastic cup (fallback to "cup" if needed)
+    cup_patches = image_patch.find("plastic cup")
+    if len(cup_patches) == 0:
+        cup_patches = image_patch.find("cup")
+    if len(cup_patches) == 0:
+        return image_patch.simple_query("Is the plastic cup to the left or to the right of the person that is wearing a shirt?")
+    # Choose the cup closest horizontally to the identified person
+    target_cup = min(cup_patches, key=lambda c: abs(c.horizontal_center - shirt_person.horizontal_center))
+    return "left" if target_cup.horizontal_center < shirt_person.horizontal_center else "right"

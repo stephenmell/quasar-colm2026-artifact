@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    appliance_patches = image_patch.find("appliance")
+    if len(appliance_patches) == 0:
+        # If no appliance is found, ask the question directly
+        return image_patch.simple_query("What kind of appliance is in the bedroom?")
+    # If multiple appliances, choose the one closest to the bed (if a bed is detected)
+    bed_patches = image_patch.find("bed")
+    if len(bed_patches) > 0 and len(appliance_patches) > 1:
+        bed = bed_patches[0]
+        bx, by = bed.horizontal_center, bed.vertical_center
+        def dist2(p):
+            dx = p.horizontal_center - bx
+            dy = p.vertical_center - by
+            return dx*dx + dy*dy
+        target_appliance = min(appliance_patches, key=dist2)
+    else:
+        target_appliance = appliance_patches[0]
+    return target_appliance.simple_query("What kind of appliance is this?")

@@ -1,0 +1,6 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_kite = image_patch.exists("kite")
+    has_kites = image_patch.exists("kites")
+    result = bool_to_yesno(has_kite or has_kites)
+    return result

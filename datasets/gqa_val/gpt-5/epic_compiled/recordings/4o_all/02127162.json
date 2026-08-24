@@ -1,0 +1,47 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2401257",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "plate"
+      ],
+      [
+        [
+          0,
+          141,
+          331,
+          424
+        ]
+      ],
+      10081967942
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2401257",
+          [
+            0,
+            141,
+            331,
+            424
+          ]
+        ],
+        "What type of furniture is that plate on, a table or a cabinet?"
+      ],
+      "I can't determine the type of furniture.",
+      2042487632
+    ]
+  ],
+  "best_text_match": []
+}

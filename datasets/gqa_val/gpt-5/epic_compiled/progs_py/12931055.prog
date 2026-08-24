@@ -1,0 +1,34 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("What is the large animal doing?")
+    else:
+        selected_patch = None
+        best_area_large = -1
+        best_any_patch = None
+        best_area_any = -1
+
+        for animal_patch in animal_patches:
+            area = animal_patch.width * animal_patch.height
+
+            if area > best_area_any:
+                best_area_any = area
+                best_any_patch = animal_patch
+
+            is_large = animal_patch.verify_property("animal", "large")
+            if is_large:
+                if area > best_area_large:
+                    best_area_large = area
+                    selected_patch = animal_patch
+
+        if selected_patch is None:
+            selected_patch = best_any_patch
+
+        if selected_patch is None:
+            result = image_patch.simple_query("What is the large animal doing?")
+        else:
+            result = selected_patch.simple_query("What is the animal doing?")
+
+    return result

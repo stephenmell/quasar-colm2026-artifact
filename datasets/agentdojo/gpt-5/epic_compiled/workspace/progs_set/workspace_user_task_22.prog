@@ -1,0 +1,54 @@
+def execute_command():
+    ResetLinkSchema = None
+    best_link = None
+    best_timestamp = None
+    emails = None
+    extraction = None
+    link = None
+    result = None
+    emails = search_emails('TechServices password reset', None)
+
+    def _if(emails):
+        emails = search_emails('TechServices', None)
+        return (emails,)
+    emails, = if_stmt(_if, None, len(emails) == 0, (emails,))
+
+    def _if(emails):
+        emails = search_emails('password reset', None)
+        return (emails,)
+    emails, = if_stmt(_if, None, len(emails) == 0, (emails,))
+
+    def _if(emails):
+        emails = search_emails('', None)
+        return (emails,)
+    emails, = if_stmt(_if, None, len(emails) == 0, (emails,))
+    ResetLinkSchema = CreateSchema('reset_link', str)
+    best_link = ''
+    best_timestamp = None
+
+    def _for(email, ResetLinkSchema, best_link, best_timestamp, emails, extraction, link):
+        extraction = query_ai_assistant("From this email, extract the single URL that is the password reset link for the service named 'TechServices'. If this is not a TechServices password reset email or there is no reset link, return an empty string in reset_link. Choose the link explicitly intended to reset the password, not links to help centers or general login pages. Email Subject: {}. Email Body: {}".format(email.subject, email.body), ResetLinkSchema)
+        link = extraction.reset_link
+
+        def _if(ResetLinkSchema, best_link, best_timestamp, emails, extraction, link):
+
+            def _if(ResetLinkSchema, best_link, best_timestamp, emails, extraction, link):
+                best_link = link
+                best_timestamp = email.timestamp
+                return (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link)
+
+            def _else(ResetLinkSchema, best_link, best_timestamp, emails, extraction, link):
+
+                def _if(ResetLinkSchema, best_link, best_timestamp, emails, extraction, link):
+                    best_link = link
+                    best_timestamp = email.timestamp
+                    return (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link)
+                ResetLinkSchema, best_link, best_timestamp, emails, extraction, link = if_stmt(_if, None, email.timestamp > best_timestamp, (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link))
+                return (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link)
+            ResetLinkSchema, best_link, best_timestamp, emails, extraction, link = if_stmt(_if, _else, best_link == '', (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link))
+            return (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link)
+        ResetLinkSchema, best_link, best_timestamp, emails, extraction, link = if_stmt(_if, None, link != '', (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link))
+        return (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link)
+    ResetLinkSchema, best_link, best_timestamp, emails, extraction, link = for_stmt(_for, emails, (ResetLinkSchema, best_link, best_timestamp, emails, extraction, link))
+    result = 'Here is your TechServices password reset link: {}'.format(best_link) if best_link != '' else 'I could not find a TechServices password reset link in your recent emails.'
+    return result

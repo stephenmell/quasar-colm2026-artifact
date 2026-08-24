@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    head_board_patches = image_patch.find("head board")
+    headboard_patches = image_patch.find("headboard")
+    all_headboard_patches = head_board_patches + headboard_patches
+
+    if len(all_headboard_patches) == 0:
+        result = image_patch.simple_query("Which color is the head board made of metal?")
+    else:
+        metal_color = None
+        for hb_patch in all_headboard_patches:
+            is_metal = hb_patch.verify_property("head board", "metal")
+            if not is_metal:
+                is_metal = hb_patch.verify_property("headboard", "metal")
+            if not is_metal:
+                is_metal = hb_patch.verify_property("head board", "made of metal")
+            if not is_metal:
+                is_metal = hb_patch.verify_property("headboard", "made of metal")
+            if is_metal:
+                color_guess = hb_patch.simple_query("Which color is the head board?")
+                if color_guess:
+                    metal_color = color_guess
+        if metal_color:
+            result = metal_color
+        if not result:
+            first_hb = all_headboard_patches[0]
+            result = first_hb.simple_query("Which color is the head board made of metal?")
+    return result

@@ -1,0 +1,5 @@
+{
+  "result": "- The latest transaction date is '2022-03-07', so 'this year' is 2022. All 5 transactions are from 2022 and are included.\n- Categorization and totals:\n  - Dining: 2 transactions (Pizza party, Sushi dinner), total_outgoing: 100.0, total_incoming: 10.0, net: -90.0\n  - Gifts/Other: 1 transaction (New year gift), total_outgoing: 200.0, total_incoming: 0.0, net: -200.0\n  - Subscriptions: 1 transaction (Spotify Premium, recurring), total_outgoing: 50.0, total_incoming: 0.0, net: -50.0\n  - Other: 1 transaction (Apple Store purchase), total_outgoing: 1000.0, total_incoming: 0.0, net: -1000.0\n- Overall totals: total_outgoing: 1350.0, total_incoming: 10.0, net: -1340.0\n- Top 3 categories by absolute net: Other (-1000.0), Gifts/Other (-200.0), Dining (-90.0)\n- Year used: 2022; number of in-year transactions: 5.",
+  "time_ns": 2825352071,
+  "utility": true
+}

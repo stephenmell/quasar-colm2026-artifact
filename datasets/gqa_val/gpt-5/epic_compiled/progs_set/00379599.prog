@@ -1,0 +1,95 @@
+def execute_command(image) -> str:
+    bowl_patches = None
+    closest_to_this_placemat = None
+    dist_b_sq = None
+    dist_sq = None
+    dx = None
+    dxb = None
+    dy = None
+    dyb = None
+    image_patch = None
+    nearest_bowl = None
+    nearest_bowl_dist = None
+    nearest_placemat = None
+    nearest_placemat_dist = None
+    pizza_patches = None
+    placemat_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    bowl_patches = image_patch.find('bowl')
+    placemat_patches = image_patch.find('placemat')
+    pizza_patches = image_patch.find('pizza')
+
+    def _if(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+        result = image_patch.simple_query('Is the bowl to the right or to the left of the placemat near the pizza?')
+        return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+
+    def _else(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+        nearest_placemat = None
+        nearest_placemat_dist = None
+
+        def _for(placemat_patch, bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches):
+            closest_to_this_placemat = None
+
+            def _for(pizza_patch, bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches):
+                dx = placemat_patch.horizontal_center - pizza_patch.horizontal_center
+                dy = placemat_patch.vertical_center - pizza_patch.vertical_center
+                dist_sq = dx * dx + dy * dy
+
+                def _if(bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches):
+                    closest_to_this_placemat = dist_sq
+                    return (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches)
+                bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches = if_stmt(_if, None, or_expr(closest_to_this_placemat is None, dist_sq < closest_to_this_placemat), (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches))
+                return (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches)
+            bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches = for_stmt(_for, pizza_patches, (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches))
+
+            def _if(bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches):
+                nearest_placemat = placemat_patch
+                nearest_placemat_dist = closest_to_this_placemat
+                return (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches)
+            bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches = if_stmt(_if, None, or_expr(nearest_placemat is None, closest_to_this_placemat is not None and closest_to_this_placemat < nearest_placemat_dist), (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches))
+            return (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches)
+        bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches = for_stmt(_for, placemat_patches, (bowl_patches, closest_to_this_placemat, dist_sq, dx, dy, image_patch, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches))
+
+        def _if(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+            result = image_patch.simple_query('Is the bowl to the right or to the left of the placemat near the pizza?')
+            return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+
+        def _else(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+            nearest_bowl = None
+            nearest_bowl_dist = None
+
+            def _for(bowl_patch, bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches):
+                dxb = bowl_patch.horizontal_center - nearest_placemat.horizontal_center
+                dyb = bowl_patch.vertical_center - nearest_placemat.vertical_center
+                dist_b_sq = dxb * dxb + dyb * dyb
+
+                def _if(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches):
+                    nearest_bowl = bowl_patch
+                    nearest_bowl_dist = dist_b_sq
+                    return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches)
+                bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches = if_stmt(_if, None, or_expr(nearest_bowl is None, dist_b_sq < nearest_bowl_dist), (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches))
+                return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches)
+            bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches = for_stmt(_for, bowl_patches, (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches))
+
+            def _if(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+                result = image_patch.simple_query('Is the bowl to the right or to the left of the placemat near the pizza?')
+                return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+
+            def _else(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+
+                def _if(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+                    result = 'right'
+                    return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+
+                def _else(bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result):
+                    result = 'left'
+                    return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+                bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result = if_stmt(_if, _else, nearest_bowl.horizontal_center > nearest_placemat.horizontal_center, (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result))
+                return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+            bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result = if_stmt(_if, _else, nearest_bowl is None, (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result))
+            return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+        bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result = if_stmt(_if, _else, or_expr(nearest_placemat is None, len(bowl_patches) == 0), (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result))
+        return (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result)
+    bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result = if_stmt(_if, _else, or_expr(len(bowl_patches) == 0, or_expr(len(placemat_patches) == 0, len(pizza_patches) == 0)), (bowl_patches, closest_to_this_placemat, dist_b_sq, dist_sq, dx, dxb, dy, dyb, image_patch, nearest_bowl, nearest_bowl_dist, nearest_placemat, nearest_placemat_dist, pizza_patches, placemat_patches, result))
+    return result

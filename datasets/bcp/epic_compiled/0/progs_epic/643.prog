@@ -1,0 +1,171 @@
+({2098: 'context',
+  2101: 'llm_query',
+  2112: '.join',
+  2120: '.strip',
+  2150: 'return_result'},
+ ('def',
+  2096,
+  ((),
+   ((('call', (2097,), -1, ()),
+     ('def',
+      2099,
+      ((2107, 2100),
+       ((('prim',
+          2102,
+          'You will analyze one document to detect a specific therapeutic '
+          'agent and, if present, an FDA approval letter. Use only the '
+          'document provided. Do not assume facts not in the document.\n'
+          '\n'
+          'Document:\n'
+          '<<<\n'),
+         ('call', (2103,), 80, (2102, 2100)),
+         ('prim',
+          2104,
+          '\n'
+          '>>>\n'
+          '\n'
+          'Task:\n'
+          'Identify whether this document provides any of the following clues '
+          'about a single agent (drug):\n'
+          '- Not indicated for patients who weigh 30 kg or are 10 years old\n'
+          '- Oral administration (tablets available)\n'
+          '- Reported side effect includes nausea\n'
+          '- A 2022 study (published in December), authored by two people and '
+          'listing 31 references, stating the half-life is less than 10 hours '
+          'and the liver primarily eliminates it\n'
+          '- An FDA (or regulatory) letter for tablets containing the agent '
+          'where the application was received on March 23 and approval was '
+          'given eight months later by letter\n'
+          '\n'
+          'If the document includes any of these clues, extract them and '
+          'identify the agent if possible. If the document is an FDA '
+          "approval/response letter, extract the Regulatory Project Manager's "
+          "full name exactly as it appears for the 'If you have any questions' "
+          'contact line.\n'
+          '\n'
+          'Output in this exact template (omit sections that you cannot '
+          'support from THIS document):\n'
+          'Agent: <exact agent name if determinable from this doc, else '
+          'Unknown>\n'
+          'CluesMatched: <comma-separated short list of the bulleted clues '
+          'that this doc supports>\n'
+          'Quotes:\n'
+          '- <exact quote 1 from this doc>\n'
+          '- <exact quote 2 from this doc>\n'
+          '...\n'
+          'If FDA letter detected:\n'
+          "RPMName: <exact full name from the letter’s 'If you have any "
+          "questions' line>\n"
+          'ApprovalTimeline: <verbatim dates/phrases from this doc about '
+          'application receipt and approval timing>\n'),
+         ('call', (2105,), 80, (2103, 2104)),
+         ('call', (2106,), 2101, (2105,)),
+         ('call', (2108,), -1, (2106,)),
+         ('call', (2109,), 80, (2107, 2108))),
+        (2109,)))),
+     ('call', (2111,), 79, (2098,)),
+     ('call', (2110,), 2111, (2097, 2099)),
+     ('prim',
+      2114,
+      'You will be given extracted clues from multiple documents. Determine '
+      'the single most likely agent (drug) that satisfies ALL of the following '
+      'when taken together:\n'
+      '- Not indicated for patients who weigh 30 kg or are 10 years old\n'
+      '- Oral route; tablets are available\n'
+      '- Reported side effect includes nausea\n'
+      '- A 2022 study (December), authored by two people with 31 references, '
+      'reports half-life < 10 hours and primary hepatic elimination\n'
+      '- There exists an FDA approval letter for tablets containing the agent: '
+      'application received on March 23 and approved eight months later by '
+      'letter\n'
+      '\n'
+      'Clue Extractions:\n'
+      '====\n'),
+     ('prim', 2113, '\n----\n'),
+     ('call', (2115,), 2112, (2113, 2110)),
+     ('call', (2116,), 80, (2114, 2115)),
+     ('prim',
+      2117,
+      '\n'
+      '====\n'
+      '\n'
+      'Respond with only the exact agent name (single line). If uncertain, '
+      'respond with: Unknown'),
+     ('call', (2118,), 80, (2116, 2117)),
+     ('call', (2119,), 2101, (2118,)),
+     ('call', (2121,), 2120, (2119,)),
+     ('call', (2122,), -1, ()),
+     ('def',
+      2123,
+      ((2135, 2124),
+       ((('prim',
+          2127,
+          'We are looking for an FDA (or regulatory) approval/response letter '
+          'for TABLETS containing the agent named exactly: '),
+         ('call', (2128,), 80, (2127, 2121)),
+         ('prim',
+          2129,
+          '. The correct letter includes:\n'
+          '- A line stating the application was received on March 23\n'
+          '- Approval occurred eight months later (e.g., in November of that '
+          'same year)\n'
+          "- A contact line: 'If you have any questions, call ... Regulatory "
+          "Project Manager'\n"
+          '\n'
+          'Using ONLY the document below, determine if it is that letter. If '
+          'yes, extract and return:\n'
+          '- The Regulatory Project Manager’s full name exactly as written '
+          '(include middle initials; exclude degrees, titles, phone, and '
+          'email)\n'
+          '- Verbatim quotes of the application receipt date and approval '
+          'timing that justify the match\n'
+          '\n'
+          'Document:\n'
+          '<<<\n'),
+         ('call', (2130,), 80, (2128, 2129)),
+         ('call', (2131,), 80, (2130, 2124)),
+         ('prim',
+          2132,
+          '\n'
+          '>>>\n'
+          '\n'
+          'Output strictly in this template:\n'
+          'IsCorrectLetter: <Yes/No>\n'
+          'RPMName: <full name or None>\n'
+          'Evidence:\n'
+          '- <quote about March 23 receipt>\n'
+          '- <quote about approval 8 months later>\n'),
+         ('call', (2133,), 80, (2131, 2132)),
+         ('call', (2134,), 2101, (2133,)),
+         ('call', (2136,), -1, (2134,)),
+         ('call', (2137,), 80, (2135, 2136))),
+        (2137,)))),
+     ('call', (2139,), 79, (2098,)),
+     ('call', (2138,), 2139, (2122, 2123)),
+     ('prim',
+      2140,
+      'From the following analyses, pick the most plausible Regulatory Project '
+      'Manager (RPM) name associated with the FDA letter for tablets '
+      "containing agent '"),
+     ('call', (2141,), 80, (2140, 2121)),
+     ('prim',
+      2142,
+      "', where the application was received on March 23 and approval occurred "
+      'eight months later by letter. Prefer entries with explicit matching '
+      'quotes for both date conditions. If multiple candidates exist, choose '
+      'the one with the strongest explicit evidence. Return only the exact '
+      'full name as it appears in the letter (no titles, degrees, phone, or '
+      'extra text). If nothing is sufficient, respond with: Unknown\n'
+      '\n'
+      'Analyses:\n'
+      '====\n'),
+     ('call', (2144,), 80, (2141, 2142)),
+     ('prim', 2143, '\n----\n'),
+     ('call', (2145,), 2112, (2143, 2138)),
+     ('call', (2146,), 80, (2144, 2145)),
+     ('prim', 2147, '\n====\n'),
+     ('call', (2148,), 80, (2146, 2147)),
+     ('call', (2149,), 2101, (2148,)),
+     ('call', (2151,), 2120, (2149,)),
+     ('call', (2152,), 2150, (2151,))),
+    (2152,)))))

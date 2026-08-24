@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    clock_patches = None
+    has_red = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    clock_patches = image_patch.find('clock')
+
+    def _if(clock_patches, has_red, image_patch, result):
+        result = image_patch.simple_query('Does the clock have red color?')
+        return (clock_patches, has_red, image_patch, result)
+
+    def _else(clock_patches, has_red, image_patch, result):
+        has_red = False
+
+        def _for(clock_patch, clock_patches, has_red, image_patch):
+
+            def _if(clock_patches, has_red, image_patch):
+                has_red = True
+                return (clock_patches, has_red, image_patch)
+            clock_patches, has_red, image_patch = if_stmt(_if, None, clock_patch.verify_property('clock', 'red'), (clock_patches, has_red, image_patch))
+            return (clock_patches, has_red, image_patch)
+        clock_patches, has_red, image_patch = for_stmt(_for, clock_patches, (clock_patches, has_red, image_patch))
+        result = bool_to_yesno(has_red)
+        return (clock_patches, has_red, image_patch, result)
+    clock_patches, has_red, image_patch, result = if_stmt(_if, _else, len(clock_patches) == 0, (clock_patches, has_red, image_patch, result))
+    return result

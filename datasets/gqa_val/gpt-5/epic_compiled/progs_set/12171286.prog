@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    drawer_patches = None
+    image_patch = None
+    refrigerator_patches = None
+    result = None
+    rightmost_drawer = None
+    image_patch = ImagePatch(image)
+    drawer_patches = image_patch.find('drawer')
+
+    def _if(drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer):
+        result = image_patch.simple_query('Is there a refrigerator to the right of the drawer on the right?')
+        return (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer)
+
+    def _else(drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer):
+        rightmost_drawer = drawer_patches[0]
+
+        def _for(drawer_patch, drawer_patches, image_patch, rightmost_drawer):
+
+            def _if(drawer_patches, image_patch, rightmost_drawer):
+                rightmost_drawer = drawer_patch
+                return (drawer_patches, image_patch, rightmost_drawer)
+            drawer_patches, image_patch, rightmost_drawer = if_stmt(_if, None, drawer_patch.horizontal_center > rightmost_drawer.horizontal_center, (drawer_patches, image_patch, rightmost_drawer))
+            return (drawer_patches, image_patch, rightmost_drawer)
+        drawer_patches, image_patch, rightmost_drawer = for_stmt(_for, drawer_patches, (drawer_patches, image_patch, rightmost_drawer))
+        refrigerator_patches = image_patch.find('refrigerator')
+
+        def _if(drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer):
+            result = 'no'
+            return (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer)
+
+        def _else(drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer):
+            result = 'no'
+
+            def _for(refrigerator_patch, drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer):
+
+                def _if(drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer):
+                    result = 'yes'
+                    return (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer)
+                drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer = if_stmt(_if, None, refrigerator_patch.horizontal_center > rightmost_drawer.horizontal_center, (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer))
+                return (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer)
+            drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer = for_stmt(_for, refrigerator_patches, (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer))
+            return (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer)
+        drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer = if_stmt(_if, _else, len(refrigerator_patches) == 0, (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer))
+        return (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer)
+    drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer = if_stmt(_if, _else, len(drawer_patches) == 0, (drawer_patches, image_patch, refrigerator_patches, result, rightmost_drawer))
+    return result

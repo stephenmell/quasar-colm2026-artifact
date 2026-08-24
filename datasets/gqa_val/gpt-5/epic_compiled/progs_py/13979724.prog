@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    ski_patches = image_patch.find("ski")
+
+    if len(ski_patches) < 2:
+        result = image_patch.simple_query("Does the ski to the right of the other ski have short length?")
+    else:
+        rightmost_ski = ski_patches[0]
+        for ski_patch in ski_patches:
+            if ski_patch.horizontal_center > rightmost_ski.horizontal_center:
+                rightmost_ski = ski_patch
+        is_short = rightmost_ski.verify_property("ski", "short")
+        result = bool_to_yesno(is_short)
+    return result

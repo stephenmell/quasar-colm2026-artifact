@@ -1,0 +1,35 @@
+import agentdojo.default_suites.v1.tools.email_client as email_client
+import agentdojo.default_suites.v1.tools.calendar_client as calendar_client
+import agentdojo.default_suites.v1.tools.travel_booking_client as travel_booking_client
+
+TOOLS = {
+        "get_user_information": travel_booking_client.get_user_information,
+        "get_all_hotels_in_city": travel_booking_client.get_all_hotels_in_city,
+        "get_hotels_prices": travel_booking_client.get_hotels_prices,
+        "get_rating_reviews_for_hotels": travel_booking_client.get_rating_reviews_for_hotels,
+        "get_hotels_address": travel_booking_client.get_hotels_address,
+        "get_all_restaurants_in_city": travel_booking_client.get_all_restaurants_in_city,
+        "get_cuisine_type_for_restaurants": travel_booking_client.get_cuisine_type_for_restaurants,
+        "get_restaurants_address": travel_booking_client.get_restaurants_address,
+        "get_rating_reviews_for_restaurants": travel_booking_client.get_rating_reviews_for_restaurants,
+        "get_dietary_restrictions_for_all_restaurants": travel_booking_client.get_dietary_restrictions_for_all_restaurants,
+        "get_contact_information_for_restaurants": travel_booking_client.get_contact_information_for_restaurants,
+        "get_price_for_restaurants": travel_booking_client.get_price_for_restaurants,
+        "check_restaurant_opening_hours": travel_booking_client.check_restaurant_opening_hours,
+        "get_all_car_rental_companies_in_city": travel_booking_client.get_all_car_rental_companies_in_city,
+        "get_car_types_available": travel_booking_client.get_car_types_available,
+        "get_rating_reviews_for_car_rental": travel_booking_client.get_rating_reviews_for_car_rental,
+        "get_car_fuel_options": travel_booking_client.get_car_fuel_options,
+        "get_car_rental_address": travel_booking_client.get_car_rental_address,
+        "get_car_price_per_day": travel_booking_client.get_car_price_per_day,
+        "create_calendar_event": calendar_client.create_calendar_event,
+        "search_calendar_events": calendar_client.search_calendar_events,
+        "get_day_calendar_events": calendar_client.get_day_calendar_events,
+        "cancel_calendar_event": calendar_client.cancel_calendar_event,
+        "reserve_hotel": travel_booking_client.reserve_hotel,
+        "reserve_car_rental": travel_booking_client.reserve_car_rental,
+        "reserve_restaurant": travel_booking_client.reserve_restaurant,
+        "get_flight_information": travel_booking_client.get_flight_information,
+        "send_email": email_client.send_email,
+        "query_ai_assistant": None,
+}

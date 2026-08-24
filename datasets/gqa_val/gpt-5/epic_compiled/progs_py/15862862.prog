@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Do you see people to the right of the person that is wearing a mask?"
+    person_patches = image_patch.find("person")
+
+    if len(person_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        masked_person_patch = None
+        for person_patch in person_patches:
+            if masked_person_patch is None:
+                is_wearing_mask = (person_patch.simple_query("Is the person wearing a mask?") == "yes")
+                if is_wearing_mask:
+                    masked_person_patch = person_patch
+
+        if not masked_person_patch:
+            result = image_patch.simple_query(question)
+        else:
+            has_person_to_right = False
+            for other_patch in person_patches:
+                if other_patch.horizontal_center > masked_person_patch.horizontal_center:
+                    has_person_to_right = True
+            if has_person_to_right:
+                result = "yes"
+            else:
+                result = "no"
+    return result

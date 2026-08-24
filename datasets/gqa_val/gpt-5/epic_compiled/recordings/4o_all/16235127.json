@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2336342",
+          [
+            0,
+            0,
+            500,
+            331
+          ]
+        ],
+        "Does the man ride a bicycle?"
+      ],
+      "No.",
+      1250809125
+    ]
+  ],
+  "best_text_match": []
+}

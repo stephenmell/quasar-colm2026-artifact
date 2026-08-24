@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    jeans_patches = image_patch.find("jeans")
+    if len(jeans_patches) == 0:
+        result = image_patch.simple_query("Do the jeans have black color?")
+    else:
+        is_black = False
+        for jeans_patch in jeans_patches:
+            if jeans_patch.verify_property("jeans", "black"):
+                is_black = True
+        result = bool_to_yesno(is_black)
+    return result

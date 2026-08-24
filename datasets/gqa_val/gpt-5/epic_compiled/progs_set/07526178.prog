@@ -1,0 +1,24 @@
+def execute_command(image) -> str:
+    found = None
+    image_patch = None
+    names = None
+    result = None
+    image_patch = ImagePatch(image)
+    found = False
+    names = ('bike', 'bicycle', 'motorcycle', 'motorbike')
+
+    def _for(name, found, image_patch, names):
+
+        def _if(found, image_patch, names):
+            found = True
+            return (found, image_patch, names)
+        found, image_patch, names = if_stmt(_if, None, image_patch.exists(name), (found, image_patch, names))
+        return (found, image_patch, names)
+    found, image_patch, names = for_stmt(_for, names, (found, image_patch, names))
+    result = bool_to_yesno(found)
+
+    def _if(found, image_patch, names, result):
+        result = image_patch.simple_query('Do you see a bike?')
+        return (found, image_patch, names, result)
+    found, image_patch, names, result = if_stmt(_if, None, result == 'no', (found, image_patch, names, result))
+    return result

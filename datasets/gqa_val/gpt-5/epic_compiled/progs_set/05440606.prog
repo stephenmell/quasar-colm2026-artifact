@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    color = None
+    device_patches = None
+    image_patch = None
+    is_wood = None
+    result = None
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find('device')
+
+    def _if(color, device_patches, image_patch, is_wood, result):
+        result = image_patch.simple_query('What is the color of the devices made of wood?')
+        return (color, device_patches, image_patch, is_wood, result)
+
+    def _else(color, device_patches, image_patch, is_wood, result):
+        result = None
+
+        def _for(device_patch, color, device_patches, image_patch, is_wood, result):
+            is_wood = device_patch.verify_property('device', 'wood')
+
+            def _if(device_patches, image_patch, is_wood, result):
+                is_wood = device_patch.verify_property('device', 'wooden')
+                return (device_patches, image_patch, is_wood, result)
+            device_patches, image_patch, is_wood, result = if_stmt(_if, None, not_expr(is_wood), (device_patches, image_patch, is_wood, result))
+
+            def _if(device_patches, image_patch, is_wood, result):
+                is_wood = device_patch.verify_property('device', 'made of wood')
+                return (device_patches, image_patch, is_wood, result)
+            device_patches, image_patch, is_wood, result = if_stmt(_if, None, not_expr(is_wood), (device_patches, image_patch, is_wood, result))
+
+            def _if(color, device_patches, image_patch, is_wood, result):
+                color = device_patch.simple_query('What color is the device?')
+                result = color
+                return (color, device_patches, image_patch, is_wood, result)
+            color, device_patches, image_patch, is_wood, result = if_stmt(_if, None, is_wood, (color, device_patches, image_patch, is_wood, result))
+            return (color, device_patches, image_patch, is_wood, result)
+        color, device_patches, image_patch, is_wood, result = for_stmt(_for, device_patches, (color, device_patches, image_patch, is_wood, result))
+
+        def _if(color, device_patches, image_patch, is_wood, result):
+            result = image_patch.simple_query('What is the color of the devices made of wood?')
+            return (color, device_patches, image_patch, is_wood, result)
+        color, device_patches, image_patch, is_wood, result = if_stmt(_if, None, not_expr(result), (color, device_patches, image_patch, is_wood, result))
+        return (color, device_patches, image_patch, is_wood, result)
+    color, device_patches, image_patch, is_wood, result = if_stmt(_if, _else, len(device_patches) == 0, (color, device_patches, image_patch, is_wood, result))
+    return result

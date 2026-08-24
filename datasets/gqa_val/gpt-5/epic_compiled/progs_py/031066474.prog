@@ -1,0 +1,15 @@
+# What type of furniture is not decorative?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    furniture_patches = image_patch.find("furniture")
+    if len(furniture_patches) == 0:
+        result = image_patch.simple_query("What type of furniture is not decorative?")
+    else:
+        result = None
+        for furniture_patch in furniture_patches:
+            is_decorative = furniture_patch.verify_property("furniture", "decorative")
+            if (not is_decorative) and (not result):
+                result = furniture_patch.simple_query("What type of furniture is this?")
+        if not result:
+            result = image_patch.simple_query("What type of furniture is not decorative?")
+    return result

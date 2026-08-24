@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    object_names = ("picture", "photograph", "photo", "painting", "poster")
+    found = False
+    for name in object_names:
+        if image_patch.exists(name):
+            found = True
+    result = bool_to_yesno(found)
+    return result

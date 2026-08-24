@@ -1,0 +1,50 @@
+def execute_command(image) -> str:
+    candidate_patches = None
+    customer_patches = None
+    food_patches = None
+    image_patch = None
+    result = None
+    table_patch = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find('table')
+
+    def _if(candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+        result = image_patch.simple_query('Do you see customers to the right of the food at the table?')
+        return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+
+    def _else(candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+        table_patch = table_patches[0]
+        food_patches = table_patch.find('food')
+
+        def _if(candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+            result = table_patch.simple_query('Do you see customers to the right of the food at the table?')
+            return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+
+        def _else(candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+            result = 'no'
+
+            def _for(food_patch, candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+                customer_patches = table_patch.find('customer')
+                candidate_patches = customer_patches
+
+                def _if(candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+                    candidate_patches = table_patch.find('person')
+                    return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+                candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches = if_stmt(_if, None, len(candidate_patches) == 0, (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches))
+
+                def _for(cust_patch, candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+
+                    def _if(candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches):
+                        result = 'yes'
+                        return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+                    candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches = if_stmt(_if, None, cust_patch.horizontal_center > food_patch.horizontal_center, (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches))
+                    return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+                candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches = for_stmt(_for, candidate_patches, (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches))
+                return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+            candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches = for_stmt(_for, food_patches, (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches))
+            return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+        candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches = if_stmt(_if, _else, len(food_patches) == 0, (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches))
+        return (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches)
+    candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches = if_stmt(_if, _else, len(table_patches) == 0, (candidate_patches, customer_patches, food_patches, image_patch, result, table_patch, table_patches))
+    return result

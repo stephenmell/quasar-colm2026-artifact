@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    bench_patches = None
+    has_white_bench = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bench_patches = image_patch.find('bench')
+
+    def _if(bench_patches, has_white_bench, image_patch, result):
+        result = image_patch.simple_query('Are there white benches in this photo?')
+        return (bench_patches, has_white_bench, image_patch, result)
+
+    def _else(bench_patches, has_white_bench, image_patch, result):
+        has_white_bench = False
+
+        def _for(bench_patch, bench_patches, has_white_bench, image_patch):
+
+            def _if(bench_patches, has_white_bench, image_patch):
+                has_white_bench = True
+                return (bench_patches, has_white_bench, image_patch)
+            bench_patches, has_white_bench, image_patch = if_stmt(_if, None, bench_patch.verify_property('bench', 'white'), (bench_patches, has_white_bench, image_patch))
+            return (bench_patches, has_white_bench, image_patch)
+        bench_patches, has_white_bench, image_patch = for_stmt(_for, bench_patches, (bench_patches, has_white_bench, image_patch))
+
+        def _if(bench_patches, has_white_bench, image_patch, result):
+            result = 'yes'
+            return (bench_patches, has_white_bench, image_patch, result)
+
+        def _else(bench_patches, has_white_bench, image_patch, result):
+            result = 'no'
+            return (bench_patches, has_white_bench, image_patch, result)
+        bench_patches, has_white_bench, image_patch, result = if_stmt(_if, _else, has_white_bench, (bench_patches, has_white_bench, image_patch, result))
+        return (bench_patches, has_white_bench, image_patch, result)
+    bench_patches, has_white_bench, image_patch, result = if_stmt(_if, _else, len(bench_patches) == 0, (bench_patches, has_white_bench, image_patch, result))
+    return result

@@ -1,0 +1,34 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    found = None
+    image_patch = None
+    result = None
+    synonyms = None
+    image_patch = ImagePatch(image)
+    found = False
+    synonyms = ('office chair', 'desk chair', 'rolling chair', 'swivel chair')
+
+    def _for(name, found, image_patch, synonyms):
+
+        def _if(found, image_patch, synonyms):
+            found = True
+            return (found, image_patch, synonyms)
+        found, image_patch, synonyms = if_stmt(_if, None, image_patch.exists(name), (found, image_patch, synonyms))
+        return (found, image_patch, synonyms)
+    found, image_patch, synonyms = for_stmt(_for, synonyms, (found, image_patch, synonyms))
+
+    def _if(chair_patches, found, image_patch, synonyms):
+        chair_patches = image_patch.find('chair')
+
+        def _for(chair_patch, chair_patches, found, image_patch, synonyms):
+
+            def _if(chair_patches, found, image_patch, synonyms):
+                found = True
+                return (chair_patches, found, image_patch, synonyms)
+            chair_patches, found, image_patch, synonyms = if_stmt(_if, None, chair_patch.verify_property('chair', 'office'), (chair_patches, found, image_patch, synonyms))
+            return (chair_patches, found, image_patch, synonyms)
+        chair_patches, found, image_patch, synonyms = for_stmt(_for, chair_patches, (chair_patches, found, image_patch, synonyms))
+        return (chair_patches, found, image_patch, synonyms)
+    chair_patches, found, image_patch, synonyms = if_stmt(_if, None, not_expr(found), (chair_patches, found, image_patch, synonyms))
+    result = bool_to_yesno(found)
+    return result

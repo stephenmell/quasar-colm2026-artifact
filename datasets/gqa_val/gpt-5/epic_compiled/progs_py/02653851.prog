@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    attic_patches = image_patch.find("attic")
+    if len(attic_patches) == 0:
+        result = image_patch.simple_query("What is the color of the dirty attic?")
+    else:
+        dirty_attic_patch = None
+        for attic_patch in attic_patches:
+            is_dirty = attic_patch.verify_property("attic", "dirty")
+            if is_dirty and (dirty_attic_patch is None):
+                dirty_attic_patch = attic_patch
+        if dirty_attic_patch is None:
+            result = attic_patches[0].simple_query("What is the color of the dirty attic?")
+        else:
+            result = dirty_attic_patch.simple_query("What is the color of the dirty attic?")
+    return result

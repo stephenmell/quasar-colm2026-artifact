@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        result = image_patch.simple_query("Is the black bag on the right?")
+    else:
+        result = "no"
+        for bag_patch in bag_patches:
+            is_black = bag_patch.verify_property("bag", "black")
+            is_right = bag_patch.horizontal_center > image_patch.horizontal_center
+            if is_black and is_right:
+                result = "yes"
+    return result

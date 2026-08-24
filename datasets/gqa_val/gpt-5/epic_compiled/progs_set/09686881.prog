@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    exists_any = None
+    image_patch = None
+    object_names = None
+    result = None
+    image_patch = ImagePatch(image)
+    object_names = ('picture', 'painting', 'poster', 'photo', 'photograph', 'picture frame', 'art')
+    exists_any = False
+
+    def _for(name, exists_any, image_patch, object_names):
+
+        def _if(exists_any, image_patch, object_names):
+            exists_any = True
+            return (exists_any, image_patch, object_names)
+        exists_any, image_patch, object_names = if_stmt(_if, None, image_patch.exists(name), (exists_any, image_patch, object_names))
+        return (exists_any, image_patch, object_names)
+    exists_any, image_patch, object_names = for_stmt(_for, object_names, (exists_any, image_patch, object_names))
+
+    def _if(exists_any, image_patch, object_names, result):
+        result = 'yes'
+        return (exists_any, image_patch, object_names, result)
+
+    def _else(exists_any, image_patch, object_names, result):
+        result = image_patch.simple_query('Are there pictures in this photo?')
+        return (exists_any, image_patch, object_names, result)
+    exists_any, image_patch, object_names, result = if_stmt(_if, _else, exists_any, (exists_any, image_patch, object_names, result))
+    return result

@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    wine_patches = image_patch.find("wine")
+    if len(wine_patches) == 0:
+        # If no wine is found, query the image directly
+        return image_patch.simple_query("Is there any wine that is red?")
+    for wine_patch in wine_patches:
+        if wine_patch.verify_property("wine", "red"):
+            return "yes"
+    return "no"

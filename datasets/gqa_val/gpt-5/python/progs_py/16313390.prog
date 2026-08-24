@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cup_patches = image_patch.find("cup")
+    if len(cup_patches) == 0:
+        # If no cups are found, ask directly
+        return image_patch.simple_query("On which side of the photo is the white cup?")
+    white_cups = []
+    for cup_patch in cup_patches:
+        if cup_patch.verify_property("cup", "white"):
+            white_cups.append(cup_patch)
+        else:
+            # Fallback check via QA
+            if cup_patch.simple_query("Is the cup white?") == "yes":
+                white_cups.append(cup_patch)
+    if len(white_cups) == 0:
+        # If no white cup detected among cups, ask directly
+        return image_patch.simple_query("On which side of the photo is the white cup?")
+    target = white_cups[0]
+    if target.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

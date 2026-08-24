@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("Are there any purses to the left of the woman on the left side?")
+    else:
+        # Identify the woman on the left side (leftmost woman)
+        leftmost_woman = woman_patches[0]
+        for w_patch in woman_patches:
+            if w_patch.horizontal_center < leftmost_woman.horizontal_center:
+                leftmost_woman = w_patch
+
+        purse_patches = image_patch.find("purse")
+        if len(purse_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for purse_patch in purse_patches:
+                if purse_patch.horizontal_center < leftmost_woman.horizontal_center:
+                    result = "yes"
+    return result

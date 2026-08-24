@@ -1,0 +1,12 @@
+def execute_command(image) -> str:
+    has_any_bowls = None
+    has_bowl_plural = None
+    has_bowl_singular = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_bowl_singular = image_patch.exists('bowl')
+    has_bowl_plural = image_patch.exists('bowls')
+    has_any_bowls = or_expr(has_bowl_singular, has_bowl_plural)
+    result = bool_to_yesno(has_any_bowls)
+    return result

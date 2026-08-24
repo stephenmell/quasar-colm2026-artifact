@@ -1,0 +1,13 @@
+context_info = ()
+for d in context:
+    result = llm_query("You are given a single document. If it contains information relevant to the following puzzle, extract candidate film(s) and evidence.\n\nPuzzle constraints:\n- A family drama movie produced between 1999 and 2009 (inclusive).\n- The lead couple’s 5 children are of the same gender.\n- The actor who plays an adopted child in the movie has an adopted sibling in real life.\n- Two lead actors are recipients of honorary doctorates.\n- One of the actors published a memoir in the late 2010s.\n- Another actor is a survivor of breast cancer in real life.\n\nInstructions:\n- Only use information present in the document to propose candidates. If the document contains partial matches (e.g., mentions of the film, cast details, awards, personal life facts), include them.\n- For each candidate, give a compact structured output with these fields:\n  Title: <film title>\n  Year: <year>\n  Lead actors: <names>\n  Children detail: <does the doc indicate 5 children of same gender? summarize/quote>\n  Adopted-child actor: <name, role>; Adopted sibling IRL: <name, relation>\n  Honorary doctorates: <which lead actors and from where/when>\n  Late-2010s memoir: <actor name, title, year>\n  Breast cancer survivor: <actor name>\n  Quotes: <short quotes from the doc supporting the above>\n- If the document is irrelevant or gives no useful clues, output only: NO_MATCH\n\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT")
+    context_info = context_info + (result,)
+
+aggregated = "\n\n--- DOCUMENT FINDINGS ---\n" + "\n\n".join(context_info)
+
+query = "Identify the single movie that satisfies ALL of the following: a family drama from 1999–2009 inclusive; the lead couple has 5 children all of the same gender; an actor playing an adopted child in the movie has an adopted sibling in real life; two lead actors are recipients of honorary doctorates; one actor published a memoir in the late 2010s; another actor is a real-life breast cancer survivor. Output only the movie title, nothing else."
+
+final_prompt = "Use the document-derived findings below to answer the puzzle. Prefer answers that are explicitly supported across multiple pieces of evidence. If multiple candidates appear, choose the one that satisfies all constraints. Output only the exact movie title string, no extra words.\n\n" + aggregated + "\n\nQuestion: " + query
+
+result = llm_query(final_prompt)
+return_result(result)

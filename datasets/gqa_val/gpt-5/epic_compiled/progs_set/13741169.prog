@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    best_patch = None
+    best_score = None
+    dist = None
+    dx = None
+    dx0 = None
+    dy = None
+    dy0 = None
+    image_patch = None
+    img_cx = None
+    img_cy = None
+    result = None
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find('animal')
+
+    def _if(animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy, result):
+        result = image_patch.simple_query('What kind of animal is it?')
+        return (animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy, result)
+
+    def _else(animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy, result):
+        img_cx = image_patch.horizontal_center
+        img_cy = image_patch.vertical_center
+        best_patch = animal_patches[0]
+        dx0 = best_patch.horizontal_center - img_cx
+        dy0 = best_patch.vertical_center - img_cy
+        best_score = dx0 * dx0 + dy0 * dy0
+
+        def _for(patch, animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy):
+            dx = patch.horizontal_center - img_cx
+            dy = patch.vertical_center - img_cy
+            dist = dx * dx + dy * dy
+
+            def _if(animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy):
+                best_score = dist
+                best_patch = patch
+                return (animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy)
+            animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy = if_stmt(_if, None, dist < best_score, (animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy))
+            return (animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy)
+        animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy = for_stmt(_for, animal_patches, (animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy))
+        result = best_patch.simple_query('What kind of animal is it?')
+        return (animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy, result)
+    animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy, result = if_stmt(_if, _else, len(animal_patches) == 0, (animal_patches, best_patch, best_score, dist, dx, dx0, dy, dy0, image_patch, img_cx, img_cy, result))
+    return result

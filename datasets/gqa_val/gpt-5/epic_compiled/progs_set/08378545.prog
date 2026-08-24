@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    cell_phone_terms = None
+    image_patch = None
+    is_cell_phone = None
+    is_laptop = None
+    laptop_terms = None
+    result = None
+    image_patch = ImagePatch(image)
+    cell_phone_terms = ('cell phone', 'cellphone', 'mobile phone', 'smartphone', 'smart phone')
+    laptop_terms = ('laptop', 'laptop computer', 'notebook computer')
+    is_cell_phone = False
+
+    def _for(term, cell_phone_terms, image_patch, is_cell_phone, laptop_terms):
+
+        def _if(cell_phone_terms, image_patch, is_cell_phone, laptop_terms):
+            is_cell_phone = True
+            return (cell_phone_terms, image_patch, is_cell_phone, laptop_terms)
+        cell_phone_terms, image_patch, is_cell_phone, laptop_terms = if_stmt(_if, None, image_patch.exists(term), (cell_phone_terms, image_patch, is_cell_phone, laptop_terms))
+        return (cell_phone_terms, image_patch, is_cell_phone, laptop_terms)
+    cell_phone_terms, image_patch, is_cell_phone, laptop_terms = for_stmt(_for, cell_phone_terms, (cell_phone_terms, image_patch, is_cell_phone, laptop_terms))
+    is_laptop = False
+
+    def _for(term, cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms):
+
+        def _if(cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms):
+            is_laptop = True
+            return (cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms)
+        cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms = if_stmt(_if, None, image_patch.exists(term), (cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms))
+        return (cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms)
+    cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms = for_stmt(_for, laptop_terms, (cell_phone_terms, image_patch, is_cell_phone, is_laptop, laptop_terms))
+    result = bool_to_yesno(and_expr(is_cell_phone, is_laptop))
+    return result

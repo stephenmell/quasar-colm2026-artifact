@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dog_patches = image_patch.find("dog")
+    # Question assumes only one dog patch
+    if len(dog_patches) == 0:
+        # If no dog is found, query the image directly
+        return image_patch.simple_query("Is the dog on the left side or on the right?")
+    dog_patch = dog_patches[0]
+    if dog_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

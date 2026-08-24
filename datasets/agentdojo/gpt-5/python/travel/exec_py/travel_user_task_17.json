@@ -1,0 +1,5 @@
+{
+  "result": "{'hotel_name': 'Good Night', 'restaurant_name': 'Le Baratin', 'car_rental_company_name': 'Eiffel Tower Car Rental', 'estimated_min_cost': inf}",
+  "time_ns": 33104932312,
+  "utility": false
+}

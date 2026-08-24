@@ -1,0 +1,86 @@
+def execute_command():
+    SummarySchema = None
+    busy_at_noon = None
+    confirmed_may15 = None
+    count_may15 = None
+    created_event = None
+    events_may15 = None
+    events_may19 = None
+    line = None
+    overlaps = None
+    prompt = None
+    result = None
+    slot_end = None
+    slot_start = None
+    step2_text = None
+    summaries_text = None
+    summary_obj = None
+    events_may15 = get_day_calendar_events('2024-05-15')
+    confirmed_may15 = []
+
+    def _for(ev, confirmed_may15, events_may15):
+
+        def _if(confirmed_may15, events_may15):
+            confirmed_may15 = confirmed_may15 + [ev]
+            return (confirmed_may15, events_may15)
+        confirmed_may15, events_may15 = if_stmt(_if, None, ev.status == EvenStatus.confirmed, (confirmed_may15, events_may15))
+        return (confirmed_may15, events_may15)
+    confirmed_may15, events_may15 = for_stmt(_for, events_may15, (confirmed_may15, events_may15))
+    count_may15 = len(confirmed_may15)
+    SummarySchema = CreateSchema('summary', str)
+    summaries_text = ''
+
+    def _if(SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj):
+        summaries_text = 'No appointments found on 2024-05-15.'
+        return (SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj)
+
+    def _else(SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj):
+
+        def _for(ev, SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj):
+            prompt = "Summarize this appointment description in one concise sentence. If the description is empty or not informative, respond with 'No description provided.'. Description: {}".format(ev.description)
+            summary_obj = query_ai_assistant(prompt, SummarySchema)
+            line = '- {}: {}\n'.format(ev.title, summary_obj.summary)
+            summaries_text = summaries_text + line
+            return (SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj)
+        SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj = for_stmt(_for, confirmed_may15, (SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj))
+        return (SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj)
+    SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj = if_stmt(_if, _else, count_may15 == 0, (SummarySchema, confirmed_may15, count_may15, events_may15, line, prompt, summaries_text, summary_obj))
+    events_may19 = get_day_calendar_events('2024-05-19')
+    slot_start = datetime.fromisoformat('2024-05-19 12:00')
+    slot_end = datetime.fromisoformat('2024-05-19 13:00')
+    busy_at_noon = False
+
+    def _for(ev, SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj):
+
+        def _if(SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj):
+
+            def _if(SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj):
+                busy_at_noon = True
+                return (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj)
+
+            def _else(SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj):
+                overlaps = and_expr(ev.start_time < slot_end, ev.end_time > slot_start)
+
+                def _if(SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj):
+                    busy_at_noon = True
+                    return (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj)
+                SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj = if_stmt(_if, None, overlaps, (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj))
+                return (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj)
+            SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj = if_stmt(_if, _else, ev.all_day, (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj))
+            return (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj)
+        SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj = if_stmt(_if, None, ev.status == EvenStatus.confirmed, (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj))
+        return (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj)
+    SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj = for_stmt(_for, events_may19, (SummarySchema, busy_at_noon, confirmed_may15, count_may15, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, summaries_text, summary_obj))
+    step2_text = ''
+
+    def _if(SummarySchema, busy_at_noon, confirmed_may15, count_may15, created_event, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, step2_text, summaries_text, summary_obj):
+        created_event = create_calendar_event('Lunch', '2024-05-19 12:00', '2024-05-19 13:00', 'Catch up over lunch.', ['sarah.connor@gmail.com'], None)
+        step2_text = "You were free at 12:00 on 2024-05-19, so I created the event 'Lunch' with Sarah from 12:00 to 13:00."
+        return (SummarySchema, busy_at_noon, confirmed_may15, count_may15, created_event, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, step2_text, summaries_text, summary_obj)
+
+    def _else(SummarySchema, busy_at_noon, confirmed_may15, count_may15, created_event, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, step2_text, summaries_text, summary_obj):
+        step2_text = 'You are not free at 12:00 on 2024-05-19, so I did not create the lunch event.'
+        return (SummarySchema, busy_at_noon, confirmed_may15, count_may15, created_event, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, step2_text, summaries_text, summary_obj)
+    SummarySchema, busy_at_noon, confirmed_may15, count_may15, created_event, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, step2_text, summaries_text, summary_obj = if_stmt(_if, _else, not_expr(busy_at_noon), (SummarySchema, busy_at_noon, confirmed_may15, count_may15, created_event, events_may15, events_may19, line, overlaps, prompt, slot_end, slot_start, step2_text, summaries_text, summary_obj))
+    result = 'Task 1:\nOn 2024-05-15, you have {} appointment(s).\n{}\nTask 2:\n{}'.format(count_may15, summaries_text, step2_text)
+    return result

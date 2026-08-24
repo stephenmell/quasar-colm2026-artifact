@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "4313",
+          [
+            0,
+            0,
+            640,
+            480
+          ]
+        ],
+        "What vehicle is on the road?"
+      ],
+      "An Audi.",
+      1025740728
+    ]
+  ],
+  "best_text_match": []
+}

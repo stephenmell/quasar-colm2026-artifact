@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    horse_patches = image_patch.find("horse")
+    # Question assumes only one horse patch
+    if len(horse_patches) == 0:
+        # If no horse is found, query the image directly
+        return image_patch.simple_query("Is the horse to the left of a wagon?")
+    for horse_patch in horse_patches:
+        wagon_patches = image_patch.find("wagon")
+        for wagon_patch in wagon_patches:
+            if horse_patch.horizontal_center < wagon_patch.horizontal_center:
+                return "yes"
+    return "no"

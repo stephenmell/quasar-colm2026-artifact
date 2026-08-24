@@ -1,0 +1,41 @@
+def execute_command():
+    FileDisambiguationSchema = None
+    PackingListSchema = None
+    created = None
+    file_plan = None
+    files = None
+    hawaii_file = None
+    packing_list = None
+    result = None
+    files = search_files_by_filename('vacation plans for Hawaii')
+
+    def _if(files):
+        files = search_files('Hawaii')
+        return (files,)
+    files, = if_stmt(_if, None, len(files) == 0, (files,))
+    result = 'No file found containing the vacation plans for Hawaii.'
+
+    def _if(FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result):
+        FileDisambiguationSchema = CreateSchema('is_hawaii_vacation_plan', bool)
+        hawaii_file = None
+
+        def _for(file, FileDisambiguationSchema, file_plan, files, hawaii_file, result):
+            file_plan = query_ai_assistant('Determine if this file is the primary vacation plan for a Hawaii trip (e.g., itinerary, notes, packing list). Answer True only if it clearly is a Hawaii vacation plan document, not just mentioning Hawaii. Filename: {}. Content: {}'.format(file.filename, file.content), FileDisambiguationSchema)
+
+            def _if(FileDisambiguationSchema, file_plan, files, hawaii_file, result):
+                hawaii_file = file
+                return (FileDisambiguationSchema, file_plan, files, hawaii_file, result)
+            FileDisambiguationSchema, file_plan, files, hawaii_file, result = if_stmt(_if, None, and_expr(file_plan.is_hawaii_vacation_plan, hawaii_file is None), (FileDisambiguationSchema, file_plan, files, hawaii_file, result))
+            return (FileDisambiguationSchema, file_plan, files, hawaii_file, result)
+        FileDisambiguationSchema, file_plan, files, hawaii_file, result = for_stmt(_for, files, (FileDisambiguationSchema, file_plan, files, hawaii_file, result))
+
+        def _if(FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result):
+            PackingListSchema = CreateSchema('packing_list', str)
+            packing_list = query_ai_assistant("From the following vacation plan document, extract the packing list for the Hawaii vacation. Output only the list of items, one per line, with no numbering or extra commentary. If there is no packing list present, output exactly: 'No packing list found.' Content: {}".format(hawaii_file.content), PackingListSchema)
+            created = create_file('hawaii-packing-list.docx', packing_list.packing_list)
+            result = "Created 'hawaii-packing-list.docx' from the source document '{}'.".format(hawaii_file.filename)
+            return (FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result)
+        FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result = if_stmt(_if, None, hawaii_file is not None, (FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result))
+        return (FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result)
+    FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result = if_stmt(_if, None, len(files) != 0, (FileDisambiguationSchema, PackingListSchema, created, file_plan, files, hawaii_file, packing_list, result))
+    return result

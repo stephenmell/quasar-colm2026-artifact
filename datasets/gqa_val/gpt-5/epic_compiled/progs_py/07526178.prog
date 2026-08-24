@@ -1,0 +1,12 @@
+# Do you see a bike?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    found = False
+    names = ("bike", "bicycle", "motorcycle", "motorbike")
+    for name in names:
+        if image_patch.exists(name):
+            found = True
+    result = bool_to_yesno(found)
+    if result == "no":
+        result = image_patch.simple_query("Do you see a bike?")
+    return result

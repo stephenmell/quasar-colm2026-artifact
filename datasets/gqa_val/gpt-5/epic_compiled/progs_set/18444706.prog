@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    car_patches = None
+    image_patch = None
+    mat_patches = None
+    person_patches = None
+    person_right_of_any_car = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+    car_patches = image_patch.find('car')
+    mat_patches = image_patch.find('mat')
+
+    def _if(car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+        result = image_patch.simple_query('Do you see any mats to the left of the person that is to the right of the car?')
+        return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+
+    def _else(car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+
+        def _if(car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+            result = 'no'
+            return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+
+        def _else(car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+            result = 'no'
+
+            def _for(person_patch, car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+                person_right_of_any_car = False
+
+                def _for(car_patch, car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+
+                    def _if(car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+                        person_right_of_any_car = True
+                        return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+                    car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = if_stmt(_if, None, person_patch.horizontal_center > car_patch.horizontal_center, (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+                    return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+                car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = for_stmt(_for, car_patches, (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+
+                def _if(car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+
+                    def _for(mat_patch, car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+
+                        def _if(car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result):
+                            result = 'yes'
+                            return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+                        car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = if_stmt(_if, None, mat_patch.horizontal_center < person_patch.horizontal_center, (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+                        return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+                    car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = for_stmt(_for, mat_patches, (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+                    return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+                car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = if_stmt(_if, None, person_right_of_any_car, (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+                return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+            car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = for_stmt(_for, person_patches, (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+            return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+        car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = if_stmt(_if, _else, len(mat_patches) == 0, (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+        return (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result)
+    car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result = if_stmt(_if, _else, or_expr(len(person_patches) == 0, len(car_patches) == 0), (car_patches, image_patch, mat_patches, person_patches, person_right_of_any_car, result))
+    return result

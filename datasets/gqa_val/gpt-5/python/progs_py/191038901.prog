@@ -1,0 +1,44 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the tall lamp
+    lamp_patches = image_patch.find("tall lamp")
+    if len(lamp_patches) == 0:
+        # Fallback: find lamps and filter by "tall"
+        candidate_lamps = image_patch.find("lamp")
+        lamp_patches = [lp for lp in candidate_lamps if lp.verify_property("lamp", "tall")]
+
+    if len(lamp_patches) == 0:
+        # If no tall lamp detected, ask directly
+        return image_patch.simple_query("Is the black screen to the left or to the right of the tall lamp?")
+
+    # Find the black screen
+    screen_patches = image_patch.find("black screen")
+    if len(screen_patches) == 0:
+        # Fallback: find screens and filter by "black"
+        candidate_screens = image_patch.find("screen")
+        screen_patches = [sp for sp in candidate_screens if sp.verify_property("screen", "black")]
+
+    # Additional fallbacks: TV/monitor that are black
+    if len(screen_patches) == 0:
+        tvs = [tv for tv in image_patch.find("tv") if tv.verify_property("tv", "black")]
+        monitors = [m for m in image_patch.find("monitor") if m.verify_property("monitor", "black")]
+        screen_patches = tvs + monitors
+
+    if len(screen_patches) == 0:
+        # If no black screen detected, ask directly
+        return image_patch.simple_query("Is the black screen to the left or to the right of the tall lamp?")
+
+    # Choose the pair (screen, lamp) with the smallest horizontal distance
+    best_pair = None
+    min_dx = None
+    for lamp in lamp_patches:
+        for screen in screen_patches:
+            dx = abs(screen.horizontal_center - lamp.horizontal_center)
+            if min_dx is None or dx < min_dx:
+                min_dx = dx
+                best_pair = (screen, lamp)
+
+    screen_patch, lamp_patch = best_pair
+
+    return "left" if screen_patch.horizontal_center < lamp_patch.horizontal_center else "right"

@@ -1,0 +1,15 @@
+# Are there any collars?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    search_terms = ("collar", "dog collar", "shirt collar", "cat collar")
+    for term in search_terms:
+        if image_patch.exists(term):
+            result = "yes"
+    if result == "no":
+        direct_answer = image_patch.simple_query("Are there any collars?")
+        if direct_answer == "yes":
+            result = "yes"
+        else:
+            result = "no"
+    return result

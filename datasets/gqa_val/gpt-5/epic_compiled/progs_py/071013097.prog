@@ -1,0 +1,15 @@
+# What color is the glove the woman is wearing?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("What color is the glove the woman is wearing?")
+    else:
+        result = None
+        for woman_patch in woman_patches:
+            glove_patches = woman_patch.find("glove")
+            if len(glove_patches) > 0 and not result:
+                result = glove_patches[0].simple_query("What color is the glove?")
+        if not result:
+            result = image_patch.simple_query("What color is the glove the woman is wearing?")
+    return result

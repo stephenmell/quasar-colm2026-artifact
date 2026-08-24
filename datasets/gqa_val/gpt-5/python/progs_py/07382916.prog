@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find the hardwood floor specifically
+    floor_patches = image_patch.find("hardwood floor")
+    if len(floor_patches) == 0:
+        floor_patches = image_patch.find("wood floor")
+    if len(floor_patches) == 0:
+        floor_patches = image_patch.find("floor")
+    # If no relevant floor is found, ask directly
+    if len(floor_patches) == 0:
+        return image_patch.simple_query("How does the floor made of hardwood look, light brown or red?")
+    # Use the largest floor patch for the decision
+    target_patch = max(floor_patches, key=lambda p: p.width * p.height)
+    return target_patch.best_text_match(["light brown", "red"])

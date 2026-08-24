@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    bear_patches = None
+    box_patches = None
+    holding_bear_found = None
+    image_patch = None
+    is_holding_heart = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    bear_patches = image_patch.find('bear')
+
+    def _if(bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result):
+        result = image_patch.simple_query('Is the box to the right of the bear that is holding the heart?')
+        return (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result)
+
+    def _else(bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result):
+        box_patches = image_patch.find('box')
+        holding_bear_found = False
+
+        def _for(bear_patch, bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result):
+            is_holding_heart = bear_patch.simple_query('Is the bear holding a heart?') == 'yes'
+
+            def _if(bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result):
+                holding_bear_found = True
+
+                def _for(box_patch, bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result):
+
+                    def _if(bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result):
+                        result = 'yes'
+                        return (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result)
+                    bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result = if_stmt(_if, None, box_patch.horizontal_center > bear_patch.horizontal_center, (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result))
+                    return (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result)
+                bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result = for_stmt(_for, box_patches, (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result))
+                return (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result)
+            bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result = if_stmt(_if, None, is_holding_heart, (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result))
+            return (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result)
+        bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result = for_stmt(_for, bear_patches, (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result))
+
+        def _if(bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result):
+            result = image_patch.simple_query('Is the box to the right of the bear that is holding the heart?')
+            return (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result)
+        bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result = if_stmt(_if, None, not_expr(holding_bear_found), (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result))
+        return (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result)
+    bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result = if_stmt(_if, _else, len(bear_patches) == 0, (bear_patches, box_patches, holding_bear_found, image_patch, is_holding_heart, result))
+    return result

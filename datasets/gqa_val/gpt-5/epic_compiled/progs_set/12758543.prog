@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    can_patches = None
+    image_patch = None
+    is_on_counter = None
+    result = None
+    screen_patches = None
+    image_patch = ImagePatch(image)
+    can_patches = image_patch.find('can')
+
+    def _if(can_patches, image_patch, is_on_counter, result, screen_patches):
+        result = image_patch.simple_query('Do you see any screens to the left of the cans on the counter?')
+        return (can_patches, image_patch, is_on_counter, result, screen_patches)
+
+    def _else(can_patches, image_patch, is_on_counter, result, screen_patches):
+        screen_patches = image_patch.find('screen')
+
+        def _if(can_patches, image_patch, is_on_counter, result, screen_patches):
+            result = 'no'
+            return (can_patches, image_patch, is_on_counter, result, screen_patches)
+
+        def _else(can_patches, image_patch, is_on_counter, result, screen_patches):
+            result = 'no'
+
+            def _for(can_patch, can_patches, image_patch, is_on_counter, result, screen_patches):
+                is_on_counter = can_patch.simple_query('Is the can on the counter?') == 'yes'
+
+                def _if(can_patches, image_patch, is_on_counter, result, screen_patches):
+
+                    def _for(screen_patch, can_patches, image_patch, is_on_counter, result, screen_patches):
+
+                        def _if(can_patches, image_patch, is_on_counter, result, screen_patches):
+                            result = 'yes'
+                            return (can_patches, image_patch, is_on_counter, result, screen_patches)
+                        can_patches, image_patch, is_on_counter, result, screen_patches = if_stmt(_if, None, screen_patch.horizontal_center < can_patch.horizontal_center, (can_patches, image_patch, is_on_counter, result, screen_patches))
+                        return (can_patches, image_patch, is_on_counter, result, screen_patches)
+                    can_patches, image_patch, is_on_counter, result, screen_patches = for_stmt(_for, screen_patches, (can_patches, image_patch, is_on_counter, result, screen_patches))
+                    return (can_patches, image_patch, is_on_counter, result, screen_patches)
+                can_patches, image_patch, is_on_counter, result, screen_patches = if_stmt(_if, None, is_on_counter, (can_patches, image_patch, is_on_counter, result, screen_patches))
+                return (can_patches, image_patch, is_on_counter, result, screen_patches)
+            can_patches, image_patch, is_on_counter, result, screen_patches = for_stmt(_for, can_patches, (can_patches, image_patch, is_on_counter, result, screen_patches))
+            return (can_patches, image_patch, is_on_counter, result, screen_patches)
+        can_patches, image_patch, is_on_counter, result, screen_patches = if_stmt(_if, _else, len(screen_patches) == 0, (can_patches, image_patch, is_on_counter, result, screen_patches))
+        return (can_patches, image_patch, is_on_counter, result, screen_patches)
+    can_patches, image_patch, is_on_counter, result, screen_patches = if_stmt(_if, _else, len(can_patches) == 0, (can_patches, image_patch, is_on_counter, result, screen_patches))
+    return result

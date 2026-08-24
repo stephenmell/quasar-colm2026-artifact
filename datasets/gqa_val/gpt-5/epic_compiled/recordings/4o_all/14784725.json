@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2416107",
+          [
+            0,
+            0,
+            500,
+            298
+          ]
+        ],
+        "What animal is in front of the log?"
+      ],
+      "A zebra.",
+      1464156380
+    ]
+  ],
+  "best_text_match": []
+}

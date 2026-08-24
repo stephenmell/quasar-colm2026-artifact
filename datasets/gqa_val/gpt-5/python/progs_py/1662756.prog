@@ -1,0 +1,40 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # Question assumes one man patch
+    if len(man_patches) == 0:
+        # If no man is found, query the image directly
+        return image_patch.simple_query("Do you see people to the right of the surfboard that the man is with?")
+    man_patch = man_patches[0]
+
+    surfboard_patches = image_patch.find("surfboard")
+    if len(surfboard_patches) == 0:
+        return "no"
+
+    # Choose the surfboard closest to the man (the one he's "with")
+    def dist2(a: ImagePatch, b: ImagePatch) -> float:
+        dx = a.horizontal_center - b.horizontal_center
+        dy = a.vertical_center - b.vertical_center
+        return dx * dx + dy * dy
+
+    surfboard_patch = min(surfboard_patches, key=lambda sb: dist2(man_patch, sb))
+
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        return "no"
+
+    # Helper to check overlap to exclude the man himself from the "people" set
+    def intersects(a: ImagePatch, b: ImagePatch) -> bool:
+        left = max(a.left, b.left)
+        right = min(a.right, b.right)
+        lower = max(a.lower, b.lower)
+        upper = min(a.upper, b.upper)
+        return (right - left) > 0 and (upper - lower) > 0
+
+    for person_patch in person_patches:
+        # Skip the man himself if detected as a generic person
+        if intersects(person_patch, man_patch):
+            continue
+        if person_patch.horizontal_center > surfboard_patch.horizontal_center:
+            return "yes"
+    return "no"

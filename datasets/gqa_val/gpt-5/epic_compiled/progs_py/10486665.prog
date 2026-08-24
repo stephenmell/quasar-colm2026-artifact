@@ -1,0 +1,45 @@
+# Is the white van to the right or to the left of the person in the center?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = ""
+    
+    # Find all people
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        result = image_patch.simple_query("Is the white van to the right or to the left of the person in the center?")
+    else:
+        # Select the person closest to the image center
+        center_person_patch = None
+        min_dist_sq = None
+        for p in person_patches:
+            dx = p.horizontal_center - image_patch.horizontal_center
+            dy = p.vertical_center - image_patch.vertical_center
+            dist_sq = dx * dx + dy * dy
+            if (min_dist_sq is None) or (dist_sq < min_dist_sq):
+                min_dist_sq = dist_sq
+                center_person_patch = p
+
+        # Find vans and filter to white vans
+        van_patches = image_patch.find("van")
+        white_vans = ()
+        for v in van_patches:
+            if v.verify_property("van", "white"):
+                white_vans = white_vans + (v,)
+
+        if len(white_vans) == 0 or center_person_patch is None:
+            result = image_patch.simple_query("Is the white van to the right or to the left of the person in the center?")
+        else:
+            # Choose the white van closest to the center person horizontally
+            selected_van = None
+            min_dx = None
+            for v in white_vans:
+                dx = abs(v.horizontal_center - center_person_patch.horizontal_center)
+                if (min_dx is None) or (dx < min_dx):
+                    min_dx = dx
+                    selected_van = v
+
+            if selected_van.horizontal_center > center_person_patch.horizontal_center:
+                result = "right"
+            else:
+                result = "left"
+    return result

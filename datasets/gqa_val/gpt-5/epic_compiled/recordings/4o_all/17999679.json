@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "3761",
+          [
+            0,
+            0,
+            568,
+            426
+          ]
+        ],
+        "Do you see surfboards on the ocean?"
+      ],
+      "No.",
+      1508772734
+    ]
+  ],
+  "best_text_match": []
+}

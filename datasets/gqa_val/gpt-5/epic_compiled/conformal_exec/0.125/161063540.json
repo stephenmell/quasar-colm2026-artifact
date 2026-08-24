@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, there is red wine.",
+      "No, there is no red wine.",
+      "no",
+      "yes"
+    ]
+  },
+  "time_ns": 9563769650
+}

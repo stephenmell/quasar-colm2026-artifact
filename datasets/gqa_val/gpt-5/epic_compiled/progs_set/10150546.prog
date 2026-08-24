@@ -1,0 +1,70 @@
+def execute_command(image) -> str:
+    drape_names = None
+    drape_patches = None
+    image_patch = None
+    is_dark = None
+    picture_names = None
+    picture_patches = None
+    question = None
+    result = None
+    image_patch = ImagePatch(image)
+    question = 'Are the dark drapes to the right of the picture?'
+    picture_names = ('picture', 'painting', 'photo', 'poster')
+    picture_patches = ()
+
+    def _for(name, image_patch, picture_names, picture_patches, question):
+        picture_patches = picture_patches + image_patch.find(name)
+        return (image_patch, picture_names, picture_patches, question)
+    image_patch, picture_names, picture_patches, question = for_stmt(_for, picture_names, (image_patch, picture_names, picture_patches, question))
+    drape_names = ('drape', 'drapes', 'curtain', 'curtains')
+    drape_patches = ()
+
+    def _for(name, drape_names, drape_patches, image_patch, picture_names, picture_patches, question):
+        drape_patches = drape_patches + image_patch.find(name)
+        return (drape_names, drape_patches, image_patch, picture_names, picture_patches, question)
+    drape_names, drape_patches, image_patch, picture_names, picture_patches, question = for_stmt(_for, drape_names, (drape_names, drape_patches, image_patch, picture_names, picture_patches, question))
+
+    def _if(drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+        result = image_patch.simple_query(question)
+        return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+
+    def _else(drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+
+        def _if(drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+            result = 'no'
+            return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+
+        def _else(drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+            result = 'no'
+
+            def _for(drape_patch, drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+                is_dark = False
+
+                def _for(obj_name, drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+
+                    def _if(drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+                        is_dark = drape_patch.verify_property(obj_name, 'dark')
+                        return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+                    drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = if_stmt(_if, None, not_expr(is_dark), (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+                    return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+                drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = for_stmt(_for, drape_names, (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+
+                def _if(drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+
+                    def _for(picture_patch, drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+
+                        def _if(drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result):
+                            result = 'yes'
+                            return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+                        drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = if_stmt(_if, None, drape_patch.horizontal_center > picture_patch.horizontal_center, (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+                        return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+                    drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = for_stmt(_for, picture_patches, (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+                    return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+                drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = if_stmt(_if, None, is_dark, (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+                return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+            drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = for_stmt(_for, drape_patches, (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+            return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+        drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = if_stmt(_if, _else, len(picture_patches) == 0, (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+        return (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result)
+    drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result = if_stmt(_if, _else, len(drape_patches) == 0, (drape_names, drape_patches, image_patch, is_dark, picture_names, picture_patches, question, result))
+    return result

@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find("train")
+    # If no train is found, ask directly (relation question)
+    if len(train_patches) == 0:
+        return image_patch.simple_query("Is the train above the tracks?")
+
+    # Try multiple labels for tracks
+    track_labels = [
+        "tracks", "track", "train tracks", "railroad tracks", "railway tracks",
+        "railroad", "railway", "railroad track", "rail tracks"
+    ]
+    track_patches = []
+    for label in track_labels:
+        track_patches += image_patch.find(label)
+
+    # If no tracks are found, assume "no"
+    if len(track_patches) == 0:
+        return "no"
+
+    # Check if any train is above any track (smaller vertical_center means higher in image)
+    for train_patch in train_patches:
+        for track_patch in track_patches:
+            if train_patch.vertical_center < track_patch.vertical_center:
+                return "yes"
+    return "no"

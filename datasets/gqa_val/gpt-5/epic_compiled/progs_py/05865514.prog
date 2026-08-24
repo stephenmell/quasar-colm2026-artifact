@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dish_drainer_patches = image_patch.find("dish drainer")
+    if len(dish_drainer_patches) == 0:
+        result = image_patch.simple_query("Do you see any faucets to the left of the dish drainer?")
+    else:
+        faucet_patches = image_patch.find("faucet")
+        if len(faucet_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for drainer_patch in dish_drainer_patches:
+                for faucet_patch in faucet_patches:
+                    if faucet_patch.horizontal_center < drainer_patch.horizontal_center:
+                        result = "yes"
+    return result

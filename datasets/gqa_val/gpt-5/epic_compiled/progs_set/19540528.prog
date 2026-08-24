@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    candidate = None
+    image_patch = None
+    ladder_patches = None
+    left_area_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    ladder_patches = image_patch.find('ladder')
+    result = None
+
+    def _if(candidate, image_patch, ladder_patches, left_area_patch, result):
+        result = image_patch.simple_query('What is the appliance to the left of the ladder?')
+        return (candidate, image_patch, ladder_patches, left_area_patch, result)
+
+    def _else(candidate, image_patch, ladder_patches, left_area_patch, result):
+
+        def _for(ladder_patch, candidate, image_patch, ladder_patches, left_area_patch, result):
+            left_area_patch = image_patch.crop(image_patch.left, ladder_patch.lower, ladder_patch.left, ladder_patch.upper)
+            candidate = None
+
+            def _if(candidate, image_patch, ladder_patches, left_area_patch, result):
+                candidate = left_area_patch.simple_query('What is the appliance?')
+                return (candidate, image_patch, ladder_patches, left_area_patch, result)
+            candidate, image_patch, ladder_patches, left_area_patch, result = if_stmt(_if, None, and_expr(left_area_patch.width > 0, left_area_patch.height > 0), (candidate, image_patch, ladder_patches, left_area_patch, result))
+
+            def _if(candidate, image_patch, ladder_patches, left_area_patch, result):
+                result = candidate
+                return (candidate, image_patch, ladder_patches, left_area_patch, result)
+            candidate, image_patch, ladder_patches, left_area_patch, result = if_stmt(_if, None, and_expr(not result, candidate), (candidate, image_patch, ladder_patches, left_area_patch, result))
+            return (candidate, image_patch, ladder_patches, left_area_patch, result)
+        candidate, image_patch, ladder_patches, left_area_patch, result = for_stmt(_for, ladder_patches, (candidate, image_patch, ladder_patches, left_area_patch, result))
+
+        def _if(candidate, image_patch, ladder_patches, left_area_patch, result):
+            result = image_patch.simple_query('What is the appliance to the left of the ladder?')
+            return (candidate, image_patch, ladder_patches, left_area_patch, result)
+        candidate, image_patch, ladder_patches, left_area_patch, result = if_stmt(_if, None, not_expr(result), (candidate, image_patch, ladder_patches, left_area_patch, result))
+        return (candidate, image_patch, ladder_patches, left_area_patch, result)
+    candidate, image_patch, ladder_patches, left_area_patch, result = if_stmt(_if, _else, len(ladder_patches) == 0, (candidate, image_patch, ladder_patches, left_area_patch, result))
+    return result

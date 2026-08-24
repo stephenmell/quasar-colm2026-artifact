@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2376976",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is the sign in front of the house red and octagonal?"
+      ],
+      "Yes.",
+      1043892993
+    ]
+  ],
+  "best_text_match": []
+}

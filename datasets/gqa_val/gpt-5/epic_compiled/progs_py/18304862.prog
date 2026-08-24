@@ -1,0 +1,17 @@
+# Are there people to the right of the man?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Are there people to the right of the man?")
+    else:
+        man_patch = man_patches[0]
+        person_patches = image_patch.find("person")
+        if len(person_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for person_patch in person_patches:
+                if person_patch.horizontal_center > man_patch.horizontal_center:
+                    result = "yes"
+    return result

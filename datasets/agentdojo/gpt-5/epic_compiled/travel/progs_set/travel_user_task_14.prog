@@ -1,0 +1,118 @@
+def execute_command():
+    NamesSchema = None
+    RatingSchema = None
+    best_company_name = None
+    best_company_price_per_day = None
+    best_company_rating = None
+    candidate_companies = None
+    cheapest_name = None
+    cheapest_price = None
+    city = None
+    combined = None
+    companies_schema = None
+    companies_str = None
+    company_names = None
+    ev_companies = None
+    fl = None
+    fuels_dict = None
+    has_electric = None
+    price_per_day = None
+    price_value = None
+    prices_per_day = None
+    ratings_text = None
+    rr = None
+    rtext = None
+    s = None
+    tl = None
+    types_dict = None
+    weekly_price = None
+    city = 'Los Angeles'
+    companies_str = get_all_car_rental_companies_in_city(city)
+    NamesSchema = CreateSchema('names', list[str])
+    companies_schema = query_ai_assistant('Here is a list of car rental companies: {}. Extract ONLY the company names as a clean JSON list of strings, preserving exact names.'.format(companies_str), NamesSchema)
+    company_names = companies_schema.names
+    types_dict = get_car_types_available(company_names)
+    fuels_dict = get_car_fuel_options(company_names)
+    ev_companies = []
+
+    def _for(c, NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict):
+        tl = types_dict.get(c)
+        fl = fuels_dict.get(c)
+        combined = []
+
+        def _if(NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict):
+            combined = combined + tl
+            return (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict)
+        NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict = if_stmt(_if, None, tl, (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict))
+
+        def _if(NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict):
+            combined = combined + fl
+            return (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict)
+        NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict = if_stmt(_if, None, fl, (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, tl, types_dict))
+        has_electric = False
+
+        def _for(item, NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict):
+            s = str(item).lower()
+
+            def _if(NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict):
+                has_electric = True
+                return (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict)
+            NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict = if_stmt(_if, None, or_expr(s.find('electric') != -1, or_expr(s == 'ev', or_expr(s.find('ev') != -1, or_expr(s.find('tesla') != -1, s.find('bev') != -1)))), (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict))
+            return (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict)
+        NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict = for_stmt(_for, combined, (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict))
+
+        def _if(NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict):
+            ev_companies = ev_companies + [c]
+            return (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict)
+        NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict = if_stmt(_if, None, has_electric, (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict))
+        return (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict)
+    NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict = for_stmt(_for, company_names, (NamesSchema, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict))
+    candidate_companies = ev_companies
+
+    def _if(NamesSchema, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict):
+        candidate_companies = company_names
+        return (NamesSchema, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict)
+    NamesSchema, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict = if_stmt(_if, None, len(candidate_companies) == 0, (NamesSchema, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, s, tl, types_dict))
+    ratings_text = get_rating_reviews_for_car_rental(candidate_companies)
+    prices_per_day = get_car_price_per_day(candidate_companies)
+    RatingSchema = CreateSchema('rating', float, 'reviews', list[str])
+    best_company_name = None
+    best_company_rating = -1.0
+    best_company_price_per_day = float('inf')
+
+    def _for(c, NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict):
+        rtext = ratings_text.get(c)
+        rr = query_ai_assistant('Extract ONLY the numeric rating as a float and the list of review strings from this car rental company rating and reviews: {}'.format(rtext), RatingSchema)
+        price_per_day = prices_per_day.get(c)
+        price_value = price_per_day if price_per_day else float('inf')
+
+        def _if(NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict):
+            best_company_name = c
+            best_company_rating = rr.rating
+            best_company_price_per_day = price_value
+            return (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict)
+        NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict = if_stmt(_if, None, or_expr(rr.rating > best_company_rating, rr.rating == best_company_rating and price_value < best_company_price_per_day), (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict))
+        return (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict)
+    NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict = for_stmt(_for, candidate_companies, (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict))
+
+    def _if(NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict):
+        cheapest_name = None
+        cheapest_price = float('inf')
+
+        def _for(c, NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict):
+            price_per_day = prices_per_day.get(c)
+
+            def _if(NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict):
+                cheapest_name = c
+                cheapest_price = price_per_day
+                return (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict)
+            NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict = if_stmt(_if, None, and_expr(price_per_day, price_per_day < cheapest_price), (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict))
+            return (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict)
+        NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict = for_stmt(_for, candidate_companies, (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict))
+        best_company_name = cheapest_name
+        best_company_rating = -1.0
+        best_company_price_per_day = cheapest_price if cheapest_name else float('inf')
+        return (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict)
+    NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict = if_stmt(_if, None, not_expr(best_company_name), (NamesSchema, RatingSchema, best_company_name, best_company_price_per_day, best_company_rating, candidate_companies, cheapest_name, cheapest_price, city, combined, companies_schema, companies_str, company_names, ev_companies, fl, fuels_dict, has_electric, price_per_day, price_value, prices_per_day, ratings_text, rr, rtext, s, tl, types_dict))
+    weekly_price = best_company_price_per_day * 7.0
+    return {'company_name': best_company_name, 'rating': best_company_rating, 'weekly_price': weekly_price}

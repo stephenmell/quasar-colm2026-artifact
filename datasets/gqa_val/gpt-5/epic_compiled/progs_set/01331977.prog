@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    bottle_exists = None
+    bottle_patches = None
+    image_patch = None
+    is_empty_bottle = None
+    is_empty_plate = None
+    plate_exists = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    bottle_exists = image_patch.exists('bottle')
+    plate_exists = image_patch.exists('plate')
+
+    def _if(bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result):
+        result = image_patch.simple_query('Is there any bottle or plate that is not empty?')
+        return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result)
+
+    def _else(bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result):
+
+        def _if(bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result):
+            bottle_patches = image_patch.find('bottle')
+
+            def _for(bottle_patch, bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result):
+                is_empty_bottle = bottle_patch.verify_property('bottle', 'empty')
+
+                def _if(bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result):
+                    result = 'yes'
+                    return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result)
+                bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result = if_stmt(_if, None, not_expr(is_empty_bottle), (bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result))
+                return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result)
+            bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result = for_stmt(_for, bottle_patches, (bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result))
+            return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result)
+        bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result = if_stmt(_if, None, bottle_exists, (bottle_exists, bottle_patches, image_patch, is_empty_bottle, plate_exists, result))
+
+        def _if(bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result):
+            plate_patches = image_patch.find('plate')
+
+            def _for(plate_patch, bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result):
+                is_empty_plate = plate_patch.verify_property('plate', 'empty')
+
+                def _if(bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result):
+                    result = 'yes'
+                    return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result)
+                bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result = if_stmt(_if, None, not_expr(is_empty_plate), (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result))
+                return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result)
+            bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result = for_stmt(_for, plate_patches, (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result))
+            return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result)
+        bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result = if_stmt(_if, None, plate_exists, (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result))
+        return (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result)
+    bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result = if_stmt(_if, _else, and_expr(not bottle_exists, not plate_exists), (bottle_exists, bottle_patches, image_patch, is_empty_bottle, is_empty_plate, plate_exists, plate_patches, result))
+    return result

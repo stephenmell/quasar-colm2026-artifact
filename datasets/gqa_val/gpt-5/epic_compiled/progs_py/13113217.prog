@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find("curtain")
+    if len(curtain_patches) == 0:
+        result = image_patch.simple_query("Are there any pictures to the right of the curtain that looks red and maroon?")
+    else:
+        picture_patches = image_patch.find("picture")
+        if len(picture_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for picture_patch in picture_patches:
+                is_right_of_any_curtain = False
+                for curtain_patch in curtain_patches:
+                    if picture_patch.horizontal_center > curtain_patch.horizontal_center:
+                        is_right_of_any_curtain = True
+                if is_right_of_any_curtain:
+                    is_red = picture_patch.verify_property("picture", "red")
+                    is_maroon = picture_patch.verify_property("picture", "maroon")
+                    if is_red and is_maroon:
+                        result = "yes"
+    return result

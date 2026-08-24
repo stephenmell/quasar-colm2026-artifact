@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    cabinet_patches = image_patch.find("cabinet")
+    mirror_patches = image_patch.find("mirror")
+
+    found_any = False
+
+    # Helper to check if an object is made of wood
+    def is_wood(patch, obj_name: str) -> bool:
+        return patch.verify_property(obj_name, "wood") or patch.verify_property(obj_name, "wooden")
+
+    for cab_patch in cabinet_patches:
+        found_any = True
+        if not is_wood(cab_patch, "cabinet"):
+            return "yes"
+
+    for mir_patch in mirror_patches:
+        found_any = True
+        if not is_wood(mir_patch, "mirror"):
+            return "yes"
+
+    if not found_any:
+        return image_patch.simple_query("Are there cabinets or mirrors that are not made of wood?")
+
+    return "no"

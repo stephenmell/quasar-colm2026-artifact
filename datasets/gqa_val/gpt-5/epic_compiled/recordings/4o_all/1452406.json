@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2373014",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "tail"
+      ],
+      [],
+      14312931132
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2373014",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "Does the tail look short?"
+      ],
+      "Yes, the tail looks short.",
+      1278236412
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    image_patch = None
+    pot_patches = None
+    result = None
+    soap_patches = None
+    soda_patches = None
+    image_patch = ImagePatch(image)
+    soap_patches = image_patch.find('soap')
+    soda_patches = image_patch.find('soda can')
+
+    def _if(image_patch, soap_patches, soda_patches):
+        soda_patches = image_patch.find('can')
+        return (image_patch, soap_patches, soda_patches)
+    image_patch, soap_patches, soda_patches = if_stmt(_if, None, len(soda_patches) == 0, (image_patch, soap_patches, soda_patches))
+    pot_patches = image_patch.find('pot')
+
+    def _if(image_patch, pot_patches, result, soap_patches, soda_patches):
+        result = image_patch.simple_query('Is there a soap to the left of the soda can that is to the left of the pot?')
+        return (image_patch, pot_patches, result, soap_patches, soda_patches)
+
+    def _else(image_patch, pot_patches, result, soap_patches, soda_patches):
+        result = 'no'
+
+        def _for(pot_patch, image_patch, pot_patches, result, soap_patches, soda_patches):
+
+            def _for(soda_patch, image_patch, pot_patches, result, soap_patches, soda_patches):
+
+                def _if(image_patch, pot_patches, result, soap_patches, soda_patches):
+
+                    def _for(soap_patch, image_patch, pot_patches, result, soap_patches, soda_patches):
+
+                        def _if(image_patch, pot_patches, result, soap_patches, soda_patches):
+                            result = 'yes'
+                            return (image_patch, pot_patches, result, soap_patches, soda_patches)
+                        image_patch, pot_patches, result, soap_patches, soda_patches = if_stmt(_if, None, soap_patch.horizontal_center < soda_patch.horizontal_center, (image_patch, pot_patches, result, soap_patches, soda_patches))
+                        return (image_patch, pot_patches, result, soap_patches, soda_patches)
+                    image_patch, pot_patches, result, soap_patches, soda_patches = for_stmt(_for, soap_patches, (image_patch, pot_patches, result, soap_patches, soda_patches))
+                    return (image_patch, pot_patches, result, soap_patches, soda_patches)
+                image_patch, pot_patches, result, soap_patches, soda_patches = if_stmt(_if, None, soda_patch.horizontal_center < pot_patch.horizontal_center, (image_patch, pot_patches, result, soap_patches, soda_patches))
+                return (image_patch, pot_patches, result, soap_patches, soda_patches)
+            image_patch, pot_patches, result, soap_patches, soda_patches = for_stmt(_for, soda_patches, (image_patch, pot_patches, result, soap_patches, soda_patches))
+            return (image_patch, pot_patches, result, soap_patches, soda_patches)
+        image_patch, pot_patches, result, soap_patches, soda_patches = for_stmt(_for, pot_patches, (image_patch, pot_patches, result, soap_patches, soda_patches))
+        return (image_patch, pot_patches, result, soap_patches, soda_patches)
+    image_patch, pot_patches, result, soap_patches, soda_patches = if_stmt(_if, _else, or_expr(len(soap_patches) == 0, or_expr(len(soda_patches) == 0, len(pot_patches) == 0)), (image_patch, pot_patches, result, soap_patches, soda_patches))
+    return result

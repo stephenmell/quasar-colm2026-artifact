@@ -1,0 +1,32 @@
+Stage: other execution error
+Error: 'NoneType' object has no attribute 'simple_query'
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "12931055.prog", line 60, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 191, in abstract_if_stmt
+    lvars_f = else_body(*lvars) if else_body is not None else lvars
+              ^^^^^^^^^^^^^^^^^
+  File "12931055.prog", line 58, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 188, in abstract_if_stmt
+    lvars = else_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "12931055.prog", line 56, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 93, in __getattr__
+    return do_unary(lambda x: getattr(x, item), self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 52, in do_unary
+    return join_many(f(x) for x in self._possibilities)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 143, in join_many
+    for x in xs:
+             ^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 52, in <genexpr>
+    return join_many(f(x) for x in self._possibilities)
+                     ^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 93, in <lambda>
+    return do_unary(lambda x: getattr(x, item), self)
+                              ^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'simple_query'

@@ -1,0 +1,24 @@
+# Are there any ovens to the right of the bottle on the counter?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bottle_patches = image_patch.find("bottle")
+    # If no bottle is found, ask directly
+    if len(bottle_patches) == 0:
+        return image_patch.simple_query("Are there any ovens to the right of the bottle on the counter?")
+    # Filter for bottles that are on the counter
+    counter_bottles = []
+    for bottle_patch in bottle_patches:
+        if bottle_patch.simple_query("Is the bottle on the counter?") == "yes":
+            counter_bottles.append(bottle_patch)
+    # If we can't identify a bottle on the counter, ask directly
+    if len(counter_bottles) == 0:
+        return image_patch.simple_query("Are there any ovens to the right of the bottle on the counter?")
+    # Find ovens and check if any are to the right of a counter bottle
+    oven_patches = image_patch.find("oven")
+    if len(oven_patches) == 0:
+        return "no"
+    for bottle_patch in counter_bottles:
+        for oven_patch in oven_patches:
+            if oven_patch.horizontal_center > bottle_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,41 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    chair_patches = image_patch.find("chair")
+    result = None
+
+    if len(chair_patches) == 0:
+        result = image_patch.simple_query("What is the chair that is to the right of the other chair made of?")
+    elif len(chair_patches) == 1:
+        result = chair_patches[0].simple_query("What is the chair made of?")
+    else:
+        # If there are multiple chairs, identify the closest pair horizontally,
+        # then choose the one to the right within that pair.
+        best_i = 0
+        best_j = 0
+        best_dist = None
+        n = len(chair_patches)
+        i = 0
+        while i < n:
+            j = 0
+            while j < n:
+                if i != j:
+                    xi = chair_patches[i].horizontal_center
+                    xj = chair_patches[j].horizontal_center
+                    d = abs(xi - xj)
+                    if (best_dist is None) or (d < best_dist):
+                        best_dist = d
+                        best_i = i
+                        best_j = j
+                j += 1
+            i += 1
+
+        right_index = best_i
+        if chair_patches[best_j].horizontal_center > chair_patches[best_i].horizontal_center:
+            right_index = best_j
+
+        chosen_chair = chair_patches[right_index]
+        result = chosen_chair.simple_query("What is the chair made of?")
+
+    if not result:
+        result = image_patch.simple_query("What is the chair that is to the right of the other chair made of?")
+    return result

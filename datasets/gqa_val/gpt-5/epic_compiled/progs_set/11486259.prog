@@ -1,0 +1,23 @@
+def execute_command(image) -> str:
+    has_cook_book = None
+    has_cookbook = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_cookbook = image_patch.exists('cookbook')
+    has_cook_book = False
+
+    def _if(has_cook_book, has_cookbook, image_patch):
+        has_cook_book = image_patch.exists('cook book')
+        return (has_cook_book, has_cookbook, image_patch)
+    has_cook_book, has_cookbook, image_patch = if_stmt(_if, None, not_expr(has_cookbook), (has_cook_book, has_cookbook, image_patch))
+
+    def _if(has_cook_book, has_cookbook, image_patch, result):
+        result = 'yes'
+        return (has_cook_book, has_cookbook, image_patch, result)
+
+    def _else(has_cook_book, has_cookbook, image_patch, result):
+        result = image_patch.simple_query('Do you see any cookbooks?')
+        return (has_cook_book, has_cookbook, image_patch, result)
+    has_cook_book, has_cookbook, image_patch, result = if_stmt(_if, _else, or_expr(has_cookbook, has_cook_book), (has_cook_book, has_cookbook, image_patch, result))
+    return result

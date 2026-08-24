@@ -1,0 +1,20 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_bowl = None
+    is_trash_can = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_bowl = image_patch.exists('bowl')
+    is_trash_can = image_patch.exists('trash can')
+
+    def _if(image_patch, is_bowl, is_trash_can):
+        is_trash_can = image_patch.exists('trashcan')
+        return (image_patch, is_bowl, is_trash_can)
+    image_patch, is_bowl, is_trash_can = if_stmt(_if, None, not_expr(is_trash_can), (image_patch, is_bowl, is_trash_can))
+
+    def _if(image_patch, is_bowl, is_trash_can):
+        is_trash_can = image_patch.exists('garbage can')
+        return (image_patch, is_bowl, is_trash_can)
+    image_patch, is_bowl, is_trash_can = if_stmt(_if, None, not_expr(is_trash_can), (image_patch, is_bowl, is_trash_can))
+    result = bool_to_yesno(or_expr(is_bowl, is_trash_can))
+    return result

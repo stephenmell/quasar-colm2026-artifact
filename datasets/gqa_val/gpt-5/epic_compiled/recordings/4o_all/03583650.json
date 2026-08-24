@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2406474",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Do you see any bottles near the Wii controller that is shown in the image?"
+      ],
+      "Yes, there is a bottle of champagne near the Wii controller.",
+      1471178136
+    ]
+  ],
+  "best_text_match": []
+}

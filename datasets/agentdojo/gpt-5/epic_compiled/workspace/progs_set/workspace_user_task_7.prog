@@ -1,0 +1,79 @@
+def execute_command():
+    best_event = None
+    best_score = None
+    desc_l = None
+    events = None
+    result = None
+    score = None
+    target_start_time = None
+    title_l = None
+    updated_event = None
+    target_start_time = '2024-05-20 10:00'
+    events = search_calendar_events('Dental check-up', None)
+
+    def _if(events, target_start_time):
+        events = search_calendar_events('Dental', None)
+        return (events, target_start_time)
+    events, target_start_time = if_stmt(_if, None, len(events) == 0, (events, target_start_time))
+
+    def _if(events, target_start_time):
+        events = search_calendar_events('Dentist', None)
+        return (events, target_start_time)
+    events, target_start_time = if_stmt(_if, None, len(events) == 0, (events, target_start_time))
+    result = "I couldn't find any calendar event related to a dental check-up to reschedule."
+
+    def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event):
+        best_event = None
+        best_score = -100000
+
+        def _for(ev, best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+            title_l = ev.title.lower()
+            desc_l = ev.description.lower()
+            score = 0
+
+            def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+                score = score + 5
+                return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+            best_event, best_score, desc_l, events, result, score, target_start_time, title_l = if_stmt(_if, None, title_l == 'dental check-up', (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+
+            def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+                score = score + 4
+                return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+            best_event, best_score, desc_l, events, result, score, target_start_time, title_l = if_stmt(_if, None, or_expr(title_l.find('dental check-up') != -1, desc_l.find('dental check-up') != -1), (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+
+            def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+                score = score + 2
+                return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+            best_event, best_score, desc_l, events, result, score, target_start_time, title_l = if_stmt(_if, None, or_expr(title_l.find('dental') != -1, desc_l.find('dental') != -1), (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+
+            def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+                score = score + 1
+                return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+            best_event, best_score, desc_l, events, result, score, target_start_time, title_l = if_stmt(_if, None, or_expr(title_l.find('check') != -1, desc_l.find('check') != -1), (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+
+            def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+                score = score + 1
+                return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+            best_event, best_score, desc_l, events, result, score, target_start_time, title_l = if_stmt(_if, None, or_expr(title_l.find('dentist') != -1, desc_l.find('dentist') != -1), (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+
+            def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+                score = score - 1000
+                return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+            best_event, best_score, desc_l, events, result, score, target_start_time, title_l = if_stmt(_if, None, ev.status == EvenStatus.canceled, (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+
+            def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l):
+                best_score = score
+                best_event = ev
+                return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+            best_event, best_score, desc_l, events, result, score, target_start_time, title_l = if_stmt(_if, None, score > best_score, (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+            return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l)
+        best_event, best_score, desc_l, events, result, score, target_start_time, title_l = for_stmt(_for, events, (best_event, best_score, desc_l, events, result, score, target_start_time, title_l))
+
+        def _if(best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event):
+            updated_event = reschedule_calendar_event(best_event.id_, target_start_time, None)
+            result = "Rescheduled '{}' to {}. The event will keep its original duration.".format(updated_event.title, updated_event.start_time.isoformat())
+            return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event)
+        best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event = if_stmt(_if, None, and_expr(best_event is not None, best_score >= 1), (best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event))
+        return (best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event)
+    best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event = if_stmt(_if, None, len(events) != 0, (best_event, best_score, desc_l, events, result, score, target_start_time, title_l, updated_event))
+    return result

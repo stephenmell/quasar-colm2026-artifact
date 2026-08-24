@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    woman_patches = image_patch.find("woman")
+    coat_woman_patches = ()
+    for w_patch in woman_patches:
+        wearing_coat = (w_patch.simple_query("Is the woman wearing a coat?") == "yes")
+        if wearing_coat:
+            coat_woman_patches = coat_woman_patches + (w_patch,)
+
+    food_patches = image_patch.find("food")
+    small_food_patches = ()
+    for f_patch in food_patches:
+        is_small = f_patch.verify_property("food", "small")
+        if not is_small:
+            is_small = (f_patch.simple_query("Is the food small?") == "yes")
+        if is_small:
+            small_food_patches = small_food_patches + (f_patch,)
+
+    if len(coat_woman_patches) == 0 or len(small_food_patches) == 0:
+        result = image_patch.simple_query("Is the small food to the left of the woman that is wearing a coat?")
+    else:
+        result = "no"
+        for sf_patch in small_food_patches:
+            for cw_patch in coat_woman_patches:
+                if sf_patch.horizontal_center < cw_patch.horizontal_center:
+                    result = "yes"
+    return result

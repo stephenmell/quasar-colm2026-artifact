@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2370134",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is the metal canister on a counter?"
+      ],
+      "Yes.",
+      891071738
+    ]
+  ],
+  "best_text_match": []
+}

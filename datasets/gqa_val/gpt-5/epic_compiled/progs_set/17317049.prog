@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    glove_patches = None
+    glove_short = None
+    image_patch = None
+    result = None
+    shirt_patches = None
+    shirt_short = None
+    image_patch = ImagePatch(image)
+    result = None
+    shirt_patches = image_patch.find('shirt')
+    glove_patches = image_patch.find('glove')
+    shirt_short = False
+    glove_short = False
+
+    def _for(shirt_patch, glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+
+        def _if(glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+            shirt_short = True
+            return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+        glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short = if_stmt(_if, None, shirt_patch.verify_property('shirt', 'short sleeved'), (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short))
+        return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+    glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short = for_stmt(_for, shirt_patches, (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short))
+
+    def _for(glove_patch, glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+
+        def _if(glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+            glove_short = True
+            return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+        glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short = if_stmt(_if, None, glove_patch.verify_property('glove', 'short sleeved'), (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short))
+        return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+    glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short = for_stmt(_for, glove_patches, (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short))
+
+    def _if(glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+        result = 'shirt'
+        return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+
+    def _else(glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+
+        def _if(glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+            result = 'glove'
+            return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+
+        def _else(glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short):
+            result = image_patch.simple_query('What type of clothing is short sleeved, the shirt or the glove?')
+            return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+        glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short = if_stmt(_if, _else, glove_short, (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short))
+        return (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short)
+    glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short = if_stmt(_if, _else, shirt_short, (glove_patches, glove_short, image_patch, result, shirt_patches, shirt_short))
+    return result

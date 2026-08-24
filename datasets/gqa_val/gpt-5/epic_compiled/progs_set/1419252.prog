@@ -1,0 +1,48 @@
+def execute_command(image) -> str:
+    child_patches = None
+    girl_patches = None
+    image_patch = None
+    result = None
+    walking_found = None
+    image_patch = ImagePatch(image)
+    child_patches = image_patch.find('child')
+
+    def _if(child_patches, girl_patches, image_patch, result, walking_found):
+        result = image_patch.simple_query('Do you see girls to the left of the child that is walking?')
+        return (child_patches, girl_patches, image_patch, result, walking_found)
+
+    def _else(child_patches, girl_patches, image_patch, result, walking_found):
+        result = 'no'
+        walking_found = False
+
+        def _for(child_patch, child_patches, girl_patches, image_patch, result, walking_found):
+
+            def _if(child_patches, girl_patches, image_patch, result, walking_found):
+                walking_found = True
+                girl_patches = image_patch.find('girl')
+
+                def _if(child_patches, girl_patches, image_patch, result, walking_found):
+                    girl_patches = image_patch.find('girls')
+                    return (child_patches, girl_patches, image_patch, result, walking_found)
+                child_patches, girl_patches, image_patch, result, walking_found = if_stmt(_if, None, len(girl_patches) == 0, (child_patches, girl_patches, image_patch, result, walking_found))
+
+                def _for(girl_patch, child_patches, girl_patches, image_patch, result, walking_found):
+
+                    def _if(child_patches, girl_patches, image_patch, result, walking_found):
+                        result = 'yes'
+                        return (child_patches, girl_patches, image_patch, result, walking_found)
+                    child_patches, girl_patches, image_patch, result, walking_found = if_stmt(_if, None, girl_patch.horizontal_center < child_patch.horizontal_center, (child_patches, girl_patches, image_patch, result, walking_found))
+                    return (child_patches, girl_patches, image_patch, result, walking_found)
+                child_patches, girl_patches, image_patch, result, walking_found = for_stmt(_for, girl_patches, (child_patches, girl_patches, image_patch, result, walking_found))
+                return (child_patches, girl_patches, image_patch, result, walking_found)
+            child_patches, girl_patches, image_patch, result, walking_found = if_stmt(_if, None, child_patch.verify_property('child', 'walking'), (child_patches, girl_patches, image_patch, result, walking_found))
+            return (child_patches, girl_patches, image_patch, result, walking_found)
+        child_patches, girl_patches, image_patch, result, walking_found = for_stmt(_for, child_patches, (child_patches, girl_patches, image_patch, result, walking_found))
+
+        def _if(child_patches, girl_patches, image_patch, result, walking_found):
+            result = image_patch.simple_query('Do you see girls to the left of the child that is walking?')
+            return (child_patches, girl_patches, image_patch, result, walking_found)
+        child_patches, girl_patches, image_patch, result, walking_found = if_stmt(_if, None, not_expr(walking_found), (child_patches, girl_patches, image_patch, result, walking_found))
+        return (child_patches, girl_patches, image_patch, result, walking_found)
+    child_patches, girl_patches, image_patch, result, walking_found = if_stmt(_if, _else, len(child_patches) == 0, (child_patches, girl_patches, image_patch, result, walking_found))
+    return result

@@ -1,0 +1,7 @@
+# Are there mirrors or lamps in the picture?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_mirror = image_patch.exists("mirror") or image_patch.exists("mirrors")
+    is_lamp = image_patch.exists("lamp") or image_patch.exists("lamps")
+    result = bool_to_yesno(is_mirror or is_lamp)
+    return result

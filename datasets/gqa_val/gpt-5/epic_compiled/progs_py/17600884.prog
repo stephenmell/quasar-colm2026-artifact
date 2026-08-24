@@ -1,0 +1,23 @@
+# Do you see any spoon to the right of the onions on the left side?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    onion_patches = image_patch.find("onion")
+    if len(onion_patches) == 0:
+        onion_patches = image_patch.find("onions")
+
+    if len(onion_patches) == 0:
+        result = image_patch.simple_query("Do you see any spoon to the right of the onions on the left side?")
+    else:
+        spoon_patches = image_patch.find("spoon")
+        if len(spoon_patches) == 0:
+            spoon_patches = image_patch.find("spoons")
+
+        for onion_patch in onion_patches:
+            is_left_side_onion = onion_patch.horizontal_center < image_patch.horizontal_center
+            if is_left_side_onion:
+                for spoon_patch in spoon_patches:
+                    if spoon_patch.horizontal_center > onion_patch.horizontal_center:
+                        result = "yes"
+    return result

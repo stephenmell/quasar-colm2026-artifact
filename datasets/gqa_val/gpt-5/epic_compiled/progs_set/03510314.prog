@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    container_patches = None
+    horizontal_overlap = None
+    image_patch = None
+    is_above = None
+    result = None
+    shelf_patches = None
+    image_patch = ImagePatch(image)
+    container_patches = image_patch.find('container')
+    shelf_patches = image_patch.find('shelf')
+
+    def _if(container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches):
+        result = image_patch.simple_query('Is the container on a shelf?')
+        return (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches)
+
+    def _else(container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches):
+        result = 'no'
+
+        def _for(container_patch, container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches):
+
+            def _for(shelf_patch, container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches):
+                horizontal_overlap = and_expr(container_patch.right > shelf_patch.left, container_patch.left < shelf_patch.right)
+                is_above = container_patch.vertical_center < shelf_patch.vertical_center
+
+                def _if(container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches):
+                    result = 'yes'
+                    return (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches)
+                container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches = if_stmt(_if, None, and_expr(horizontal_overlap, is_above), (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches))
+                return (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches)
+            container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches = for_stmt(_for, shelf_patches, (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches))
+            return (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches)
+        container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches = for_stmt(_for, container_patches, (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches))
+        return (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches)
+    container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches = if_stmt(_if, _else, or_expr(len(container_patches) == 0, len(shelf_patches) == 0), (container_patches, horizontal_overlap, image_patch, is_above, result, shelf_patches))
+    return result

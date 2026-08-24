@@ -1,0 +1,34 @@
+def execute_command(image) -> str:
+    has_dark_hair_via_hair = None
+    has_dark_hair_via_woman = None
+    image_patch = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches):
+        result = image_patch.simple_query("Does the woman's hair look dark?")
+        return (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches)
+
+    def _else(has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches):
+        result = 'no'
+
+        def _for(woman_patch, has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches):
+            has_dark_hair_via_hair = woman_patch.verify_property('hair', 'dark')
+            has_dark_hair_via_woman = woman_patch.verify_property('woman', 'dark hair')
+
+            def _if(has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches):
+                result = 'yes'
+                return (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches)
+            has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches = if_stmt(_if, None, or_expr(has_dark_hair_via_hair, has_dark_hair_via_woman), (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches))
+            return (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches)
+        has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches = for_stmt(_for, woman_patches, (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches))
+
+        def _if(has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches):
+            result = woman_patches[0].simple_query("Does the woman's hair look dark?")
+            return (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches)
+        has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches = if_stmt(_if, None, result == 'no', (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches))
+        return (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches)
+    has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (has_dark_hair_via_hair, has_dark_hair_via_woman, image_patch, result, woman_patches))
+    return result

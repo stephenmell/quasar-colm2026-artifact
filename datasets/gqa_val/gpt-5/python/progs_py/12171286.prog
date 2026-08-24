@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    drawer_patches = image_patch.find("drawer")
+    # If no drawer is found, ask directly
+    if len(drawer_patches) == 0:
+        return image_patch.simple_query("Is there a refrigerator to the right of the drawer on the right?")
+    # Select the rightmost drawer
+    rightmost_drawer = max(drawer_patches, key=lambda p: p.horizontal_center)
+    # Look for refrigerators
+    refrigerator_patches = image_patch.find("refrigerator")
+    if len(refrigerator_patches) == 0:
+        return "no"
+    # Check if any refrigerator is to the right of the rightmost drawer
+    for fridge_patch in refrigerator_patches:
+        if fridge_patch.horizontal_center > rightmost_drawer.horizontal_center:
+            return "yes"
+    return "no"

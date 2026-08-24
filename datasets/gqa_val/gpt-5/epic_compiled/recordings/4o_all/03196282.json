@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2409979",
+          [
+            0,
+            0,
+            399,
+            500
+          ]
+        ],
+        "Is the black helmet to the left or to the right of the vehicles behind the wall?"
+      ],
+      "To the left.",
+      1983164066
+    ]
+  ],
+  "best_text_match": []
+}

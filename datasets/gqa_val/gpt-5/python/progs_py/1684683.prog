@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    deer_patches = image_patch.find("deer")
+    cap_patches = image_patch.find("cap")
+    # If either object isn't detected, ask directly
+    if len(deer_patches) == 0 or len(cap_patches) == 0:
+        return image_patch.simple_query("Are there deer near the cap?")
+    # Define "near" as within 25% of the smaller image dimension
+    threshold = 0.25 * min(image_patch.width, image_patch.height)
+    for deer_patch in deer_patches:
+        for cap_patch in cap_patches:
+            dx = deer_patch.horizontal_center - cap_patch.horizontal_center
+            dy = deer_patch.vertical_center - cap_patch.vertical_center
+            if (dx*dx + dy*dy) ** 0.5 <= threshold:
+                return "yes"
+    return "no"

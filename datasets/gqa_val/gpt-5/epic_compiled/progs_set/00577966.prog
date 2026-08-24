@@ -1,0 +1,67 @@
+def execute_command(image) -> str:
+    best_center_dist = None
+    best_device_dist = None
+    closest_device = None
+    computer_patches = None
+    current_dist = None
+    device_dist = None
+    image_patch = None
+    middle_computer = None
+    result = None
+    small_device_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    computer_patches = image_patch.find('computer')
+
+    def _if(best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+        result = image_patch.simple_query('Is the small device to the right or to the left of the computer in the middle?')
+        return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+
+    def _else(best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+        middle_computer = computer_patches[0]
+        best_center_dist = abs(middle_computer.horizontal_center - image_patch.horizontal_center)
+
+        def _for(comp_patch, best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result):
+            current_dist = abs(comp_patch.horizontal_center - image_patch.horizontal_center)
+
+            def _if(best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result):
+                middle_computer = comp_patch
+                best_center_dist = current_dist
+                return (best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result)
+            best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result = if_stmt(_if, None, current_dist < best_center_dist, (best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result))
+            return (best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result)
+        best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result = for_stmt(_for, computer_patches, (best_center_dist, computer_patches, current_dist, image_patch, middle_computer, result))
+        small_device_patches = image_patch.find('small device')
+
+        def _if(best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+            result = image_patch.simple_query('Is the small device to the right or to the left of the computer in the middle?')
+            return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+
+        def _else(best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+            closest_device = small_device_patches[0]
+            best_device_dist = abs(closest_device.horizontal_center - middle_computer.horizontal_center)
+
+            def _for(sd_patch, best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+                device_dist = abs(sd_patch.horizontal_center - middle_computer.horizontal_center)
+
+                def _if(best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+                    closest_device = sd_patch
+                    best_device_dist = device_dist
+                    return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+                best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches = if_stmt(_if, None, device_dist < best_device_dist, (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches))
+                return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+            best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches = for_stmt(_for, small_device_patches, (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches))
+
+            def _if(best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+                result = 'right'
+                return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+
+            def _else(best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches):
+                result = 'left'
+                return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+            best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches = if_stmt(_if, _else, closest_device.horizontal_center > middle_computer.horizontal_center, (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches))
+            return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+        best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches = if_stmt(_if, _else, len(small_device_patches) == 0, (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches))
+        return (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches)
+    best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches = if_stmt(_if, _else, len(computer_patches) == 0, (best_center_dist, best_device_dist, closest_device, computer_patches, current_dist, device_dist, image_patch, middle_computer, result, small_device_patches))
+    return result

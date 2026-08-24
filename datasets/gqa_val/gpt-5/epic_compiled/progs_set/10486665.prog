@@ -1,0 +1,81 @@
+def execute_command(image) -> str:
+    center_person_patch = None
+    dist_sq = None
+    dx = None
+    dy = None
+    image_patch = None
+    min_dist_sq = None
+    min_dx = None
+    person_patches = None
+    result = None
+    selected_van = None
+    van_patches = None
+    white_vans = None
+    image_patch = ImagePatch(image)
+    result = ''
+    person_patches = image_patch.find('person')
+
+    def _if(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+        result = image_patch.simple_query('Is the white van to the right or to the left of the person in the center?')
+        return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+
+    def _else(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+        center_person_patch = None
+        min_dist_sq = None
+
+        def _for(p, center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result):
+            dx = p.horizontal_center - image_patch.horizontal_center
+            dy = p.vertical_center - image_patch.vertical_center
+            dist_sq = dx * dx + dy * dy
+
+            def _if(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result):
+                min_dist_sq = dist_sq
+                center_person_patch = p
+                return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result)
+            center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result = if_stmt(_if, None, or_expr(min_dist_sq is None, dist_sq < min_dist_sq), (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result))
+            return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result)
+        center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result = for_stmt(_for, person_patches, (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result))
+        van_patches = image_patch.find('van')
+        white_vans = ()
+
+        def _for(v, center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans):
+
+            def _if(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans):
+                white_vans = white_vans + (v,)
+                return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans)
+            center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans = if_stmt(_if, None, v.verify_property('van', 'white'), (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans))
+            return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans)
+        center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans = for_stmt(_for, van_patches, (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, person_patches, result, van_patches, white_vans))
+
+        def _if(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+            result = image_patch.simple_query('Is the white van to the right or to the left of the person in the center?')
+            return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+
+        def _else(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+            selected_van = None
+            min_dx = None
+
+            def _for(v, center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+                dx = abs(v.horizontal_center - center_person_patch.horizontal_center)
+
+                def _if(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+                    min_dx = dx
+                    selected_van = v
+                    return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+                center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans = if_stmt(_if, None, or_expr(min_dx is None, dx < min_dx), (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans))
+                return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+            center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans = for_stmt(_for, white_vans, (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans))
+
+            def _if(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+                result = 'right'
+                return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+
+            def _else(center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans):
+                result = 'left'
+                return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+            center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans = if_stmt(_if, _else, selected_van.horizontal_center > center_person_patch.horizontal_center, (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans))
+            return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+        center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans = if_stmt(_if, _else, or_expr(len(white_vans) == 0, center_person_patch is None), (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans))
+        return (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans)
+    center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans = if_stmt(_if, _else, len(person_patches) == 0, (center_person_patch, dist_sq, dx, dy, image_patch, min_dist_sq, min_dx, person_patches, result, selected_van, van_patches, white_vans))
+    return result

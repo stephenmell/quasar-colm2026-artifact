@@ -1,0 +1,9 @@
+{75: 'execute_command',
+ 76: 'image',
+ 77: 'ImagePatch',
+ 78: 'image_patch',
+ 79: '.exists',
+ 80: '#implicit#',
+ 81: 'exists_crown',
+ 82: 'bool_to_yesno',
+ 83: 'result'}

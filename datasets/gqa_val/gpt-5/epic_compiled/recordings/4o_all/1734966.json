@@ -1,0 +1,53 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2413897",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "catcher"
+      ],
+      [
+        [
+          298,
+          194,
+          314,
+          213
+        ],
+        [
+          299,
+          160,
+          364,
+          241
+        ]
+      ],
+      13624494107
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2413897",
+          [
+            298,
+            194,
+            314,
+            213
+          ]
+        ],
+        "What is the catcher doing?"
+      ],
+      "I can't determine what the catcher is doing based on the image.",
+      910206341
+    ]
+  ],
+  "best_text_match": []
+}

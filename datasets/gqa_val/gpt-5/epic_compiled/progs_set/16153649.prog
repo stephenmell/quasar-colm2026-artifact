@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find('plate')
+    result = 'no'
+
+    def _if(image_patch, plate_patches, result):
+        result = image_patch.simple_query('Are there any tomatoes on the plate?')
+        return (image_patch, plate_patches, result)
+
+    def _else(image_patch, plate_patches, result):
+
+        def _for(plate_patch, image_patch, plate_patches, result):
+
+            def _if(image_patch, plate_patches, result):
+                result = 'yes'
+                return (image_patch, plate_patches, result)
+            image_patch, plate_patches, result = if_stmt(_if, None, plate_patch.exists('tomato'), (image_patch, plate_patches, result))
+            return (image_patch, plate_patches, result)
+        image_patch, plate_patches, result = for_stmt(_for, plate_patches, (image_patch, plate_patches, result))
+        return (image_patch, plate_patches, result)
+    image_patch, plate_patches, result = if_stmt(_if, _else, len(plate_patches) == 0, (image_patch, plate_patches, result))
+    return result

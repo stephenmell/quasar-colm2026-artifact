@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    image_patch = None
+    lady_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    lady_patches = image_patch.find('lady')
+    result = 'no'
+
+    def _if(image_patch, lady_patches, result, woman_patches):
+        woman_patches = image_patch.find('woman')
+
+        def _if(image_patch, lady_patches, result, woman_patches):
+            result = image_patch.simple_query('Is the lady on the right?')
+            return (image_patch, lady_patches, result, woman_patches)
+
+        def _else(image_patch, lady_patches, result, woman_patches):
+
+            def _for(woman_patch, image_patch, lady_patches, result, woman_patches):
+
+                def _if(image_patch, lady_patches, result, woman_patches):
+                    result = 'yes'
+                    return (image_patch, lady_patches, result, woman_patches)
+                image_patch, lady_patches, result, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center > image_patch.horizontal_center, (image_patch, lady_patches, result, woman_patches))
+                return (image_patch, lady_patches, result, woman_patches)
+            image_patch, lady_patches, result, woman_patches = for_stmt(_for, woman_patches, (image_patch, lady_patches, result, woman_patches))
+            return (image_patch, lady_patches, result, woman_patches)
+        image_patch, lady_patches, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (image_patch, lady_patches, result, woman_patches))
+        return (image_patch, lady_patches, result, woman_patches)
+
+    def _else(image_patch, lady_patches, result, woman_patches):
+
+        def _for(lady_patch, image_patch, lady_patches, result):
+
+            def _if(image_patch, lady_patches, result):
+                result = 'yes'
+                return (image_patch, lady_patches, result)
+            image_patch, lady_patches, result = if_stmt(_if, None, lady_patch.horizontal_center > image_patch.horizontal_center, (image_patch, lady_patches, result))
+            return (image_patch, lady_patches, result)
+        image_patch, lady_patches, result = for_stmt(_for, lady_patches, (image_patch, lady_patches, result))
+        return (image_patch, lady_patches, result, woman_patches)
+    image_patch, lady_patches, result, woman_patches = if_stmt(_if, _else, len(lady_patches) == 0, (image_patch, lady_patches, result, woman_patches))
+    return result

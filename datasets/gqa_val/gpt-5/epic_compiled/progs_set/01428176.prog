@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    faucet_patches = None
+    guess = None
+    image_patch = None
+    material_options = None
+    result = None
+    tap_patches = None
+    target_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    tap_patches = image_patch.find('tap')
+    faucet_patches = ()
+
+    def _if(faucet_patches, image_patch, result, tap_patches):
+        faucet_patches = image_patch.find('faucet')
+        return (faucet_patches, image_patch, result, tap_patches)
+    faucet_patches, image_patch, result, tap_patches = if_stmt(_if, None, len(tap_patches) == 0, (faucet_patches, image_patch, result, tap_patches))
+
+    def _if(faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches):
+        target_patches = tap_patches if len(tap_patches) > 0 else faucet_patches
+        material_options = ('metal', 'plastic', 'chrome', 'stainless steel', 'brass')
+
+        def _for(target_patch, faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches):
+            guess = target_patch.best_text_match(material_options)
+
+            def _if(faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches):
+                result = guess
+                return (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches)
+            faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches = if_stmt(_if, None, not_expr(result), (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches))
+            return (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches)
+        faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches = for_stmt(_for, target_patches, (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches))
+
+        def _if(faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches):
+            result = target_patches[0].simple_query('What is the tap made of?')
+            return (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches)
+        faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches = if_stmt(_if, None, not_expr(result), (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches))
+        return (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches)
+
+    def _else(faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches):
+        result = image_patch.simple_query('What is the tap made of?')
+        return (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches)
+    faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches = if_stmt(_if, _else, or_expr(len(tap_patches) > 0, len(faucet_patches) > 0), (faucet_patches, guess, image_patch, material_options, result, tap_patches, target_patches))
+    return result

@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Directly check for a "wood chair" object name
+    has_wood_chair_name = image_patch.exists("wood chair") or image_patch.exists("wooden chair")
+    if has_wood_chair_name:
+        result = "yes"
+
+    # If not directly found, look for chairs and verify wood property
+    if result == "no":
+        if image_patch.exists("chair"):
+            chair_patches = image_patch.find("chair")
+            for chair_patch in chair_patches:
+                is_wood = chair_patch.verify_property("chair", "wood") or chair_patch.verify_property("chair", "wooden")
+                if is_wood:
+                    result = "yes"
+
+    # If still unknown, ask directly
+    if result == "no":
+        result = image_patch.simple_query("Are there any wood chairs?")
+    return result

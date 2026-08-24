@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    batter_patches = None
+    helmeted_man = None
+    image_patch = None
+    is_wearing_helmet = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find('man')
+
+    def _if(batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+        result = image_patch.simple_query('Are there any batters to the right of the man that is wearing a helmet?')
+        return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+
+    def _else(batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+        helmeted_man = None
+
+        def _for(man_patch, helmeted_man, image_patch, is_wearing_helmet, man_patches):
+            is_wearing_helmet = man_patch.simple_query('Is the man wearing a helmet?') == 'yes'
+
+            def _if(helmeted_man, image_patch, is_wearing_helmet, man_patches):
+                helmeted_man = man_patch
+                return (helmeted_man, image_patch, is_wearing_helmet, man_patches)
+            helmeted_man, image_patch, is_wearing_helmet, man_patches = if_stmt(_if, None, and_expr(is_wearing_helmet, helmeted_man is None), (helmeted_man, image_patch, is_wearing_helmet, man_patches))
+            return (helmeted_man, image_patch, is_wearing_helmet, man_patches)
+        helmeted_man, image_patch, is_wearing_helmet, man_patches = for_stmt(_for, man_patches, (helmeted_man, image_patch, is_wearing_helmet, man_patches))
+
+        def _if(batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+            result = image_patch.simple_query('Are there any batters to the right of the man that is wearing a helmet?')
+            return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+
+        def _else(batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+            batter_patches = image_patch.find('batter')
+
+            def _if(batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+                result = 'no'
+                return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+
+            def _else(batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+                result = 'no'
+
+                def _for(batter_patch, batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+
+                    def _if(batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result):
+                        result = 'yes'
+                        return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+                    batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result = if_stmt(_if, None, batter_patch.horizontal_center > helmeted_man.horizontal_center, (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result))
+                    return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+                batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result = for_stmt(_for, batter_patches, (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result))
+                return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+            batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result = if_stmt(_if, _else, len(batter_patches) == 0, (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result))
+            return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+        batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result = if_stmt(_if, _else, helmeted_man is None, (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result))
+        return (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result)
+    batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (batter_patches, helmeted_man, image_patch, is_wearing_helmet, man_patches, result))
+    return result

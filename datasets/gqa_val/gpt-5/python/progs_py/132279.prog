@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pot_patches = image_patch.find("pot")
+    # If no pot is found, query the image directly
+    if len(pot_patches) == 0:
+        return image_patch.simple_query("Do you see any pans to the right of the man the pot is to the right of?")
+    man_patches = image_patch.find("man")
+    # If no man is found, query the image directly
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Do you see any pans to the right of the man the pot is to the right of?")
+    pan_patches = image_patch.find("pan")
+    # If no pan is found at all, answer no
+    if len(pan_patches) == 0:
+        return "no"
+
+    # For any man such that a pot is to his right, check if any pan is also to his right
+    for pot_patch in pot_patches:
+        for man_patch in man_patches:
+            if pot_patch.horizontal_center > man_patch.horizontal_center:
+                for pan_patch in pan_patches:
+                    if pan_patch.horizontal_center > man_patch.horizontal_center:
+                        return "yes"
+    return "no"

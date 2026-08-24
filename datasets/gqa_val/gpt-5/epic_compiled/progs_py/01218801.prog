@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    snow_patches = image_patch.find("snow")
+
+    if len(snow_patches) == 0:
+        result = image_patch.simple_query("What is the color of the snow?")
+    else:
+        result = None
+        for snow_patch in snow_patches:
+            if snow_patch.verify_property("snow", "white"):
+                result = "white"
+        if not result:
+            candidate = None
+            for snow_patch in snow_patches:
+                guess = snow_patch.best_text_match(("white", "gray", "brown", "black"))
+                if candidate is None:
+                    candidate = guess
+            if candidate:
+                result = candidate
+            else:
+                result = snow_patches[0].simple_query("What is the color of the snow?")
+    return result

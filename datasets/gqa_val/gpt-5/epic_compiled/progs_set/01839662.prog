@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    tent_patches = None
+    image_patch = ImagePatch(image)
+    tent_patches = image_patch.find('tent')
+
+    def _if(image_patch, result, tent_patches):
+        result = image_patch.simple_query('Is the tent in the top part of the image?')
+        return (image_patch, result, tent_patches)
+
+    def _else(image_patch, result, tent_patches):
+        result = 'no'
+
+        def _for(tent_patch, image_patch, result, tent_patches):
+
+            def _if(image_patch, result, tent_patches):
+                result = 'yes'
+                return (image_patch, result, tent_patches)
+            image_patch, result, tent_patches = if_stmt(_if, None, tent_patch.vertical_center >= image_patch.vertical_center, (image_patch, result, tent_patches))
+            return (image_patch, result, tent_patches)
+        image_patch, result, tent_patches = for_stmt(_for, tent_patches, (image_patch, result, tent_patches))
+        return (image_patch, result, tent_patches)
+    image_patch, result, tent_patches = if_stmt(_if, _else, len(tent_patches) == 0, (image_patch, result, tent_patches))
+    return result

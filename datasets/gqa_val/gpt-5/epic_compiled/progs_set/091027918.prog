@@ -1,0 +1,63 @@
+def execute_command(image) -> str:
+    coat_woman_patches = None
+    food_patches = None
+    image_patch = None
+    is_small = None
+    result = None
+    small_food_patches = None
+    wearing_coat = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    woman_patches = image_patch.find('woman')
+    coat_woman_patches = ()
+
+    def _for(w_patch, coat_woman_patches, image_patch, result, wearing_coat, woman_patches):
+        wearing_coat = w_patch.simple_query('Is the woman wearing a coat?') == 'yes'
+
+        def _if(coat_woman_patches, image_patch, result, wearing_coat, woman_patches):
+            coat_woman_patches = coat_woman_patches + (w_patch,)
+            return (coat_woman_patches, image_patch, result, wearing_coat, woman_patches)
+        coat_woman_patches, image_patch, result, wearing_coat, woman_patches = if_stmt(_if, None, wearing_coat, (coat_woman_patches, image_patch, result, wearing_coat, woman_patches))
+        return (coat_woman_patches, image_patch, result, wearing_coat, woman_patches)
+    coat_woman_patches, image_patch, result, wearing_coat, woman_patches = for_stmt(_for, woman_patches, (coat_woman_patches, image_patch, result, wearing_coat, woman_patches))
+    food_patches = image_patch.find('food')
+    small_food_patches = ()
+
+    def _for(f_patch, coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+        is_small = f_patch.verify_property('food', 'small')
+
+        def _if(coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+            is_small = f_patch.simple_query('Is the food small?') == 'yes'
+            return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+        coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches = if_stmt(_if, None, not_expr(is_small), (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches))
+
+        def _if(coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+            small_food_patches = small_food_patches + (f_patch,)
+            return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+        coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches = if_stmt(_if, None, is_small, (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches))
+        return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+    coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches = for_stmt(_for, food_patches, (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches))
+
+    def _if(coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+        result = image_patch.simple_query('Is the small food to the left of the woman that is wearing a coat?')
+        return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+
+    def _else(coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+        result = 'no'
+
+        def _for(sf_patch, coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+
+            def _for(cw_patch, coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+
+                def _if(coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches):
+                    result = 'yes'
+                    return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+                coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches = if_stmt(_if, None, sf_patch.horizontal_center < cw_patch.horizontal_center, (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches))
+                return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+            coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches = for_stmt(_for, coat_woman_patches, (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches))
+            return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+        coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches = for_stmt(_for, small_food_patches, (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches))
+        return (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches)
+    coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches = if_stmt(_if, _else, or_expr(len(coat_woman_patches) == 0, len(small_food_patches) == 0), (coat_woman_patches, food_patches, image_patch, is_small, result, small_food_patches, wearing_coat, woman_patches))
+    return result

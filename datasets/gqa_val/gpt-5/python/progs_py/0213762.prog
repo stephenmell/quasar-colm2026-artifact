@@ -1,0 +1,23 @@
+# Is there a black laptop or TV?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Check for a black laptop
+    laptop_patches = image_patch.find("laptop")
+    for laptop_patch in laptop_patches:
+        if laptop_patch.verify_property("laptop", "black"):
+            return "yes"
+
+    # Check for a black TV (cover common synonyms)
+    tv_patches = []
+    for name in ["tv", "television", "tv monitor"]:
+        tv_patches.extend(image_patch.find(name))
+    for tv_patch in tv_patches:
+        if tv_patch.verify_property("tv", "black") or tv_patch.verify_property("television", "black"):
+            return "yes"
+
+    # If neither laptops nor TVs are detected, fall back to direct question
+    if len(laptop_patches) == 0 and len(tv_patches) == 0:
+        return image_patch.simple_query("Is there a black laptop or TV?")
+
+    return "no"

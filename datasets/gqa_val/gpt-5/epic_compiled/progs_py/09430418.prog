@@ -1,0 +1,26 @@
+# Is the woman to the right of the oven in the middle?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    oven_patches = image_patch.find("oven")
+    woman_patches = image_patch.find("woman")
+
+    if len(oven_patches) == 0 or len(woman_patches) == 0:
+        result = image_patch.simple_query("Is the woman to the right of the oven in the middle?")
+    else:
+        # Find the oven closest to the center ("in the middle")
+        min_dist_sq = None
+        middle_oven_patch = oven_patches[0]
+        for oven_patch in oven_patches:
+            dx = oven_patch.horizontal_center - image_patch.horizontal_center
+            dy = oven_patch.vertical_center - image_patch.vertical_center
+            dist_sq = dx * dx + dy * dy
+            if min_dist_sq is None or dist_sq < min_dist_sq:
+                min_dist_sq = dist_sq
+                middle_oven_patch = oven_patch
+
+        # Check if any woman is to the right of the middle oven
+        result = "no"
+        for woman_patch in woman_patches:
+            if woman_patch.horizontal_center > middle_oven_patch.horizontal_center:
+                result = "yes"
+    return result

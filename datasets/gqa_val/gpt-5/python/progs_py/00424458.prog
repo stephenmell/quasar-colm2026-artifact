@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find "curly hair" directly
+    curly_hair_patches = image_patch.find("curly hair")
+    if len(curly_hair_patches) == 0:
+        # Fallback: find hair and verify it is curly
+        hair_patches = image_patch.find("hair")
+        if len(hair_patches) == 0:
+            return image_patch.simple_query("Which color is the curly hair?")
+        curly_hair_patches = [h for h in hair_patches if h.verify_property("hair", "curly")]
+        if len(curly_hair_patches) == 0:
+            return image_patch.simple_query("Which color is the curly hair?")
+    # Ask the color within the crop of the curly hair
+    return curly_hair_patches[0].simple_query("Which color is the curly hair?")

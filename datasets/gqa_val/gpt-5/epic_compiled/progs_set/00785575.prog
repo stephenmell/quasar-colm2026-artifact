@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    fence_patches = None
+    image_patch = None
+    is_aluminum = None
+    is_iron = None
+    is_metal = None
+    is_metallic = None
+    is_steel = None
+    result = None
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find('fence')
+
+    def _if(fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result):
+        result = image_patch.simple_query('Does the fence look metallic?')
+        return (fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result)
+
+    def _else(fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result):
+        result = 'no'
+
+        def _for(fence_patch, fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result):
+            is_metallic = fence_patch.verify_property('fence', 'metallic')
+            is_metal = fence_patch.verify_property('fence', 'metal')
+            is_steel = fence_patch.verify_property('fence', 'steel')
+            is_iron = fence_patch.verify_property('fence', 'iron')
+            is_aluminum = fence_patch.verify_property('fence', 'aluminum')
+
+            def _if(fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result):
+                result = 'yes'
+                return (fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result)
+            fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result = if_stmt(_if, None, or_expr(is_metallic, or_expr(is_metal, or_expr(is_steel, or_expr(is_iron, is_aluminum)))), (fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result))
+            return (fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result)
+        fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result = for_stmt(_for, fence_patches, (fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result))
+        return (fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result)
+    fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result = if_stmt(_if, _else, len(fence_patches) == 0, (fence_patches, image_patch, is_aluminum, is_iron, is_metal, is_metallic, is_steel, result))
+    return result

@@ -1,0 +1,21 @@
+# Which kind of furniture is brown, the shelf or the table?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shelf_patches = image_patch.find("shelf")
+    table_patches = image_patch.find("table")
+
+    # If neither object is detected, ask directly
+    if len(shelf_patches) == 0 and len(table_patches) == 0:
+        return image_patch.simple_query("Which kind of furniture is brown, the shelf or the table?")
+
+    # Prefer direct verification on detected objects
+    for shelf_patch in shelf_patches:
+        if shelf_patch.verify_property("shelf", "brown"):
+            return "shelf"
+
+    for table_patch in table_patches:
+        if table_patch.verify_property("table", "brown"):
+            return "table"
+
+    # Fallback to direct question if uncertain
+    return image_patch.simple_query("Which kind of furniture is brown, the shelf or the table?")

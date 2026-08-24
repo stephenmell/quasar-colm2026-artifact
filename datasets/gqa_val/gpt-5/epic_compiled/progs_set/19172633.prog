@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    airplane_patches = None
+    image_patch = None
+    parachute_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    parachute_patches = image_patch.find('parachute')
+
+    def _if(airplane_patches, image_patch, parachute_patches, result):
+        result = image_patch.simple_query('Do you see airplanes to the right of the parachute?')
+        return (airplane_patches, image_patch, parachute_patches, result)
+
+    def _else(airplane_patches, image_patch, parachute_patches, result):
+        airplane_patches = image_patch.find('airplane')
+
+        def _if(airplane_patches, image_patch, parachute_patches, result):
+            result = 'no'
+            return (airplane_patches, image_patch, parachute_patches, result)
+
+        def _else(airplane_patches, image_patch, parachute_patches, result):
+            result = 'no'
+
+            def _for(airplane_patch, airplane_patches, image_patch, parachute_patches, result):
+
+                def _for(parachute_patch, airplane_patches, image_patch, parachute_patches, result):
+
+                    def _if(airplane_patches, image_patch, parachute_patches, result):
+                        result = 'yes'
+                        return (airplane_patches, image_patch, parachute_patches, result)
+                    airplane_patches, image_patch, parachute_patches, result = if_stmt(_if, None, airplane_patch.horizontal_center > parachute_patch.horizontal_center, (airplane_patches, image_patch, parachute_patches, result))
+                    return (airplane_patches, image_patch, parachute_patches, result)
+                airplane_patches, image_patch, parachute_patches, result = for_stmt(_for, parachute_patches, (airplane_patches, image_patch, parachute_patches, result))
+                return (airplane_patches, image_patch, parachute_patches, result)
+            airplane_patches, image_patch, parachute_patches, result = for_stmt(_for, airplane_patches, (airplane_patches, image_patch, parachute_patches, result))
+            return (airplane_patches, image_patch, parachute_patches, result)
+        airplane_patches, image_patch, parachute_patches, result = if_stmt(_if, _else, len(airplane_patches) == 0, (airplane_patches, image_patch, parachute_patches, result))
+        return (airplane_patches, image_patch, parachute_patches, result)
+    airplane_patches, image_patch, parachute_patches, result = if_stmt(_if, _else, len(parachute_patches) == 0, (airplane_patches, image_patch, parachute_patches, result))
+    return result

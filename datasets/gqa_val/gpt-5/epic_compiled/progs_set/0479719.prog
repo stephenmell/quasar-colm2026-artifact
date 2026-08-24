@@ -1,0 +1,107 @@
+def execute_command(image) -> str:
+    any_women_patches = None
+    door_patches = None
+    doorway_patches = None
+    found_near = None
+    half = None
+    image_patch = None
+    is_open = None
+    is_open2 = None
+    left = None
+    lower = None
+    margin = None
+    max_dim = None
+    open_doorway_candidates = None
+    open_from_door = None
+    open_from_doorway = None
+    result = None
+    right = None
+    upper = None
+    vicinity_patch = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    open_doorway_candidates = image_patch.find('open doorway')
+
+    def _if(doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result):
+        doorway_patches = image_patch.find('doorway')
+        open_from_doorway = ()
+
+        def _for(dw_patch, doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result):
+            is_open = dw_patch.verify_property('doorway', 'open')
+
+            def _if(doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result):
+                open_from_doorway = open_from_doorway + (dw_patch,)
+                return (doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result)
+            doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result = if_stmt(_if, None, is_open, (doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result))
+            return (doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result)
+        doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result = for_stmt(_for, doorway_patches, (doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result))
+        open_doorway_candidates = open_from_doorway
+        return (doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result)
+    doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result = if_stmt(_if, None, len(open_doorway_candidates) == 0, (doorway_patches, image_patch, is_open, open_doorway_candidates, open_from_doorway, result))
+
+    def _if(door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result):
+        door_patches = image_patch.find('door')
+        open_from_door = ()
+
+        def _for(door_patch, door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result):
+            is_open2 = door_patch.verify_property('door', 'open')
+
+            def _if(door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result):
+                open_from_door = open_from_door + (door_patch,)
+                return (door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result)
+            door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result = if_stmt(_if, None, is_open2, (door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result))
+            return (door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result)
+        door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result = for_stmt(_for, door_patches, (door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result))
+        open_doorway_candidates = open_from_door
+        return (door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result)
+    door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result = if_stmt(_if, None, len(open_doorway_candidates) == 0, (door_patches, doorway_patches, image_patch, is_open, is_open2, open_doorway_candidates, open_from_door, open_from_doorway, result))
+    found_near = False
+
+    def _for(od_patch, any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch):
+        max_dim = od_patch.width if od_patch.width >= od_patch.height else od_patch.height
+        half = int(max_dim * 0.5)
+        margin = half if half >= 20 else 20
+        left = od_patch.left - margin
+
+        def _if(door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result):
+            left = 0
+            return (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result)
+        door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result = if_stmt(_if, None, left < 0, (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result))
+        lower = od_patch.lower - margin
+
+        def _if(door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result):
+            lower = 0
+            return (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result)
+        door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result = if_stmt(_if, None, lower < 0, (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result))
+        right = od_patch.right + margin
+
+        def _if(door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right):
+            right = image_patch.right
+            return (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right)
+        door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right = if_stmt(_if, None, right > image_patch.right, (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right))
+        upper = od_patch.upper + margin
+
+        def _if(door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper):
+            upper = image_patch.upper
+            return (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper)
+        door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper = if_stmt(_if, None, upper > image_patch.upper, (door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper))
+        vicinity_patch = image_patch.crop(left, lower, right, upper)
+        any_women_patches = vicinity_patch.find('woman')
+
+        def _if(any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch):
+            any_women_patches = vicinity_patch.find('women')
+            return (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch)
+        any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch = if_stmt(_if, None, len(any_women_patches) == 0, (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch))
+
+        def _if(any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch):
+            found_near = True
+            return (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch)
+        any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch = if_stmt(_if, None, len(any_women_patches) > 0, (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch))
+        return (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch)
+    any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch = for_stmt(_for, open_doorway_candidates, (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch))
+
+    def _if(any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch):
+        result = 'yes'
+        return (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch)
+    any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch = if_stmt(_if, None, found_near, (any_women_patches, door_patches, doorway_patches, found_near, half, image_patch, is_open, is_open2, left, lower, margin, max_dim, open_doorway_candidates, open_from_door, open_from_doorway, result, right, upper, vicinity_patch))
+    return result

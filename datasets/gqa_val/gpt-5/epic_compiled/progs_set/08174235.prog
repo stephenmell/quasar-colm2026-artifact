@@ -1,0 +1,58 @@
+def execute_command(image) -> str:
+    black_car_patches = None
+    bus_patches = None
+    car_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    car_patches = image_patch.find('car')
+
+    def _if(black_car_patches, bus_patches, car_patches, image_patch, result):
+        result = image_patch.simple_query('Is there a bus to the left of the black car?')
+        return (black_car_patches, bus_patches, car_patches, image_patch, result)
+
+    def _else(black_car_patches, bus_patches, car_patches, image_patch, result):
+        black_car_patches = ()
+
+        def _for(car_patch, black_car_patches, car_patches, image_patch):
+
+            def _if(black_car_patches, car_patches, image_patch):
+                black_car_patches = black_car_patches + (car_patch,)
+                return (black_car_patches, car_patches, image_patch)
+            black_car_patches, car_patches, image_patch = if_stmt(_if, None, car_patch.verify_property('car', 'black'), (black_car_patches, car_patches, image_patch))
+            return (black_car_patches, car_patches, image_patch)
+        black_car_patches, car_patches, image_patch = for_stmt(_for, car_patches, (black_car_patches, car_patches, image_patch))
+
+        def _if(black_car_patches, bus_patches, car_patches, image_patch, result):
+            result = image_patch.simple_query('Is there a bus to the left of the black car?')
+            return (black_car_patches, bus_patches, car_patches, image_patch, result)
+
+        def _else(black_car_patches, bus_patches, car_patches, image_patch, result):
+            bus_patches = image_patch.find('bus')
+
+            def _if(black_car_patches, bus_patches, car_patches, image_patch, result):
+                result = 'no'
+                return (black_car_patches, bus_patches, car_patches, image_patch, result)
+
+            def _else(black_car_patches, bus_patches, car_patches, image_patch, result):
+                result = 'no'
+
+                def _for(black_car_patch, black_car_patches, bus_patches, car_patches, image_patch, result):
+
+                    def _for(bus_patch, black_car_patches, bus_patches, car_patches, image_patch, result):
+
+                        def _if(black_car_patches, bus_patches, car_patches, image_patch, result):
+                            result = 'yes'
+                            return (black_car_patches, bus_patches, car_patches, image_patch, result)
+                        black_car_patches, bus_patches, car_patches, image_patch, result = if_stmt(_if, None, bus_patch.horizontal_center < black_car_patch.horizontal_center, (black_car_patches, bus_patches, car_patches, image_patch, result))
+                        return (black_car_patches, bus_patches, car_patches, image_patch, result)
+                    black_car_patches, bus_patches, car_patches, image_patch, result = for_stmt(_for, bus_patches, (black_car_patches, bus_patches, car_patches, image_patch, result))
+                    return (black_car_patches, bus_patches, car_patches, image_patch, result)
+                black_car_patches, bus_patches, car_patches, image_patch, result = for_stmt(_for, black_car_patches, (black_car_patches, bus_patches, car_patches, image_patch, result))
+                return (black_car_patches, bus_patches, car_patches, image_patch, result)
+            black_car_patches, bus_patches, car_patches, image_patch, result = if_stmt(_if, _else, len(bus_patches) == 0, (black_car_patches, bus_patches, car_patches, image_patch, result))
+            return (black_car_patches, bus_patches, car_patches, image_patch, result)
+        black_car_patches, bus_patches, car_patches, image_patch, result = if_stmt(_if, _else, len(black_car_patches) == 0, (black_car_patches, bus_patches, car_patches, image_patch, result))
+        return (black_car_patches, bus_patches, car_patches, image_patch, result)
+    black_car_patches, bus_patches, car_patches, image_patch, result = if_stmt(_if, _else, len(car_patches) == 0, (black_car_patches, bus_patches, car_patches, image_patch, result))
+    return result

@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    carrot_patches = None
+    carrot_patches_plural = None
+    carrot_patches_singular = None
+    image_patch = None
+    lettuce_patches = None
+    on_plate = None
+    plate_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    plate_patches = image_patch.find('plate')
+    lettuce_patches = image_patch.find('lettuce')
+    carrot_patches_singular = image_patch.find('carrot')
+    carrot_patches_plural = image_patch.find('carrots')
+    carrot_patches = carrot_patches_singular + carrot_patches_plural
+
+    def _if(carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+        result = image_patch.simple_query('Are there carrots on the lettuce that is on the plate?')
+        return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+
+    def _else(carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+
+        def _for(lettuce_patch, carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+            on_plate = False
+
+            def _for(plate_patch, carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+
+                def _if(carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+                    on_plate = True
+                    return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+                carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result = if_stmt(_if, None, and_expr(lettuce_patch.horizontal_center >= plate_patch.left, and_expr(lettuce_patch.horizontal_center <= plate_patch.right, and_expr(lettuce_patch.vertical_center >= plate_patch.lower, lettuce_patch.vertical_center <= plate_patch.upper))), (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result))
+                return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+            carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result = for_stmt(_for, plate_patches, (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result))
+
+            def _if(carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+
+                def _for(carrot_patch, carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+
+                    def _if(carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result):
+                        result = 'yes'
+                        return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+                    carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result = if_stmt(_if, None, and_expr(carrot_patch.horizontal_center >= lettuce_patch.left, and_expr(carrot_patch.horizontal_center <= lettuce_patch.right, and_expr(carrot_patch.vertical_center >= lettuce_patch.lower, carrot_patch.vertical_center <= lettuce_patch.upper))), (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result))
+                    return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+                carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result = for_stmt(_for, carrot_patches, (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result))
+                return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+            carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result = if_stmt(_if, None, on_plate, (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result))
+            return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+        carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result = for_stmt(_for, lettuce_patches, (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result))
+        return (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result)
+    carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result = if_stmt(_if, _else, or_expr(len(plate_patches) == 0, or_expr(len(lettuce_patches) == 0, len(carrot_patches) == 0)), (carrot_patches, carrot_patches_plural, carrot_patches_singular, image_patch, lettuce_patches, on_plate, plate_patches, result))
+    return result

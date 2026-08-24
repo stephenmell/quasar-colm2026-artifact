@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    cup_patches = None
+    image_patch = None
+    is_orange = None
+    result = None
+    image_patch = ImagePatch(image)
+    cup_patches = image_patch.find('cup')
+
+    def _if(cup_patches, image_patch, is_orange, result):
+        result = image_patch.simple_query('Is the orange cup on the left?')
+        return (cup_patches, image_patch, is_orange, result)
+
+    def _else(cup_patches, image_patch, is_orange, result):
+        result = 'no'
+
+        def _for(cup_patch, cup_patches, image_patch, is_orange, result):
+            is_orange = cup_patch.verify_property('cup', 'orange')
+
+            def _if(cup_patches, image_patch, is_orange, result):
+
+                def _if(cup_patches, image_patch, is_orange, result):
+                    result = 'yes'
+                    return (cup_patches, image_patch, is_orange, result)
+                cup_patches, image_patch, is_orange, result = if_stmt(_if, None, cup_patch.horizontal_center < image_patch.horizontal_center, (cup_patches, image_patch, is_orange, result))
+                return (cup_patches, image_patch, is_orange, result)
+            cup_patches, image_patch, is_orange, result = if_stmt(_if, None, is_orange, (cup_patches, image_patch, is_orange, result))
+            return (cup_patches, image_patch, is_orange, result)
+        cup_patches, image_patch, is_orange, result = for_stmt(_for, cup_patches, (cup_patches, image_patch, is_orange, result))
+        return (cup_patches, image_patch, is_orange, result)
+    cup_patches, image_patch, is_orange, result = if_stmt(_if, _else, len(cup_patches) == 0, (cup_patches, image_patch, is_orange, result))
+    return result

@@ -1,0 +1,15 @@
+# Is the red salad in the top of the picture?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    salad_patches = image_patch.find("salad")
+
+    if len(salad_patches) == 0:
+        result = image_patch.simple_query("Is the red salad in the top of the picture?")
+    else:
+        result = "no"
+        for salad_patch in salad_patches:
+            is_red = salad_patch.verify_property("salad", "red")
+            is_top = salad_patch.vertical_center >= image_patch.vertical_center
+            if is_red and is_top:
+                result = "yes"
+    return result

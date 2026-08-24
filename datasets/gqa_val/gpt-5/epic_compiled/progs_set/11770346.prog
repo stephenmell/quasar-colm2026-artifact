@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_waiting = None
+    left_area_patch = None
+    left_car_patches = None
+    result = None
+    vehicle_patches = None
+    image_patch = ImagePatch(image)
+    vehicle_patches = image_patch.find('vehicle')
+
+    def _if(image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches):
+        result = image_patch.simple_query('Do you see any cars to the left of the vehicle that is waiting?')
+        return (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches)
+
+    def _else(image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches):
+        result = 'no'
+
+        def _for(vehicle_patch, image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches):
+            is_waiting = vehicle_patch.verify_property('vehicle', 'waiting')
+
+            def _if(image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches):
+                left_area_patch = image_patch.crop(image_patch.left, image_patch.lower, vehicle_patch.left, image_patch.upper)
+                left_car_patches = left_area_patch.find('car')
+
+                def _if(image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches):
+                    result = 'yes'
+                    return (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches)
+                image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches = if_stmt(_if, None, len(left_car_patches) > 0, (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches))
+                return (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches)
+            image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches = if_stmt(_if, None, is_waiting, (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches))
+            return (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches)
+        image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches = for_stmt(_for, vehicle_patches, (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches))
+        return (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches)
+    image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches = if_stmt(_if, _else, len(vehicle_patches) == 0, (image_patch, is_waiting, left_area_patch, left_car_patches, result, vehicle_patches))
+    return result

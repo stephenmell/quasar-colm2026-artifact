@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    glasses_patches = image_patch.find("glasses")
+    if len(glasses_patches) == 0:
+        return image_patch.simple_query("What is the man to the right of the glasses doing, walking or standing?")
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return image_patch.simple_query("What is the man to the right of the glasses doing, walking or standing?")
+    best_man = None
+    best_dx = None
+    for g in glasses_patches:
+        for m in man_patches:
+            dx = m.horizontal_center - g.horizontal_center
+            if dx > 0 and (best_dx is None or dx < best_dx):
+                best_dx = dx
+                best_man = m
+    if best_man is None:
+        return image_patch.simple_query("What is the man to the right of the glasses doing, walking or standing?")
+    return best_man.best_text_match(["walking", "standing"])

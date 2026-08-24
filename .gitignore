@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.env
+datasets/bcp/problems.jsonl
+decrypted.jsonl

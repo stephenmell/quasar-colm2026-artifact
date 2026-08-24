@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    car_patches = image_patch.find("car")
+    mat_patches = image_patch.find("mat")
+
+    if len(person_patches) == 0 or len(car_patches) == 0:
+        result = image_patch.simple_query("Do you see any mats to the left of the person that is to the right of the car?")
+    else:
+        if len(mat_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for person_patch in person_patches:
+                person_right_of_any_car = False
+                for car_patch in car_patches:
+                    if person_patch.horizontal_center > car_patch.horizontal_center:
+                        person_right_of_any_car = True
+                if person_right_of_any_car:
+                    for mat_patch in mat_patches:
+                        if mat_patch.horizontal_center < person_patch.horizontal_center:
+                            result = "yes"
+    return result

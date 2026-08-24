@@ -1,0 +1,120 @@
+({1094: 'context', 1101: 'llm_query', 1108: '.join', 1116: 'return_result'},
+ ('def',
+  1092,
+  ((),
+   ((('call', (1093,), -1, ()),
+     ('def',
+      1095,
+      ((1103, 1096),
+       ((('prim',
+          1097,
+          'You will be given one document. Determine if it matches this '
+          'description and extract specific details if applicable.\n'
+          '\n'
+          'Target article description:\n'
+          '- It is an article about a 19th-century African scholar (the '
+          'subject is a scholar who lived primarily in the 1800s).\n'
+          '- The author is from the same country as the subject of the '
+          'article.\n'
+          '- The article proposes similar resource-sharing patterns for '
+          'historic collection as was obtainable in an African country with a '
+          'landmass between 1,000,000 and 1,300,000 square kilometers '
+          '(examples of countries in that band include, but are not limited '
+          'to: South Africa, Ethiopia, Mali, Mauritania, Niger, Angola, Chad, '
+          'Egypt; do not assume, only use the document content).\n'
+          '\n'
+          'Your tasks for the document:\n'
+          '1) Say whether the document is or contains that exact article '
+          '(Yes/No/Possibly). If it only references such an article, say '
+          "'Possibly' and explain.\n"
+          '2) If Yes or Possibly, extract the following from the document '
+          '(only if present in the document):\n'
+          '   - Article title\n'
+          '   - Author name and nationality (or country)\n'
+          '   - Subject (the 19th-century scholar) name and nationality (or '
+          'country)\n'
+          '   - The passage where the article proposes similar '
+          'resource-sharing patterns for historic collections, and identify '
+          'the comparison country and its landmass if stated or inferable from '
+          'the document\n'
+          '   - The full reference list or any references visible in the '
+          'document. From that list, identify any item(s) that are a symposium '
+          'paper (conference or symposium proceedings). For each symposium '
+          'item found, give:\n'
+          '     * Full reference line as quoted\n'
+          '     * Extracted symposium paper title (title only)\n'
+          '3) Provide exact quotes (with minimal surrounding text) from the '
+          'document supporting each extracted element.\n'
+          "4) Conclude with a single line starting with 'Conclusion:' followed "
+          'by Yes/No/Possibly and a one-sentence justification.\n'
+          '\n'
+          'Output format:\n'
+          'DOC_RESULT_START\n'
+          'Match: <Yes/No/Possibly>\n'
+          'ArticleTitle: <if found>\n'
+          'AuthorCountry: <if found>\n'
+          'SubjectName: <if found>\n'
+          'SubjectCountry: <if found>\n'
+          'ResourceSharingPassage: <quote or NA>\n'
+          'ResourceSharingCountryMentioned: <if found>\n'
+          'ReferencesSymposiumPapers:\n'
+          '- Title: <symposium paper title>\n'
+          '  FullRef: <quoted reference line>\n'
+          "[Repeat for all symposium items if multiple or write 'None']\n"
+          'SupportQuotes:\n'
+          '- <short quote and what it supports>\n'
+          'Conclusion: <Yes/No/Possibly + brief reason>\n'
+          'DOC_RESULT_END\n'
+          '\n'
+          'Now analyze this document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1098,), 80, (1097, 1096)),
+         ('prim', 1099, '\nEND_DOCUMENT'),
+         ('call', (1100,), 80, (1098, 1099)),
+         ('call', (1102,), 1101, (1100,)),
+         ('call', (1104,), -1, (1102,)),
+         ('call', (1105,), 80, (1103, 1104))),
+        (1105,)))),
+     ('call', (1107,), 79, (1094,)),
+     ('call', (1106,), 1107, (1093, 1095)),
+     ('prim', 1109, '\n\n'),
+     ('call', (1110,), 1108, (1109, 1106)),
+     ('prim',
+      1111,
+      'You are given analyses of multiple documents. Your goal is to identify '
+      'the single document that best matches ALL the following constraints and '
+      'then provide exactly the symposium paper title from that article’s '
+      'reference list:\n'
+      'Constraints to match:\n'
+      '- The document is (not merely references) an article about a '
+      '19th-century African scholar.\n'
+      '- The author is from the same country as the subject of the article.\n'
+      '- The article proposes similar resource-sharing patterns for historic '
+      'collection as were obtainable in an African country with landmass '
+      'between 1,000,000 and 1,300,000 square kilometers.\n'
+      '\n'
+      'If exactly one document matches all constraints, use that one. If more '
+      'than one seems to match, choose the best-supported one based on direct '
+      "quotes. If none fully match but one is 'Possibly' and provides the "
+      'closest fit with supporting quotes, choose that one.\n'
+      '\n'
+      'From that chosen article, look at its reference list and identify the '
+      'item that is a symposium paper (conference/symposium proceedings). '
+      'Output ONLY the title of that symposium paper. Do not add quotes, '
+      'explanations, punctuation, or any other words.\n'
+      '\n'
+      'If no symposium paper title can be found for the matching article, '
+      'output UNKNOWN.\n'
+      '\n'
+      'Analyses:\n'),
+     ('call', (1112,), 80, (1111, 1110)),
+     ('prim',
+      1113,
+      '\n'
+      '\n'
+      'Answer format: a single line with only the symposium paper title (no '
+      'quotes, no extra text).'),
+     ('call', (1114,), 80, (1112, 1113)),
+     ('call', (1115,), 1101, (1114,)),
+     ('call', (1117,), 1116, (1115,))),
+    (1117,)))))

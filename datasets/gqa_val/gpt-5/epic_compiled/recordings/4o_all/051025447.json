@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2363959",
+          [
+            0,
+            0,
+            500,
+            357
+          ]
+        ],
+        "What does the batter at the home plate hold?"
+      ],
+      "A bat.",
+      1019807040
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "3930",
+          [
+            0,
+            0,
+            384,
+            260
+          ]
+        ],
+        "Which kind of furniture is it?"
+      ],
+      "It features wicker and bamboo furniture.",
+      1133747179
+    ]
+  ],
+  "best_text_match": []
+}

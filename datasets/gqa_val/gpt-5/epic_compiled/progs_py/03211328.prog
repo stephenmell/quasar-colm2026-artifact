@@ -1,0 +1,18 @@
+# Are there men on the crosswalk?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    crosswalk_patches = image_patch.find("crosswalk")
+
+    if len(crosswalk_patches) == 0:
+        result = image_patch.simple_query("Are there men on the crosswalk?")
+    else:
+        result = "no"
+        for crosswalk_patch in crosswalk_patches:
+            men_patches = crosswalk_patch.find("man")
+            if len(men_patches) > 0:
+                result = "yes"
+            else:
+                person_patches = crosswalk_patch.find("person")
+                if len(person_patches) > 0:
+                    result = "yes"
+    return result

@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    box_patches = image_patch.find("box")
+    if len(box_patches) == 0:
+        # If no box is found, query the image directly
+        return image_patch.simple_query("Does that box have tan color?")
+    is_tan = any(box_patch.verify_property("box", "tan") for box_patch in box_patches)
+    return bool_to_yesno(is_tan)

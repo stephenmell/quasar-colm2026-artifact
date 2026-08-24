@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    bike_color = None
+    bike_patches = None
+    color_options = None
+    image_patch = None
+    post_color = None
+    post_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    post_patches = image_patch.find('post')
+    bike_patches = image_patch.find('bike') + image_patch.find('bicycle')
+
+    def _if(bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result):
+        result = image_patch.simple_query('Is the color of the post different than the bike?')
+        return (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result)
+
+    def _else(bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result):
+        color_options = ('red', 'blue', 'green', 'yellow', 'black', 'white', 'gray', 'brown', 'orange', 'purple', 'pink', 'silver', 'gold')
+
+        def _for(post_patch, bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result):
+            post_color = post_patch.best_text_match(color_options)
+
+            def _for(bike_patch, bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result):
+                bike_color = bike_patch.best_text_match(color_options)
+
+                def _if(bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result):
+                    result = 'yes'
+                    return (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result)
+                bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result = if_stmt(_if, None, bike_color != post_color, (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result))
+                return (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result)
+            bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result = for_stmt(_for, bike_patches, (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result))
+            return (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result)
+        bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result = for_stmt(_for, post_patches, (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result))
+        return (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result)
+    bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result = if_stmt(_if, _else, or_expr(len(post_patches) == 0, len(bike_patches) == 0), (bike_color, bike_patches, color_options, image_patch, post_color, post_patches, result))
+    return result

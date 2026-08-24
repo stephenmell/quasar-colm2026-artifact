@@ -1,0 +1,29 @@
+# Is the floor different in color than the radiator?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    floor_patches = image_patch.find("floor")
+    radiator_patches = image_patch.find("radiator")
+    result = None
+
+    if len(floor_patches) == 0 or len(radiator_patches) == 0:
+        result = image_patch.simple_query("Is the floor different in color than the radiator?")
+    else:
+        colors = ("white", "black", "gray", "silver", "brown", "beige", "tan", "wood", "red", "orange", "yellow", "green", "blue", "purple", "pink", "gold", "cream")
+        floor_colors = ()
+        for floor_patch in floor_patches:
+            floor_color = floor_patch.best_text_match(colors)
+            floor_colors = (*floor_colors, floor_color)
+
+        radiator_colors = ()
+        for radiator_patch in radiator_patches:
+            radiator_color = radiator_patch.best_text_match(colors)
+            radiator_colors = (*radiator_colors, radiator_color)
+
+        found_different = False
+        for fc in floor_colors:
+            for rc in radiator_colors:
+                if fc != rc:
+                    found_different = True
+
+        result = bool_to_yesno(found_different)
+    return result

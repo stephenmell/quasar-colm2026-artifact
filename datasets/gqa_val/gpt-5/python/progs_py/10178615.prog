@@ -1,0 +1,22 @@
+# Which color are the trees?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tree_patches = image_patch.find("tree")
+    # If no trees are found, ask the image directly
+    if len(tree_patches) == 0:
+        return image_patch.simple_query("Which color are the trees?")
+    # Ask each detected tree its color
+    colors = []
+    for tree_patch in tree_patches:
+        color = tree_patch.simple_query("What color is the tree?")
+        if isinstance(color, str) and color.strip():
+            colors.append(color.strip().lower())
+    # If no clear color detected from patches, ask directly
+    if not colors:
+        return image_patch.simple_query("Which color are the trees?")
+    # Return the majority color among detected trees
+    color_counts = {}
+    for c in colors:
+        color_counts[c] = color_counts.get(c, 0) + 1
+    best_color = max(color_counts, key=color_counts.get)
+    return best_color

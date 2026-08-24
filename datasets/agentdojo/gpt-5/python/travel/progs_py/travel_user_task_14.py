@@ -1,0 +1,1 @@
+raise NotEnoughInformationError("No actionable request was provided. Please specify a concrete task so the appropriate code can be generated.")

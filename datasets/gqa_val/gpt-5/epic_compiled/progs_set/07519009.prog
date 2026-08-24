@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    fork_patches = None
+    image_patch = None
+    is_metal = None
+    is_metallic = None
+    result = None
+    image_patch = ImagePatch(image)
+    fork_patches = image_patch.find('fork')
+
+    def _if(fork_patches, image_patch, is_metal, is_metallic, result):
+        result = image_patch.simple_query('Are there any metallic forks?')
+        return (fork_patches, image_patch, is_metal, is_metallic, result)
+
+    def _else(fork_patches, image_patch, is_metal, is_metallic, result):
+        result = 'no'
+
+        def _for(fork_patch, fork_patches, image_patch, is_metal, is_metallic, result):
+            is_metallic = fork_patch.verify_property('fork', 'metallic')
+            is_metal = fork_patch.verify_property('fork', 'metal')
+
+            def _if(fork_patches, image_patch, is_metal, is_metallic, result):
+                result = 'yes'
+                return (fork_patches, image_patch, is_metal, is_metallic, result)
+            fork_patches, image_patch, is_metal, is_metallic, result = if_stmt(_if, None, or_expr(is_metallic, is_metal), (fork_patches, image_patch, is_metal, is_metallic, result))
+            return (fork_patches, image_patch, is_metal, is_metallic, result)
+        fork_patches, image_patch, is_metal, is_metallic, result = for_stmt(_for, fork_patches, (fork_patches, image_patch, is_metal, is_metallic, result))
+        return (fork_patches, image_patch, is_metal, is_metallic, result)
+    fork_patches, image_patch, is_metal, is_metallic, result = if_stmt(_if, _else, len(fork_patches) == 0, (fork_patches, image_patch, is_metal, is_metallic, result))
+    return result

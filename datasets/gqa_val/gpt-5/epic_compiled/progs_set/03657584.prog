@@ -1,0 +1,31 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_green = None
+    is_metallic = None
+    kettle_patches = None
+    result = None
+    rightmost_kettle = None
+    image_patch = ImagePatch(image)
+    kettle_patches = image_patch.find('kettle')
+
+    def _if(image_patch, is_green, is_metallic, kettle_patches, result, rightmost_kettle):
+        result = image_patch.simple_query('Is the kettle that is to the right of the other kettle metallic and green?')
+        return (image_patch, is_green, is_metallic, kettle_patches, result, rightmost_kettle)
+
+    def _else(image_patch, is_green, is_metallic, kettle_patches, result, rightmost_kettle):
+        rightmost_kettle = kettle_patches[0]
+
+        def _for(kp, image_patch, kettle_patches, rightmost_kettle):
+
+            def _if(image_patch, kettle_patches, rightmost_kettle):
+                rightmost_kettle = kp
+                return (image_patch, kettle_patches, rightmost_kettle)
+            image_patch, kettle_patches, rightmost_kettle = if_stmt(_if, None, kp.horizontal_center > rightmost_kettle.horizontal_center, (image_patch, kettle_patches, rightmost_kettle))
+            return (image_patch, kettle_patches, rightmost_kettle)
+        image_patch, kettle_patches, rightmost_kettle = for_stmt(_for, kettle_patches, (image_patch, kettle_patches, rightmost_kettle))
+        is_metallic = rightmost_kettle.verify_property('kettle', 'metallic')
+        is_green = rightmost_kettle.verify_property('kettle', 'green')
+        result = bool_to_yesno(and_expr(is_metallic, is_green))
+        return (image_patch, is_green, is_metallic, kettle_patches, result, rightmost_kettle)
+    image_patch, is_green, is_metallic, kettle_patches, result, rightmost_kettle = if_stmt(_if, _else, len(kettle_patches) < 2, (image_patch, is_green, is_metallic, kettle_patches, result, rightmost_kettle))
+    return result

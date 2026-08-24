@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    sandwich_patches = None
+    toaster_patches = None
+    image_patch = ImagePatch(image)
+    toaster_patches = image_patch.find('toaster')
+
+    def _if(image_patch, result, sandwich_patches, toaster_patches):
+        result = image_patch.simple_query('Are there sandwiches in front of the toaster?')
+        return (image_patch, result, sandwich_patches, toaster_patches)
+
+    def _else(image_patch, result, sandwich_patches, toaster_patches):
+        sandwich_patches = image_patch.find('sandwich')
+
+        def _if(image_patch, result, sandwich_patches, toaster_patches):
+            result = 'no'
+            return (image_patch, result, sandwich_patches, toaster_patches)
+
+        def _else(image_patch, result, sandwich_patches, toaster_patches):
+            result = 'no'
+
+            def _for(sandwich_patch, image_patch, result, sandwich_patches, toaster_patches):
+
+                def _for(toaster_patch, image_patch, result, sandwich_patches, toaster_patches):
+
+                    def _if(image_patch, result, sandwich_patches, toaster_patches):
+                        result = 'yes'
+                        return (image_patch, result, sandwich_patches, toaster_patches)
+                    image_patch, result, sandwich_patches, toaster_patches = if_stmt(_if, None, sandwich_patch.vertical_center > toaster_patch.vertical_center, (image_patch, result, sandwich_patches, toaster_patches))
+                    return (image_patch, result, sandwich_patches, toaster_patches)
+                image_patch, result, sandwich_patches, toaster_patches = for_stmt(_for, toaster_patches, (image_patch, result, sandwich_patches, toaster_patches))
+                return (image_patch, result, sandwich_patches, toaster_patches)
+            image_patch, result, sandwich_patches, toaster_patches = for_stmt(_for, sandwich_patches, (image_patch, result, sandwich_patches, toaster_patches))
+            return (image_patch, result, sandwich_patches, toaster_patches)
+        image_patch, result, sandwich_patches, toaster_patches = if_stmt(_if, _else, len(sandwich_patches) == 0, (image_patch, result, sandwich_patches, toaster_patches))
+        return (image_patch, result, sandwich_patches, toaster_patches)
+    image_patch, result, sandwich_patches, toaster_patches = if_stmt(_if, _else, len(toaster_patches) == 0, (image_patch, result, sandwich_patches, toaster_patches))
+    return result

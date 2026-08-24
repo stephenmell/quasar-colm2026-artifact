@@ -1,0 +1,24 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Is there a speaker to the left of the man that is sitting in the chair?")
+    else:
+        sitting_man_patch = None
+        for man_patch in man_patches:
+            is_sitting_in_chair = (man_patch.simple_query("Is the man sitting in the chair?") == "yes")
+            if is_sitting_in_chair:
+                sitting_man_patch = man_patch
+        if not sitting_man_patch:
+            result = image_patch.simple_query("Is there a speaker to the left of the man that is sitting in the chair?")
+        else:
+            speaker_patches = image_patch.find("speaker")
+            if len(speaker_patches) == 0:
+                result = "no"
+            else:
+                result = "no"
+                for speaker_patch in speaker_patches:
+                    if speaker_patch.horizontal_center < sitting_man_patch.horizontal_center:
+                        result = "yes"
+    return result

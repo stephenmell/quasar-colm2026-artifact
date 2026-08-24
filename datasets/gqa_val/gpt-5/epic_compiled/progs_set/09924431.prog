@@ -1,0 +1,15 @@
+def execute_command(image) -> str:
+    candidate_objects = None
+    found = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    candidate_objects = ('fence', 'fences', 'chain link fence', 'picket fence', 'wooden fence', 'railing')
+    found = False
+
+    def _for(name, candidate_objects, found, image_patch):
+        found = or_expr(found, image_patch.exists(name))
+        return (candidate_objects, found, image_patch)
+    candidate_objects, found, image_patch = for_stmt(_for, candidate_objects, (candidate_objects, found, image_patch))
+    result = bool_to_yesno(found)
+    return result

@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sheet_patches = image_patch.find("sheet")
+
+    if len(sheet_patches) == 0:
+        result = image_patch.simple_query("Are there men to the right of the sheet that is in the bottom?")
+    else:
+        # Select the bottom-most sheet (smallest vertical_center per given convention)
+        bottom_sheet_patch = sheet_patches[0]
+        for sheet_patch in sheet_patches:
+            if sheet_patch.vertical_center < bottom_sheet_patch.vertical_center:
+                bottom_sheet_patch = sheet_patch
+
+        man_patches = image_patch.find("man")
+        if len(man_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for man_patch in man_patches:
+                if man_patch.horizontal_center > bottom_sheet_patch.horizontal_center:
+                    result = "yes"
+    return result

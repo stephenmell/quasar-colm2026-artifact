@@ -1,0 +1,9 @@
+# Do you see any paint brushes?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try common variants
+    for name in ["paint brush", "paintbrush", "paint brushes"]:
+        if image_patch.exists(name):
+            return "yes"
+    # Fall back to asking directly
+    return image_patch.simple_query("Do you see any paint brushes?")

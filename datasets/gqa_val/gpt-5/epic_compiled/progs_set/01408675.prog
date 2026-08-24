@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_red = None
+    lettuce_patch = None
+    lettuce_patches = None
+    red_tomato_patch = None
+    result = None
+    tomato_patches = None
+    image_patch = ImagePatch(image)
+    lettuce_patches = image_patch.find('lettuce')
+    tomato_patches = image_patch.find('tomato')
+    red_tomato_patch = None
+
+    def _for(tomato_patch, image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches):
+        is_red = tomato_patch.verify_property('tomato', 'red')
+
+        def _if(image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches):
+            red_tomato_patch = tomato_patch
+            return (image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches)
+        image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches = if_stmt(_if, None, and_expr(red_tomato_patch is None, is_red), (image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches))
+        return (image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches)
+    image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches = for_stmt(_for, tomato_patches, (image_patch, is_red, lettuce_patches, red_tomato_patch, tomato_patches))
+
+    def _if(image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches):
+        result = image_patch.simple_query('Is the lettuce to the right or to the left of the tomato that looks red?')
+        return (image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches)
+
+    def _else(image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches):
+        lettuce_patch = lettuce_patches[0]
+
+        def _if(image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches):
+            result = 'right'
+            return (image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches)
+
+        def _else(image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches):
+            result = 'left'
+            return (image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches)
+        image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches = if_stmt(_if, _else, lettuce_patch.horizontal_center > red_tomato_patch.horizontal_center, (image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches))
+        return (image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches)
+    image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches = if_stmt(_if, _else, or_expr(len(lettuce_patches) == 0, red_tomato_patch is None), (image_patch, is_red, lettuce_patch, lettuce_patches, red_tomato_patch, result, tomato_patches))
+    return result

@@ -1,0 +1,59 @@
+def execute_command(image) -> str:
+    best_diff = None
+    best_right_patch = None
+    device_patches = None
+    diff = None
+    image_patch = None
+    is_white = None
+    result = None
+    image_patch = ImagePatch(image)
+    device_patches = image_patch.find('device')
+    result = None
+
+    def _if(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+        result = image_patch.simple_query('What device is to the right of the white device?')
+        return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+
+    def _else(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+        best_right_patch = None
+        best_diff = None
+
+        def _for(white_candidate, best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+            is_white = white_candidate.verify_property('device', 'white')
+
+            def _if(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+
+                def _for(other, best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+
+                    def _if(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+                        diff = other.horizontal_center - white_candidate.horizontal_center
+
+                        def _if(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+
+                            def _if(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+                                best_diff = diff
+                                best_right_patch = other
+                                return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+                            best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = if_stmt(_if, None, or_expr(best_diff is None, diff < best_diff), (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+                            return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+                        best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = if_stmt(_if, None, diff > 0, (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+                        return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+                    best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = if_stmt(_if, None, other is not white_candidate, (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+                    return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+                best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = for_stmt(_for, device_patches, (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+                return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+            best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = if_stmt(_if, None, is_white, (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+            return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+        best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = for_stmt(_for, device_patches, (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+
+        def _if(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+            result = best_right_patch.simple_query('What device is this?')
+            return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+
+        def _else(best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result):
+            result = image_patch.simple_query('What device is to the right of the white device?')
+            return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+        best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = if_stmt(_if, _else, best_right_patch is not None, (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+        return (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result)
+    best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result = if_stmt(_if, _else, len(device_patches) == 0, (best_diff, best_right_patch, device_patches, diff, image_patch, is_white, result))
+    return result

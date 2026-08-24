@@ -1,0 +1,32 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for walking women
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) > 0:
+        for woman_patch in woman_patches:
+            if woman_patch.verify_property("woman", "walking"):
+                result = "yes"
+
+    # If none found, check for walking people
+    if result != "yes":
+        person_patches = image_patch.find("person")
+        if len(person_patches) > 0:
+            for person_patch in person_patches:
+                if person_patch.verify_property("person", "walking"):
+                    result = "yes"
+
+    # Fallback: ask directly or use image-level property verification
+    if result != "yes":
+        direct_answer = image_patch.simple_query("Are there any women or people that are walking?")
+        if direct_answer == "yes":
+            result = "yes"
+        elif direct_answer == "no":
+            result = "no"
+        else:
+            if image_patch.verify_property("woman", "walking") or image_patch.verify_property("person", "walking"):
+                result = "yes"
+            else:
+                result = "no"
+    return result

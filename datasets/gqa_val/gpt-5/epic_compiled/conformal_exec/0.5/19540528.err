@@ -1,0 +1,23 @@
+Stage: other execution error
+Error: AbstractOther(_possibilities=frozenset({'Oven'}))
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "19540528.prog", line 38, in execute_command
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 188, in abstract_if_stmt
+    lvars = else_body(*lvars)
+            ^^^^^^^^^^^^^^^^^
+  File "19540528.prog", line 31, in _else
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 172, in abstract_for_loop
+    lvars_new = for_body(x, *lvars)
+                ^^^^^^^^^^^^^^^^^^^
+  File "19540528.prog", line 29, in _for
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 182, in abstract_if_stmt
+    val = get_abstract_bool_value(b)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/conformal_utils.py", line 113, in get_abstract_bool_value
+    assert type(x) is bool, b
+           ^^^^^^^^^^^^^^^
+AssertionError: AbstractOther(_possibilities=frozenset({'Oven'}))

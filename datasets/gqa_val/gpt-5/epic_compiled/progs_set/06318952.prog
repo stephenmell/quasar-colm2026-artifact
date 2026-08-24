@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    all_patches = None
+    donut_patches = None
+    doughnut_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    doughnut_patches = image_patch.find('doughnut')
+    donut_patches = image_patch.find('donut')
+    all_patches = doughnut_patches + donut_patches
+
+    def _if(all_patches, donut_patches, doughnut_patches, image_patch, result):
+        result = image_patch.simple_query('Is the doughnut in the bottom of the photo?')
+        return (all_patches, donut_patches, doughnut_patches, image_patch, result)
+
+    def _else(all_patches, donut_patches, doughnut_patches, image_patch, result):
+        result = 'no'
+
+        def _for(donut_patch, all_patches, donut_patches, doughnut_patches, image_patch, result):
+
+            def _if(all_patches, donut_patches, doughnut_patches, image_patch, result):
+                result = 'yes'
+                return (all_patches, donut_patches, doughnut_patches, image_patch, result)
+            all_patches, donut_patches, doughnut_patches, image_patch, result = if_stmt(_if, None, donut_patch.vertical_center < image_patch.vertical_center, (all_patches, donut_patches, doughnut_patches, image_patch, result))
+            return (all_patches, donut_patches, doughnut_patches, image_patch, result)
+        all_patches, donut_patches, doughnut_patches, image_patch, result = for_stmt(_for, all_patches, (all_patches, donut_patches, doughnut_patches, image_patch, result))
+        return (all_patches, donut_patches, doughnut_patches, image_patch, result)
+    all_patches, donut_patches, doughnut_patches, image_patch, result = if_stmt(_if, _else, len(all_patches) == 0, (all_patches, donut_patches, doughnut_patches, image_patch, result))
+    return result

@@ -1,0 +1,7 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try direct detection first
+    if image_patch.exists("forest"):
+        return "yes"
+    # Fall back to asking the model directly
+    return image_patch.simple_query("Is it a forest?")

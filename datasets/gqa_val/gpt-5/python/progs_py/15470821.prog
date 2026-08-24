@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Is the person to the left of the knife wearing a hat?")
+    knife_patches = image_patch.find("knife")
+    # If no knife is found, ask directly
+    if len(knife_patches) == 0:
+        return image_patch.simple_query("Is the person to the left of the knife wearing a hat?")
+    # Find a person to the left of any knife and check if they are wearing a hat
+    for person_patch in person_patches:
+        for knife_patch in knife_patches:
+            if person_patch.horizontal_center < knife_patch.horizontal_center:
+                return person_patch.simple_query("Is the person wearing a hat?")
+    # If no person is to the left of a knife
+    return "no"

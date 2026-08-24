@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    found_female = None
+    found_male = None
+    gender = None
+    image_patch = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(found_female, found_male, gender, image_patch, person_patches, result):
+        result = image_patch.simple_query('Are the people different genders?')
+        return (found_female, found_male, gender, image_patch, person_patches, result)
+
+    def _else(found_female, found_male, gender, image_patch, person_patches, result):
+        found_male = False
+        found_female = False
+
+        def _for(person_patch, found_female, found_male, gender, image_patch, person_patches):
+            gender = person_patch.best_text_match(('male', 'female'))
+
+            def _if(found_female, found_male, gender, image_patch, person_patches):
+
+                def _if(found_female, found_male, gender, image_patch, person_patches):
+                    found_male = True
+                    return (found_female, found_male, gender, image_patch, person_patches)
+                found_female, found_male, gender, image_patch, person_patches = if_stmt(_if, None, not_expr(found_male), (found_female, found_male, gender, image_patch, person_patches))
+                return (found_female, found_male, gender, image_patch, person_patches)
+
+            def _else(found_female, found_male, gender, image_patch, person_patches):
+
+                def _if(found_female, found_male, gender, image_patch, person_patches):
+
+                    def _if(found_female, found_male, gender, image_patch, person_patches):
+                        found_female = True
+                        return (found_female, found_male, gender, image_patch, person_patches)
+                    found_female, found_male, gender, image_patch, person_patches = if_stmt(_if, None, not_expr(found_female), (found_female, found_male, gender, image_patch, person_patches))
+                    return (found_female, found_male, gender, image_patch, person_patches)
+                found_female, found_male, gender, image_patch, person_patches = if_stmt(_if, None, gender == 'female', (found_female, found_male, gender, image_patch, person_patches))
+                return (found_female, found_male, gender, image_patch, person_patches)
+            found_female, found_male, gender, image_patch, person_patches = if_stmt(_if, _else, gender == 'male', (found_female, found_male, gender, image_patch, person_patches))
+            return (found_female, found_male, gender, image_patch, person_patches)
+        found_female, found_male, gender, image_patch, person_patches = for_stmt(_for, person_patches, (found_female, found_male, gender, image_patch, person_patches))
+
+        def _if(found_female, found_male, gender, image_patch, person_patches, result):
+            result = 'yes'
+            return (found_female, found_male, gender, image_patch, person_patches, result)
+
+        def _else(found_female, found_male, gender, image_patch, person_patches, result):
+            result = 'no'
+            return (found_female, found_male, gender, image_patch, person_patches, result)
+        found_female, found_male, gender, image_patch, person_patches, result = if_stmt(_if, _else, and_expr(found_male, found_female), (found_female, found_male, gender, image_patch, person_patches, result))
+        return (found_female, found_male, gender, image_patch, person_patches, result)
+    found_female, found_male, gender, image_patch, person_patches, result = if_stmt(_if, _else, len(person_patches) < 2, (found_female, found_male, gender, image_patch, person_patches, result))
+    return result

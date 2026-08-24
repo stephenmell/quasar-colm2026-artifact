@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 1:
+        return animal_patches[0].best_text_match(["donkey", "zebra"])
+    elif len(animal_patches) > 1:
+        center_x = image_patch.horizontal_center
+        center_y = image_patch.vertical_center
+        closest_patch = min(
+            animal_patches,
+            key=lambda p: (p.horizontal_center - center_x) ** 2 + (p.vertical_center - center_y) ** 2
+        )
+        return closest_patch.best_text_match(["donkey", "zebra"])
+    # Fallback to classifying the whole image
+    return image_patch.best_text_match(["donkey", "zebra"])

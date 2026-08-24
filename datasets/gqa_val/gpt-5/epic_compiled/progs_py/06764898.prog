@@ -1,0 +1,23 @@
+# Does he wear shorts?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        boy_patches = image_patch.find("boy")
+        if len(boy_patches) == 0:
+            result = image_patch.simple_query("Does he wear shorts?")
+        else:
+            temp = "no"
+            for boy_patch in boy_patches:
+                if boy_patch.simple_query("Is the boy wearing shorts?") == "yes":
+                    temp = "yes"
+            result = temp
+    else:
+        temp = "no"
+        for man_patch in man_patches:
+            if man_patch.simple_query("Is the man wearing shorts?") == "yes":
+                temp = "yes"
+        result = temp
+    return result

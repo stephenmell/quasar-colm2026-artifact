@@ -1,0 +1,72 @@
+def execute_command(image) -> str:
+    animal_patches = None
+    best_animal_patch = None
+    best_x = None
+    blanket_patches = None
+    image_patch = None
+    is_brown = None
+    is_pink = None
+    is_pink_brown = None
+    result = None
+    target_blanket = None
+    image_patch = ImagePatch(image)
+    result = None
+    blanket_patches = image_patch.find('blanket')
+    target_blanket = None
+
+    def _for(blanket_patch, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+        is_pink_brown = blanket_patch.verify_property('blanket', 'pink and brown')
+        is_pink = blanket_patch.verify_property('blanket', 'pink')
+        is_brown = blanket_patch.verify_property('blanket', 'brown')
+
+        def _if(blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+
+            def _if(blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+                target_blanket = blanket_patch
+                return (blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+            blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, None, target_blanket is None, (blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+            return (blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+        blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, None, or_expr(is_pink_brown, is_pink and is_brown), (blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+        return (blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+    blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = for_stmt(_for, blanket_patches, (blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+
+    def _if(animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+        animal_patches = image_patch.find('animal')
+        best_animal_patch = None
+        best_x = None
+
+        def _for(animal_patch, animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+
+            def _if(animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+
+                def _if(animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+                    best_animal_patch = animal_patch
+                    best_x = animal_patch.horizontal_center
+                    return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+
+                def _else(animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+
+                    def _if(animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+                        best_animal_patch = animal_patch
+                        best_x = animal_patch.horizontal_center
+                        return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+                    animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, None, or_expr(best_x is None, animal_patch.horizontal_center > best_x), (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+                    return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+                animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, _else, best_animal_patch is None, (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+                return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+            animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, None, animal_patch.horizontal_center < target_blanket.horizontal_center, (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+            return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+        animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = for_stmt(_for, animal_patches, (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+
+        def _if(animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+            result = best_animal_patch.simple_query('What animal is this?')
+            return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+        animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, None, best_animal_patch is not None, (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+        return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+    animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, None, target_blanket is not None, (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+
+    def _if(animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket):
+        result = image_patch.simple_query('What animal is to the left of the blanket that looks pink and brown?')
+        return (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket)
+    animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket = if_stmt(_if, None, not_expr(result), (animal_patches, best_animal_patch, best_x, blanket_patches, image_patch, is_brown, is_pink, is_pink_brown, result, target_blanket))
+    return result

@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    bus_exists = None
+    bus_patches = None
+    image_patch = None
+    is_white = None
+    result = None
+    image_patch = ImagePatch(image)
+    bus_exists = image_patch.exists('bus')
+
+    def _if(bus_exists, bus_patches, image_patch, is_white, result):
+        result = image_patch.simple_query('Does that bus look white?')
+        return (bus_exists, bus_patches, image_patch, is_white, result)
+
+    def _else(bus_exists, bus_patches, image_patch, is_white, result):
+        bus_patches = image_patch.find('bus')
+        result = 'no'
+
+        def _for(bus_patch, bus_exists, bus_patches, image_patch, is_white, result):
+            is_white = bus_patch.verify_property('bus', 'white')
+
+            def _if(bus_exists, bus_patches, image_patch, is_white, result):
+                result = 'yes'
+                return (bus_exists, bus_patches, image_patch, is_white, result)
+            bus_exists, bus_patches, image_patch, is_white, result = if_stmt(_if, None, is_white, (bus_exists, bus_patches, image_patch, is_white, result))
+            return (bus_exists, bus_patches, image_patch, is_white, result)
+        bus_exists, bus_patches, image_patch, is_white, result = for_stmt(_for, bus_patches, (bus_exists, bus_patches, image_patch, is_white, result))
+        return (bus_exists, bus_patches, image_patch, is_white, result)
+    bus_exists, bus_patches, image_patch, is_white, result = if_stmt(_if, _else, not_expr(bus_exists), (bus_exists, bus_patches, image_patch, is_white, result))
+    return result

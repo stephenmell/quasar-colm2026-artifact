@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    if len(plate_patches) == 0:
+        result = image_patch.simple_query("Are the plates on the right side of the picture?")
+    else:
+        count_right = 0
+        for plate_patch in plate_patches:
+            if plate_patch.horizontal_center > image_patch.horizontal_center:
+                count_right = count_right + 1
+        if count_right == len(plate_patches):
+            result = "yes"
+        else:
+            result = "no"
+    return result

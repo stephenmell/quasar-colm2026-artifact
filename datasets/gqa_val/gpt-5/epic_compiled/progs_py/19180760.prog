@@ -1,0 +1,42 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    woman_patches = image_patch.find("woman")
+    if len(woman_patches) == 0:
+        result = image_patch.simple_query("What drink is to the left of the woman?")
+    else:
+        woman_patch = woman_patches[0]
+
+        drink_names = ("drink", "bottle", "glass", "cup", "wine glass", "beer", "wine", "coffee", "tea", "soda", "can", "water", "juice", "milk")
+        all_drink_patches = ()
+        for name in drink_names:
+            found = image_patch.find(name)
+            if len(found) > 0:
+                all_drink_patches = all_drink_patches + found
+
+        best_patch = None
+        best_distance = None
+        for drink_patch in all_drink_patches:
+            if drink_patch.horizontal_center < woman_patch.horizontal_center:
+                distance = woman_patch.horizontal_center - drink_patch.horizontal_center
+                if best_patch is None:
+                    best_patch = drink_patch
+                    best_distance = distance
+                else:
+                    if distance < best_distance:
+                        best_patch = drink_patch
+                        best_distance = distance
+
+        if best_patch is not None:
+            result = best_patch.simple_query("What drink is this?")
+        else:
+            right_bound = int(woman_patch.horizontal_center)
+            if right_bound < 1:
+                right_bound = 1
+            left_area_patch = image_patch.crop(0, 0, right_bound, image_patch.upper)
+            result = left_area_patch.simple_query("What drink is in this area?")
+
+    if not result:
+        result = image_patch.simple_query("What drink is to the left of the woman?")
+    return result

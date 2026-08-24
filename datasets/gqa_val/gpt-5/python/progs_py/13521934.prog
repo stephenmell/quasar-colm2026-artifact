@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lady_patches = image_patch.find("lady")
+    # Question assumes one lady patch
+    if len(lady_patches) == 0:
+        # If no lady is found, query the image directly
+        return image_patch.simple_query("Are there any children to the left of the lady?")
+    lady_patch = lady_patches[0]
+    # Look for possible children
+    child_patches = []
+    for term in ["child", "children", "kid", "boy", "girl"]:
+        child_patches.extend(image_patch.find(term))
+    if len(child_patches) == 0:
+        return "no"
+    for child_patch in child_patches:
+        if child_patch.horizontal_center < lady_patch.horizontal_center:
+            return "yes"
+    return "no"

@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_chair = None
+    has_window = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_window = image_patch.exists('window')
+    has_chair = image_patch.exists('chair')
+    result = bool_to_yesno(and_expr(has_window, has_chair))
+    return result

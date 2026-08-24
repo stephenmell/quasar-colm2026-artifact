@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    answer = None
+    hair_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    hair_patches = image_patch.find('hair')
+
+    def _if(answer, hair_patches, image_patch, result):
+        result = image_patch.simple_query('What color is that hair?')
+        return (answer, hair_patches, image_patch, result)
+
+    def _else(answer, hair_patches, image_patch, result):
+        result = None
+
+        def _for(hair_patch, answer, hair_patches, image_patch, result):
+            answer = hair_patch.simple_query('What color is the hair?')
+
+            def _if(answer, hair_patches, image_patch, result):
+                result = answer
+                return (answer, hair_patches, image_patch, result)
+            answer, hair_patches, image_patch, result = if_stmt(_if, None, answer, (answer, hair_patches, image_patch, result))
+            return (answer, hair_patches, image_patch, result)
+        answer, hair_patches, image_patch, result = for_stmt(_for, hair_patches, (answer, hair_patches, image_patch, result))
+
+        def _if(answer, hair_patches, image_patch, result):
+            result = hair_patches[0].best_text_match(('black', 'brown', 'blond', 'blonde', 'gray', 'grey', 'red', 'white', 'pink', 'blue', 'green', 'purple', 'orange'))
+            return (answer, hair_patches, image_patch, result)
+        answer, hair_patches, image_patch, result = if_stmt(_if, None, not_expr(result), (answer, hair_patches, image_patch, result))
+        return (answer, hair_patches, image_patch, result)
+    answer, hair_patches, image_patch, result = if_stmt(_if, _else, len(hair_patches) == 0, (answer, hair_patches, image_patch, result))
+    return result

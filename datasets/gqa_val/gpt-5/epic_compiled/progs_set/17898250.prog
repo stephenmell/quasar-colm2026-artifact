@@ -1,0 +1,89 @@
+def execute_command(image) -> str:
+    best_dist = None
+    chosen_speaker = None
+    d2 = None
+    dx = None
+    dy = None
+    found_right = None
+    image_patch = None
+    local_best = None
+    plush_toys = None
+    result = None
+    shelf_patches = None
+    shelves_plural = None
+    shelves_singular = None
+    speaker_patches = None
+    stuffed_animals = None
+    stuffed_patches = None
+    teddy_bears = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    stuffed_animals = image_patch.find('stuffed animal')
+    teddy_bears = image_patch.find('teddy bear')
+    plush_toys = image_patch.find('plush toy')
+    stuffed_patches = stuffed_animals + teddy_bears + plush_toys
+    speaker_patches = image_patch.find('speaker')
+
+    def _if(best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+        result = image_patch.simple_query('Do you see shelves to the right of the speaker the stuffed animals are around of?')
+        return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+
+    def _else(best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+        chosen_speaker = None
+        best_dist = None
+
+        def _for(sp, best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+            local_best = None
+
+            def _for(sa, best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+                dx = sa.horizontal_center - sp.horizontal_center
+                dy = sa.vertical_center - sp.vertical_center
+                d2 = dx * dx + dy * dy
+
+                def _if(best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+                    local_best = d2
+                    return (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+                best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = if_stmt(_if, None, or_expr(local_best is None, d2 < local_best), (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+                return (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+            best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = for_stmt(_for, stuffed_patches, (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+
+            def _if(best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+                best_dist = local_best
+                chosen_speaker = sp
+                return (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+            best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = if_stmt(_if, None, or_expr(best_dist is None, local_best is not None and local_best < best_dist), (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+            return (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+        best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = for_stmt(_for, speaker_patches, (best_dist, chosen_speaker, d2, dx, dy, image_patch, local_best, plush_toys, result, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+        shelves_singular = image_patch.find('shelf')
+        shelves_plural = image_patch.find('shelves')
+        shelf_patches = shelves_singular + shelves_plural
+
+        def _if(best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+            result = image_patch.simple_query('Do you see shelves to the right of the speaker the stuffed animals are around of?')
+            return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+
+        def _else(best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+            found_right = False
+
+            def _for(shelf_patch, best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+
+                def _if(best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+                    found_right = True
+                    return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+                best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = if_stmt(_if, None, shelf_patch.horizontal_center > chosen_speaker.horizontal_center, (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+                return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+            best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = for_stmt(_for, shelf_patches, (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+
+            def _if(best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+                result = 'yes'
+                return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+
+            def _else(best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears):
+                result = 'no'
+                return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+            best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = if_stmt(_if, _else, found_right, (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+            return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+        best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = if_stmt(_if, _else, or_expr(len(shelf_patches) == 0, chosen_speaker is None), (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+        return (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears)
+    best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears = if_stmt(_if, _else, or_expr(len(stuffed_patches) == 0, len(speaker_patches) == 0), (best_dist, chosen_speaker, d2, dx, dy, found_right, image_patch, local_best, plush_toys, result, shelf_patches, shelves_plural, shelves_singular, speaker_patches, stuffed_animals, stuffed_patches, teddy_bears))
+    return result

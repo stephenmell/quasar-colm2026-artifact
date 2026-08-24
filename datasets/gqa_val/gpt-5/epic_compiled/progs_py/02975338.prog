@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    tire_patches = image_patch.find("tire")
+    wheel_patches = image_patch.find("wheel")
+
+    if len(tire_patches) == 0 and len(wheel_patches) == 0:
+        result = image_patch.simple_query("Do the tires look black?")
+    else:
+        result = "no"
+        for tire_patch in tire_patches:
+            if tire_patch.verify_property("tire", "black"):
+                result = "yes"
+        for wheel_patch in wheel_patches:
+            if wheel_patch.verify_property("wheel", "black"):
+                result = "yes"
+    return result

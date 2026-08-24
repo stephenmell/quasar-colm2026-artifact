@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    boy_patches = None
+    image_patch = None
+    result = None
+    screen_patches = None
+    image_patch = ImagePatch(image)
+    boy_patches = image_patch.find('boy')
+
+    def _if(boy_patches, image_patch, result, screen_patches):
+        result = image_patch.simple_query('Is the boy to the right of a screen?')
+        return (boy_patches, image_patch, result, screen_patches)
+
+    def _else(boy_patches, image_patch, result, screen_patches):
+        screen_patches = image_patch.find('screen')
+
+        def _if(boy_patches, image_patch, result, screen_patches):
+            result = 'no'
+            return (boy_patches, image_patch, result, screen_patches)
+
+        def _else(boy_patches, image_patch, result, screen_patches):
+            result = 'no'
+
+            def _for(boy_patch, boy_patches, image_patch, result, screen_patches):
+
+                def _for(screen_patch, boy_patches, image_patch, result, screen_patches):
+
+                    def _if(boy_patches, image_patch, result, screen_patches):
+                        result = 'yes'
+                        return (boy_patches, image_patch, result, screen_patches)
+                    boy_patches, image_patch, result, screen_patches = if_stmt(_if, None, boy_patch.horizontal_center > screen_patch.horizontal_center, (boy_patches, image_patch, result, screen_patches))
+                    return (boy_patches, image_patch, result, screen_patches)
+                boy_patches, image_patch, result, screen_patches = for_stmt(_for, screen_patches, (boy_patches, image_patch, result, screen_patches))
+                return (boy_patches, image_patch, result, screen_patches)
+            boy_patches, image_patch, result, screen_patches = for_stmt(_for, boy_patches, (boy_patches, image_patch, result, screen_patches))
+            return (boy_patches, image_patch, result, screen_patches)
+        boy_patches, image_patch, result, screen_patches = if_stmt(_if, _else, len(screen_patches) == 0, (boy_patches, image_patch, result, screen_patches))
+        return (boy_patches, image_patch, result, screen_patches)
+    boy_patches, image_patch, result, screen_patches = if_stmt(_if, _else, len(boy_patches) == 0, (boy_patches, image_patch, result, screen_patches))
+    return result

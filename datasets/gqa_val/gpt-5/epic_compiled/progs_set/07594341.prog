@@ -1,0 +1,53 @@
+def execute_command(image) -> str:
+    found_patch = None
+    image_patch = None
+    patches = None
+    result = None
+    right_area_patch = None
+    statue_patch = None
+    statue_patches = None
+    vehicle_patches = None
+    vehicle_types = None
+    image_patch = ImagePatch(image)
+    statue_patches = image_patch.find('statue')
+
+    def _if(found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+        result = image_patch.simple_query('What is the vehicle to the right of the statue?')
+        return (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+
+    def _else(found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+        statue_patch = statue_patches[0]
+        right_area_patch = image_patch.crop(statue_patch.right, statue_patch.lower, image_patch.right, statue_patch.upper)
+        vehicle_patches = right_area_patch.find('vehicle')
+
+        def _if(found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+            vehicle_types = ('car', 'bus', 'truck', 'motorcycle', 'bike', 'bicycle', 'scooter', 'van', 'taxi', 'train', 'tram', 'trolley', 'subway', 'airplane')
+            found_patch = None
+
+            def _for(vt, found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+                patches = right_area_patch.find(vt)
+
+                def _if(found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+                    found_patch = patches[0]
+                    return (found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+                found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types = if_stmt(_if, None, and_expr(len(patches) > 0, not found_patch), (found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types))
+                return (found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+            found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types = for_stmt(_for, vehicle_types, (found_patch, image_patch, patches, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types))
+
+            def _if(found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+                result = found_patch.simple_query('What vehicle is this?')
+                return (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+
+            def _else(found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+                result = right_area_patch.simple_query('What is the vehicle to the right of the statue?')
+                return (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+            found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types = if_stmt(_if, _else, found_patch, (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types))
+            return (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+
+        def _else(found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types):
+            result = vehicle_patches[0].simple_query('What vehicle is this?')
+            return (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+        found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types = if_stmt(_if, _else, len(vehicle_patches) == 0, (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types))
+        return (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types)
+    found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types = if_stmt(_if, _else, len(statue_patches) == 0, (found_patch, image_patch, patches, result, right_area_patch, statue_patch, statue_patches, vehicle_patches, vehicle_types))
+    return result

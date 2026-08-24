@@ -1,0 +1,23 @@
+# Are there men to the left of the white helmet?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    helmet_patches = image_patch.find("helmet")
+
+    white_helmet_patches = ()
+    for helmet_patch in helmet_patches:
+        if helmet_patch.verify_property("helmet", "white"):
+            white_helmet_patches = white_helmet_patches + (helmet_patch,)
+
+    if len(white_helmet_patches) == 0:
+        result = image_patch.simple_query("Are there men to the left of the white helmet?")
+    else:
+        man_patches = image_patch.find("man")
+        if len(man_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for white_helmet_patch in white_helmet_patches:
+                for man_patch in man_patches:
+                    if man_patch.horizontal_center < white_helmet_patch.horizontal_center:
+                        result = "yes"
+    return result

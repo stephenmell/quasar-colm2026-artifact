@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2403960",
+          [
+            0,
+            0,
+            500,
+            333
+          ]
+        ],
+        "Is there a bed near the office chair on the floor?"
+      ],
+      "No.",
+      1268694514
+    ]
+  ],
+  "best_text_match": []
+}

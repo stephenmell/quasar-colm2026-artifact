@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    boat_patches = None
+    found_left = None
+    image_patch = None
+    is_blue = None
+    min_boat_center = None
+    result = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find('umbrella')
+    boat_patches = image_patch.find('boat')
+
+    def _if(boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches):
+        result = image_patch.simple_query('Does the umbrella to the left of the boats look blue?')
+        return (boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches)
+
+    def _else(boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches):
+        min_boat_center = boat_patches[0].horizontal_center
+
+        def _for(boat_patch, boat_patches, image_patch, min_boat_center, umbrella_patches):
+
+            def _if(boat_patches, image_patch, min_boat_center, umbrella_patches):
+                min_boat_center = boat_patch.horizontal_center
+                return (boat_patches, image_patch, min_boat_center, umbrella_patches)
+            boat_patches, image_patch, min_boat_center, umbrella_patches = if_stmt(_if, None, boat_patch.horizontal_center < min_boat_center, (boat_patches, image_patch, min_boat_center, umbrella_patches))
+            return (boat_patches, image_patch, min_boat_center, umbrella_patches)
+        boat_patches, image_patch, min_boat_center, umbrella_patches = for_stmt(_for, boat_patches, (boat_patches, image_patch, min_boat_center, umbrella_patches))
+        found_left = False
+        is_blue = False
+
+        def _for(umbrella_patch, boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches):
+
+            def _if(boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches):
+                found_left = True
+
+                def _if(boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches):
+                    is_blue = True
+                    return (boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches)
+                boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches = if_stmt(_if, None, umbrella_patch.verify_property('umbrella', 'blue'), (boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches))
+                return (boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches)
+            boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches = if_stmt(_if, None, umbrella_patch.horizontal_center < min_boat_center, (boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches))
+            return (boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches)
+        boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches = for_stmt(_for, umbrella_patches, (boat_patches, found_left, image_patch, is_blue, min_boat_center, umbrella_patches))
+
+        def _if(boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches):
+            result = bool_to_yesno(is_blue)
+            return (boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches)
+
+        def _else(boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches):
+            result = image_patch.simple_query('Does the umbrella to the left of the boats look blue?')
+            return (boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches)
+        boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches = if_stmt(_if, _else, found_left, (boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches))
+        return (boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches)
+    boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches = if_stmt(_if, _else, or_expr(len(umbrella_patches) == 0, len(boat_patches) == 0), (boat_patches, found_left, image_patch, is_blue, min_boat_center, result, umbrella_patches))
+    return result

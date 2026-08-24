@@ -1,0 +1,13 @@
+# Does the cow seem to be brown?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cow_patches = image_patch.find("cow")
+    if len(cow_patches) == 0:
+        result = image_patch.simple_query("Does the cow seem to be brown?")
+    else:
+        is_brown_any = False
+        for cow_patch in cow_patches:
+            if cow_patch.verify_property("cow", "brown"):
+                is_brown_any = True
+        result = bool_to_yesno(is_brown_any)
+    return result

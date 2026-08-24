@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    curtain_patches = image_patch.find("curtain")
+    if len(curtain_patches) == 0:
+        return image_patch.simple_query("Do you see cabinets to the left of the curtain on the right side?")
+    # Select curtains on the right half of the image
+    right_side_curtains = [c for c in curtain_patches if c.horizontal_center > image_patch.horizontal_center]
+    if len(right_side_curtains) == 0:
+        return "no"
+    cabinet_patches = image_patch.find("cabinet")
+    if len(cabinet_patches) == 0:
+        return "no"
+    for curtain_patch in right_side_curtains:
+        for cabinet_patch in cabinet_patches:
+            if cabinet_patch.horizontal_center < curtain_patch.horizontal_center:
+                return "yes"
+    return "no"

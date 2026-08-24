@@ -1,0 +1,75 @@
+def execute_command(image) -> str:
+    best_distance = None
+    best_man_patch = None
+    distance = None
+    glasses_patches = None
+    global_center = None
+    image_patch = None
+    is_better = None
+    man_patches = None
+    result = None
+    right_area_patch = None
+    image_patch = ImagePatch(image)
+    result = None
+    glasses_patches = image_patch.find('glasses')
+
+    def _if(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+        result = image_patch.simple_query('What is the man to the right of the glasses doing, walking or standing?')
+        return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+
+    def _else(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+        best_man_patch = None
+        best_distance = None
+
+        def _for(glasses_patch, best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+            right_area_patch = image_patch.crop(glasses_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            man_patches = right_area_patch.find('man')
+
+            def _if(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+
+                def _for(man_patch, best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+                    global_center = right_area_patch.left + man_patch.horizontal_center
+                    distance = global_center - glasses_patch.right
+                    is_better = False
+
+                    def _if(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+                        is_better = True
+                        return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+
+                    def _else(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+
+                        def _if(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+                            is_better = True
+                            return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+                        best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = if_stmt(_if, None, distance < best_distance, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+                        return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+                    best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = if_stmt(_if, _else, best_distance is None, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+
+                    def _if(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+                        best_distance = distance
+                        best_man_patch = man_patch
+                        return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+                    best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = if_stmt(_if, None, is_better, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+                    return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+                best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = for_stmt(_for, man_patches, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+                return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+            best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = if_stmt(_if, None, len(man_patches) > 0, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+            return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+        best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = for_stmt(_for, glasses_patches, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+
+        def _if(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+            result = best_man_patch.best_text_match(('walking', 'standing'))
+            return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+
+        def _else(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+            result = image_patch.simple_query('What is the man to the right of the glasses doing, walking or standing?')
+            return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+        best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = if_stmt(_if, _else, best_man_patch, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+        return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+    best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = if_stmt(_if, _else, len(glasses_patches) == 0, (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+
+    def _if(best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch):
+        result = image_patch.simple_query('What is the man to the right of the glasses doing, walking or standing?')
+        return (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch)
+    best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch = if_stmt(_if, None, not_expr(result), (best_distance, best_man_patch, distance, glasses_patches, global_center, image_patch, is_better, man_patches, result, right_area_patch))
+    return result

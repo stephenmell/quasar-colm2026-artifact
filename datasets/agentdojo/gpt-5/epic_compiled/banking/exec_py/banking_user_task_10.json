@@ -1,0 +1,5 @@
+{
+  "result": "No payment was executed because there is no execution result object, indicating that no transfer was made. This may be due to ambiguity or missing information required to process the payment.",
+  "time_ns": 2319631214,
+  "utility": true
+}

@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find the person that is skiing
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        # If no person is found, try finding a skier directly or ask the image
+        skier_patches = image_patch.find("skier")
+        if len(skier_patches) > 0:
+            return skier_patches[0].simple_query("Is the skier wearing a jacket?")
+        return image_patch.simple_query("Is the person that is skiing wearing a jacket?")
+    for person_patch in person_patches:
+        is_skiing = person_patch.verify_property("person", "skiing")
+        if not is_skiing:
+            is_skiing = (person_patch.simple_query("Is the person skiing?") == "yes")
+        if is_skiing:
+            return person_patch.simple_query("Is the person wearing a jacket?")
+    # If no person identified as skiing, try skier object or ask directly
+    skier_patches = image_patch.find("skier")
+    if len(skier_patches) > 0:
+        return skier_patches[0].simple_query("Is the skier wearing a jacket?")
+    return image_patch.simple_query("Is the person that is skiing wearing a jacket?")

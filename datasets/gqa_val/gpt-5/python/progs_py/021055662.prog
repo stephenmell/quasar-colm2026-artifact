@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    player_patches = image_patch.find("player")
+    # Question assumes only one player patch
+    if len(player_patches) == 0:
+        # If no player is found, query the image directly
+        return image_patch.simple_query("Is there a racket to the left of the player in the picture?")
+    player_patch = player_patches[0]
+    racket_patches = image_patch.find("racket")
+    if len(racket_patches) == 0:
+        return "no"
+    for racket_patch in racket_patches:
+        if racket_patch.horizontal_center < player_patch.horizontal_center:
+            return "yes"
+    return "no"

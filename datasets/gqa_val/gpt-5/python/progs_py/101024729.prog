@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+    # If no plate is found, ask directly due to relational reasoning
+    if len(plate_patches) == 0:
+        return image_patch.simple_query("Are there carrots on the lettuce that is on the plate?")
+    for plate_patch in plate_patches:
+        lettuce_patches = plate_patch.find("lettuce")
+        for lettuce_patch in lettuce_patches:
+            carrot_patches = lettuce_patch.find("carrot")
+            if len(carrot_patches) > 0:
+                return "yes"
+    return "no"

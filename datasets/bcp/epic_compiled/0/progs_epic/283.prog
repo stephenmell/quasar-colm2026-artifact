@@ -1,0 +1,109 @@
+({1927: 'context', 1937: 'llm_query', 1941: 'str', 1960: 'return_result'},
+ ('def',
+  1924,
+  ((),
+   ((('prim', 1925, ''),
+     ('prim', 1926, 0),
+     ('def',
+      1928,
+      ((1951, 1929),
+       ((('unpack', (1939, 1930), 1951),
+         ('prim', 1931, 1),
+         ('call', (1932,), 80, (1930, 1931)),
+         ('prim',
+          1933,
+          'You are given a document. Extract any information relevant to '
+          'identifying a specific video game and its protagonist under these '
+          'constraints. For everything you find, quote exact lines and provide '
+          'your reasoning.\n'
+          '\n'
+          'Constraints to check (match as many as possible):\n'
+          '- The video game features a black hole somewhere in its story or '
+          'setting.\n'
+          '- The game was first released between 2016 and 2019 exclusive '
+          '(i.e., 2017 or 2018) for a particular platform in a particular '
+          'year.\n'
+          '- Two years later, another version for new platforms was released.\n'
+          '- A more enhanced version was released three years after the '
+          'initial release.\n'
+          '- The game was developed and published by the same company.\n'
+          '- That company was incorporated in October in either 2011 or 2012 '
+          '(i.e., October 2011 or October 2012).\n'
+          "- The protagonist's first name starts with the letter 'Z'. Provide "
+          "the protagonist's full name (first and last) if available.\n"
+          '- A person who worked as a freelancer concept artist on the initial '
+          'version of this game also worked on a video game that was released '
+          'in 2009. Identify them and the 2009 game.\n'
+          '- Another person who worked on the later versions of this game was '
+          'the senior programmer for another game released in February of a '
+          'year between 2020 and 2023 (inclusive). Identify them, the role, '
+          'the other game, and its release month/year.\n'
+          '\n'
+          'For any candidates this document suggests, provide:\n'
+          '- Candidate game title\n'
+          '- Protagonist full name (first and last), making sure the first '
+          "name starts with 'Z'\n"
+          '- Developer/publisher company name and its incorporation '
+          'month/year\n'
+          '- Release timeline (initial platform+year; new platforms + year two '
+          'years later; enhanced version + year three years later)\n'
+          '- Staff details matching the two bullet constraints above\n'
+          '- Quotes and citations from the document that support each claim\n'
+          '- A confidence score 0-100 and short justification\n'
+          '\n'
+          'Document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1934,), 80, (1933, 1929)),
+         ('prim', 1935, '\nEND_DOCUMENT'),
+         ('call', (1936,), 80, (1934, 1935)),
+         ('call', (1938,), 1937, (1936,)),
+         ('prim', 1940, '\n\n=== Document '),
+         ('call', (1942,), 80, (1939, 1940)),
+         ('call', (1943,), 1941, (1932,)),
+         ('call', (1944,), 80, (1942, 1943)),
+         ('prim', 1945, ' Analysis ===\n'),
+         ('call', (1946,), 80, (1944, 1945)),
+         ('call', (1947,), 80, (1946, 1938)),
+         ('pack', 1952, (1947, 1932))),
+        (1952,)))),
+     ('pack', 1953, (1925, 1926)),
+     ('call', (1954,), 79, (1927,)),
+     ('call', (1950,), 1954, (1953, 1928)),
+     ('unpack', (1948, 1949), 1950),
+     ('prim',
+      1955,
+      'You are to determine the exact protagonist (first and last name) of the '
+      'video game described, using the collated findings below. Apply strict '
+      'logical consistency; the correct answer must satisfy ALL constraints '
+      'simultaneously. If multiple candidates appear, choose the one that '
+      'fully matches every constraint. If none fully match, choose the '
+      'best-supported that matches the majority and explain any missing '
+      'pieces, but still output only the name at the end.\n'
+      '\n'
+      'Constraints recap:\n'
+      '- Game features a black hole in its story\n'
+      '- Initial release year is 2017 or 2018, specifically for a particular '
+      'platform\n'
+      '- Another version released two years later for new platforms\n'
+      '- An enhanced version released three years after the initial\n'
+      '- Developed and published by the same company that was incorporated in '
+      'October 2011 or October 2012\n'
+      "- The protagonist’s first name starts with 'Z'\n"
+      '- A freelancer concept artist on the initial version also worked on a '
+      'video game released in 2009\n'
+      '- A person who worked on later versions was senior programmer for '
+      'another game released in February 2020–2023\n'
+      '\n'
+      'Findings:\n'),
+     ('call', (1956,), 80, (1955, 1948)),
+     ('prim',
+      1957,
+      '\n'
+      '\n'
+      'Task: Identify the single correct game and, most importantly, the '
+      'protagonist’s full name. Output ONLY the protagonist’s first and last '
+      'name, nothing else.'),
+     ('call', (1958,), 80, (1956, 1957)),
+     ('call', (1959,), 1937, (1958,)),
+     ('call', (1961,), 1960, (1959,))),
+    (1961,)))))

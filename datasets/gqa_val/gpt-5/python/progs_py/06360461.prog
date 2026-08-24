@@ -1,0 +1,13 @@
+# Is the color of the mountains blue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    mountain_patches = image_patch.find("mountain")
+    if len(mountain_patches) == 0:
+        mountain_patches = image_patch.find("mountains")
+    if len(mountain_patches) == 0:
+        # If no mountains are found, query the image directly
+        return image_patch.simple_query("Is the color of the mountains blue?")
+    for mountain_patch in mountain_patches:
+        if mountain_patch.verify_property("mountain", "blue") or mountain_patch.verify_property("mountains", "blue"):
+            return "yes"
+    return "no"

@@ -1,0 +1,8 @@
+def execute_command(image) -> str:
+    has_car = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_car = image_patch.exists('car')
+    result = bool_to_yesno(has_car)
+    return result

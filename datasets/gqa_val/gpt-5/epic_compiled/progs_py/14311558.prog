@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bag_patches = image_patch.find("bag")
+
+    if len(bag_patches) == 0:
+        result = image_patch.simple_query("Which side of the image is the bag on?")
+    else:
+        # Select the largest detected bag as the main one
+        selected_patch = bag_patches[0]
+        max_area = selected_patch.width * selected_patch.height
+        for bag_patch in bag_patches:
+            area = bag_patch.width * bag_patch.height
+            if area > max_area:
+                selected_patch = bag_patch
+                max_area = area
+
+        if selected_patch.horizontal_center < image_patch.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

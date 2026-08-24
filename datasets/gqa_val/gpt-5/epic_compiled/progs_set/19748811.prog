@@ -1,0 +1,55 @@
+def execute_command(image) -> str:
+    answer = None
+    generic_vehicle_patches = None
+    image_patch = None
+    is_green = None
+    patches = None
+    result = None
+    vehicle_types = None
+    image_patch = ImagePatch(image)
+    result = None
+    vehicle_types = ('car', 'truck', 'bus', 'train', 'motorcycle', 'bike', 'bicycle', 'motorbike', 'scooter', 'van', 'taxi', 'airplane', 'plane', 'boat', 'ship', 'tram', 'subway', 'tractor')
+
+    def _for(vehicle_name, answer, image_patch, is_green, patches, result, vehicle_types):
+        patches = image_patch.find(vehicle_name)
+
+        def _for(patch, answer, image_patch, is_green, patches, result, vehicle_types):
+            is_green = patch.verify_property(vehicle_name, 'green')
+
+            def _if(answer, image_patch, is_green, patches, result, vehicle_types):
+                answer = patch.simple_query('What vehicle is this?')
+
+                def _if(answer, image_patch, is_green, patches, result, vehicle_types):
+                    result = answer
+                    return (answer, image_patch, is_green, patches, result, vehicle_types)
+
+                def _else(answer, image_patch, is_green, patches, result, vehicle_types):
+                    result = vehicle_name
+                    return (answer, image_patch, is_green, patches, result, vehicle_types)
+                answer, image_patch, is_green, patches, result, vehicle_types = if_stmt(_if, _else, answer, (answer, image_patch, is_green, patches, result, vehicle_types))
+                return (answer, image_patch, is_green, patches, result, vehicle_types)
+            answer, image_patch, is_green, patches, result, vehicle_types = if_stmt(_if, None, is_green, (answer, image_patch, is_green, patches, result, vehicle_types))
+            return (answer, image_patch, is_green, patches, result, vehicle_types)
+        answer, image_patch, is_green, patches, result, vehicle_types = for_stmt(_for, patches, (answer, image_patch, is_green, patches, result, vehicle_types))
+        return (answer, image_patch, is_green, patches, result, vehicle_types)
+    answer, image_patch, is_green, patches, result, vehicle_types = for_stmt(_for, vehicle_types, (answer, image_patch, is_green, patches, result, vehicle_types))
+
+    def _if(answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types):
+        generic_vehicle_patches = image_patch.find('vehicle')
+
+        def _for(patch, answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types):
+
+            def _if(answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types):
+                result = patch.simple_query('Which vehicle is green?')
+                return (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types)
+            answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types = if_stmt(_if, None, patch.verify_property('vehicle', 'green'), (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types))
+            return (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types)
+        answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types = for_stmt(_for, generic_vehicle_patches, (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types))
+        return (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types)
+    answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types = if_stmt(_if, None, not_expr(result), (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types))
+
+    def _if(answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types):
+        result = image_patch.simple_query('Which vehicle is green?')
+        return (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types)
+    answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types = if_stmt(_if, None, not_expr(result), (answer, generic_vehicle_patches, image_patch, is_green, patches, result, vehicle_types))
+    return result

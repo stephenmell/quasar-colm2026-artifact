@@ -1,0 +1,5 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("Is the man behind a woman?")
+    return result

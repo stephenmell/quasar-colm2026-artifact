@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    fence_patches = None
+    horse_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    horse_patches = image_patch.find('horse')
+
+    def _if(fence_patches, horse_patches, image_patch, result):
+        result = image_patch.simple_query('Is the horse to the right of a fence?')
+        return (fence_patches, horse_patches, image_patch, result)
+
+    def _else(fence_patches, horse_patches, image_patch, result):
+        fence_patches = image_patch.find('fence')
+
+        def _if(fence_patches, horse_patches, image_patch, result):
+            result = 'no'
+            return (fence_patches, horse_patches, image_patch, result)
+
+        def _else(fence_patches, horse_patches, image_patch, result):
+            result = 'no'
+
+            def _for(horse_patch, fence_patches, horse_patches, image_patch, result):
+
+                def _for(fence_patch, fence_patches, horse_patches, image_patch, result):
+
+                    def _if(fence_patches, horse_patches, image_patch, result):
+                        result = 'yes'
+                        return (fence_patches, horse_patches, image_patch, result)
+                    fence_patches, horse_patches, image_patch, result = if_stmt(_if, None, horse_patch.horizontal_center > fence_patch.horizontal_center, (fence_patches, horse_patches, image_patch, result))
+                    return (fence_patches, horse_patches, image_patch, result)
+                fence_patches, horse_patches, image_patch, result = for_stmt(_for, fence_patches, (fence_patches, horse_patches, image_patch, result))
+                return (fence_patches, horse_patches, image_patch, result)
+            fence_patches, horse_patches, image_patch, result = for_stmt(_for, horse_patches, (fence_patches, horse_patches, image_patch, result))
+            return (fence_patches, horse_patches, image_patch, result)
+        fence_patches, horse_patches, image_patch, result = if_stmt(_if, _else, len(fence_patches) == 0, (fence_patches, horse_patches, image_patch, result))
+        return (fence_patches, horse_patches, image_patch, result)
+    fence_patches, horse_patches, image_patch, result = if_stmt(_if, _else, len(horse_patches) == 0, (fence_patches, horse_patches, image_patch, result))
+    return result

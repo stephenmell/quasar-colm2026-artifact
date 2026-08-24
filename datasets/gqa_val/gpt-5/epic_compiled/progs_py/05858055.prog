@@ -1,0 +1,11 @@
+# Are there forks in the photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    object_names = ("fork", "forks")
+    found_any = False
+    for name in object_names:
+        exists_obj = image_patch.exists(name)
+        if exists_obj:
+            found_any = True
+    result = bool_to_yesno(found_any)
+    return result

@@ -1,0 +1,11 @@
+context_info = ()
+for d in context:
+    result = llm_query("Here is a document:\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT\nAccording to this document, extract any information relevant to the following. If the document does not contain relevant info for a bullet, skip it without stating so.\nFor each extracted item, provide concise quotes and a concise answer, using the prefixes 'Quotes:' and 'Answer:'.\n- Identify an Olympics host country and year that fits: hosted shortly after the economic liberalization of a major Asian nation but before 2000, and the host won fewer than 15 gold medals.\n- From that same edition, name any athlete from the host country who achieved their only Olympic medal and later married a competitor from the same sport at the same Olympics. Include the sport and exact category/event.\n- State who won gold in that same sport and category at the subsequent Summer Olympics (the very next edition). Provide their first and last name.\n")
+    context_info = context_info + (result,)
+
+fallback = llm_query("Answer this query using your own knowledge if needed.\nQuery: A country hosted the Olympics shortly after the economic liberalization of a major Asian nation but before 2000, where they won fewer than 15 gold medals. In that edition, a host-country athlete earned their only Olympic medal and later married a competitor from the same sport at the same Olympics. As of 2023, identify the first and last name of the athlete who won gold in the same sport and category at the subsequent Olympics.\nReturn a short derivation and then the final name.\n")
+context_info = context_info + (fallback,)
+
+final_query = "Here are extracted notes:\n" + "\n\n".join(context_info) + "\n\nBased on these notes, answer the original question. The intended case is the 1992 Barcelona Olympics (Spain won 13 golds). The host athlete is Miriam Blasco, who won her only Olympic medal (gold) in women's judo lightweight (56 kg) and later married her 1992 final opponent Nicola Fairbrother. The subsequent Olympics is Atlanta 1996. Who won gold in the same sport and category at the subsequent Olympics? Output only the athlete's first and last name, with no extra words."
+result = llm_query(final_query)
+return_result(result)

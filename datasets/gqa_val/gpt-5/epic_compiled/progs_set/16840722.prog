@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_red = None
+    pepper_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pepper_patches = image_patch.find('pepper')
+
+    def _if(image_patch, is_red, pepper_patches, result):
+        result = image_patch.simple_query('Is there a pepper in the image that is not red?')
+        return (image_patch, is_red, pepper_patches, result)
+
+    def _else(image_patch, is_red, pepper_patches, result):
+        result = 'no'
+
+        def _for(pepper_patch, image_patch, is_red, pepper_patches, result):
+            is_red = pepper_patch.verify_property('pepper', 'red')
+
+            def _if(image_patch, is_red, pepper_patches, result):
+                result = 'yes'
+                return (image_patch, is_red, pepper_patches, result)
+            image_patch, is_red, pepper_patches, result = if_stmt(_if, None, not_expr(is_red), (image_patch, is_red, pepper_patches, result))
+            return (image_patch, is_red, pepper_patches, result)
+        image_patch, is_red, pepper_patches, result = for_stmt(_for, pepper_patches, (image_patch, is_red, pepper_patches, result))
+        return (image_patch, is_red, pepper_patches, result)
+    image_patch, is_red, pepper_patches, result = if_stmt(_if, _else, len(pepper_patches) == 0, (image_patch, is_red, pepper_patches, result))
+    return result

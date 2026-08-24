@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    fence_patches = None
+    found_any = None
+    image_patch = None
+    racket_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found_any = False
+
+    def _if(found_any, image_patch, racket_patches, result):
+        found_any = True
+        racket_patches = image_patch.find('racket')
+
+        def _for(racket_patch, found_any, image_patch, racket_patches, result):
+
+            def _if(found_any, image_patch, racket_patches, result):
+                result = 'yes'
+                return (found_any, image_patch, racket_patches, result)
+            found_any, image_patch, racket_patches, result = if_stmt(_if, None, racket_patch.verify_property('racket', 'black'), (found_any, image_patch, racket_patches, result))
+            return (found_any, image_patch, racket_patches, result)
+        found_any, image_patch, racket_patches, result = for_stmt(_for, racket_patches, (found_any, image_patch, racket_patches, result))
+        return (found_any, image_patch, racket_patches, result)
+    found_any, image_patch, racket_patches, result = if_stmt(_if, None, image_patch.exists('racket'), (found_any, image_patch, racket_patches, result))
+
+    def _if(fence_patches, found_any, image_patch, racket_patches, result):
+        found_any = True
+        fence_patches = image_patch.find('fence')
+
+        def _for(fence_patch, fence_patches, found_any, image_patch, racket_patches, result):
+
+            def _if(fence_patches, found_any, image_patch, racket_patches, result):
+                result = 'yes'
+                return (fence_patches, found_any, image_patch, racket_patches, result)
+            fence_patches, found_any, image_patch, racket_patches, result = if_stmt(_if, None, fence_patch.verify_property('fence', 'black'), (fence_patches, found_any, image_patch, racket_patches, result))
+            return (fence_patches, found_any, image_patch, racket_patches, result)
+        fence_patches, found_any, image_patch, racket_patches, result = for_stmt(_for, fence_patches, (fence_patches, found_any, image_patch, racket_patches, result))
+        return (fence_patches, found_any, image_patch, racket_patches, result)
+    fence_patches, found_any, image_patch, racket_patches, result = if_stmt(_if, None, image_patch.exists('fence'), (fence_patches, found_any, image_patch, racket_patches, result))
+
+    def _if(fence_patches, found_any, image_patch, racket_patches, result):
+        result = image_patch.simple_query('Are there black rackets or fences?')
+        return (fence_patches, found_any, image_patch, racket_patches, result)
+    fence_patches, found_any, image_patch, racket_patches, result = if_stmt(_if, None, not_expr(found_any), (fence_patches, found_any, image_patch, racket_patches, result))
+    return result

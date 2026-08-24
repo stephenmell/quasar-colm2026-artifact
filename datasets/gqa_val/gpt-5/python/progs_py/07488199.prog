@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    umbrella_patches = image_patch.find("umbrella")
+    if len(umbrella_patches) == 0:
+        return image_patch.simple_query("Does the umbrella that looks gray look checkered?")
+    gray_umbrellas = [u for u in umbrella_patches if u.verify_property("umbrella", "gray")]
+    if len(gray_umbrellas) == 0:
+        return image_patch.simple_query("Does the umbrella that looks gray look checkered?")
+    for umb in gray_umbrellas:
+        if umb.verify_property("umbrella", "checkered"):
+            return "yes"
+    return "no"

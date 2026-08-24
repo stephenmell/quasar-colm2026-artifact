@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tent_patches = image_patch.find("tent")
+    if len(tent_patches) == 0:
+        result = image_patch.simple_query("Is the tent blue?")
+    else:
+        result = "no"
+        for tent_patch in tent_patches:
+            if tent_patch.verify_property("tent", "blue"):
+                result = "yes"
+    return result

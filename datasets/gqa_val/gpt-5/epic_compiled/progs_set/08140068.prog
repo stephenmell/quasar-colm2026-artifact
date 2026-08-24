@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    frisbee_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    frisbee_patches = image_patch.find('frisbee')
+
+    def _if(frisbee_patches, image_patch, result):
+        result = image_patch.simple_query('Are there any frisbees in this image that are white?')
+        return (frisbee_patches, image_patch, result)
+
+    def _else(frisbee_patches, image_patch, result):
+
+        def _for(frisbee_patch, frisbee_patches, image_patch, result):
+
+            def _if(frisbee_patches, image_patch, result):
+                result = 'yes'
+                return (frisbee_patches, image_patch, result)
+            frisbee_patches, image_patch, result = if_stmt(_if, None, frisbee_patch.verify_property('frisbee', 'white'), (frisbee_patches, image_patch, result))
+            return (frisbee_patches, image_patch, result)
+        frisbee_patches, image_patch, result = for_stmt(_for, frisbee_patches, (frisbee_patches, image_patch, result))
+        return (frisbee_patches, image_patch, result)
+    frisbee_patches, image_patch, result = if_stmt(_if, _else, len(frisbee_patches) == 0, (frisbee_patches, image_patch, result))
+    return result

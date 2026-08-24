@@ -1,0 +1,28 @@
+def execute_command(image) -> str:
+    field_terms = None
+    image_patch = None
+    is_field_detected = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    field_terms = ('field', 'baseball field', 'soccer field', 'football field', 'grass field', 'corn field', 'wheat field', 'meadow', 'pasture', 'playing field')
+    is_field_detected = False
+
+    def _for(term, field_terms, image_patch, is_field_detected, result):
+
+        def _if(field_terms, image_patch, is_field_detected, result):
+            is_field_detected = True
+            return (field_terms, image_patch, is_field_detected, result)
+        field_terms, image_patch, is_field_detected, result = if_stmt(_if, None, image_patch.exists(term), (field_terms, image_patch, is_field_detected, result))
+        return (field_terms, image_patch, is_field_detected, result)
+    field_terms, image_patch, is_field_detected, result = for_stmt(_for, field_terms, (field_terms, image_patch, is_field_detected, result))
+
+    def _if(field_terms, image_patch, is_field_detected, result):
+        result = 'yes'
+        return (field_terms, image_patch, is_field_detected, result)
+
+    def _else(field_terms, image_patch, is_field_detected, result):
+        result = image_patch.simple_query('Is this a field?')
+        return (field_terms, image_patch, is_field_detected, result)
+    field_terms, image_patch, is_field_detected, result = if_stmt(_if, _else, is_field_detected, (field_terms, image_patch, is_field_detected, result))
+    return result

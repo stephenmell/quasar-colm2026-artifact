@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    bicycle_patches = None
+    car_patches = None
+    image_patch = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+    bicycle_patches = image_patch.find('bicycle')
+
+    def _if(bicycle_patches, car_patches, image_patch, person_patches, result):
+        result = image_patch.simple_query('Do you see cars to the left of the person that is to the left of the bicycle?')
+        return (bicycle_patches, car_patches, image_patch, person_patches, result)
+
+    def _else(bicycle_patches, car_patches, image_patch, person_patches, result):
+        car_patches = image_patch.find('car')
+
+        def _if(bicycle_patches, car_patches, image_patch, person_patches, result):
+            result = 'no'
+            return (bicycle_patches, car_patches, image_patch, person_patches, result)
+
+        def _else(bicycle_patches, car_patches, image_patch, person_patches, result):
+            result = 'no'
+
+            def _for(bicycle_patch, bicycle_patches, car_patches, image_patch, person_patches, result):
+
+                def _for(person_patch, bicycle_patches, car_patches, image_patch, person_patches, result):
+
+                    def _if(bicycle_patches, car_patches, image_patch, person_patches, result):
+
+                        def _for(car_patch, bicycle_patches, car_patches, image_patch, person_patches, result):
+
+                            def _if(bicycle_patches, car_patches, image_patch, person_patches, result):
+                                result = 'yes'
+                                return (bicycle_patches, car_patches, image_patch, person_patches, result)
+                            bicycle_patches, car_patches, image_patch, person_patches, result = if_stmt(_if, None, car_patch.horizontal_center < person_patch.horizontal_center, (bicycle_patches, car_patches, image_patch, person_patches, result))
+                            return (bicycle_patches, car_patches, image_patch, person_patches, result)
+                        bicycle_patches, car_patches, image_patch, person_patches, result = for_stmt(_for, car_patches, (bicycle_patches, car_patches, image_patch, person_patches, result))
+                        return (bicycle_patches, car_patches, image_patch, person_patches, result)
+                    bicycle_patches, car_patches, image_patch, person_patches, result = if_stmt(_if, None, person_patch.horizontal_center < bicycle_patch.horizontal_center, (bicycle_patches, car_patches, image_patch, person_patches, result))
+                    return (bicycle_patches, car_patches, image_patch, person_patches, result)
+                bicycle_patches, car_patches, image_patch, person_patches, result = for_stmt(_for, person_patches, (bicycle_patches, car_patches, image_patch, person_patches, result))
+                return (bicycle_patches, car_patches, image_patch, person_patches, result)
+            bicycle_patches, car_patches, image_patch, person_patches, result = for_stmt(_for, bicycle_patches, (bicycle_patches, car_patches, image_patch, person_patches, result))
+            return (bicycle_patches, car_patches, image_patch, person_patches, result)
+        bicycle_patches, car_patches, image_patch, person_patches, result = if_stmt(_if, _else, len(car_patches) == 0, (bicycle_patches, car_patches, image_patch, person_patches, result))
+        return (bicycle_patches, car_patches, image_patch, person_patches, result)
+    bicycle_patches, car_patches, image_patch, person_patches, result = if_stmt(_if, _else, or_expr(len(person_patches) == 0, len(bicycle_patches) == 0), (bicycle_patches, car_patches, image_patch, person_patches, result))
+    return result

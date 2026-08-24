@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2318586",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "animal"
+      ],
+      [],
+      13317121416
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2318586",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "What is the large animal doing?"
+      ],
+      "The large animal is playing with a frisbee.",
+      1529504254
+    ]
+  ],
+  "best_text_match": []
+}

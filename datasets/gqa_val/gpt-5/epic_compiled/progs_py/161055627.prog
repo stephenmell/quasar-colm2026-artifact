@@ -1,0 +1,20 @@
+# Is his hair blond and curly?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    selected_patch = None
+    candidate_objects = ("man", "boy", "person")
+    for obj_name in candidate_objects:
+        patches = image_patch.find(obj_name)
+        if len(patches) > 0 and selected_patch is None:
+            selected_patch = patches[0]
+
+    if selected_patch is None:
+        result = image_patch.simple_query("Is his hair blond and curly?")
+    else:
+        is_blond = selected_patch.verify_property("hair", "blond")
+        is_curly = selected_patch.verify_property("hair", "curly")
+        result = bool_to_yesno(is_blond and is_curly)
+
+    return result

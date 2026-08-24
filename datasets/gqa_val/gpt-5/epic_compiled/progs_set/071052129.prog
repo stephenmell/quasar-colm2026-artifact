@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    alternative_info = None
+    image_patch = None
+    person_exists = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_exists = image_patch.exists('person')
+    alternative_info = ''
+
+    def _if(alternative_info, image_patch, person_exists):
+        alternative_info = ' There is at least one person in the image.'
+        return (alternative_info, image_patch, person_exists)
+
+    def _else(alternative_info, image_patch, person_exists):
+        alternative_info = ' I do not detect any people in the image.'
+        return (alternative_info, image_patch, person_exists)
+    alternative_info, image_patch, person_exists = if_stmt(_if, _else, person_exists, (alternative_info, image_patch, person_exists))
+    result = 'Sorry, I can’t help with identifying or guessing someone’s race or gender in an image.' + alternative_info + ' I can describe non-sensitive attributes like clothing, hair color, or actions if that helps.'
+    return result

@@ -1,0 +1,51 @@
+def execute_command(image) -> str:
+    candidate = None
+    image_patch = None
+    jacket_patches = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(candidate, image_patch, jacket_patches, person_patches, result):
+        result = image_patch.simple_query('What is the color of the jacket the person is wearing?')
+        return (candidate, image_patch, jacket_patches, person_patches, result)
+
+    def _else(candidate, image_patch, jacket_patches, person_patches, result):
+        result = None
+
+        def _for(person_patch, candidate, image_patch, jacket_patches, person_patches, result):
+            jacket_patches = person_patch.find('jacket')
+
+            def _if(candidate, image_patch, jacket_patches, person_patches, result):
+                candidate = person_patch.simple_query('What is the color of the jacket the person is wearing?')
+
+                def _if(candidate, image_patch, jacket_patches, person_patches, result):
+                    result = candidate
+                    return (candidate, image_patch, jacket_patches, person_patches, result)
+                candidate, image_patch, jacket_patches, person_patches, result = if_stmt(_if, None, and_expr(not result, candidate), (candidate, image_patch, jacket_patches, person_patches, result))
+                return (candidate, image_patch, jacket_patches, person_patches, result)
+
+            def _else(candidate, image_patch, jacket_patches, person_patches, result):
+
+                def _for(jacket_patch, candidate, image_patch, jacket_patches, person_patches, result):
+                    candidate = jacket_patch.simple_query('What color is the jacket?')
+
+                    def _if(candidate, image_patch, jacket_patches, person_patches, result):
+                        result = candidate
+                        return (candidate, image_patch, jacket_patches, person_patches, result)
+                    candidate, image_patch, jacket_patches, person_patches, result = if_stmt(_if, None, and_expr(not result, candidate), (candidate, image_patch, jacket_patches, person_patches, result))
+                    return (candidate, image_patch, jacket_patches, person_patches, result)
+                candidate, image_patch, jacket_patches, person_patches, result = for_stmt(_for, jacket_patches, (candidate, image_patch, jacket_patches, person_patches, result))
+                return (candidate, image_patch, jacket_patches, person_patches, result)
+            candidate, image_patch, jacket_patches, person_patches, result = if_stmt(_if, _else, len(jacket_patches) == 0, (candidate, image_patch, jacket_patches, person_patches, result))
+            return (candidate, image_patch, jacket_patches, person_patches, result)
+        candidate, image_patch, jacket_patches, person_patches, result = for_stmt(_for, person_patches, (candidate, image_patch, jacket_patches, person_patches, result))
+
+        def _if(candidate, image_patch, jacket_patches, person_patches, result):
+            result = image_patch.simple_query('What is the color of the jacket the person is wearing?')
+            return (candidate, image_patch, jacket_patches, person_patches, result)
+        candidate, image_patch, jacket_patches, person_patches, result = if_stmt(_if, None, not_expr(result), (candidate, image_patch, jacket_patches, person_patches, result))
+        return (candidate, image_patch, jacket_patches, person_patches, result)
+    candidate, image_patch, jacket_patches, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (candidate, image_patch, jacket_patches, person_patches, result))
+    return result

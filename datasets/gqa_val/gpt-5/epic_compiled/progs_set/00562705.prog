@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    belt_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    belt_patches = image_patch.find('belt')
+
+    def _if(belt_patches, image_patch, result):
+        result = image_patch.simple_query('Does the belt have brown color?')
+        return (belt_patches, image_patch, result)
+
+    def _else(belt_patches, image_patch, result):
+        result = 'no'
+
+        def _for(belt_patch, belt_patches, image_patch, result):
+
+            def _if(belt_patches, image_patch, result):
+                result = 'yes'
+                return (belt_patches, image_patch, result)
+            belt_patches, image_patch, result = if_stmt(_if, None, belt_patch.verify_property('belt', 'brown'), (belt_patches, image_patch, result))
+            return (belt_patches, image_patch, result)
+        belt_patches, image_patch, result = for_stmt(_for, belt_patches, (belt_patches, image_patch, result))
+        return (belt_patches, image_patch, result)
+    belt_patches, image_patch, result = if_stmt(_if, _else, len(belt_patches) == 0, (belt_patches, image_patch, result))
+    return result

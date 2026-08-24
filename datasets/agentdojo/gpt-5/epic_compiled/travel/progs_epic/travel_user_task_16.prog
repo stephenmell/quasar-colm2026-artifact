@@ -1,0 +1,20 @@
+({},
+ ('def',
+  151,
+  ((),
+   ((('prim', 152, 'error'),
+     ('prim', 153, 'NotEnoughInformationError'),
+     ('prim', 154, 'message'),
+     ('prim',
+      155,
+      'No actionable request provided. Please specify a concrete task (e.g., '
+      'book a flight, reserve a hotel, schedule a meeting, send an email) '
+      'along with required details.'),
+     ('prim', 156, 'user'),
+     ('prim', 157, 'name'),
+     ('prim', 158, 'Emma Johnson'),
+     ('prim', 159, 'company'),
+     ('prim', 160, 'Blue Sparrow Tech'),
+     ('call', (161,), 122, (157, 158, 159, 160)),
+     ('call', (162,), 122, (152, 153, 154, 155, 156, 161))),
+    (162,)))))

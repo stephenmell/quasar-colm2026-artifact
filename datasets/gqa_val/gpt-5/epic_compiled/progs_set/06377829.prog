@@ -1,0 +1,49 @@
+def execute_command(image) -> str:
+    garbage_patches = None
+    image_patch = None
+    is_on_table = None
+    result = None
+    table_patch = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    garbage_patches = image_patch.find('garbage')
+    result = None
+
+    def _if(garbage_patches, image_patch, is_on_table, result, table_patch, table_patches):
+        result = image_patch.simple_query('What color is the garbage on the table?')
+        return (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches)
+
+    def _else(garbage_patches, image_patch, is_on_table, result, table_patch, table_patches):
+
+        def _for(garbage_patch, garbage_patches, image_patch, is_on_table, result):
+            is_on_table = garbage_patch.simple_query('Is this on the table?') == 'yes'
+
+            def _if(garbage_patches, image_patch, is_on_table, result):
+                result = garbage_patch.simple_query('What color is the garbage?')
+                return (garbage_patches, image_patch, is_on_table, result)
+            garbage_patches, image_patch, is_on_table, result = if_stmt(_if, None, and_expr(is_on_table, not result), (garbage_patches, image_patch, is_on_table, result))
+            return (garbage_patches, image_patch, is_on_table, result)
+        garbage_patches, image_patch, is_on_table, result = for_stmt(_for, garbage_patches, (garbage_patches, image_patch, is_on_table, result))
+
+        def _if(garbage_patches, image_patch, is_on_table, result, table_patch, table_patches):
+            table_patches = image_patch.find('table')
+
+            def _if(garbage_patches, image_patch, is_on_table, result, table_patch, table_patches):
+                result = image_patch.simple_query('What color is the garbage on the table?')
+                return (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches)
+
+            def _else(garbage_patches, image_patch, is_on_table, result, table_patch, table_patches):
+                table_patch = table_patches[0]
+                result = table_patch.simple_query('What color is the garbage?')
+                return (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches)
+            garbage_patches, image_patch, is_on_table, result, table_patch, table_patches = if_stmt(_if, _else, len(table_patches) == 0, (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches))
+            return (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches)
+        garbage_patches, image_patch, is_on_table, result, table_patch, table_patches = if_stmt(_if, None, not_expr(result), (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches))
+        return (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches)
+    garbage_patches, image_patch, is_on_table, result, table_patch, table_patches = if_stmt(_if, _else, len(garbage_patches) == 0, (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches))
+
+    def _if(garbage_patches, image_patch, is_on_table, result, table_patch, table_patches):
+        result = image_patch.simple_query('What color is the garbage on the table?')
+        return (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches)
+    garbage_patches, image_patch, is_on_table, result, table_patch, table_patches = if_stmt(_if, None, not_expr(result), (garbage_patches, image_patch, is_on_table, result, table_patch, table_patches))
+    return result

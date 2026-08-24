@@ -1,0 +1,29 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find couches
+    couch_patches = image_patch.find("couch")
+    if len(couch_patches) == 0:
+        # If no couch is found, ask directly (relation question)
+        return image_patch.simple_query("Are there any men to the left of the brown couch?")
+
+    # Filter to brown couches
+    brown_couches = [cp for cp in couch_patches if cp.verify_property("couch", "brown")]
+    if len(brown_couches) == 0:
+        # Try directly finding "brown couch" as a label
+        brown_couches = image_patch.find("brown couch")
+        if len(brown_couches) == 0:
+            # If we can't identify a brown couch reliably, ask directly
+            return image_patch.simple_query("Are there any men to the left of the brown couch?")
+
+    # Find men
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return "no"
+
+    # Check if any man is to the left of any brown couch
+    for couch_patch in brown_couches:
+        for man_patch in man_patches:
+            if man_patch.horizontal_center < couch_patch.horizontal_center:
+                return "yes"
+    return "no"

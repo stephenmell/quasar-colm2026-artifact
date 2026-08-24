@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cheese_patches = image_patch.find("cheese")
+    if len(cheese_patches) == 0:
+        # If no cheese is found, ask directly with the relational cue
+        return image_patch.simple_query("Which kind of vegetable is to the right of the cheese?")
+    vegetable_patches = image_patch.find("vegetable")
+    if len(vegetable_patches) == 0:
+        # If no vegetables are found, ask directly
+        return image_patch.simple_query("Which kind of vegetable is to the right of the cheese?")
+
+    # Find the vegetable with the smallest positive horizontal offset to the right of any cheese
+    best_veg = None
+    best_dx = None
+    for cheese in cheese_patches:
+        for veg in vegetable_patches:
+            dx = veg.horizontal_center - cheese.horizontal_center
+            if dx > 0 and (best_dx is None or dx < best_dx):
+                best_dx = dx
+                best_veg = veg
+
+    if best_veg is None:
+        # If no vegetable is to the right of any cheese, ask directly
+        return image_patch.simple_query("Which kind of vegetable is to the right of the cheese?")
+
+    # Ask the identified vegetable patch for its kind
+    return best_veg.simple_query("Which kind of vegetable is this?")

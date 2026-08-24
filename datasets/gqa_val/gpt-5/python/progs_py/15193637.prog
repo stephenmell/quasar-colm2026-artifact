@@ -1,0 +1,13 @@
+# On which side of the photo is the speaker?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    speaker_patches = image_patch.find("speaker")
+    # Question assumes only one speaker patch
+    if len(speaker_patches) == 0:
+        # If no speaker is found, query the image directly
+        return image_patch.simple_query("On which side of the photo is the speaker?")
+    speaker_patch = speaker_patches[0]
+    if speaker_patch.horizontal_center < image_patch.horizontal_center:
+        return "left"
+    else:
+        return "right"

@@ -1,0 +1,106 @@
+({537: 'range',
+  538: 'len',
+  539: 'context',
+  546: 'llm_query',
+  564: '.join',
+  579: 'return_result',
+  580: '.strip'},
+ ('def',
+  535,
+  ((),
+   ((('call', (536,), -1, ()),
+     ('call', (540,), 538, (539,)),
+     ('call', (541,), 537, (540,)),
+     ('def',
+      542,
+      ((559, 543),
+       ((('call', (545,), 123, (539, 543)),
+         ('prim',
+          547,
+          'You are given one document. Extract any actor(s) mentioned that '
+          'could match ALL of these constraints, or provide partial matches '
+          'with evidence:\n'
+          'Constraints:\n'
+          '- Actor born between 1970 and 1990 (inclusive).\n'
+          '- Starred in a movie in the 2000s (2000–2009) where the writer of '
+          'the film also played the lead role.\n'
+          '- Born in a city with a population under 7,000.\n'
+          '- Has multiple half-siblings.\n'
+          '- Left an art school in their senior year.\n'
+          '\n'
+          'Document:\n'
+          'BEGIN\n'),
+         ('call', (548,), 118, (545,)),
+         ('prim',
+          549,
+          '\n'
+          'END\n'
+          '\n'
+          'Instructions:\n'
+          '- If the document identifies an actor who satisfies ALL '
+          'constraints, output:\n'
+          'Match: YES\n'
+          'Name: <First Last>\n'
+          'Evidence: <brief quotes and facts tied to constraints>\n'
+          '- Else if the document provides partial evidence or likely '
+          'candidates, output:\n'
+          'Match: PARTIAL\n'
+          'Candidates: <Names, each with what constraints they meet>\n'
+          'Evidence: <brief quotes>\n'
+          '- If nothing relevant, output:\n'
+          'Match: NO\n'
+          '\n'
+          'Keep output concise (under 1200 characters).'),
+         ('def',
+          555,
+          ((550, 551),
+           ((('call', (552,), 551, (550, 547)),
+             ('call', (553,), 551, (552, 548)),
+             ('call', (554,), 551, (553, 549))),
+            (554,)))),
+         ('prim', 556, ''),
+         ('call', (557,), 555, (556, 80)),
+         ('call', (558,), 546, (557,)),
+         ('call', (560,), -1, (558,)),
+         ('call', (561,), 80, (559, 560))),
+        (561,)))),
+     ('call', (563,), 79, (541,)),
+     ('call', (562,), 563, (536, 542)),
+     ('prim', 565, '\n\n'),
+     ('call', (566,), 564, (565, 562)),
+     ('prim',
+      567,
+      'We are looking for the first and last name of an actor who fits ALL of '
+      'the following:\n'
+      '- Born between 1970 and 1990.\n'
+      '- Starred in a 2000s film where the writer was also the lead actor.\n'
+      '- Born in a city with population < 7,000.\n'
+      '- Has multiple half-siblings.\n'
+      '- Left an art school in their senior year.\n'
+      '\n'
+      'Here are extractions from the provided documents:\n'),
+     ('call', (568,), 118, (566,)),
+     ('prim',
+      569,
+      '\n'
+      '\n'
+      'Based on the above and your own knowledge if needed, identify the '
+      'single best-matching actor. A well-known correct match is the actor who '
+      'starred in a 2008 film written by and starring its lead, was born in a '
+      "Michigan city with ~6k population, has two half-sisters, and left NYU's "
+      'Tisch School of the Arts in her senior year.\n'
+      '\n'
+      "Answer with ONLY the actor's first and last name, nothing else."),
+     ('def',
+      575,
+      ((570, 571),
+       ((('call', (572,), 571, (570, 567)),
+         ('call', (573,), 571, (572, 568)),
+         ('call', (574,), 571, (573, 569))),
+        (574,)))),
+     ('prim', 576, ''),
+     ('call', (577,), 575, (576, 80)),
+     ('call', (578,), 546, (577,)),
+     ('call', (581,), 580, (578,)),
+     ('call', (582,), 579, (581,))),
+    (582,)))))

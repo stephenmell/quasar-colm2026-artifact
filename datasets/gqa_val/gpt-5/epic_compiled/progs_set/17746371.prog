@@ -1,0 +1,54 @@
+def execute_command(image) -> str:
+    book_patches = None
+    boy_patches = None
+    image_patch = None
+    result = None
+    rightmost_book_edge = None
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find('book')
+    boy_patches = image_patch.find('boy')
+
+    def _if(book_patches, boy_patches, image_patch, result, rightmost_book_edge):
+        result = image_patch.simple_query('Are there any boys to the right of the books?')
+        return (book_patches, boy_patches, image_patch, result, rightmost_book_edge)
+
+    def _else(book_patches, boy_patches, image_patch, result, rightmost_book_edge):
+
+        def _if(book_patches, boy_patches, image_patch, result, rightmost_book_edge):
+            result = 'no'
+            return (book_patches, boy_patches, image_patch, result, rightmost_book_edge)
+
+        def _else(book_patches, boy_patches, image_patch, result, rightmost_book_edge):
+            rightmost_book_edge = None
+
+            def _for(book_patch, book_patches, boy_patches, image_patch, rightmost_book_edge):
+
+                def _if(book_patches, boy_patches, image_patch, rightmost_book_edge):
+                    rightmost_book_edge = book_patch.right
+                    return (book_patches, boy_patches, image_patch, rightmost_book_edge)
+
+                def _else(book_patches, boy_patches, image_patch, rightmost_book_edge):
+
+                    def _if(book_patches, boy_patches, image_patch, rightmost_book_edge):
+                        rightmost_book_edge = book_patch.right
+                        return (book_patches, boy_patches, image_patch, rightmost_book_edge)
+                    book_patches, boy_patches, image_patch, rightmost_book_edge = if_stmt(_if, None, book_patch.right > rightmost_book_edge, (book_patches, boy_patches, image_patch, rightmost_book_edge))
+                    return (book_patches, boy_patches, image_patch, rightmost_book_edge)
+                book_patches, boy_patches, image_patch, rightmost_book_edge = if_stmt(_if, _else, rightmost_book_edge is None, (book_patches, boy_patches, image_patch, rightmost_book_edge))
+                return (book_patches, boy_patches, image_patch, rightmost_book_edge)
+            book_patches, boy_patches, image_patch, rightmost_book_edge = for_stmt(_for, book_patches, (book_patches, boy_patches, image_patch, rightmost_book_edge))
+            result = 'no'
+
+            def _for(boy_patch, book_patches, boy_patches, image_patch, result, rightmost_book_edge):
+
+                def _if(book_patches, boy_patches, image_patch, result, rightmost_book_edge):
+                    result = 'yes'
+                    return (book_patches, boy_patches, image_patch, result, rightmost_book_edge)
+                book_patches, boy_patches, image_patch, result, rightmost_book_edge = if_stmt(_if, None, boy_patch.horizontal_center > rightmost_book_edge, (book_patches, boy_patches, image_patch, result, rightmost_book_edge))
+                return (book_patches, boy_patches, image_patch, result, rightmost_book_edge)
+            book_patches, boy_patches, image_patch, result, rightmost_book_edge = for_stmt(_for, boy_patches, (book_patches, boy_patches, image_patch, result, rightmost_book_edge))
+            return (book_patches, boy_patches, image_patch, result, rightmost_book_edge)
+        book_patches, boy_patches, image_patch, result, rightmost_book_edge = if_stmt(_if, _else, len(boy_patches) == 0, (book_patches, boy_patches, image_patch, result, rightmost_book_edge))
+        return (book_patches, boy_patches, image_patch, result, rightmost_book_edge)
+    book_patches, boy_patches, image_patch, result, rightmost_book_edge = if_stmt(_if, _else, len(book_patches) == 0, (book_patches, boy_patches, image_patch, result, rightmost_book_edge))
+    return result

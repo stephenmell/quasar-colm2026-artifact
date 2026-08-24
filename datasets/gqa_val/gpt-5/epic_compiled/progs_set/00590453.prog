@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_waiting = None
+    locomotive_patches = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    person_patches = image_patch.find('person')
+
+    def _if(image_patch, is_waiting, locomotive_patches, person_patches, result):
+        result = image_patch.simple_query('Are there locomotives to the left of the people that are waiting?')
+        return (image_patch, is_waiting, locomotive_patches, person_patches, result)
+
+    def _else(image_patch, is_waiting, locomotive_patches, person_patches, result):
+        locomotive_patches = image_patch.find('locomotive')
+
+        def _if(image_patch, is_waiting, locomotive_patches, person_patches, result):
+
+            def _for(person_patch, image_patch, is_waiting, locomotive_patches, person_patches, result):
+                is_waiting = person_patch.verify_property('person', 'waiting')
+
+                def _if(image_patch, is_waiting, locomotive_patches, person_patches, result):
+
+                    def _for(locomotive_patch, image_patch, is_waiting, locomotive_patches, person_patches, result):
+
+                        def _if(image_patch, is_waiting, locomotive_patches, person_patches, result):
+                            result = 'yes'
+                            return (image_patch, is_waiting, locomotive_patches, person_patches, result)
+                        image_patch, is_waiting, locomotive_patches, person_patches, result = if_stmt(_if, None, locomotive_patch.horizontal_center < person_patch.horizontal_center, (image_patch, is_waiting, locomotive_patches, person_patches, result))
+                        return (image_patch, is_waiting, locomotive_patches, person_patches, result)
+                    image_patch, is_waiting, locomotive_patches, person_patches, result = for_stmt(_for, locomotive_patches, (image_patch, is_waiting, locomotive_patches, person_patches, result))
+                    return (image_patch, is_waiting, locomotive_patches, person_patches, result)
+                image_patch, is_waiting, locomotive_patches, person_patches, result = if_stmt(_if, None, is_waiting, (image_patch, is_waiting, locomotive_patches, person_patches, result))
+                return (image_patch, is_waiting, locomotive_patches, person_patches, result)
+            image_patch, is_waiting, locomotive_patches, person_patches, result = for_stmt(_for, person_patches, (image_patch, is_waiting, locomotive_patches, person_patches, result))
+            return (image_patch, is_waiting, locomotive_patches, person_patches, result)
+        image_patch, is_waiting, locomotive_patches, person_patches, result = if_stmt(_if, None, len(locomotive_patches) > 0, (image_patch, is_waiting, locomotive_patches, person_patches, result))
+        return (image_patch, is_waiting, locomotive_patches, person_patches, result)
+    image_patch, is_waiting, locomotive_patches, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (image_patch, is_waiting, locomotive_patches, person_patches, result))
+    return result

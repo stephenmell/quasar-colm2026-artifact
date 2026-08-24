@@ -1,0 +1,5 @@
+{
+  "result": "{'restaurant_name': 'New Asiaway', 'rating': 4.6, 'address': '123 Rue de la Gaite, 75014 Paris, France', 'price_per_person': 30.0, 'operating_hours': '12:00 PM - 3:00 PM, 6:00 PM - 10:00 PM, open on Mondays, Tuesdays, Thursdays, Fridays, Saturdays, and Sundays'}",
+  "time_ns": 7562023764,
+  "utility": true
+}

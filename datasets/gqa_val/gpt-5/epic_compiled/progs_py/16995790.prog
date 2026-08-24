@@ -1,0 +1,20 @@
+# Is the young girl hitting a frisbee?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find possible patches for a young girl
+    young_girl_patches = image_patch.find("young girl")
+    girl_patches = image_patch.find("girl")
+    child_patches = image_patch.find("child")
+    kid_patches = image_patch.find("kid")
+    candidate_patches = young_girl_patches + girl_patches + child_patches + kid_patches
+
+    if len(candidate_patches) == 0:
+        result = image_patch.simple_query("Is the young girl hitting a frisbee?")
+    else:
+        result = "no"
+        for candidate in candidate_patches:
+            answer = candidate.simple_query("Is the young girl hitting a frisbee?")
+            if answer == "yes":
+                result = "yes"
+    return result

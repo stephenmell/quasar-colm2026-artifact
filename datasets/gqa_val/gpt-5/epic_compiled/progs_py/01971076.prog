@@ -1,0 +1,13 @@
+# Is there a zebra that is not sitting?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    zebra_patches = image_patch.find("zebra")
+    if len(zebra_patches) == 0:
+        result = image_patch.simple_query("Is there a zebra that is not sitting?")
+    else:
+        result = "no"
+        for zebra_patch in zebra_patches:
+            is_sitting = zebra_patch.verify_property("zebra", "sitting")
+            if not is_sitting:
+                result = "yes"
+    return result

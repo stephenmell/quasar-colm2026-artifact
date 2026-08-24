@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find relevant objects
+    man_patches = image_patch.find("man")
+    pillow_patches = image_patch.find("pillow")
+    wine_glass_patches = image_patch.find("wine glass")
+    if len(wine_glass_patches) == 0:
+        wine_glass_patches = image_patch.find("wineglass")
+
+    # If any key object is missing, ask directly
+    if len(man_patches) == 0 or len(pillow_patches) == 0 or len(wine_glass_patches) == 0:
+        return image_patch.simple_query("Is the man to the left or to the right of the wine glass that is to the left of the pillow?")
+
+    # Select the wine glass that is to the left of a pillow (closest one to a pillow on its right)
+    selected_wine = None
+    best_gap = float("inf")
+    for wg in wine_glass_patches:
+        gaps = [p.horizontal_center - wg.horizontal_center for p in pillow_patches if p.horizontal_center > wg.horizontal_center]
+        if len(gaps) == 0:
+            continue
+        gap = min(gaps)
+        if gap < best_gap:
+            best_gap = gap
+            selected_wine = wg
+
+    if selected_wine is None:
+        return image_patch.simple_query("Is the man to the left or to the right of the wine glass that is to the left of the pillow?")
+
+    # Choose the man closest (horizontally) to the selected wine glass
+    selected_man = min(man_patches, key=lambda m: abs(m.horizontal_center - selected_wine.horizontal_center))
+
+    return "left" if selected_man.horizontal_center < selected_wine.horizontal_center else "right"

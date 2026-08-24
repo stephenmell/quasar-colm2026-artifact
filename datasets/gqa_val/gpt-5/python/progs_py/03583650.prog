@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try to find the Wii controller (with some common synonyms)
+    controller_names = ["wii controller", "wii remote", "remote", "controller", "game controller", "video game controller"]
+    controller_patches = []
+    for name in controller_names:
+        controller_patches.extend(image_patch.find(name))
+
+    # If no controller is detected, ask directly
+    if len(controller_patches) == 0:
+        return image_patch.simple_query("Do you see any bottles near the Wii controller that is shown in the image?")
+
+    # Find bottles
+    bottle_patches = image_patch.find("bottle")
+    if len(bottle_patches) == 0:
+        return "no"
+
+    # Define a proximity threshold (fraction of image size)
+    x_thresh = image_patch.width * 0.25
+    y_thresh = image_patch.height * 0.25
+
+    # Check if any bottle is near any detected controller
+    for ctrl in controller_patches:
+        for bot in bottle_patches:
+            dx = abs(ctrl.horizontal_center - bot.horizontal_center)
+            dy = abs(ctrl.vertical_center - bot.vertical_center)
+            if dx <= x_thresh and dy <= y_thresh:
+                return "yes"
+
+    return "no"

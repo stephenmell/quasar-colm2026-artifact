@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find("fence")
+    if len(fence_patches) == 0:
+        # If no fence is found, query the image directly
+        return image_patch.simple_query("What is the name of the animal to the right of the fence on the left side?")
+    # Choose the fence on the left side (leftmost fence)
+    left_fence = min(fence_patches, key=lambda p: p.horizontal_center)
+
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        return image_patch.simple_query("What is the name of the animal to the right of the fence on the left side?")
+
+    # Keep animals to the right of the chosen fence
+    right_animals = [a for a in animal_patches if a.horizontal_center > left_fence.horizontal_center]
+    if len(right_animals) == 0:
+        return image_patch.simple_query("What is the name of the animal to the right of the fence on the left side?")
+
+    # Pick the nearest animal to the right of the fence
+    target_animal = min(right_animals, key=lambda a: a.horizontal_center - left_fence.horizontal_center)
+
+    # Ask the crop directly for the animal's name/type
+    return target_animal.simple_query("What is the name of the animal?")

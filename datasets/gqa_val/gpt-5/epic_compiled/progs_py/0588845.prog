@@ -1,0 +1,44 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    book_patches = image_patch.find("book")
+    person_patches = image_patch.find("person")
+    question = "Is the book to the left or to the right of the people on the right side?"
+    result = None
+
+    if len(book_patches) == 0 or len(person_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        people_right = ()
+        for person_patch in person_patches:
+            if person_patch.horizontal_center > image_patch.horizontal_center:
+                people_right = people_right + (person_patch,)
+        if len(people_right) == 0:
+            result = image_patch.simple_query(question)
+        else:
+            total_x = 0.0
+            count = 0
+            for p in people_right:
+                total_x = total_x + p.horizontal_center
+                count = count + 1
+            people_center_x = total_x / count if count > 0 else image_patch.horizontal_center
+
+            best_book = None
+            best_dist = None
+            for book_patch in book_patches:
+                dist = abs(book_patch.horizontal_center - people_center_x)
+                if best_dist is None or dist < best_dist:
+                    best_dist = dist
+                    best_book = book_patch
+
+            if best_book is None:
+                result = image_patch.simple_query(question)
+            else:
+                if best_book.horizontal_center < people_center_x:
+                    result = "left"
+                else:
+                    result = "right"
+
+    if not result:
+        result = image_patch.simple_query(question)
+    return result

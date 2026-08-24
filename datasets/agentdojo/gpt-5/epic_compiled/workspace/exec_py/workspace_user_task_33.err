@@ -1,0 +1,19 @@
+Stage: agentdojo_eval.exec_with_return
+Error: Contact with name 'John Mitchell' not found.
+Traceback: 
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper_artifact/run_agentdojo.py", line 363, in main
+    exec_result = agentdojo_eval.exec_with_return(code, exec_globals, exec_locals)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/agentdojo_utils/eval.py", line 22, in exec_with_return
+    exec(ast.unparse(a), globals, locals)
+  File "<string>", line 47, in <module>
+  File "/home/sm1/projects/conformal_viper_artifact/AgentDojo/tools/suite_common.py", line 40, in wrapper
+    return f(**kwargs_with_deps, **named_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/.venv/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 244, in search_contacts_by_name
+    return inbox.find_contacts_by_name(query)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper_artifact/.venv/lib/python3.12/site-packages/agentdojo/default_suites/v1/tools/email_client.py", line 132, in find_contacts_by_name
+    raise ValueError(f"Contact with name '{name}' not found.")
+ValueError: Contact with name 'John Mitchell' not found.

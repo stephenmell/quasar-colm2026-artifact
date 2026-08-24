@@ -1,0 +1,5 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_small_flag = image_patch.verify_property("flag", "small")
+    is_small_boat = image_patch.verify_property("boat", "small")
+    return bool_to_yesno(is_small_flag or is_small_boat)

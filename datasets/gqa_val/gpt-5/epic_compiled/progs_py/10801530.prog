@@ -1,0 +1,36 @@
+# Are there any rackets to the left of the person that sits on the seat?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        result = image_patch.simple_query("Are there any rackets to the left of the person that sits on the seat?")
+    else:
+        seat_person_patch = None
+        for person_patch in person_patches:
+            is_sitting_answer = person_patch.simple_query("Is the person sitting on the seat?")
+            is_sitting_on_seat = (is_sitting_answer == "yes")
+            if is_sitting_on_seat and seat_person_patch is None:
+                seat_person_patch = person_patch
+
+        if seat_person_patch is None:
+            result = image_patch.simple_query("Are there any rackets to the left of the person that sits on the seat?")
+        else:
+            # Collect racket patches (try both "racket" and "tennis racket")
+            racket_patches_primary = image_patch.find("racket")
+            racket_patches_secondary = image_patch.find("tennis racket")
+            all_racket_patches = ()
+            for rp in racket_patches_primary:
+                all_racket_patches = all_racket_patches + (rp,)
+            for rp in racket_patches_secondary:
+                all_racket_patches = all_racket_patches + (rp,)
+
+            if len(all_racket_patches) == 0:
+                result = "no"
+            else:
+                result = "no"
+                for racket_patch in all_racket_patches:
+                    if racket_patch.horizontal_center < seat_person_patch.horizontal_center:
+                        result = "yes"
+    return result

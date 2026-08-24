@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return image_patch.simple_query("Is the bench to the right or to the left of the man that is leaning on the fence?")
+    # Find the man who is leaning on the fence
+    leaning_man_patch = None
+    for man_patch in man_patches:
+        if man_patch.simple_query("Is the man leaning on the fence?") == "yes":
+            leaning_man_patch = man_patch
+            break
+    if leaning_man_patch is None:
+        return image_patch.simple_query("Is the bench to the right or to the left of the man that is leaning on the fence?")
+    # Find benches
+    bench_patches = image_patch.find("bench")
+    if len(bench_patches) == 0:
+        return image_patch.simple_query("Is the bench to the right or to the left of the man that is leaning on the fence?")
+    # Choose the bench closest (horizontally) to the leaning man
+    bench_patch = min(bench_patches, key=lambda b: abs(b.horizontal_center - leaning_man_patch.horizontal_center))
+    return "right" if bench_patch.horizontal_center > leaning_man_patch.horizontal_center else "left"

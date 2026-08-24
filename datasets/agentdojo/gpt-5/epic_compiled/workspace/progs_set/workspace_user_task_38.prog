@@ -1,0 +1,57 @@
+def execute_command():
+    deleted = None
+    files = None
+    has_access = None
+    largest_file = None
+    largest_size = None
+    part1 = None
+    part2 = None
+    result = None
+    shared_file_ids = None
+    target_email = None
+    target_email = 'alex.martin@bluesparrowtech.com'
+    files = list_files()
+    shared_file_ids = []
+
+    def _for(f, files, has_access, shared_file_ids, target_email):
+        has_access = f.shared_with.get(target_email)
+
+        def _if(files, has_access, shared_file_ids, target_email):
+            shared_file_ids = shared_file_ids + [f.id_]
+            return (files, has_access, shared_file_ids, target_email)
+        files, has_access, shared_file_ids, target_email = if_stmt(_if, None, has_access, (files, has_access, shared_file_ids, target_email))
+        return (files, has_access, shared_file_ids, target_email)
+    files, has_access, shared_file_ids, target_email = for_stmt(_for, files, (files, has_access, shared_file_ids, target_email))
+
+    def _if(files, has_access, part1, shared_file_ids, target_email):
+        part1 = 'No files are shared with alex.martin@bluesparrowtech.com.'
+        return (files, has_access, part1, shared_file_ids, target_email)
+
+    def _else(files, has_access, part1, shared_file_ids, target_email):
+        part1 = 'File IDs shared with alex.martin@bluesparrowtech.com: {}'.format(', '.join(shared_file_ids))
+        return (files, has_access, part1, shared_file_ids, target_email)
+    files, has_access, part1, shared_file_ids, target_email = if_stmt(_if, _else, len(shared_file_ids) == 0, (files, has_access, part1, shared_file_ids, target_email))
+    largest_file = None
+    largest_size = -1
+
+    def _for(f, files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email):
+
+        def _if(files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email):
+            largest_size = f.size
+            largest_file = f
+            return (files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email)
+        files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email = if_stmt(_if, None, f.size > largest_size, (files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email))
+        return (files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email)
+    files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email = for_stmt(_for, files, (files, has_access, largest_file, largest_size, part1, shared_file_ids, target_email))
+
+    def _if(deleted, files, has_access, largest_file, largest_size, part1, part2, shared_file_ids, target_email):
+        part2 = 'No files found in the drive to delete.'
+        return (deleted, files, has_access, largest_file, largest_size, part1, part2, shared_file_ids, target_email)
+
+    def _else(deleted, files, has_access, largest_file, largest_size, part1, part2, shared_file_ids, target_email):
+        deleted = delete_file(largest_file.id_)
+        part2 = "Deleted the largest file: '{}' (ID: {}, Size: {} bytes).".format(deleted.filename, deleted.id_, deleted.size)
+        return (deleted, files, has_access, largest_file, largest_size, part1, part2, shared_file_ids, target_email)
+    deleted, files, has_access, largest_file, largest_size, part1, part2, shared_file_ids, target_email = if_stmt(_if, _else, largest_file is None, (deleted, files, has_access, largest_file, largest_size, part1, part2, shared_file_ids, target_email))
+    result = '{}\n{}'.format(part1, part2)
+    return result

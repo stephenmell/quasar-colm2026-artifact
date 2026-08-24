@@ -1,0 +1,12 @@
+# In which part of the picture is the faucet, the bottom or the top?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    faucet_patches = image_patch.find("faucet")
+    if len(faucet_patches) == 0:
+        result = image_patch.simple_query("In which part of the picture is the faucet, the bottom or the top?")
+    else:
+        if faucet_patches[0].vertical_center < image_patch.vertical_center:
+            result = "bottom"
+        else:
+            result = "top"
+    return result

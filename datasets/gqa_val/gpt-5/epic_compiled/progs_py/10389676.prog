@@ -1,0 +1,15 @@
+# What the red animal is called?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("What is the red animal called?")
+    else:
+        result = None
+        for animal_patch in animal_patches:
+            is_red = animal_patch.verify_property("animal", "red")
+            if is_red and not result:
+                result = animal_patch.simple_query("What is this?")
+        if not result:
+            result = image_patch.simple_query("What is the red animal called?")
+    return result

@@ -1,0 +1,7 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    goggles_patches = image_patch.find("goggles")
+    if len(goggles_patches) == 0:
+        return image_patch.simple_query("Are there any goggles in the photo that are orange?")
+    has_orange_goggles = any(p.verify_property("goggles", "orange") for p in goggles_patches)
+    return bool_to_yesno(has_orange_goggles)

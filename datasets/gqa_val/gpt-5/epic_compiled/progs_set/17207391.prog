@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    bottle_patches = None
+    image_patch = None
+    is_on_counter = None
+    oven_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    bottle_patches = image_patch.find('bottle')
+
+    def _if(bottle_patches, image_patch, is_on_counter, oven_patches, result):
+        result = image_patch.simple_query('Are there any ovens to the right of the bottle on the counter?')
+        return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+
+    def _else(bottle_patches, image_patch, is_on_counter, oven_patches, result):
+        result = 'no'
+        oven_patches = image_patch.find('oven')
+
+        def _for(bottle_patch, bottle_patches, image_patch, is_on_counter, oven_patches, result):
+            is_on_counter = False
+
+            def _if(bottle_patches, image_patch, is_on_counter, oven_patches, result):
+                is_on_counter = True
+                return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+            bottle_patches, image_patch, is_on_counter, oven_patches, result = if_stmt(_if, None, bottle_patch.verify_property('bottle', 'on counter'), (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+
+            def _if(bottle_patches, image_patch, is_on_counter, oven_patches, result):
+                is_on_counter = True
+                return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+            bottle_patches, image_patch, is_on_counter, oven_patches, result = if_stmt(_if, None, and_expr(not is_on_counter, bottle_patch.verify_property('bottle', 'on the counter')), (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+
+            def _if(bottle_patches, image_patch, is_on_counter, oven_patches, result):
+                is_on_counter = True
+                return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+            bottle_patches, image_patch, is_on_counter, oven_patches, result = if_stmt(_if, None, and_expr(not is_on_counter, bottle_patch.verify_property('bottle', 'on countertop')), (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+
+            def _if(bottle_patches, image_patch, is_on_counter, oven_patches, result):
+
+                def _for(oven_patch, bottle_patches, image_patch, is_on_counter, oven_patches, result):
+
+                    def _if(bottle_patches, image_patch, is_on_counter, oven_patches, result):
+                        result = 'yes'
+                        return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+                    bottle_patches, image_patch, is_on_counter, oven_patches, result = if_stmt(_if, None, oven_patch.horizontal_center > bottle_patch.horizontal_center, (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+                    return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+                bottle_patches, image_patch, is_on_counter, oven_patches, result = for_stmt(_for, oven_patches, (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+                return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+            bottle_patches, image_patch, is_on_counter, oven_patches, result = if_stmt(_if, None, is_on_counter, (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+            return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+        bottle_patches, image_patch, is_on_counter, oven_patches, result = for_stmt(_for, bottle_patches, (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+        return (bottle_patches, image_patch, is_on_counter, oven_patches, result)
+    bottle_patches, image_patch, is_on_counter, oven_patches, result = if_stmt(_if, _else, len(bottle_patches) == 0, (bottle_patches, image_patch, is_on_counter, oven_patches, result))
+    return result

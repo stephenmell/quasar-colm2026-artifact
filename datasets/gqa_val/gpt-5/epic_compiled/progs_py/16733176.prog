@@ -1,0 +1,10 @@
+# Do you see women or fathers?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    object_names = ("woman", "women", "father", "fathers", "dad", "dads", "lady", "ladies")
+    seen = False
+    for name in object_names:
+        if image_patch.exists(name):
+            seen = True
+    result = bool_to_yesno(seen)
+    return result

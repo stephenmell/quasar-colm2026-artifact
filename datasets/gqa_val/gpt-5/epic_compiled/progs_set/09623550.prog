@@ -1,0 +1,75 @@
+def execute_command(image) -> str:
+    answer = None
+    color_options = None
+    image_patch = None
+    is_same_color = None
+    result = None
+    rope_color = None
+    rope_patches = None
+    vehicle_patches = None
+    vehicle_types = None
+    vtype_name = None
+    vtype_patches = None
+    image_patch = ImagePatch(image)
+    rope_patches = image_patch.find('rope')
+
+    def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+        result = image_patch.simple_query('What kind of vehicle is the same color as the rope?')
+        return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+
+    def _else(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+        color_options = ('red', 'blue', 'green', 'yellow', 'black', 'white', 'gray', 'brown', 'orange', 'pink', 'purple', 'silver', 'gold')
+        rope_color = rope_patches[0].best_text_match(color_options)
+        result = None
+        vehicle_patches = image_patch.find('vehicle')
+
+        def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches):
+
+            def _for(vehicle_patch, answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches):
+                is_same_color = vehicle_patch.verify_property('vehicle', rope_color)
+
+                def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches):
+                    answer = vehicle_patch.simple_query('What kind of vehicle is this?')
+
+                    def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches):
+                        result = answer
+                        return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches)
+                    answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches = if_stmt(_if, None, answer, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches))
+                    return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches)
+                answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches = if_stmt(_if, None, is_same_color, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches))
+                return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches)
+            answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches = for_stmt(_for, vehicle_patches, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches))
+            return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches)
+        answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches = if_stmt(_if, None, len(vehicle_patches) > 0, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches))
+
+        def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+            vehicle_types = ('car', 'bus', 'truck', 'van', 'motorcycle', 'bicycle', 'bike', 'train', 'boat', 'airplane', 'scooter', 'taxi', 'tram')
+
+            def _for(vtype, answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+                vtype_patches = image_patch.find(vtype)
+
+                def _for(vtype_patch, answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+
+                    def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+                        vtype_name = vtype_patch.simple_query('What kind of vehicle is this?')
+
+                        def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+                            result = vtype_name
+                            return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+                        answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches = if_stmt(_if, None, vtype_name, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches))
+                        return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+                    answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches = if_stmt(_if, None, vtype_patch.verify_property(vtype, rope_color), (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches))
+                    return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+                answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches = for_stmt(_for, vtype_patches, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches))
+                return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+            answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches = for_stmt(_for, vehicle_types, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches))
+            return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+        answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches = if_stmt(_if, None, not_expr(result), (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches))
+
+        def _if(answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches):
+            result = image_patch.simple_query('What kind of vehicle is the same color as the rope?')
+            return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+        answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches = if_stmt(_if, None, not_expr(result), (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches))
+        return (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches)
+    answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches = if_stmt(_if, _else, len(rope_patches) == 0, (answer, color_options, image_patch, is_same_color, result, rope_color, rope_patches, vehicle_patches, vehicle_types, vtype_name, vtype_patches))
+    return result

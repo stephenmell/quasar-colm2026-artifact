@@ -1,0 +1,85 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_left = None
+    is_reading = None
+    man_patches = None
+    reading_man_patch = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+    reading_man_patch = None
+
+    def _if(image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+        result = image_patch.simple_query('Are there women to the left of the man that is reading a paper?')
+        return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+
+    def _else(image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+
+        def _for(man_patch, image_patch, is_reading, man_patches, reading_man_patch, result):
+            is_reading = False
+
+            def _if(image_patch, is_reading, man_patches, reading_man_patch, result):
+                is_reading = True
+                return (image_patch, is_reading, man_patches, reading_man_patch, result)
+
+            def _else(image_patch, is_reading, man_patches, reading_man_patch, result):
+
+                def _if(image_patch, is_reading, man_patches, reading_man_patch, result):
+                    is_reading = True
+                    return (image_patch, is_reading, man_patches, reading_man_patch, result)
+
+                def _else(image_patch, is_reading, man_patches, reading_man_patch, result):
+
+                    def _if(image_patch, is_reading, man_patches, reading_man_patch, result):
+                        is_reading = True
+                        return (image_patch, is_reading, man_patches, reading_man_patch, result)
+                    image_patch, is_reading, man_patches, reading_man_patch, result = if_stmt(_if, None, man_patch.simple_query('Is the man reading a paper?') == 'yes', (image_patch, is_reading, man_patches, reading_man_patch, result))
+                    return (image_patch, is_reading, man_patches, reading_man_patch, result)
+                image_patch, is_reading, man_patches, reading_man_patch, result = if_stmt(_if, _else, man_patch.verify_property('man', 'reading'), (image_patch, is_reading, man_patches, reading_man_patch, result))
+                return (image_patch, is_reading, man_patches, reading_man_patch, result)
+            image_patch, is_reading, man_patches, reading_man_patch, result = if_stmt(_if, _else, man_patch.verify_property('man', 'reading a paper'), (image_patch, is_reading, man_patches, reading_man_patch, result))
+
+            def _if(image_patch, is_reading, man_patches, reading_man_patch, result):
+                reading_man_patch = man_patch
+                return (image_patch, is_reading, man_patches, reading_man_patch, result)
+            image_patch, is_reading, man_patches, reading_man_patch, result = if_stmt(_if, None, and_expr(is_reading, reading_man_patch is None), (image_patch, is_reading, man_patches, reading_man_patch, result))
+            return (image_patch, is_reading, man_patches, reading_man_patch, result)
+        image_patch, is_reading, man_patches, reading_man_patch, result = for_stmt(_for, man_patches, (image_patch, is_reading, man_patches, reading_man_patch, result))
+
+        def _if(image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+            result = image_patch.simple_query('Are there women to the left of the man that is reading a paper?')
+            return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+
+        def _else(image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+            woman_patches = image_patch.find('woman')
+
+            def _if(image_patch, is_reading, man_patches, reading_man_patch, result, woman_patches):
+                woman_patches = image_patch.find('women')
+                return (image_patch, is_reading, man_patches, reading_man_patch, result, woman_patches)
+            image_patch, is_reading, man_patches, reading_man_patch, result, woman_patches = if_stmt(_if, None, len(woman_patches) == 0, (image_patch, is_reading, man_patches, reading_man_patch, result, woman_patches))
+
+            def _if(image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+                result = 'no'
+                return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+
+            def _else(image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+                is_left = False
+
+                def _for(woman_patch, image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+
+                    def _if(image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches):
+                        is_left = True
+                        return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+                    image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center < reading_man_patch.horizontal_center, (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches))
+                    return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+                image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches = for_stmt(_for, woman_patches, (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches))
+                result = 'yes' if is_left else 'no'
+                return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+            image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches))
+            return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+        image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches = if_stmt(_if, _else, not_expr(reading_man_patch), (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches))
+        return (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches)
+    image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches = if_stmt(_if, _else, len(man_patches) == 0, (image_patch, is_left, is_reading, man_patches, reading_man_patch, result, woman_patches))
+    return result

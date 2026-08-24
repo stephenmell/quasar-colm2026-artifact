@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    clouds_patches = image_patch.find("clouds")
+    if len(clouds_patches) == 0:
+        # If no clouds are found, query the image directly
+        return image_patch.simple_query("Are the clouds thin and white?")
+    for clouds_patch in clouds_patches:
+        is_thin = clouds_patch.verify_property("clouds", "thin")
+        is_white = clouds_patch.verify_property("clouds", "white")
+        if is_thin and is_white:
+            return "yes"
+    return "no"

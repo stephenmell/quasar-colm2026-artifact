@@ -1,0 +1,40 @@
+def execute_command(image) -> str:
+    area = None
+    fence_patches = None
+    image_patch = None
+    max_area = None
+    result = None
+    side = None
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find('fence')
+
+    def _if(area, fence_patches, image_patch, max_area, result, side):
+        result = image_patch.simple_query('On which side of the photo is the fence, the right or the left?')
+        return (area, fence_patches, image_patch, max_area, result, side)
+
+    def _else(area, fence_patches, image_patch, max_area, result, side):
+        max_area = -1
+        side = 'left'
+
+        def _for(fence_patch, area, fence_patches, image_patch, max_area, side):
+            area = fence_patch.width * fence_patch.height
+
+            def _if(area, fence_patches, image_patch, max_area, side):
+                max_area = area
+
+                def _if(area, fence_patches, image_patch, max_area, side):
+                    side = 'right'
+                    return (area, fence_patches, image_patch, max_area, side)
+
+                def _else(area, fence_patches, image_patch, max_area, side):
+                    side = 'left'
+                    return (area, fence_patches, image_patch, max_area, side)
+                area, fence_patches, image_patch, max_area, side = if_stmt(_if, _else, fence_patch.horizontal_center > image_patch.horizontal_center, (area, fence_patches, image_patch, max_area, side))
+                return (area, fence_patches, image_patch, max_area, side)
+            area, fence_patches, image_patch, max_area, side = if_stmt(_if, None, area > max_area, (area, fence_patches, image_patch, max_area, side))
+            return (area, fence_patches, image_patch, max_area, side)
+        area, fence_patches, image_patch, max_area, side = for_stmt(_for, fence_patches, (area, fence_patches, image_patch, max_area, side))
+        result = side
+        return (area, fence_patches, image_patch, max_area, result, side)
+    area, fence_patches, image_patch, max_area, result, side = if_stmt(_if, _else, len(fence_patches) == 0, (area, fence_patches, image_patch, max_area, result, side))
+    return result

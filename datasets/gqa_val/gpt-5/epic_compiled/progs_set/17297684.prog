@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    child_synonyms = None
+    children_patches = None
+    image_patch = None
+    overlap_x = None
+    person_patches = None
+    result = None
+    sky_above = None
+    sky_patches = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+    sky_patches = image_patch.find('sky')
+    child_synonyms = ('child', 'kid', 'boy', 'girl', 'children', 'kids')
+    children_patches = ()
+
+    def _for(name, child_synonyms, children_patches, image_patch, person_patches, sky_patches):
+        children_patches = children_patches + image_patch.find(name)
+        return (child_synonyms, children_patches, image_patch, person_patches, sky_patches)
+    child_synonyms, children_patches, image_patch, person_patches, sky_patches = for_stmt(_for, child_synonyms, (child_synonyms, children_patches, image_patch, person_patches, sky_patches))
+
+    def _if(child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+        result = image_patch.simple_query('Are there children to the right of the people the sky is above?')
+        return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+
+    def _else(child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+        result = 'no'
+
+        def _for(person_patch, child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+            sky_above = False
+
+            def _for(sky_patch, child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+                overlap_x = and_expr(sky_patch.right > person_patch.left, sky_patch.left < person_patch.right)
+
+                def _if(child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+                    sky_above = True
+                    return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+                child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches = if_stmt(_if, None, and_expr(sky_patch.vertical_center < person_patch.vertical_center, overlap_x), (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches))
+                return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+            child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches = for_stmt(_for, sky_patches, (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches))
+
+            def _if(child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+
+                def _for(child_patch, child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+
+                    def _if(child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches):
+                        result = 'yes'
+                        return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+                    child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches = if_stmt(_if, None, child_patch.horizontal_center > person_patch.horizontal_center, (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches))
+                    return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+                child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches = for_stmt(_for, children_patches, (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches))
+                return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+            child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches = if_stmt(_if, None, sky_above, (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches))
+            return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+        child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches = for_stmt(_for, person_patches, (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches))
+        return (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches)
+    child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches = if_stmt(_if, _else, or_expr(len(person_patches) == 0, len(sky_patches) == 0), (child_synonyms, children_patches, image_patch, overlap_x, person_patches, result, sky_above, sky_patches))
+    return result

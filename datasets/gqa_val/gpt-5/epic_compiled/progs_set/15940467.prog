@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_glasses = None
+    has_scarf = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_glasses = or_expr(image_patch.exists('glasses'), or_expr(image_patch.exists('sunglasses'), image_patch.exists('eyeglasses')))
+    has_scarf = or_expr(image_patch.exists('scarf'), image_patch.exists('scarves'))
+    result = bool_to_yesno(or_expr(has_glasses, has_scarf))
+    return result

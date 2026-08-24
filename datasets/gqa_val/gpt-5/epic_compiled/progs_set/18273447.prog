@@ -1,0 +1,38 @@
+def execute_command(image) -> str:
+    found_non_wood = None
+    image_patch = None
+    is_wood = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+
+    def _if(found_non_wood, image_patch, is_wood, result, table_patches):
+        result = image_patch.simple_query('Is there a table that is not made of wood?')
+        return (found_non_wood, image_patch, is_wood, result, table_patches)
+
+    def _else(found_non_wood, image_patch, is_wood, result, table_patches):
+        table_patches = image_patch.find('table')
+        found_non_wood = False
+
+        def _for(table_patch, found_non_wood, image_patch, is_wood, result, table_patches):
+            is_wood = table_patch.verify_property('table', 'wood')
+
+            def _if(found_non_wood, image_patch, is_wood, result, table_patches):
+                found_non_wood = True
+                return (found_non_wood, image_patch, is_wood, result, table_patches)
+            found_non_wood, image_patch, is_wood, result, table_patches = if_stmt(_if, None, not_expr(is_wood), (found_non_wood, image_patch, is_wood, result, table_patches))
+            return (found_non_wood, image_patch, is_wood, result, table_patches)
+        found_non_wood, image_patch, is_wood, result, table_patches = for_stmt(_for, table_patches, (found_non_wood, image_patch, is_wood, result, table_patches))
+
+        def _if(found_non_wood, image_patch, is_wood, result, table_patches):
+            result = 'yes'
+            return (found_non_wood, image_patch, is_wood, result, table_patches)
+
+        def _else(found_non_wood, image_patch, is_wood, result, table_patches):
+            result = 'no'
+            return (found_non_wood, image_patch, is_wood, result, table_patches)
+        found_non_wood, image_patch, is_wood, result, table_patches = if_stmt(_if, _else, found_non_wood, (found_non_wood, image_patch, is_wood, result, table_patches))
+        return (found_non_wood, image_patch, is_wood, result, table_patches)
+    found_non_wood, image_patch, is_wood, result, table_patches = if_stmt(_if, _else, not_expr(image_patch.exists('table')), (found_non_wood, image_patch, is_wood, result, table_patches))
+    return result

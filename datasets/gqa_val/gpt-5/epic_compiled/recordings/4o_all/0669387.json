@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2401681",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Where is the luggage?"
+      ],
+      "The luggage is on a floor.",
+      1171722088
+    ]
+  ],
+  "best_text_match": []
+}

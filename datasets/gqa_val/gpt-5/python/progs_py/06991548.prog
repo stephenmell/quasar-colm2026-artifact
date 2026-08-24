@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find("fence")
+    # Question assumes only one fence patch
+    if len(fence_patches) == 0:
+        # If no fence is found, query the image directly
+        return image_patch.simple_query("On which side of the photo is the fence, the right or the left?")
+    if fence_patches[0].horizontal_center > image_patch.horizontal_center:
+        return "right"
+    else:
+        return "left"

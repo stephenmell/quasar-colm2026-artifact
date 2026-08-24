@@ -1,0 +1,48 @@
+def execute_command(image) -> str:
+    image_patch = None
+    onion_cooked = None
+    onion_patches = None
+    pizza_cooked = None
+    pizza_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pizza_patches = image_patch.find('pizza')
+    onion_patches = image_patch.find('onion')
+    pizza_cooked = False
+    onion_cooked = False
+
+    def _for(pizza_patch, image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches):
+
+        def _if(image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches):
+            pizza_cooked = True
+            return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches)
+        image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches = if_stmt(_if, None, or_expr(pizza_patch.verify_property('pizza', 'cooked'), pizza_patch.verify_property('pizza', 'baked')), (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches))
+        return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches)
+    image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches = for_stmt(_for, pizza_patches, (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches))
+
+    def _for(onion_patch, image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches):
+
+        def _if(image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches):
+            onion_cooked = True
+            return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches)
+        image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches = if_stmt(_if, None, or_expr(onion_patch.verify_property('onion', 'cooked'), onion_patch.verify_property('onion', 'roasted')), (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches))
+        return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches)
+    image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches = for_stmt(_for, onion_patches, (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches))
+
+    def _if(image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result):
+        result = 'pizza'
+        return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result)
+
+    def _else(image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result):
+
+        def _if(image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result):
+            result = 'onion'
+            return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result)
+
+        def _else(image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result):
+            result = image_patch.simple_query('What kind of food is cooked, the pizza or the onion?')
+            return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result)
+        image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result = if_stmt(_if, _else, and_expr(onion_cooked, not pizza_cooked), (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result))
+        return (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result)
+    image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result = if_stmt(_if, _else, and_expr(pizza_cooked, not onion_cooked), (image_patch, onion_cooked, onion_patches, pizza_cooked, pizza_patches, result))
+    return result

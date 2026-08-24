@@ -1,0 +1,63 @@
+def execute_command(image) -> str:
+    blond_person_patch = None
+    has_blond_hair = None
+    has_blonde_hair = None
+    image_patch = None
+    is_blond = None
+    is_blonde = None
+    man_patches = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    person_patches = image_patch.find('person')
+
+    def _if(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+        result = image_patch.simple_query('Are there men to the right of the person that looks blond?')
+        return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+
+    def _else(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+        blond_person_patch = None
+
+        def _for(person_patch, blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result):
+            is_blond = person_patch.verify_property('person', 'blond')
+            is_blonde = person_patch.verify_property('person', 'blonde')
+            has_blond_hair = person_patch.verify_property('person', 'blond hair')
+            has_blonde_hair = person_patch.verify_property('person', 'blonde hair')
+
+            def _if(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result):
+                blond_person_patch = person_patch
+                return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result)
+            blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result = if_stmt(_if, None, and_expr(is_blond or is_blonde or has_blond_hair or has_blonde_hair, blond_person_patch is None), (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result))
+            return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result)
+        blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result = for_stmt(_for, person_patches, (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, person_patches, result))
+
+        def _if(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+            result = image_patch.simple_query('Are there men to the right of the person that looks blond?')
+            return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+
+        def _else(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+            man_patches = image_patch.find('man')
+
+            def _if(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+                result = 'no'
+
+                def _for(man_patch, blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+
+                    def _if(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+                        result = 'yes'
+                        return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+                    blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result = if_stmt(_if, None, man_patch.horizontal_center > blond_person_patch.horizontal_center, (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result))
+                    return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+                blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result = for_stmt(_for, man_patches, (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result))
+                return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+
+            def _else(blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result):
+                result = 'no'
+                return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+            blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result = if_stmt(_if, _else, len(man_patches) > 0, (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result))
+            return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+        blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result = if_stmt(_if, _else, blond_person_patch is None, (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result))
+        return (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result)
+    blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (blond_person_patch, has_blond_hair, has_blonde_hair, image_patch, is_blond, is_blonde, man_patches, person_patches, result))
+    return result

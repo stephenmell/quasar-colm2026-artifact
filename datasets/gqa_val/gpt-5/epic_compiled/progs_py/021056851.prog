@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    lady_names = ("lady", "ladies", "woman", "women", "girl", "girls")
+    glasses_names = ("glasses", "eyeglasses", "spectacles", "sunglasses", "glass", "drinking glass", "wine glass", "goblet", "cup")
+
+    lady_found = False
+    for name in lady_names:
+        if image_patch.exists(name):
+            lady_found = True
+
+    glasses_found = False
+    for name in glasses_names:
+        if image_patch.exists(name):
+            glasses_found = True
+
+    result = bool_to_yesno(lady_found or glasses_found)
+    return result

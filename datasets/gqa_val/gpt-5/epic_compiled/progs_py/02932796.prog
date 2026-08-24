@@ -1,0 +1,14 @@
+# Does this bench look brown?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bench_patches = image_patch.find("bench")
+
+    if len(bench_patches) == 0:
+        result = image_patch.simple_query("Does this bench look brown?")
+    else:
+        brown_found = False
+        for bench_patch in bench_patches:
+            if bench_patch.verify_property("bench", "brown"):
+                brown_found = True
+        result = bool_to_yesno(brown_found)
+    return result

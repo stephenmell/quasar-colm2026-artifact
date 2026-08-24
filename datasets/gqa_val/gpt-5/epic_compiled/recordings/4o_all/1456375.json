@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2332451",
+          [
+            0,
+            0,
+            333,
+            500
+          ]
+        ],
+        "Is it foggy?"
+      ],
+      "No.",
+      824565808
+    ]
+  ],
+  "best_text_match": []
+}

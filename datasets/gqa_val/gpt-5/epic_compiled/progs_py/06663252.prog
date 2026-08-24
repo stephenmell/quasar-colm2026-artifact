@@ -1,0 +1,57 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Find boxes
+    box_patches = image_patch.find("box")
+
+    # If no box found, ask directly
+    if len(box_patches) == 0:
+        result = image_patch.simple_query("What is the drink to the left of the box in the bottom part of the image?")
+    else:
+        # Select a box in the bottom part; choose the leftmost among bottom boxes
+        candidate_box = None
+        candidate_x = None
+        for box_patch in box_patches:
+            if box_patch.vertical_center < image_patch.vertical_center:
+                if candidate_box is None:
+                    candidate_box = box_patch
+                    candidate_x = box_patch.horizontal_center
+                else:
+                    if box_patch.horizontal_center < candidate_x:
+                        candidate_box = box_patch
+                        candidate_x = box_patch.horizontal_center
+
+        if not candidate_box:
+            result = image_patch.simple_query("What is the drink to the left of the box in the bottom part of the image?")
+        else:
+            # Gather likely drink objects
+            drink_labels = ("drink", "bottle", "cup", "glass", "wine glass", "mug", "can", "soda can", "beer", "coffee cup")
+            drink_patches_all = ()
+            for label in drink_labels:
+                label_matches = image_patch.find(label)
+                if len(label_matches) > 0:
+                    drink_patches_all = drink_patches_all + label_matches
+
+            if len(drink_patches_all) == 0:
+                result = image_patch.simple_query("What is the drink to the left of the box in the bottom part of the image?")
+            else:
+                # Pick the bottom-half drink that is to the left of the chosen box and closest to it
+                selected_drink = None
+                best_distance = None
+                for drink_patch in drink_patches_all:
+                    if drink_patch.horizontal_center < candidate_box.horizontal_center:
+                        if drink_patch.vertical_center < image_patch.vertical_center:
+                            distance = candidate_box.horizontal_center - drink_patch.horizontal_center
+                            if best_distance is None or distance < best_distance:
+                                selected_drink = drink_patch
+                                best_distance = distance
+
+                if not selected_drink:
+                    result = image_patch.simple_query("What is the drink to the left of the box in the bottom part of the image?")
+                else:
+                    result = selected_drink.simple_query("What is the drink?")
+
+    if not result:
+        result = image_patch.simple_query("What is the drink to the left of the box in the bottom part of the image?")
+    return result

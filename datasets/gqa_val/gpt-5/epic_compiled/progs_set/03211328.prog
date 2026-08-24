@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    crosswalk_patches = None
+    image_patch = None
+    men_patches = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    crosswalk_patches = image_patch.find('crosswalk')
+
+    def _if(crosswalk_patches, image_patch, men_patches, person_patches, result):
+        result = image_patch.simple_query('Are there men on the crosswalk?')
+        return (crosswalk_patches, image_patch, men_patches, person_patches, result)
+
+    def _else(crosswalk_patches, image_patch, men_patches, person_patches, result):
+        result = 'no'
+
+        def _for(crosswalk_patch, crosswalk_patches, image_patch, men_patches, person_patches, result):
+            men_patches = crosswalk_patch.find('man')
+
+            def _if(crosswalk_patches, image_patch, men_patches, person_patches, result):
+                result = 'yes'
+                return (crosswalk_patches, image_patch, men_patches, person_patches, result)
+
+            def _else(crosswalk_patches, image_patch, men_patches, person_patches, result):
+                person_patches = crosswalk_patch.find('person')
+
+                def _if(crosswalk_patches, image_patch, men_patches, person_patches, result):
+                    result = 'yes'
+                    return (crosswalk_patches, image_patch, men_patches, person_patches, result)
+                crosswalk_patches, image_patch, men_patches, person_patches, result = if_stmt(_if, None, len(person_patches) > 0, (crosswalk_patches, image_patch, men_patches, person_patches, result))
+                return (crosswalk_patches, image_patch, men_patches, person_patches, result)
+            crosswalk_patches, image_patch, men_patches, person_patches, result = if_stmt(_if, _else, len(men_patches) > 0, (crosswalk_patches, image_patch, men_patches, person_patches, result))
+            return (crosswalk_patches, image_patch, men_patches, person_patches, result)
+        crosswalk_patches, image_patch, men_patches, person_patches, result = for_stmt(_for, crosswalk_patches, (crosswalk_patches, image_patch, men_patches, person_patches, result))
+        return (crosswalk_patches, image_patch, men_patches, person_patches, result)
+    crosswalk_patches, image_patch, men_patches, person_patches, result = if_stmt(_if, _else, len(crosswalk_patches) == 0, (crosswalk_patches, image_patch, men_patches, person_patches, result))
+    return result

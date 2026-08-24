@@ -1,0 +1,46 @@
+def execute_command(image) -> str:
+    average_center = None
+    count = None
+    image_patch = None
+    pedestrian_patches = None
+    result = None
+    total_center = None
+    image_patch = ImagePatch(image)
+    pedestrian_patches = image_patch.find('pedestrian')
+
+    def _if(image_patch, pedestrian_patches):
+        pedestrian_patches = image_patch.find('person')
+        return (image_patch, pedestrian_patches)
+    image_patch, pedestrian_patches = if_stmt(_if, None, len(pedestrian_patches) == 0, (image_patch, pedestrian_patches))
+
+    def _if(average_center, count, image_patch, pedestrian_patches, result, total_center):
+        result = image_patch.simple_query('Are the pedestrians on the right side?')
+        return (average_center, count, image_patch, pedestrian_patches, result, total_center)
+
+    def _else(average_center, count, image_patch, pedestrian_patches, result, total_center):
+        total_center = 0.0
+        count = 0
+
+        def _for(ped_patch, count, image_patch, pedestrian_patches, total_center):
+            total_center = total_center + ped_patch.horizontal_center
+            count = count + 1
+            return (count, image_patch, pedestrian_patches, total_center)
+        count, image_patch, pedestrian_patches, total_center = for_stmt(_for, pedestrian_patches, (count, image_patch, pedestrian_patches, total_center))
+        average_center = image_patch.horizontal_center
+
+        def _if(average_center, count, image_patch, pedestrian_patches, total_center):
+            average_center = total_center / count
+            return (average_center, count, image_patch, pedestrian_patches, total_center)
+        average_center, count, image_patch, pedestrian_patches, total_center = if_stmt(_if, None, count != 0, (average_center, count, image_patch, pedestrian_patches, total_center))
+
+        def _if(average_center, count, image_patch, pedestrian_patches, result, total_center):
+            result = 'yes'
+            return (average_center, count, image_patch, pedestrian_patches, result, total_center)
+
+        def _else(average_center, count, image_patch, pedestrian_patches, result, total_center):
+            result = 'no'
+            return (average_center, count, image_patch, pedestrian_patches, result, total_center)
+        average_center, count, image_patch, pedestrian_patches, result, total_center = if_stmt(_if, _else, average_center > image_patch.horizontal_center, (average_center, count, image_patch, pedestrian_patches, result, total_center))
+        return (average_center, count, image_patch, pedestrian_patches, result, total_center)
+    average_center, count, image_patch, pedestrian_patches, result, total_center = if_stmt(_if, _else, len(pedestrian_patches) == 0, (average_center, count, image_patch, pedestrian_patches, result, total_center))
+    return result

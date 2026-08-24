@@ -1,0 +1,17 @@
+# How long is the gray sweater?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    sweater_patches = image_patch.find("sweater")
+    question = "How long is the gray sweater?"
+    if len(sweater_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        selected_patch = None
+        for sweater_patch in sweater_patches:
+            is_gray = sweater_patch.verify_property("sweater", "gray")
+            if is_gray and (selected_patch is None):
+                selected_patch = sweater_patch
+        if not selected_patch:
+            selected_patch = sweater_patches[0]
+        result = selected_patch.best_text_match(("long", "short"))
+    return result

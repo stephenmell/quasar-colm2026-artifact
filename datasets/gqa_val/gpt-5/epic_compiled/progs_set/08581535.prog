@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    found_any = None
+    image_patch = None
+    is_small = None
+    obj_exists = None
+    obj_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    found_any = False
+
+    def _for(obj_name, found_any, image_patch, is_small, obj_exists, obj_patches, result):
+        obj_exists = image_patch.exists(obj_name)
+
+        def _if(found_any, image_patch, is_small, obj_exists, obj_patches, result):
+            found_any = True
+            obj_patches = image_patch.find(obj_name)
+
+            def _for(obj_patch, found_any, image_patch, is_small, obj_exists, obj_patches, result):
+                is_small = obj_patch.verify_property(obj_name, 'small')
+
+                def _if(found_any, image_patch, is_small, obj_exists, obj_patches, result):
+                    result = 'yes'
+                    return (found_any, image_patch, is_small, obj_exists, obj_patches, result)
+                found_any, image_patch, is_small, obj_exists, obj_patches, result = if_stmt(_if, None, not_expr(is_small), (found_any, image_patch, is_small, obj_exists, obj_patches, result))
+                return (found_any, image_patch, is_small, obj_exists, obj_patches, result)
+            found_any, image_patch, is_small, obj_exists, obj_patches, result = for_stmt(_for, obj_patches, (found_any, image_patch, is_small, obj_exists, obj_patches, result))
+            return (found_any, image_patch, is_small, obj_exists, obj_patches, result)
+        found_any, image_patch, is_small, obj_exists, obj_patches, result = if_stmt(_if, None, obj_exists, (found_any, image_patch, is_small, obj_exists, obj_patches, result))
+        return (found_any, image_patch, is_small, obj_exists, obj_patches, result)
+    found_any, image_patch, is_small, obj_exists, obj_patches, result = for_stmt(_for, ('laptop', 'camera'), (found_any, image_patch, is_small, obj_exists, obj_patches, result))
+
+    def _if(found_any, image_patch, is_small, obj_exists, obj_patches, result):
+        result = image_patch.simple_query('Are there laptops or cameras that are not small?')
+        return (found_any, image_patch, is_small, obj_exists, obj_patches, result)
+    found_any, image_patch, is_small, obj_exists, obj_patches, result = if_stmt(_if, None, and_expr(not found_any, result == 'no'), (found_any, image_patch, is_small, obj_exists, obj_patches, result))
+    return result

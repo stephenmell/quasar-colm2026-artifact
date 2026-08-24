@@ -1,0 +1,20 @@
+def execute_command(image) -> str:
+    has_pliers = None
+    has_umbrella = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_pliers = image_patch.exists('pliers')
+
+    def _if(has_pliers, image_patch):
+        has_pliers = image_patch.exists('plier')
+        return (has_pliers, image_patch)
+    has_pliers, image_patch = if_stmt(_if, None, not_expr(has_pliers), (has_pliers, image_patch))
+    has_umbrella = image_patch.exists('umbrella')
+
+    def _if(has_pliers, has_umbrella, image_patch):
+        has_umbrella = image_patch.exists('umbrellas')
+        return (has_pliers, has_umbrella, image_patch)
+    has_pliers, has_umbrella, image_patch = if_stmt(_if, None, not_expr(has_umbrella), (has_pliers, has_umbrella, image_patch))
+    result = bool_to_yesno(or_expr(has_pliers, has_umbrella))
+    return result

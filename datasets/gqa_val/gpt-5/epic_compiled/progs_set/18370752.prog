@@ -1,0 +1,139 @@
+def execute_command(image) -> str:
+    candidate_plates = None
+    cup_patch = None
+    cup_patches = None
+    delta = None
+    image_patch = None
+    min_delta = None
+    need_fallback = None
+    plate_patches_for_rect = None
+    rectangular_plate_patch = None
+    rectangular_plate_patches = None
+    rectangular_white = None
+    result = None
+    right_plate_white = None
+    selected_right_plate = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    rectangular_plate_patch = None
+    rectangular_plate_patches = image_patch.find('rectangular plate')
+
+    def _if(image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result):
+        rectangular_plate_patch = rectangular_plate_patches[0]
+        return (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result)
+
+    def _else(image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result):
+        plate_patches_for_rect = image_patch.find('plate')
+
+        def _for(plate_patch, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result):
+
+            def _if(image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result):
+
+                def _if(image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result):
+                    rectangular_plate_patch = plate_patch
+                    return (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result)
+                image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result = if_stmt(_if, None, rectangular_plate_patch is None, (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result))
+                return (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result)
+            image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result = if_stmt(_if, None, plate_patch.verify_property('plate', 'rectangular'), (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result))
+            return (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result)
+        image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result = for_stmt(_for, plate_patches_for_rect, (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result))
+        return (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result)
+    image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result = if_stmt(_if, _else, len(rectangular_plate_patches) > 0, (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, result))
+    rectangular_white = False
+
+    def _if(image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result):
+
+        def _if(image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result):
+            rectangular_white = True
+            return (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result)
+        image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result = if_stmt(_if, None, or_expr(rectangular_plate_patch.verify_property('plate', 'white'), rectangular_plate_patch.verify_property('rectangular plate', 'white')), (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result))
+        return (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result)
+    image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result = if_stmt(_if, None, rectangular_plate_patch is not None, (image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result))
+    cup_patches = image_patch.find('coffee cup')
+
+    def _if(cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result):
+        cup_patches = image_patch.find('cup')
+        return (cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result)
+    cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result = if_stmt(_if, None, len(cup_patches) == 0, (cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result))
+
+    def _if(cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result):
+        cup_patches = image_patch.find('mug')
+        return (cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result)
+    cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result = if_stmt(_if, None, len(cup_patches) == 0, (cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result))
+    cup_patch = None
+
+    def _if(cup_patch, cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result):
+        cup_patch = cup_patches[0]
+        return (cup_patch, cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result)
+    cup_patch, cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result = if_stmt(_if, None, len(cup_patches) > 0, (cup_patch, cup_patches, image_patch, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result))
+    selected_right_plate = None
+
+    def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate):
+        candidate_plates = image_patch.find('plate')
+        min_delta = None
+
+        def _for(plate_patch, candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate):
+
+            def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate):
+                delta = plate_patch.horizontal_center - cup_patch.horizontal_center
+
+                def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate):
+                    min_delta = delta
+                    selected_right_plate = plate_patch
+                    return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate)
+
+                def _else(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate):
+
+                    def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate):
+                        min_delta = delta
+                        selected_right_plate = plate_patch
+                        return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate)
+                    candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate = if_stmt(_if, None, delta < min_delta, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate))
+                    return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate)
+                candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate = if_stmt(_if, _else, min_delta is None, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate))
+                return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate)
+            candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate = if_stmt(_if, None, plate_patch.horizontal_center > cup_patch.horizontal_center, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate))
+            return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate)
+        candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate = for_stmt(_for, candidate_plates, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate))
+        return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate)
+    candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate = if_stmt(_if, None, cup_patch is not None, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, selected_right_plate))
+    right_plate_white = False
+
+    def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+
+        def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+            right_plate_white = True
+            return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+        candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate = if_stmt(_if, None, selected_right_plate.verify_property('plate', 'white'), (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate))
+        return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+    candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate = if_stmt(_if, None, selected_right_plate is not None, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate))
+
+    def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+        result = 'yes'
+        return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+
+    def _else(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+        need_fallback = False
+
+        def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+            need_fallback = True
+            return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+        candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate = if_stmt(_if, None, rectangular_plate_patch is None, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate))
+
+        def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+            need_fallback = True
+            return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+        candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate = if_stmt(_if, None, cup_patch is None, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate))
+
+        def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+            need_fallback = True
+            return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+        candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate = if_stmt(_if, None, selected_right_plate is None, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate))
+
+        def _if(candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate):
+            result = image_patch.simple_query('Do the rectangular plate and the plate to the right of the coffee cup both have white color?')
+            return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+        candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate = if_stmt(_if, None, need_fallback, (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate))
+        return (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate)
+    candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate = if_stmt(_if, _else, and_expr(rectangular_white, right_plate_white), (candidate_plates, cup_patch, cup_patches, delta, image_patch, min_delta, need_fallback, plate_patches_for_rect, rectangular_plate_patch, rectangular_plate_patches, rectangular_white, result, right_plate_white, selected_right_plate))
+    return result

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    bench_patches = None
+    brown_found = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    bench_patches = image_patch.find('bench')
+
+    def _if(bench_patches, brown_found, image_patch, result):
+        result = image_patch.simple_query('Does this bench look brown?')
+        return (bench_patches, brown_found, image_patch, result)
+
+    def _else(bench_patches, brown_found, image_patch, result):
+        brown_found = False
+
+        def _for(bench_patch, bench_patches, brown_found, image_patch):
+
+            def _if(bench_patches, brown_found, image_patch):
+                brown_found = True
+                return (bench_patches, brown_found, image_patch)
+            bench_patches, brown_found, image_patch = if_stmt(_if, None, bench_patch.verify_property('bench', 'brown'), (bench_patches, brown_found, image_patch))
+            return (bench_patches, brown_found, image_patch)
+        bench_patches, brown_found, image_patch = for_stmt(_for, bench_patches, (bench_patches, brown_found, image_patch))
+        result = bool_to_yesno(brown_found)
+        return (bench_patches, brown_found, image_patch, result)
+    bench_patches, brown_found, image_patch, result = if_stmt(_if, _else, len(bench_patches) == 0, (bench_patches, brown_found, image_patch, result))
+    return result

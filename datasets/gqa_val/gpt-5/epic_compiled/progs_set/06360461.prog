@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_blue = None
+    mountain_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    mountain_patches = image_patch.find('mountain')
+
+    def _if(image_patch, is_blue, mountain_patches, result):
+        result = image_patch.simple_query('Is the color of the mountains blue?')
+        return (image_patch, is_blue, mountain_patches, result)
+
+    def _else(image_patch, is_blue, mountain_patches, result):
+        is_blue = False
+
+        def _for(mountain_patch, image_patch, is_blue, mountain_patches):
+
+            def _if(image_patch, is_blue, mountain_patches):
+                is_blue = True
+                return (image_patch, is_blue, mountain_patches)
+            image_patch, is_blue, mountain_patches = if_stmt(_if, None, mountain_patch.verify_property('mountain', 'blue'), (image_patch, is_blue, mountain_patches))
+            return (image_patch, is_blue, mountain_patches)
+        image_patch, is_blue, mountain_patches = for_stmt(_for, mountain_patches, (image_patch, is_blue, mountain_patches))
+        result = bool_to_yesno(is_blue)
+        return (image_patch, is_blue, mountain_patches, result)
+    image_patch, is_blue, mountain_patches, result = if_stmt(_if, _else, len(mountain_patches) == 0, (image_patch, is_blue, mountain_patches, result))
+    return result

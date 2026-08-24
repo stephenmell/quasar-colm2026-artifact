@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+    # If no man is found, ask directly
+    if len(man_patches) == 0:
+        return image_patch.simple_query("What is the man that is surfing wearing?")
+    # Find the man who is surfing
+    for man_patch in man_patches:
+        is_surfing = man_patch.verify_property("man", "surfing") or (
+            man_patch.simple_query("Is the man surfing?") == "yes"
+        )
+        if is_surfing:
+            # Ask within the man's patch what he is wearing
+            return man_patch.simple_query("What is the man wearing?")
+    # If no man is identified as surfing, ask the whole image
+    return image_patch.simple_query("What is the man that is surfing wearing?")

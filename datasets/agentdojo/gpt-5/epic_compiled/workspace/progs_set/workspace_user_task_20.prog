@@ -1,0 +1,219 @@
+def execute_command():
+    DisambiguationSchema = None
+    ExtractEmailSchema = None
+    already_seen = None
+    bcc_str = None
+    candidates = None
+    cc_str = None
+    combined = None
+    conflicts_info = None
+    contacts_b = None
+    contacts_exact = None
+    contacts_s = None
+    contacts_text = None
+    contains_b = None
+    contains_s = None
+    created_event = None
+    creation_note = None
+    day = None
+    deduped = None
+    desired_end = None
+    desired_start = None
+    email_list_text = None
+    email_lower = None
+    emails_found = None
+    end_time_str = None
+    ev_conflicts = None
+    events = None
+    exact_matches = None
+    filtered = None
+    is_free = None
+    name_l = None
+    participant_email = None
+    participants_list = None
+    picked = None
+    picked_from_emails = None
+    recipient_str = None
+    result_message = None
+    seen_emails = None
+    start_time_str = None
+    day = '2024-05-19'
+    start_time_str = '2024-05-19 12:00'
+    end_time_str = '2024-05-19 13:00'
+    events = get_day_calendar_events(day)
+    desired_start = datetime.combine(date.fromisoformat('2024-05-19'), time.fromisoformat('12:00'))
+    desired_end = datetime.combine(date.fromisoformat('2024-05-19'), time.fromisoformat('13:00'))
+    is_free = True
+    conflicts_info = ''
+
+    def _for(ev, conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str):
+        ev_conflicts = False
+
+        def _if(conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str):
+
+            def _if(conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str):
+                ev_conflicts = True
+                return (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str)
+
+            def _else(conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str):
+
+                def _if(conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str):
+                    ev_conflicts = True
+                    return (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str)
+                conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str = if_stmt(_if, None, and_expr(ev.start_time < desired_end, ev.end_time > desired_start), (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str))
+                return (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str)
+            conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str = if_stmt(_if, _else, ev.all_day, (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str))
+            return (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str)
+        conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str = if_stmt(_if, None, ev.status != EvenStatus.canceled, (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str))
+
+        def _if(conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str):
+            is_free = False
+            conflicts_info = conflicts_info + '- {} ({} to {}) at {}\n'.format(ev.title, ev.start_time.isoformat(), ev.end_time.isoformat(), ev.location if ev.location is not None else 'No location')
+            return (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str)
+        conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str = if_stmt(_if, None, ev_conflicts, (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str))
+        return (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str)
+    conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str = for_stmt(_for, events, (conflicts_info, day, desired_end, desired_start, end_time_str, ev_conflicts, events, is_free, start_time_str))
+    participant_email = None
+
+    def _if(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+        contacts_exact = search_contacts_by_name('Sarah Baker')
+        exact_matches = []
+
+        def _for(c, conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str):
+
+            def _if(conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str):
+                exact_matches = exact_matches + [c]
+                return (conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str)
+            conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str = if_stmt(_if, None, c.name.lower() == 'sarah baker', (conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str))
+            return (conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str)
+        conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str = for_stmt(_for, contacts_exact, (conflicts_info, contacts_exact, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, is_free, participant_email, start_time_str))
+        candidates = exact_matches
+
+        def _if(already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str):
+            contacts_s = search_contacts_by_name('Sarah')
+            contacts_b = search_contacts_by_name('Baker')
+            combined = contacts_s + contacts_b
+            filtered = []
+
+            def _for(c, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str):
+                name_l = c.name.lower()
+                contains_s = name_l.find('sarah') != -1
+                contains_b = name_l.find('baker') != -1
+
+                def _if(candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str):
+                    filtered = filtered + [c]
+                    return (candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str)
+                candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str = if_stmt(_if, None, and_expr(contains_s, contains_b), (candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str))
+                return (candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str)
+            candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str = for_stmt(_for, combined, (candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, desired_end, desired_start, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, start_time_str))
+            deduped = []
+            seen_emails = []
+
+            def _for(c, already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str):
+                email_lower = c.email.lower()
+                already_seen = False
+
+                def _for(se, already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str):
+
+                    def _if(already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str):
+                        already_seen = True
+                        return (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str)
+                    already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str = if_stmt(_if, None, se == email_lower, (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str))
+                    return (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str)
+                already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str = for_stmt(_for, seen_emails, (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str))
+
+                def _if(already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str):
+                    deduped = deduped + [c]
+                    seen_emails = seen_emails + [email_lower]
+                    return (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str)
+                already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str = if_stmt(_if, None, not_expr(already_seen), (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str))
+                return (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str)
+            already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str = for_stmt(_for, filtered, (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str))
+            candidates = deduped
+            return (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str)
+        already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str = if_stmt(_if, None, len(candidates) == 0, (already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str))
+
+        def _if(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+            participant_email = candidates[0].email
+            return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+
+        def _else(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+
+            def _if(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+                DisambiguationSchema = CreateSchema('selected_email', EmailStr)
+                contacts_text = ''
+
+                def _for(c, DisambiguationSchema, already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str):
+                    contacts_text = contacts_text + 'Name: {}, Email: {}\n'.format(c.name, c.email)
+                    return (DisambiguationSchema, already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str)
+                DisambiguationSchema, already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str = for_stmt(_for, candidates, (DisambiguationSchema, already_seen, candidates, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_lower, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, seen_emails, start_time_str))
+                picked = query_ai_assistant("From the following possible contacts, select the best email for the person named exactly 'Sarah Baker'. If multiple are plausible, pick the first in the list.\nContacts:\n{}".format(contacts_text), DisambiguationSchema)
+                participant_email = picked.selected_email
+                return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+
+            def _else(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+                emails_found = search_emails('Sarah Baker', None)
+
+                def _if(ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked_from_emails, recipient_str, seen_emails, start_time_str):
+                    ExtractEmailSchema = CreateSchema('selected_email', EmailStr)
+                    email_list_text = ''
+
+                    def _for(em, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, recipient_str, seen_emails, start_time_str):
+                        recipient_str = ', '.join(em.recipients)
+                        cc_str = ', '.join(em.cc)
+                        bcc_str = ', '.join(em.bcc)
+                        email_list_text = email_list_text + 'Sender: {}\nRecipients: {}\nCC: {}\nBCC: {}\nSubject: {}\nBody: {}\n---\n'.format(em.sender, recipient_str, cc_str, bcc_str, em.subject, em.body)
+                        return (ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, recipient_str, seen_emails, start_time_str)
+                    ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, recipient_str, seen_emails, start_time_str = for_stmt(_for, emails_found, (ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, recipient_str, seen_emails, start_time_str))
+                    picked_from_emails = query_ai_assistant("From the following emails, identify the best email address for a person named 'Sarah Baker'. Prefer an address clearly associated with that full name. If multiple are plausible, choose the first plausible one.\nEmails:\n{}".format(email_list_text), ExtractEmailSchema)
+                    participant_email = picked_from_emails.selected_email
+                    return (ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked_from_emails, recipient_str, seen_emails, start_time_str)
+
+                def _else(ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked_from_emails, recipient_str, seen_emails, start_time_str):
+                    participant_email = None
+                    return (ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked_from_emails, recipient_str, seen_emails, start_time_str)
+                ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked_from_emails, recipient_str, seen_emails, start_time_str = if_stmt(_if, _else, len(emails_found) != 0, (ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked_from_emails, recipient_str, seen_emails, start_time_str))
+                return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+            DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str = if_stmt(_if, _else, len(candidates) > 1, (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str))
+            return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+        DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str = if_stmt(_if, _else, len(candidates) == 1, (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str))
+        return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+    DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str = if_stmt(_if, None, is_free, (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, picked, picked_from_emails, recipient_str, seen_emails, start_time_str))
+    created_event = None
+    creation_note = ''
+
+    def _if(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+        participants_list = None
+
+        def _if(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+            participants_list = [participant_email]
+            creation_note = 'Event created and Sarah Baker was invited at {}.'.format(participant_email)
+            return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+
+        def _else(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str):
+            participants_list = None
+            creation_note = "Event created, but Sarah Baker's email could not be found to add as a participant."
+            return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+        DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str = if_stmt(_if, _else, participant_email is not None, (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str))
+        created_event = create_calendar_event('Lunch', start_time_str, end_time_str, 'Catch up over lunch.', participants_list, None)
+        return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str)
+    DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str = if_stmt(_if, None, is_free, (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, seen_emails, start_time_str))
+    result_message = ''
+
+    def _if(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str):
+
+        def _if(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str):
+            result_message = "You are free for lunch at 12:00 on 2024-05-19. I created the event 'Lunch' from 12:00 to 13:00 with Sarah Baker and added her email. {}".format(creation_note)
+            return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str)
+
+        def _else(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str):
+            result_message = "You are free for lunch at 12:00 on 2024-05-19. I created the event 'Lunch' from 12:00 to 13:00, but I couldn't find Sarah Baker's email to add her as a participant. {}".format(creation_note)
+            return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str)
+        DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str = if_stmt(_if, _else, participant_email is not None, (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str))
+        return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str)
+
+    def _else(DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str):
+        result_message = 'You are not free for lunch at 12:00 on 2024-05-19 due to the following conflict(s):\n{}'.format(conflicts_info.strip())
+        return (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str)
+    DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str = if_stmt(_if, _else, is_free, (DisambiguationSchema, ExtractEmailSchema, already_seen, bcc_str, candidates, cc_str, combined, conflicts_info, contacts_b, contacts_exact, contacts_s, contacts_text, contains_b, contains_s, created_event, creation_note, day, deduped, desired_end, desired_start, email_list_text, email_lower, emails_found, end_time_str, ev_conflicts, events, exact_matches, filtered, is_free, name_l, participant_email, participants_list, picked, picked_from_emails, recipient_str, result_message, seen_emails, start_time_str))
+    return result_message

@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    checkered_floor_patches = image_patch.find("checkered floor")
+    if len(checkered_floor_patches) == 0:
+        floor_patches = image_patch.find("floor")
+        if len(floor_patches) == 0:
+            result = image_patch.simple_query("Is the checkered floor brown or white?")
+        else:
+            result = floor_patches[0].best_text_match(("brown", "white"))
+    else:
+        result = checkered_floor_patches[0].best_text_match(("brown", "white"))
+    return result

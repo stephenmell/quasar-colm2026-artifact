@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shoe_patches = image_patch.find("shoe")
+    # Question assumes only one shoe patch
+    if len(shoe_patches) == 0:
+        # If no shoe is found, query the image directly
+        return image_patch.simple_query("Is the shoe white?")
+    for shoe_patch in shoe_patches:
+        if shoe_patch.verify_property("shoe", "white"):
+            return "yes"
+    return "no"

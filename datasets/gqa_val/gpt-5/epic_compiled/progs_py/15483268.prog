@@ -1,0 +1,5 @@
+# What bag is the logo on?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("What bag is the logo on?")
+    return result

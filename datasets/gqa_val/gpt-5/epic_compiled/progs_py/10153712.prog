@@ -1,0 +1,33 @@
+# What color is the table under the plate?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find("plate")
+
+    if len(plate_patches) == 0:
+        result = image_patch.simple_query("What color is the table under the plate?")
+    else:
+        result = None
+        for plate_patch in plate_patches:
+            left = plate_patch.left
+            right = plate_patch.right
+            lower = image_patch.lower
+            upper = plate_patch.lower
+
+            has_area = (upper is not None) and (lower is not None) and (right is not None) and (left is not None) and (upper > lower) and (right > left)
+            if has_area:
+                below_patch = image_patch.crop(left, lower, right, upper)
+                table_patches = below_patch.find("table")
+
+                if len(table_patches) == 0:
+                    local_answer = below_patch.simple_query("What color is the table?")
+                else:
+                    local_answer = None
+                    for table_patch in table_patches:
+                        color_answer = table_patch.simple_query("What color is the table?")
+                        if color_answer:
+                            local_answer = color_answer
+                if local_answer:
+                    result = local_answer
+        if not result:
+            result = image_patch.simple_query("What color is the table under the plate?")
+    return result

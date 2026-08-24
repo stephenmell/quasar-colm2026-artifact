@@ -1,0 +1,84 @@
+({152: 'search_emails',
+  156: 'len',
+  172: 'get_received_emails',
+  173: 'get_sent_emails',
+  186: 'get_current_day',
+  188: 'CreateSchema',
+  190: 'str',
+  192: 'query_ai_assistant',
+  193: '.format'},
+ ('def',
+  151,
+  ((),
+   ((('prim', 153, 'family reunion'),
+     ('prim', 154, None),
+     ('call', (155,), 152, (153, 154)),
+     ('call', (157,), 156, (155,)),
+     ('prim', 158, 0),
+     ('call', (159,), 81, (157, 158)),
+     ('def',
+      160,
+      ((),
+       ((('prim', 161, 'reunion'),
+         ('prim', 162, None),
+         ('call', (163,), 152, (161, 162))),
+        (163,)))),
+     ('def', 164, ((), ((), (155,)))),
+     ('call', (166,), 75, (159,)),
+     ('call', (167,), 166, (160, 164)),
+     ('call', (165,), 167, ()),
+     ('call', (168,), 156, (165,)),
+     ('prim', 169, 0),
+     ('call', (170,), 81, (168, 169)),
+     ('def',
+      171,
+      ((),
+       ((('call', (174,), 172, ()),
+         ('call', (175,), 173, ()),
+         ('call', (176,), 80, (174, 175))),
+        (176,)))),
+     ('def', 177, ((), ((), (165,)))),
+     ('call', (179,), 75, (170,)),
+     ('call', (180,), 179, (171, 177)),
+     ('call', (178,), 180, ()),
+     ('prim', 181, 'No family reunion schedule found in the emails.'),
+     ('call', (182,), 156, (178,)),
+     ('prim', 183, 0),
+     ('call', (184,), 82, (182, 183)),
+     ('def',
+      185,
+      ((),
+       ((('call', (187,), 186, ()),
+         ('prim', 189, 'scheduled_at'),
+         ('call', (191,), 188, (189, 190)),
+         ('prim',
+          194,
+          'Task: Determine the scheduled date and start time for the family '
+          'reunion from the emails below.\n'
+          'Instructions:\n'
+          '- Use subjects, bodies, and any explicit confirmations to identify '
+          'the FINAL agreed date and start time.\n'
+          '- If multiple proposals exist, select the latest message that '
+          'explicitly confirms the final schedule.\n'
+          '- Prefer confirmations over tentative proposals.\n'
+          '- If dates are given without a year, infer the correct year using '
+          "the emails' timestamps and today's date.\n"
+          "- Today's date is {}. Prefer upcoming dates over past ones unless "
+          'the emails clearly refer to a past event.\n'
+          '- If time zones are mentioned, keep the time as written; do not '
+          'convert.\n'
+          '- Output exactly one string in the format YYYY-MM-DD HH:MM.\n'
+          '- If you cannot determine a specific date and time from the emails, '
+          'output exactly: No family reunion schedule found in the emails.\n'
+          'Emails data:\n'
+          '{}'),
+         ('call', (196,), 193, (194, 187, 178)),
+         ('call', (197,), 192, (196, 191)),
+         ('prim', 198, 'scheduled_at'),
+         ('call', (199,), 121, (197, 198))),
+        (199,)))),
+     ('def', 200, ((), ((), (181,)))),
+     ('call', (202,), 75, (184,)),
+     ('call', (203,), 202, (185, 200)),
+     ('call', (201,), 203, ())),
+    (201,)))))

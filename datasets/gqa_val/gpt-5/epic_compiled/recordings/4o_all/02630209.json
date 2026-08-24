@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2340363",
+          [
+            0,
+            0,
+            375,
+            500
+          ]
+        ],
+        "Which room is it?"
+      ],
+      "Bathroom.",
+      1114905735
+    ]
+  ],
+  "best_text_match": []
+}

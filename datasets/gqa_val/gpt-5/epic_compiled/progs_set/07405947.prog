@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    all_patches = None
+    has_pink_tile = None
+    has_pink_tiles = None
+    image_patch = None
+    is_pink = None
+    result = None
+    tile_patches = None
+    tiles_patches = None
+    image_patch = ImagePatch(image)
+    tiles_patches = image_patch.find('tiles')
+    tile_patches = image_patch.find('tile')
+    all_patches = tiles_patches + tile_patches
+
+    def _if(all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, result, tile_patches, tiles_patches):
+        result = image_patch.simple_query('Do the tiles look pink?')
+        return (all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, result, tile_patches, tiles_patches)
+
+    def _else(all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, result, tile_patches, tiles_patches):
+        is_pink = False
+
+        def _for(patch, all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches):
+            has_pink_tiles = patch.verify_property('tiles', 'pink')
+            has_pink_tile = patch.verify_property('tile', 'pink')
+
+            def _if(all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches):
+                is_pink = True
+                return (all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches)
+            all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches = if_stmt(_if, None, or_expr(has_pink_tiles, has_pink_tile), (all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches))
+            return (all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches)
+        all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches = for_stmt(_for, all_patches, (all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, tile_patches, tiles_patches))
+        result = bool_to_yesno(is_pink)
+        return (all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, result, tile_patches, tiles_patches)
+    all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, result, tile_patches, tiles_patches = if_stmt(_if, _else, len(all_patches) == 0, (all_patches, has_pink_tile, has_pink_tiles, image_patch, is_pink, result, tile_patches, tiles_patches))
+    return result

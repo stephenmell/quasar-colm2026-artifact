@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    giraffe_patches = image_patch.find("giraffe")
+    if len(giraffe_patches) == 0:
+        # If no giraffe is found, ask directly
+        return image_patch.simple_query("Does the giraffe that is standing look brown?")
+    standing_giraffes = [g for g in giraffe_patches if g.verify_property("giraffe", "standing")]
+    if len(standing_giraffes) == 0:
+        # If no standing giraffe is found, ask directly
+        return image_patch.simple_query("Does the giraffe that is standing look brown?")
+    is_brown = standing_giraffes[0].verify_property("giraffe", "brown")
+    return bool_to_yesno(is_brown)

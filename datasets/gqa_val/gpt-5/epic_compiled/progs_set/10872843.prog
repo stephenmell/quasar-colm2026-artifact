@@ -1,0 +1,95 @@
+def execute_command(image) -> str:
+    candidate_patches = None
+    chosen_label = None
+    chosen_patch = None
+    global_label_options = None
+    image_patch = None
+    label_options = None
+    man_patches = None
+    question = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    man_patches = image_patch.find('man')
+
+    def _if(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+        result = image_patch.simple_query('Which color is the tee shirt the man is wearing?')
+        return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+
+    def _else(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+
+        def _for(man_patch, candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result):
+
+            def _if(candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result):
+                label_options = ('tee shirt', 't shirt', 't-shirt', 'shirt')
+                chosen_patch = None
+                chosen_label = None
+
+                def _for(label, candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result):
+                    candidate_patches = man_patch.find(label)
+
+                    def _if(candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result):
+                        chosen_patch = candidate_patches[0]
+                        chosen_label = label
+                        return (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result)
+                    candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result = if_stmt(_if, None, and_expr(len(candidate_patches) > 0, chosen_patch is None), (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result))
+                    return (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result)
+                candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result = for_stmt(_for, label_options, (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, result))
+
+                def _if(candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result):
+
+                    def _if(candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result):
+                        question = 'What color is the tee shirt?'
+                        return (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result)
+
+                    def _else(candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result):
+                        question = 'What color is the shirt?'
+                        return (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result)
+                    candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result = if_stmt(_if, _else, chosen_label in ('tee shirt', 't shirt', 't-shirt'), (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result))
+                    result = chosen_patch.simple_query(question)
+                    return (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result)
+                candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result = if_stmt(_if, None, and_expr(chosen_patch is not None, not result), (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result))
+                return (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result)
+            candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result = if_stmt(_if, None, not_expr(result), (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result))
+            return (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result)
+        candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result = for_stmt(_for, man_patches, (candidate_patches, chosen_label, chosen_patch, image_patch, label_options, man_patches, question, result))
+
+        def _if(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+            global_label_options = ('tee shirt', 't shirt', 't-shirt', 'shirt')
+            chosen_patch = None
+            chosen_label = None
+
+            def _for(label, candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+                candidate_patches = image_patch.find(label)
+
+                def _if(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+                    chosen_patch = candidate_patches[0]
+                    chosen_label = label
+                    return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+                candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result = if_stmt(_if, None, and_expr(len(candidate_patches) > 0, chosen_patch is None), (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result))
+                return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+            candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result = for_stmt(_for, global_label_options, (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result))
+
+            def _if(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+
+                def _if(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+                    question = 'What color is the tee shirt?'
+                    return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+
+                def _else(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+                    question = 'What color is the shirt?'
+                    return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+                candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result = if_stmt(_if, _else, chosen_label in ('tee shirt', 't shirt', 't-shirt'), (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result))
+                result = chosen_patch.simple_query(question)
+                return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+            candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result = if_stmt(_if, None, and_expr(chosen_patch is not None, not result), (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result))
+            return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+        candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result = if_stmt(_if, None, not_expr(result), (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result))
+
+        def _if(candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result):
+            result = image_patch.simple_query('Which color is the tee shirt the man is wearing?')
+            return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+        candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result = if_stmt(_if, None, not_expr(result), (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result))
+        return (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result)
+    candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result = if_stmt(_if, _else, len(man_patches) == 0, (candidate_patches, chosen_label, chosen_patch, global_label_options, image_patch, label_options, man_patches, question, result))
+    return result

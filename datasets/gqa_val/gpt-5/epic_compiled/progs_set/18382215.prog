@@ -1,0 +1,98 @@
+def execute_command(image) -> str:
+    beer_patches = None
+    beer_types = None
+    found_beer = None
+    found_glasses = None
+    glasses_types = None
+    global_glasses_patches = None
+    gx = None
+    gy = None
+    image_patch = None
+    inside_x = None
+    inside_y = None
+    man_glasses = None
+    man_max_x = None
+    man_max_y = None
+    man_min_x = None
+    man_min_y = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+
+    def _if(beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+        result = image_patch.simple_query('Is there any beer to the left of the glasses the man is wearing?')
+        return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+
+    def _else(beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+        beer_types = ('beer', 'beer bottle', 'beer can')
+        beer_patches = ()
+
+        def _for(beer_name, beer_patches, beer_types, found_beer, image_patch, man_patches, result):
+            found_beer = image_patch.find(beer_name)
+
+            def _if(beer_patches, beer_types, found_beer, image_patch, man_patches, result):
+                beer_patches = beer_patches + found_beer
+                return (beer_patches, beer_types, found_beer, image_patch, man_patches, result)
+            beer_patches, beer_types, found_beer, image_patch, man_patches, result = if_stmt(_if, None, len(found_beer) > 0, (beer_patches, beer_types, found_beer, image_patch, man_patches, result))
+            return (beer_patches, beer_types, found_beer, image_patch, man_patches, result)
+        beer_patches, beer_types, found_beer, image_patch, man_patches, result = for_stmt(_for, beer_types, (beer_patches, beer_types, found_beer, image_patch, man_patches, result))
+        glasses_types = ('glasses', 'sunglasses', 'eyeglasses', 'eye glasses')
+        global_glasses_patches = ()
+
+        def _for(gname, beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result):
+            found_glasses = image_patch.find(gname)
+
+            def _if(beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result):
+                global_glasses_patches = global_glasses_patches + found_glasses
+                return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result)
+            beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result = if_stmt(_if, None, len(found_glasses) > 0, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result))
+            return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result)
+        beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result = for_stmt(_for, glasses_types, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, image_patch, man_patches, result))
+
+        def _if(beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+
+            def _for(man_patch, beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+                man_min_x = man_patch.left if man_patch.left < man_patch.right else man_patch.right
+                man_max_x = man_patch.right if man_patch.right > man_patch.left else man_patch.left
+                man_min_y = man_patch.lower if man_patch.lower < man_patch.upper else man_patch.upper
+                man_max_y = man_patch.upper if man_patch.upper > man_patch.lower else man_patch.lower
+                man_glasses = ()
+
+                def _for(gp, beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+                    gx = gp.horizontal_center
+                    gy = gp.vertical_center
+                    inside_x = and_expr(gx >= man_min_x, gx <= man_max_x)
+                    inside_y = and_expr(gy >= man_min_y, gy <= man_max_y)
+
+                    def _if(beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+                        man_glasses = man_glasses + (gp,)
+                        return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+                    beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = if_stmt(_if, None, and_expr(inside_x, inside_y), (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+                    return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+                beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = for_stmt(_for, global_glasses_patches, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+
+                def _if(beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+
+                    def _for(gp, beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+
+                        def _for(bp, beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+
+                            def _if(beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result):
+                                result = 'yes'
+                                return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+                            beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = if_stmt(_if, None, bp.horizontal_center < gp.horizontal_center, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+                            return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+                        beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = for_stmt(_for, beer_patches, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+                        return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+                    beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = for_stmt(_for, man_glasses, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+                    return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+                beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = if_stmt(_if, None, len(man_glasses) > 0, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+                return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+            beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = for_stmt(_for, man_patches, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+            return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+        beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = if_stmt(_if, None, and_expr(len(beer_patches) > 0, len(global_glasses_patches) > 0), (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+        return (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result)
+    beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (beer_patches, beer_types, found_beer, found_glasses, glasses_types, global_glasses_patches, gx, gy, image_patch, inside_x, inside_y, man_glasses, man_max_x, man_max_y, man_min_x, man_min_y, man_patches, result))
+    return result

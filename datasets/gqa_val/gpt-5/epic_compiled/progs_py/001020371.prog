@@ -1,0 +1,19 @@
+# Does the zebra to the left of the bench look black?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    zebra_patches = image_patch.find("zebra")
+    bench_patches = image_patch.find("bench")
+
+    if len(zebra_patches) == 0 or len(bench_patches) == 0:
+        result = image_patch.simple_query("Does the zebra to the left of the bench look black?")
+    else:
+        result = "no"
+        for zebra_patch in zebra_patches:
+            is_left_of_any_bench = False
+            for bench_patch in bench_patches:
+                if zebra_patch.horizontal_center < bench_patch.horizontal_center:
+                    is_left_of_any_bench = True
+            if is_left_of_any_bench:
+                if zebra_patch.verify_property("zebra", "black"):
+                    result = "yes"
+    return result

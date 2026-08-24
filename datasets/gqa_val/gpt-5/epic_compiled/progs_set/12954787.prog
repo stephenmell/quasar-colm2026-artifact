@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    all_mouse_patches = None
+    image_patch = None
+    keyboard_patches = None
+    mouse_patches_generic = None
+    mouse_patches_specific = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    keyboard_patches = image_patch.find('keyboard')
+
+    def _if(all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result):
+        result = image_patch.simple_query('Is there a computer mouse to the left of the keyboard on the left side of the picture?')
+        return (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result)
+
+    def _else(all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result):
+        mouse_patches_generic = image_patch.find('mouse')
+        mouse_patches_specific = image_patch.find('computer mouse')
+        all_mouse_patches = mouse_patches_generic + mouse_patches_specific
+
+        def _for(keyboard_patch, all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result):
+
+            def _if(all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result):
+
+                def _for(mouse_patch, all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result):
+
+                    def _if(all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result):
+                        result = 'yes'
+                        return (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result)
+                    all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result = if_stmt(_if, None, mouse_patch.horizontal_center < keyboard_patch.horizontal_center, (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result))
+                    return (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result)
+                all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result = for_stmt(_for, all_mouse_patches, (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result))
+                return (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result)
+            all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result = if_stmt(_if, None, keyboard_patch.horizontal_center < image_patch.horizontal_center, (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result))
+            return (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result)
+        all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result = for_stmt(_for, keyboard_patches, (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result))
+        return (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result)
+    all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result = if_stmt(_if, _else, len(keyboard_patches) == 0, (all_mouse_patches, image_patch, keyboard_patches, mouse_patches_generic, mouse_patches_specific, result))
+    return result

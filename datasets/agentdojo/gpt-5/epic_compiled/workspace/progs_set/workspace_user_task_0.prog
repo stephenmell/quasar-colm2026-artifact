@@ -1,0 +1,172 @@
+def execute_command():
+    c_email = None
+    candidates = None
+    candidates2 = None
+    chosen_event = None
+    confirmed_matches = None
+    contacts = None
+    emails_str = None
+    ev_date = None
+    events = None
+    exact_title_matches = None
+    in_participants = None
+    my_email = None
+    others = None
+    p_str = None
+    pool = None
+    result = None
+    target_date = None
+    today_str = None
+    year_str = None
+    today_str = get_current_day()
+    year_str = today_str.split('-')[0]
+    target_date = '{}-05-26'.format(year_str)
+    events = search_calendar_events('Networking event', target_date)
+
+    def _if(events, target_date, today_str, year_str):
+        events = search_calendar_events('Networking event', None)
+        return (events, target_date, today_str, year_str)
+    events, target_date, today_str, year_str = if_stmt(_if, None, len(events) == 0, (events, target_date, today_str, year_str))
+
+    def _if(events, target_date, today_str, year_str):
+        events = search_calendar_events('Networking', target_date)
+        return (events, target_date, today_str, year_str)
+    events, target_date, today_str, year_str = if_stmt(_if, None, len(events) == 0, (events, target_date, today_str, year_str))
+
+    def _if(events, target_date, today_str, year_str):
+        events = search_calendar_events('Networking', None)
+        return (events, target_date, today_str, year_str)
+    events, target_date, today_str, year_str = if_stmt(_if, None, len(events) == 0, (events, target_date, today_str, year_str))
+    candidates = []
+
+    def _for(ev, candidates, ev_date, events, target_date, today_str, year_str):
+        ev_date = ev.start_time.strftime('%Y-%m-%d')
+
+        def _if(candidates, ev_date, events, target_date, today_str, year_str):
+            candidates = candidates + [ev]
+            return (candidates, ev_date, events, target_date, today_str, year_str)
+        candidates, ev_date, events, target_date, today_str, year_str = if_stmt(_if, None, ev_date == target_date, (candidates, ev_date, events, target_date, today_str, year_str))
+        return (candidates, ev_date, events, target_date, today_str, year_str)
+    candidates, ev_date, events, target_date, today_str, year_str = for_stmt(_for, events, (candidates, ev_date, events, target_date, today_str, year_str))
+
+    def _if(candidates, ev_date, events, target_date, today_str, year_str):
+        candidates = events
+        return (candidates, ev_date, events, target_date, today_str, year_str)
+    candidates, ev_date, events, target_date, today_str, year_str = if_stmt(_if, None, len(candidates) == 0, (candidates, ev_date, events, target_date, today_str, year_str))
+    exact_title_matches = []
+
+    def _for(ev, candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str):
+
+        def _if(candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str):
+            exact_title_matches = exact_title_matches + [ev]
+            return (candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str)
+        candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str = if_stmt(_if, None, ev.title.strip().lower() == 'networking event', (candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str))
+        return (candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str)
+    candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str = for_stmt(_for, candidates, (candidates, ev_date, events, exact_title_matches, target_date, today_str, year_str))
+
+    def _if(candidates, candidates2, ev_date, events, exact_title_matches, target_date, today_str, year_str):
+        candidates2 = exact_title_matches
+        return (candidates, candidates2, ev_date, events, exact_title_matches, target_date, today_str, year_str)
+
+    def _else(candidates, candidates2, ev_date, events, exact_title_matches, target_date, today_str, year_str):
+        candidates2 = candidates
+        return (candidates, candidates2, ev_date, events, exact_title_matches, target_date, today_str, year_str)
+    candidates, candidates2, ev_date, events, exact_title_matches, target_date, today_str, year_str = if_stmt(_if, _else, len(exact_title_matches) != 0, (candidates, candidates2, ev_date, events, exact_title_matches, target_date, today_str, year_str))
+    confirmed_matches = []
+
+    def _for(ev, candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str):
+
+        def _if(candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str):
+            confirmed_matches = confirmed_matches + [ev]
+            return (candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str)
+        candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str = if_stmt(_if, None, ev.status == EvenStatus.confirmed, (candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str))
+        return (candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str)
+    candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str = for_stmt(_for, candidates2, (candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, target_date, today_str, year_str))
+
+    def _if(candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str):
+        pool = confirmed_matches
+        return (candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str)
+
+    def _else(candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str):
+        pool = candidates2
+        return (candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str)
+    candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str = if_stmt(_if, _else, len(confirmed_matches) != 0, (candidates, candidates2, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str))
+    chosen_event = None
+
+    def _for(ev, candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str):
+
+        def _if(candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str):
+            chosen_event = ev
+            return (candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str)
+
+        def _else(candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str):
+
+            def _if(candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str):
+                chosen_event = ev
+                return (candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str)
+            candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str = if_stmt(_if, None, ev.start_time < chosen_event.start_time, (candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str))
+            return (candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str)
+        candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str = if_stmt(_if, _else, chosen_event is None, (candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str))
+        return (candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str)
+    candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str = for_stmt(_for, pool, (candidates, candidates2, chosen_event, confirmed_matches, ev_date, events, exact_title_matches, pool, target_date, today_str, year_str))
+    result = ''
+
+    def _if(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+        result = "I couldn't find a 'Networking event' on {}.".format(target_date)
+        return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+
+    def _else(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+        contacts = search_contacts_by_name('Emma Johnson')
+        my_email = None
+
+        def _for(c, c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str):
+            c_email = str(c.email)
+            in_participants = False
+
+            def _for(p, c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str):
+
+                def _if(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str):
+                    in_participants = True
+                    return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str)
+                c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str = if_stmt(_if, None, str(p).lower() == c_email.lower(), (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str))
+                return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str)
+            c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str = for_stmt(_for, chosen_event.participants, (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str))
+
+            def _if(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str):
+                my_email = c_email
+                return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str)
+            c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str = if_stmt(_if, None, and_expr(in_participants, my_email is None), (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str))
+            return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str)
+        c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str = for_stmt(_for, contacts, (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, pool, result, target_date, today_str, year_str))
+        others = []
+
+        def _for(p, c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+            p_str = str(p)
+
+            def _if(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+                others = others + [p_str]
+                return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+
+            def _else(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+
+                def _if(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+                    others = others + [p_str]
+                    return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+                c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str = if_stmt(_if, None, p_str.lower() != my_email.lower(), (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str))
+                return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+            c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str = if_stmt(_if, _else, my_email is None, (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str))
+            return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+        c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str = for_stmt(_for, chosen_event.participants, (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str))
+
+        def _if(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+            result = "No other invitees found for 'Networking event' on {}.".format(target_date)
+            return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+
+        def _else(c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str):
+            emails_str = ', '.join(others)
+            result = "The other invitees for 'Networking event' on {} are: {}".format(target_date, emails_str)
+            return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+        c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str = if_stmt(_if, _else, len(others) == 0, (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str))
+        return (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str)
+    c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str = if_stmt(_if, _else, chosen_event is None, (c_email, candidates, candidates2, chosen_event, confirmed_matches, contacts, emails_str, ev_date, events, exact_title_matches, in_participants, my_email, others, p_str, pool, result, target_date, today_str, year_str))
+    return result

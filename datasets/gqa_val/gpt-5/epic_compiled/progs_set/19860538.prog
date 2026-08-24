@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    hat_patches = None
+    image_patch = None
+    is_short = None
+    result = None
+    image_patch = ImagePatch(image)
+    hat_patches = image_patch.find('hat')
+
+    def _if(hat_patches, image_patch, is_short, result):
+        result = image_patch.simple_query('Do you see a hat that is not short?')
+        return (hat_patches, image_patch, is_short, result)
+
+    def _else(hat_patches, image_patch, is_short, result):
+        result = 'no'
+
+        def _for(hat_patch, hat_patches, image_patch, is_short, result):
+            is_short = hat_patch.verify_property('hat', 'short')
+
+            def _if(hat_patches, image_patch, is_short, result):
+                result = 'yes'
+                return (hat_patches, image_patch, is_short, result)
+            hat_patches, image_patch, is_short, result = if_stmt(_if, None, not_expr(is_short), (hat_patches, image_patch, is_short, result))
+            return (hat_patches, image_patch, is_short, result)
+        hat_patches, image_patch, is_short, result = for_stmt(_for, hat_patches, (hat_patches, image_patch, is_short, result))
+        return (hat_patches, image_patch, is_short, result)
+    hat_patches, image_patch, is_short, result = if_stmt(_if, _else, len(hat_patches) == 0, (hat_patches, image_patch, is_short, result))
+    return result

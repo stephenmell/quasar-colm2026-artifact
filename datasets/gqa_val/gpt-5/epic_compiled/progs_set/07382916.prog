@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    floor_patches = None
+    hardwood_filtered = None
+    hardwood_floor_patches = None
+    image_patch = None
+    options = None
+    result = None
+    image_patch = ImagePatch(image)
+    options = ('light brown', 'red')
+    hardwood_floor_patches = image_patch.find('hardwood floor')
+
+    def _if(floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result):
+        floor_patches = image_patch.find('floor')
+        hardwood_filtered = ()
+
+        def _for(floor_patch, floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options):
+
+            def _if(floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options):
+                hardwood_filtered = hardwood_filtered + (floor_patch,)
+                return (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options)
+            floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options = if_stmt(_if, None, floor_patch.verify_property('floor', 'hardwood'), (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options))
+            return (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options)
+        floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options = for_stmt(_for, floor_patches, (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options))
+
+        def _if(floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result):
+            result = image_patch.simple_query('How does the floor made of hardwood look, light brown or red?')
+            return (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result)
+
+        def _else(floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result):
+            result = hardwood_filtered[0].best_text_match(options)
+            return (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result)
+        floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result = if_stmt(_if, _else, len(hardwood_filtered) == 0, (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result))
+        return (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result)
+
+    def _else(floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result):
+        result = hardwood_floor_patches[0].best_text_match(options)
+        return (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result)
+    floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result = if_stmt(_if, _else, len(hardwood_floor_patches) == 0, (floor_patches, hardwood_filtered, hardwood_floor_patches, image_patch, options, result))
+    return result

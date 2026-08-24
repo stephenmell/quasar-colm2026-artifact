@@ -1,0 +1,19 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cowboy_hat_patches = image_patch.find("cowboy hat")
+    shirt_patches = image_patch.find("shirt")
+
+    # If neither item is found, ask directly
+    if len(cowboy_hat_patches) == 0 and len(shirt_patches) == 0:
+        return image_patch.simple_query("Which type of clothing is black, the cowboy hat or the shirt?")
+
+    cowboy_hat_black = any(p.verify_property("cowboy hat", "black") for p in cowboy_hat_patches)
+    shirt_black = any(p.verify_property("shirt", "black") for p in shirt_patches)
+
+    if cowboy_hat_black and not shirt_black:
+        return "cowboy hat"
+    if shirt_black and not cowboy_hat_black:
+        return "shirt"
+
+    # Fallback if ambiguous
+    return image_patch.simple_query("Which type of clothing is black, the cowboy hat or the shirt?")

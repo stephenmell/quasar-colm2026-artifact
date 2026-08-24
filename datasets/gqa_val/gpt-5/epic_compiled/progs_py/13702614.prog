@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Are there any batters to the right of the man that is wearing a helmet?")
+    else:
+        helmeted_man = None
+        for man_patch in man_patches:
+            is_wearing_helmet = (man_patch.simple_query("Is the man wearing a helmet?") == "yes")
+            if is_wearing_helmet and helmeted_man is None:
+                helmeted_man = man_patch
+
+        if helmeted_man is None:
+            result = image_patch.simple_query("Are there any batters to the right of the man that is wearing a helmet?")
+        else:
+            batter_patches = image_patch.find("batter")
+            if len(batter_patches) == 0:
+                result = "no"
+            else:
+                result = "no"
+                for batter_patch in batter_patches:
+                    if batter_patch.horizontal_center > helmeted_man.horizontal_center:
+                        result = "yes"
+    return result

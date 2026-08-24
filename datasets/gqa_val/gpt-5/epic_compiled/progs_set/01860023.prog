@@ -1,0 +1,43 @@
+def execute_command(image) -> str:
+    horse_patches = None
+    image_patch = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    horse_patches = image_patch.find('horse')
+
+    def _if(horse_patches, image_patch, person_patches, result):
+        result = image_patch.simple_query('Does the person to the left of the horse appear to be jumping?')
+        return (horse_patches, image_patch, person_patches, result)
+
+    def _else(horse_patches, image_patch, person_patches, result):
+        person_patches = image_patch.find('person')
+
+        def _if(horse_patches, image_patch, person_patches, result):
+            result = 'no'
+            return (horse_patches, image_patch, person_patches, result)
+
+        def _else(horse_patches, image_patch, person_patches, result):
+            result = 'no'
+
+            def _for(horse_patch, horse_patches, image_patch, person_patches, result):
+
+                def _for(person_patch, horse_patches, image_patch, person_patches, result):
+
+                    def _if(horse_patches, image_patch, person_patches, result):
+
+                        def _if(horse_patches, image_patch, person_patches, result):
+                            result = 'yes'
+                            return (horse_patches, image_patch, person_patches, result)
+                        horse_patches, image_patch, person_patches, result = if_stmt(_if, None, person_patch.verify_property('person', 'jumping'), (horse_patches, image_patch, person_patches, result))
+                        return (horse_patches, image_patch, person_patches, result)
+                    horse_patches, image_patch, person_patches, result = if_stmt(_if, None, person_patch.horizontal_center < horse_patch.horizontal_center, (horse_patches, image_patch, person_patches, result))
+                    return (horse_patches, image_patch, person_patches, result)
+                horse_patches, image_patch, person_patches, result = for_stmt(_for, person_patches, (horse_patches, image_patch, person_patches, result))
+                return (horse_patches, image_patch, person_patches, result)
+            horse_patches, image_patch, person_patches, result = for_stmt(_for, horse_patches, (horse_patches, image_patch, person_patches, result))
+            return (horse_patches, image_patch, person_patches, result)
+        horse_patches, image_patch, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (horse_patches, image_patch, person_patches, result))
+        return (horse_patches, image_patch, person_patches, result)
+    horse_patches, image_patch, person_patches, result = if_stmt(_if, _else, len(horse_patches) == 0, (horse_patches, image_patch, person_patches, result))
+    return result

@@ -1,0 +1,44 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find onions (try both singular and plural)
+    onion_patches = image_patch.find("onion")
+    if len(onion_patches) == 0:
+        onion_patches = image_patch.find("onions")
+
+    if len(onion_patches) == 0:
+        # If no onions are found, ask directly
+        result = image_patch.simple_query("Do the veggies to the left of the onions look white or green?")
+    else:
+        # Determine the left region relative to the leftmost onion
+        min_left = onion_patches[0].left
+        for op in onion_patches:
+            if op.left < min_left:
+                min_left = op.left
+
+        # Create a crop for the area to the left of the onions
+        right_bound = min_left
+        if right_bound <= image_patch.left:
+            right_bound = image_patch.left + 1
+        left_area_patch = image_patch.crop(image_patch.left, image_patch.lower, right_bound, image_patch.upper)
+
+        # Find veggies within the left area using several possible labels
+        veggie_patches = ()
+        veggie_names = ("veggies", "veggie", "vegetable", "vegetables")
+        for name in veggie_names:
+            found = left_area_patch.find(name)
+            veggie_patches = veggie_patches + found
+
+        if len(veggie_patches) == 0:
+            # If no specific veggie objects are detected, infer color from the region
+            result = left_area_patch.best_text_match(("white", "green"))
+        else:
+            # Use the first detected veggie's color (no early loop exit)
+            color = None
+            for vp in veggie_patches:
+                if not color:
+                    color = vp.best_text_match(("white", "green"))
+            if not color:
+                color = left_area_patch.best_text_match(("white", "green"))
+            result = color
+    return result

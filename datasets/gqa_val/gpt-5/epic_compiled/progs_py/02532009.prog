@@ -1,0 +1,20 @@
+# Does the rectangular basket look white?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    basket_patches = image_patch.find("basket")
+    if len(basket_patches) == 0:
+        result = image_patch.simple_query("Does the rectangular basket look white?")
+    else:
+        result = "no"
+        any_rectangular = False
+        for basket_patch in basket_patches:
+            is_rectangular = basket_patch.verify_property("basket", "rectangular")
+            if is_rectangular:
+                any_rectangular = True
+                is_white = basket_patch.verify_property("basket", "white")
+                if is_white:
+                    result = "yes"
+        if not any_rectangular:
+            fallback_answer = image_patch.simple_query("Does the rectangular basket look white?")
+            result = fallback_answer
+    return result

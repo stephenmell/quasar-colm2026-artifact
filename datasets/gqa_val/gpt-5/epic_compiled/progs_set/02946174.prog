@@ -1,0 +1,78 @@
+def execute_command(image) -> str:
+    closest_towel = None
+    dist = None
+    has_left_tent = None
+    image_patch = None
+    man_patches = None
+    matched_man = None
+    min_dist = None
+    question = None
+    result = None
+    tent_patches = None
+    towel_patches = None
+    image_patch = ImagePatch(image)
+    question = 'Is the towel to the left or to the right of the man the tent is to the left of?'
+    tent_patches = image_patch.find('tent')
+    man_patches = image_patch.find('man')
+    towel_patches = image_patch.find('towel')
+    result = None
+
+    def _if(closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+        matched_man = None
+
+        def _for(man_patch, has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches):
+            has_left_tent = False
+
+            def _for(tent_patch, has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches):
+
+                def _if(has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches):
+                    has_left_tent = True
+                    return (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches)
+                has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches = if_stmt(_if, None, tent_patch.horizontal_center < man_patch.horizontal_center, (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches))
+                return (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches)
+            has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches = for_stmt(_for, tent_patches, (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches))
+
+            def _if(has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches):
+                matched_man = man_patch
+                return (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches)
+            has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches = if_stmt(_if, None, and_expr(has_left_tent, matched_man is None), (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches))
+            return (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches)
+        has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches = for_stmt(_for, man_patches, (has_left_tent, image_patch, man_patches, matched_man, question, result, tent_patches, towel_patches))
+
+        def _if(closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+            closest_towel = None
+            min_dist = None
+
+            def _for(towel_patch, closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+                dist = abs(towel_patch.horizontal_center - matched_man.horizontal_center)
+
+                def _if(closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+                    min_dist = dist
+                    closest_towel = towel_patch
+                    return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+                closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches = if_stmt(_if, None, or_expr(min_dist is None, dist < min_dist), (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches))
+                return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+            closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches = for_stmt(_for, towel_patches, (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches))
+
+            def _if(closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+
+                def _if(closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+                    result = 'left'
+                    return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+
+                def _else(closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+                    result = 'right'
+                    return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+                closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches = if_stmt(_if, _else, closest_towel.horizontal_center < matched_man.horizontal_center, (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches))
+                return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+            closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches = if_stmt(_if, None, closest_towel is not None, (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches))
+            return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+        closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches = if_stmt(_if, None, matched_man is not None, (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches))
+        return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+    closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches = if_stmt(_if, None, and_expr(len(tent_patches) > 0, and_expr(len(man_patches) > 0, len(towel_patches) > 0)), (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches))
+
+    def _if(closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches):
+        result = image_patch.simple_query(question)
+        return (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches)
+    closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches = if_stmt(_if, None, not_expr(result), (closest_towel, dist, has_left_tent, image_patch, man_patches, matched_man, min_dist, question, result, tent_patches, towel_patches))
+    return result

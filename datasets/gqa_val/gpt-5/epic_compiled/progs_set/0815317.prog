@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    grape_exists = None
+    grapes_exists = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    grape_exists = image_patch.exists('grape')
+    grapes_exists = image_patch.exists('grapes')
+    result = bool_to_yesno(or_expr(grape_exists, grapes_exists))
+    return result

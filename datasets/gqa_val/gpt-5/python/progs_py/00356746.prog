@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the bottle made of plastic
+    bottle_patches = image_patch.find("bottle")
+    plastic_bottles = []
+    for bottle_patch in bottle_patches:
+        if bottle_patch.verify_property("bottle", "plastic"):
+            plastic_bottles.append(bottle_patch)
+    if len(plastic_bottles) == 0:
+        return image_patch.simple_query("Is the blue bag to the left or to the right of the bottle made of plastic?")
+    plastic_bottle = plastic_bottles[0]
+
+    # Find the blue bag
+    bag_patches = image_patch.find("bag")
+    if len(bag_patches) == 0:
+        return image_patch.simple_query("Is the blue bag to the left or to the right of the bottle made of plastic?")
+    blue_bags = []
+    for bag_patch in bag_patches:
+        if bag_patch.verify_property("bag", "blue"):
+            blue_bags.append(bag_patch)
+    if len(blue_bags) == 0:
+        return image_patch.simple_query("Is the blue bag to the left or to the right of the bottle made of plastic?")
+    blue_bag = blue_bags[0]
+
+    # Compare horizontal positions
+    if blue_bag.horizontal_center < plastic_bottle.horizontal_center:
+        return "left"
+    else:
+        return "right"

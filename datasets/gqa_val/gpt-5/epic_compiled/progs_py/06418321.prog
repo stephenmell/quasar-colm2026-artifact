@@ -1,0 +1,22 @@
+# On which side of the picture is the television?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    television_patches = image_patch.find("television")
+
+    if len(television_patches) == 0:
+        result = image_patch.simple_query("On which side of the picture is the television?")
+    else:
+        # Choose the largest detected television patch
+        best_area = -1
+        chosen_patch = None
+        for tv_patch in television_patches:
+            area = tv_patch.width * tv_patch.height
+            if area > best_area:
+                best_area = area
+                chosen_patch = tv_patch
+
+        if chosen_patch.horizontal_center < image_patch.horizontal_center:
+            result = "left"
+        else:
+            result = "right"
+    return result

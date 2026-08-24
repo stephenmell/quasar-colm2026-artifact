@@ -1,0 +1,27 @@
+# What type of clothing is short sleeved, the shirt or the glove?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    shirt_patches = image_patch.find("shirt")
+    glove_patches = image_patch.find("glove")
+
+    shirt_short = False
+    glove_short = False
+
+    for shirt_patch in shirt_patches:
+        if shirt_patch.verify_property("shirt", "short sleeved"):
+            shirt_short = True
+
+    for glove_patch in glove_patches:
+        if glove_patch.verify_property("glove", "short sleeved"):
+            glove_short = True
+
+    if shirt_short:
+        result = "shirt"
+    elif glove_short:
+        result = "glove"
+    else:
+        result = image_patch.simple_query("What type of clothing is short sleeved, the shirt or the glove?")
+
+    return result

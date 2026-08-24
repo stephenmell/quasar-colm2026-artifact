@@ -1,0 +1,32 @@
+# Are there trucks to the right of the train on the road?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    train_patches = image_patch.find("train")
+
+    if len(train_patches) == 0:
+        result = image_patch.simple_query("Are there trucks to the right of the train on the road?")
+    else:
+        result = "no"
+        train_patch = train_patches[0]
+
+        road_patches = image_patch.find("road")
+        if len(road_patches) == 0:
+            # Fallback: check the area to the right of the train and verify trucks are on the road.
+            right_area_patch = image_patch.crop(train_patch.right, image_patch.lower, image_patch.right, image_patch.upper)
+            truck_patches = right_area_patch.find("truck")
+            for truck_patch in truck_patches:
+                if truck_patch.verify_property("truck", "on road"):
+                    result = "yes"
+        else:
+            for road_patch in road_patches:
+                left = train_patch.right if train_patch.right > road_patch.left else road_patch.left
+                right = road_patch.right if road_patch.right < image_patch.right else image_patch.right
+                lower = road_patch.lower
+                upper = road_patch.upper
+
+                if left < right and lower < upper:
+                    area_patch = image_patch.crop(left, lower, right, upper)
+                    truck_patches = area_patch.find("truck")
+                    for truck_patch in truck_patches:
+                        result = "yes"
+    return result

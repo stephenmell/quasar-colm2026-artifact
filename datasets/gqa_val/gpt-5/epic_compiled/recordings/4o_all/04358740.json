@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2333044",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Are there any plates near the bear?"
+      ],
+      "No, there are no plates near the beer.",
+      1422344231
+    ]
+  ],
+  "best_text_match": []
+}

@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    cow_patches = None
+    image_patch = None
+    is_brown_any = None
+    result = None
+    image_patch = ImagePatch(image)
+    cow_patches = image_patch.find('cow')
+
+    def _if(cow_patches, image_patch, is_brown_any, result):
+        result = image_patch.simple_query('Does the cow seem to be brown?')
+        return (cow_patches, image_patch, is_brown_any, result)
+
+    def _else(cow_patches, image_patch, is_brown_any, result):
+        is_brown_any = False
+
+        def _for(cow_patch, cow_patches, image_patch, is_brown_any):
+
+            def _if(cow_patches, image_patch, is_brown_any):
+                is_brown_any = True
+                return (cow_patches, image_patch, is_brown_any)
+            cow_patches, image_patch, is_brown_any = if_stmt(_if, None, cow_patch.verify_property('cow', 'brown'), (cow_patches, image_patch, is_brown_any))
+            return (cow_patches, image_patch, is_brown_any)
+        cow_patches, image_patch, is_brown_any = for_stmt(_for, cow_patches, (cow_patches, image_patch, is_brown_any))
+        result = bool_to_yesno(is_brown_any)
+        return (cow_patches, image_patch, is_brown_any, result)
+    cow_patches, image_patch, is_brown_any, result = if_stmt(_if, _else, len(cow_patches) == 0, (cow_patches, image_patch, is_brown_any, result))
+    return result

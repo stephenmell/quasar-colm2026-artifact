@@ -1,0 +1,16 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    water_bottle_patches = None
+    image_patch = ImagePatch(image)
+    water_bottle_patches = image_patch.find('water bottle')
+
+    def _if(image_patch, result, water_bottle_patches):
+        result = image_patch.simple_query('Does that water bottle have green color?')
+        return (image_patch, result, water_bottle_patches)
+
+    def _else(image_patch, result, water_bottle_patches):
+        result = bool_to_yesno(water_bottle_patches[0].verify_property('water bottle', 'green'))
+        return (image_patch, result, water_bottle_patches)
+    image_patch, result, water_bottle_patches = if_stmt(_if, _else, len(water_bottle_patches) == 0, (image_patch, result, water_bottle_patches))
+    return result

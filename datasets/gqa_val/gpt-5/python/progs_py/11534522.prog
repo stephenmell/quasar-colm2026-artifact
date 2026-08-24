@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Contains spatial relations ("behind", "on") and an attribute ("blue"), so ask directly
+    return image_patch.simple_query("Is the blue water behind the dog on the blanket?")

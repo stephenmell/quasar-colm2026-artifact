@@ -1,0 +1,7 @@
+# Are there both a helmet and a horse in the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_helmet = image_patch.exists("helmet")
+    has_horse = image_patch.exists("horse")
+    result = bool_to_yesno(has_helmet and has_horse)
+    return result

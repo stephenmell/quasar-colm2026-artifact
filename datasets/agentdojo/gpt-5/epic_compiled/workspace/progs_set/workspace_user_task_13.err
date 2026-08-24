@@ -1,0 +1,50 @@
+Traceback (most recent call last):
+
+  File "/home/sm1/projects/conformal_viper/eval/set_patcher.py", line 560, in <module>
+    write_file(trans_filepath, PatchPython(ast.parse(py_code, mode='exec', type_comments=True), filename, 0).source())
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/eval/set_patcher.py", line 22, in __init__
+    self.ast = self.visit(func_ast)
+               ^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/environments/boreal/lib/python3.12/ast.py", line 407, in visit
+    return visitor(node)
+           ^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/eval/set_patcher.py", line 109, in visit_Module
+    module = self.generic_visit(node)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/environments/boreal/lib/python3.12/ast.py", line 483, in generic_visit
+    value = self.visit(value)
+            ^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/environments/boreal/lib/python3.12/ast.py", line 407, in visit
+    return visitor(node)
+           ^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/eval/set_patcher.py", line 135, in visit_FunctionDef
+    function = self.generic_visit(node)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/environments/boreal/lib/python3.12/ast.py", line 483, in generic_visit
+    value = self.visit(value)
+            ^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/environments/boreal/lib/python3.12/ast.py", line 407, in visit
+    return visitor(node)
+           ^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/eval/set_patcher.py", line 210, in visit_If
+    else_statements = [self.visit(child) for child in node.orelse]
+                       ^^^^^^^^^^^^^^^^^
+
+  File "/home/sm1/environments/boreal/lib/python3.12/ast.py", line 407, in visit
+    return visitor(node)
+           ^^^^^^^^^^^^^
+
+  File "/home/sm1/projects/conformal_viper/eval/set_patcher.py", line 336, in visit_While
+    raise NotImplementedError
+
+NotImplementedError

@@ -1,0 +1,27 @@
+# Are there black rackets or fences?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+    found_any = False
+
+    # Check for black rackets
+    if image_patch.exists("racket"):
+        found_any = True
+        racket_patches = image_patch.find("racket")
+        for racket_patch in racket_patches:
+            if racket_patch.verify_property("racket", "black"):
+                result = "yes"
+
+    # Check for black fences
+    if image_patch.exists("fence"):
+        found_any = True
+        fence_patches = image_patch.find("fence")
+        for fence_patch in fence_patches:
+            if fence_patch.verify_property("fence", "black"):
+                result = "yes"
+
+    # If neither rackets nor fences were detected, ask directly
+    if not found_any:
+        result = image_patch.simple_query("Are there black rackets or fences?")
+
+    return result

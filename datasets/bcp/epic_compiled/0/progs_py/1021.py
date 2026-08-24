@@ -1,0 +1,14 @@
+context_info = ()
+for d in context:
+    prompt = "You are given a single document. Your task is to find any anime/manga details relevant to solving the following query and extract the most relevant evidence.\n\nQuery constraints to match (all of them):\n- Anime where the main character is an introvert and quite awkward.\n- Anime has between 10 and 30 episodes (inclusive).\n- The anime includes a song (OP/ED/insert) whose lyrics/story depict a relationship between a woman and a guy who turns out to be very different from how he initially seemed.\n- The anime is adapted from a manga. The manga's writer graduated from a college whose former name was 'Nagoya Meitoku Junior College'. Identify the current name of that institution if mentioned.\n- The anime was released in or before 2020.\n\nFrom this document only, extract any candidates that could satisfy some or all constraints. Be literal and cite exact lines that support each item. If the document is irrelevant to the query, output 'No match'.\n\nRequired output format exactly:\nCandidates:\n- Anime: <title>\n  Evidence: <quoted snippets from the document supporting relevance>\n  Episodes: <number if present>\n  Year(s): <years if present>\n  MC traits: <as described in doc>\n  Songs: <OP/ED/insert titles with singer and what the lyrics depict, if present>\n  Manga writer: <full name>\n  Writer's education: <college or university; explicitly note if it was formerly 'Nagoya Meitoku Junior College' and give current name if present>\n\nDocument:\nBEGIN_DOCUMENT\n" + d + "\nEND_DOCUMENT"
+    result = llm_query(prompt)
+    context_info = context_info + (result,)
+
+aggregated = ""
+for r in context_info:
+    aggregated = aggregated + r + "\n\n"
+
+final_prompt = "We must identify the single anime title that satisfies ALL of the following constraints:\n1) Main character is an introvert and quite awkward.\n2) Has 10–30 episodes (inclusive).\n3) Includes a song (OP/ED/insert) whose lyrics depict a relationship between a woman and a guy who turns out to be very different from how he initially seemed.\n4) Is adapted from a manga whose writer graduated from a college formerly named 'Nagoya Meitoku Junior College' (state the current name if known).\n5) Released in or before 2020.\n\nBelow are extracted candidates and evidence from the available context documents:\n\n" + aggregated + "\nDecide which anime best fits ALL constraints. Prioritize strong, explicit evidence for the mangaka's education (former name 'Nagoya Meitoku Junior College' and its current name), episode count, MC traits, release year, and the song description. If multiple match, choose the best supported.\n\nOutput the final answer as concisely as possible:\n- If certain, output only the anime title.\n- If not fully certain but best guess, output: <Title> — <very short justification>."
+
+res = llm_query(final_prompt)
+return_result(res)

@@ -1,0 +1,31 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    picture_patches = image_patch.find("picture")
+
+    # Try multiple possible labels for drapes/curtains
+    drape_patches = []
+    for name in ["drapes", "drape", "curtain", "curtains"]:
+        drape_patches.extend(image_patch.find(name))
+
+    # If either object isn't detected, ask directly
+    if len(picture_patches) == 0 or len(drape_patches) == 0:
+        return image_patch.simple_query("Are the dark drapes to the right of the picture?")
+
+    # Keep only dark drapes/curtains
+    dark_drape_patches = []
+    for dp in drape_patches:
+        if (dp.verify_property("drapes", "dark") or
+            dp.verify_property("drape", "dark") or
+            dp.verify_property("curtain", "dark") or
+            dp.verify_property("curtains", "dark")):
+            dark_drape_patches.append(dp)
+
+    if len(dark_drape_patches) == 0:
+        return image_patch.simple_query("Are the dark drapes to the right of the picture?")
+
+    # Check relative horizontal position
+    for dp in dark_drape_patches:
+        for pic in picture_patches:
+            if dp.horizontal_center > pic.horizontal_center:
+                return "yes"
+    return "no"

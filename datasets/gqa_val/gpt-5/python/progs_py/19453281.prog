@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cloud_patches = image_patch.find("cloud") + image_patch.find("clouds")
+    trouser_patches = image_patch.find("trousers") + image_patch.find("pants")
+    # If either object isn't found, ask directly
+    if len(cloud_patches) == 0 or len(trouser_patches) == 0:
+        return image_patch.simple_query("Are both the clouds and the trousers the same color?")
+    # Use the largest patch for each object
+    def largest_patch(patches):
+        return max(patches, key=lambda p: p.width * p.height)
+    cloud_patch = largest_patch(cloud_patches)
+    trouser_patch = largest_patch(trouser_patches)
+    colors = ["white", "black", "gray", "grey", "blue", "red", "green", "yellow", "brown", "orange", "purple", "pink", "beige"]
+    cloud_color = cloud_patch.best_text_match(colors)
+    trouser_color = trouser_patch.best_text_match(colors)
+    return bool_to_yesno(cloud_color == trouser_color)

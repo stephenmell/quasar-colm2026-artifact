@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+
+    if len(table_patches) == 0:
+        result = image_patch.simple_query("Do you see customers to the right of the food at the table?")
+    else:
+        table_patch = table_patches[0]
+        food_patches = table_patch.find("food")
+        if len(food_patches) == 0:
+            result = table_patch.simple_query("Do you see customers to the right of the food at the table?")
+        else:
+            result = "no"
+            for food_patch in food_patches:
+                customer_patches = table_patch.find("customer")
+                candidate_patches = customer_patches
+                if len(candidate_patches) == 0:
+                    candidate_patches = table_patch.find("person")
+                for cust_patch in candidate_patches:
+                    if cust_patch.horizontal_center > food_patch.horizontal_center:
+                        result = "yes"
+    return result

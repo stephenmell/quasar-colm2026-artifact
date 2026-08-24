@@ -1,0 +1,42 @@
+def execute_command(image) -> str:
+    area = None
+    best_area = None
+    chosen_patch = None
+    image_patch = None
+    options = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+    options = ('skiing', 'surfing')
+
+    def _if(area, best_area, chosen_patch, image_patch, options, result, woman_patches):
+        result = image_patch.best_text_match(options)
+        return (area, best_area, chosen_patch, image_patch, options, result, woman_patches)
+
+    def _else(area, best_area, chosen_patch, image_patch, options, result, woman_patches):
+        best_area = -1
+        chosen_patch = None
+
+        def _for(woman_patch, area, best_area, chosen_patch, image_patch, options, woman_patches):
+            area = woman_patch.width * woman_patch.height
+
+            def _if(area, best_area, chosen_patch, image_patch, options, woman_patches):
+                best_area = area
+                chosen_patch = woman_patch
+                return (area, best_area, chosen_patch, image_patch, options, woman_patches)
+            area, best_area, chosen_patch, image_patch, options, woman_patches = if_stmt(_if, None, area > best_area, (area, best_area, chosen_patch, image_patch, options, woman_patches))
+            return (area, best_area, chosen_patch, image_patch, options, woman_patches)
+        area, best_area, chosen_patch, image_patch, options, woman_patches = for_stmt(_for, woman_patches, (area, best_area, chosen_patch, image_patch, options, woman_patches))
+
+        def _if(area, best_area, chosen_patch, image_patch, options, result, woman_patches):
+            result = chosen_patch.best_text_match(options)
+            return (area, best_area, chosen_patch, image_patch, options, result, woman_patches)
+
+        def _else(area, best_area, chosen_patch, image_patch, options, result, woman_patches):
+            result = image_patch.best_text_match(options)
+            return (area, best_area, chosen_patch, image_patch, options, result, woman_patches)
+        area, best_area, chosen_patch, image_patch, options, result, woman_patches = if_stmt(_if, _else, chosen_patch, (area, best_area, chosen_patch, image_patch, options, result, woman_patches))
+        return (area, best_area, chosen_patch, image_patch, options, result, woman_patches)
+    area, best_area, chosen_patch, image_patch, options, result, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (area, best_area, chosen_patch, image_patch, options, result, woman_patches))
+    return result

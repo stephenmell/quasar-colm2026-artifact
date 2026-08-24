@@ -1,0 +1,50 @@
+def execute_command(image) -> str:
+    bowl_patches = None
+    image_patch = None
+    result = None
+    stove_patch = None
+    stove_patches = None
+    wood_bowl_patch = None
+    wood_bowl_patches = None
+    image_patch = ImagePatch(image)
+    result = None
+    stove_patches = image_patch.find('stove')
+    wood_bowl_patches = image_patch.find('wood bowl')
+    wood_bowl_patch = None
+
+    def _if(bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches):
+        wood_bowl_patch = wood_bowl_patches[0]
+        return (bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches)
+
+    def _else(bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches):
+        bowl_patches = image_patch.find('bowl')
+
+        def _for(bowl_patch, bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches):
+
+            def _if(bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches):
+                wood_bowl_patch = bowl_patch
+                return (bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches)
+            bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches = if_stmt(_if, None, bowl_patch.verify_property('bowl', 'wood'), (bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches))
+            return (bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches)
+        bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches = for_stmt(_for, bowl_patches, (bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches))
+        return (bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches)
+    bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches = if_stmt(_if, _else, len(wood_bowl_patches) > 0, (bowl_patches, image_patch, result, stove_patches, wood_bowl_patch, wood_bowl_patches))
+
+    def _if(bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches):
+        result = image_patch.simple_query('Is the wood bowl to the left or to the right of the stove?')
+        return (bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches)
+
+    def _else(bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches):
+        stove_patch = stove_patches[0]
+
+        def _if(bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches):
+            result = 'left'
+            return (bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches)
+
+        def _else(bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches):
+            result = 'right'
+            return (bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches)
+        bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches = if_stmt(_if, _else, wood_bowl_patch.horizontal_center < stove_patch.horizontal_center, (bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches))
+        return (bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches)
+    bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches = if_stmt(_if, _else, or_expr(len(stove_patches) == 0, not wood_bowl_patch), (bowl_patches, image_patch, result, stove_patch, stove_patches, wood_bowl_patch, wood_bowl_patches))
+    return result

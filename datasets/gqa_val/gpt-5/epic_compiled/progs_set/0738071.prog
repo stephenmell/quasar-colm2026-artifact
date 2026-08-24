@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    backpack_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    backpack_patches = image_patch.find('backpack')
+
+    def _if(backpack_patches, image_patch, result):
+        result = image_patch.simple_query('Is there any black backpack in the photograph?')
+        return (backpack_patches, image_patch, result)
+
+    def _else(backpack_patches, image_patch, result):
+        result = 'no'
+
+        def _for(backpack_patch, backpack_patches, image_patch, result):
+
+            def _if(backpack_patches, image_patch, result):
+                result = 'yes'
+                return (backpack_patches, image_patch, result)
+            backpack_patches, image_patch, result = if_stmt(_if, None, backpack_patch.verify_property('backpack', 'black'), (backpack_patches, image_patch, result))
+            return (backpack_patches, image_patch, result)
+        backpack_patches, image_patch, result = for_stmt(_for, backpack_patches, (backpack_patches, image_patch, result))
+        return (backpack_patches, image_patch, result)
+    backpack_patches, image_patch, result = if_stmt(_if, _else, len(backpack_patches) == 0, (backpack_patches, image_patch, result))
+    return result

@@ -1,0 +1,22 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bottle_patches = image_patch.find("bottle")
+
+    if len(bottle_patches) == 0:
+        result = image_patch.simple_query("Are there any ovens to the right of the bottle on the counter?")
+    else:
+        result = "no"
+        oven_patches = image_patch.find("oven")
+        for bottle_patch in bottle_patches:
+            is_on_counter = False
+            if bottle_patch.verify_property("bottle", "on counter"):
+                is_on_counter = True
+            if not is_on_counter and bottle_patch.verify_property("bottle", "on the counter"):
+                is_on_counter = True
+            if not is_on_counter and bottle_patch.verify_property("bottle", "on countertop"):
+                is_on_counter = True
+            if is_on_counter:
+                for oven_patch in oven_patches:
+                    if oven_patch.horizontal_center > bottle_patch.horizontal_center:
+                        result = "yes"
+    return result

@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    all_home_patches = None
+    home_patches = None
+    house_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    home_patches = image_patch.find('home')
+    house_patches = image_patch.find('house')
+    all_home_patches = home_patches + house_patches
+
+    def _if(all_home_patches, home_patches, house_patches, image_patch, result):
+        result = image_patch.simple_query('Are the homes in the bottom of the photo?')
+        return (all_home_patches, home_patches, house_patches, image_patch, result)
+
+    def _else(all_home_patches, home_patches, house_patches, image_patch, result):
+        result = 'no'
+
+        def _for(home_patch, all_home_patches, home_patches, house_patches, image_patch, result):
+
+            def _if(all_home_patches, home_patches, house_patches, image_patch, result):
+                result = 'yes'
+                return (all_home_patches, home_patches, house_patches, image_patch, result)
+            all_home_patches, home_patches, house_patches, image_patch, result = if_stmt(_if, None, home_patch.vertical_center < image_patch.vertical_center, (all_home_patches, home_patches, house_patches, image_patch, result))
+            return (all_home_patches, home_patches, house_patches, image_patch, result)
+        all_home_patches, home_patches, house_patches, image_patch, result = for_stmt(_for, all_home_patches, (all_home_patches, home_patches, house_patches, image_patch, result))
+        return (all_home_patches, home_patches, house_patches, image_patch, result)
+    all_home_patches, home_patches, house_patches, image_patch, result = if_stmt(_if, _else, len(all_home_patches) == 0, (all_home_patches, home_patches, house_patches, image_patch, result))
+    return result

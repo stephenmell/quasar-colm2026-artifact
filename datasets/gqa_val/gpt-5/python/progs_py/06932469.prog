@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # If no person is found, ask directly
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Do you see any fences to the right of the person that is catching a frisbee?")
+    # Find the person who is catching a frisbee
+    catching_persons = []
+    for person_patch in person_patches:
+        if person_patch.simple_query("Is the person catching a frisbee?") == "yes":
+            catching_persons.append(person_patch)
+    # If no catching person is identified, ask directly
+    if len(catching_persons) == 0:
+        return image_patch.simple_query("Do you see any fences to the right of the person that is catching a frisbee?")
+    # Look for fences to the right of any catching person
+    fence_patches = image_patch.find("fence")
+    if len(fence_patches) == 0:
+        return "no"
+    for person_patch in catching_persons:
+        for fence_patch in fence_patches:
+            if fence_patch.horizontal_center > person_patch.horizontal_center:
+                return "yes"
+    return "no"

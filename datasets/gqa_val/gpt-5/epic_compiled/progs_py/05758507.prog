@@ -1,0 +1,55 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Is the man to the left or to the right of the wine glass that is to the left of the pillow?"
+    result = None
+
+    man_patches = image_patch.find("man")
+    wine_glass_patches = image_patch.find("wine glass")
+    pillow_patches = image_patch.find("pillow")
+
+    if len(man_patches) > 0 and len(wine_glass_patches) > 0 and len(pillow_patches) > 0:
+        valid_wine_glasses = ()
+        for wg in wine_glass_patches:
+            is_left_of_any_pillow = False
+            for pillow in pillow_patches:
+                if wg.horizontal_center < pillow.horizontal_center:
+                    is_left_of_any_pillow = True
+            if is_left_of_any_pillow:
+                valid_wine_glasses = valid_wine_glasses + (wg,)
+
+        if len(valid_wine_glasses) > 0:
+            # Select the wine glass that is closest to a pillow on its right
+            chosen_wg = valid_wine_glasses[0]
+            chosen_gap = None
+            for wg in valid_wine_glasses:
+                min_gap = None
+                for pillow in pillow_patches:
+                    if pillow.horizontal_center > wg.horizontal_center:
+                        gap = pillow.horizontal_center - wg.horizontal_center
+                        if min_gap is None or gap < min_gap:
+                            min_gap = gap
+                if chosen_gap is None:
+                    chosen_gap = min_gap
+                    chosen_wg = wg
+                else:
+                    if min_gap is not None and min_gap < chosen_gap:
+                        chosen_gap = min_gap
+                        chosen_wg = wg
+
+            # Select the man closest horizontally to the chosen wine glass
+            chosen_man = man_patches[0]
+            best_distance = abs(chosen_man.horizontal_center - chosen_wg.horizontal_center)
+            for man in man_patches:
+                distance = abs(man.horizontal_center - chosen_wg.horizontal_center)
+                if distance < best_distance:
+                    best_distance = distance
+                    chosen_man = man
+
+            if chosen_man.horizontal_center < chosen_wg.horizontal_center:
+                result = "left"
+            else:
+                result = "right"
+
+    if not result:
+        result = image_patch.simple_query(question)
+    return result

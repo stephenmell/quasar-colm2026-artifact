@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    hotdog_patches = image_patch.find("hot dog")
+    # If no hot dog is found, ask the question directly
+    if len(hotdog_patches) == 0:
+        return image_patch.simple_query("Is there a tomato to the left of the food that is of the hot dog?")
+    tomato_patches = image_patch.find("tomato")
+    if len(tomato_patches) == 0:
+        return "no"
+    for hotdog_patch in hotdog_patches:
+        for tomato_patch in tomato_patches:
+            if tomato_patch.horizontal_center < hotdog_patch.horizontal_center:
+                return "yes"
+    return "no"

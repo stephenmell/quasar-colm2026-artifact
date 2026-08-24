@@ -1,0 +1,38 @@
+def execute_command(image) -> str:
+    bird_patches = None
+    image_patch = None
+    is_above_any_water = None
+    result = None
+    water_patches = None
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find('bird')
+    water_patches = image_patch.find('water')
+
+    def _if(bird_patches, image_patch, is_above_any_water, result, water_patches):
+        result = image_patch.simple_query('Are there any birds above the water?')
+        return (bird_patches, image_patch, is_above_any_water, result, water_patches)
+
+    def _else(bird_patches, image_patch, is_above_any_water, result, water_patches):
+        result = 'no'
+
+        def _for(bird_patch, bird_patches, image_patch, is_above_any_water, result, water_patches):
+            is_above_any_water = False
+
+            def _for(water_patch, bird_patches, image_patch, is_above_any_water, result, water_patches):
+
+                def _if(bird_patches, image_patch, is_above_any_water, result, water_patches):
+                    is_above_any_water = True
+                    return (bird_patches, image_patch, is_above_any_water, result, water_patches)
+                bird_patches, image_patch, is_above_any_water, result, water_patches = if_stmt(_if, None, bird_patch.vertical_center < water_patch.vertical_center, (bird_patches, image_patch, is_above_any_water, result, water_patches))
+                return (bird_patches, image_patch, is_above_any_water, result, water_patches)
+            bird_patches, image_patch, is_above_any_water, result, water_patches = for_stmt(_for, water_patches, (bird_patches, image_patch, is_above_any_water, result, water_patches))
+
+            def _if(bird_patches, image_patch, is_above_any_water, result, water_patches):
+                result = 'yes'
+                return (bird_patches, image_patch, is_above_any_water, result, water_patches)
+            bird_patches, image_patch, is_above_any_water, result, water_patches = if_stmt(_if, None, is_above_any_water, (bird_patches, image_patch, is_above_any_water, result, water_patches))
+            return (bird_patches, image_patch, is_above_any_water, result, water_patches)
+        bird_patches, image_patch, is_above_any_water, result, water_patches = for_stmt(_for, bird_patches, (bird_patches, image_patch, is_above_any_water, result, water_patches))
+        return (bird_patches, image_patch, is_above_any_water, result, water_patches)
+    bird_patches, image_patch, is_above_any_water, result, water_patches = if_stmt(_if, _else, or_expr(len(bird_patches) == 0, len(water_patches) == 0), (bird_patches, image_patch, is_above_any_water, result, water_patches))
+    return result

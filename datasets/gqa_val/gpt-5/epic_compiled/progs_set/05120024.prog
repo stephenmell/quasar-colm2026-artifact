@@ -1,0 +1,93 @@
+def execute_command(image) -> str:
+    all_men = None
+    got_group = None
+    group_right = None
+    guy_patches = None
+    guys_right = None
+    image_patch = None
+    man_patches = None
+    max_right = None
+    men_right = None
+    people_patches = None
+    person_patches = None
+    question = None
+    result = None
+    right_area = None
+    selected_center = None
+    selected_man = None
+    image_patch = ImagePatch(image)
+    question = 'Are there guys to the right of the man who is to the right of the people?'
+    result = image_patch.simple_query(question)
+    group_right = None
+    got_group = False
+    people_patches = image_patch.find('people')
+
+    def _if(got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result):
+        group_right = people_patches[0].right
+        got_group = True
+        return (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result)
+
+    def _else(got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result):
+        person_patches = image_patch.find('person')
+
+        def _if(got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result):
+            max_right = None
+
+            def _for(pp, got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result):
+
+                def _if(got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result):
+                    max_right = pp.right
+                    return (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result)
+                got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result = if_stmt(_if, None, or_expr(max_right is None, pp.right > max_right), (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result))
+                return (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result)
+            got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result = for_stmt(_for, person_patches, (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result))
+            group_right = max_right
+            got_group = True
+            return (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result)
+        got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result = if_stmt(_if, None, len(person_patches) > 0, (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result))
+        return (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result)
+    got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result = if_stmt(_if, _else, len(people_patches) > 0, (got_group, group_right, image_patch, max_right, people_patches, person_patches, question, result))
+
+    def _if(all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man):
+        man_patches = image_patch.find('man')
+        guy_patches = image_patch.find('guy')
+        all_men = man_patches + guy_patches
+
+        def _if(all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man):
+            selected_man = None
+            selected_center = None
+
+            def _for(mp, all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man):
+
+                def _if(all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man):
+
+                    def _if(all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man):
+                        selected_man = mp
+                        selected_center = mp.horizontal_center
+                        return (all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man)
+                    all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man = if_stmt(_if, None, or_expr(selected_man is None, mp.horizontal_center < selected_center), (all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man))
+                    return (all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man)
+                all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man = if_stmt(_if, None, mp.horizontal_center > group_right, (all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man))
+                return (all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man)
+            all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man = for_stmt(_for, all_men, (all_men, got_group, group_right, guy_patches, image_patch, man_patches, max_right, people_patches, person_patches, question, result, selected_center, selected_man))
+
+            def _if(all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man):
+                right_area = image_patch.crop(selected_man.right, image_patch.lower, image_patch.right, image_patch.upper)
+                guys_right = right_area.find('guy')
+                men_right = right_area.find('man')
+
+                def _if(all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man):
+                    result = 'yes'
+                    return (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man)
+
+                def _else(all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man):
+                    result = 'no'
+                    return (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man)
+                all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man = if_stmt(_if, _else, or_expr(len(guys_right) > 0, len(men_right) > 0), (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man))
+                return (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man)
+            all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man = if_stmt(_if, None, selected_man is not None, (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man))
+            return (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man)
+        all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man = if_stmt(_if, None, len(all_men) > 0, (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man))
+        return (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man)
+    all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man = if_stmt(_if, None, got_group, (all_men, got_group, group_right, guy_patches, guys_right, image_patch, man_patches, max_right, men_right, people_patches, person_patches, question, result, right_area, selected_center, selected_man))
+    return result

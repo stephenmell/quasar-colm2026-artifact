@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # contains a spatial relation (behind), so ask directly
+    return image_patch.simple_query("Is the keyboard behind a pizza?")

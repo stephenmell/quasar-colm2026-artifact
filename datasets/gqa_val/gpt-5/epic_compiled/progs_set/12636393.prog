@@ -1,0 +1,14 @@
+def execute_command(image) -> str:
+    has_aircraft = None
+    has_airplane = None
+    has_jet = None
+    has_plane = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_airplane = image_patch.exists('airplane')
+    has_plane = image_patch.exists('plane')
+    has_jet = image_patch.exists('jet')
+    has_aircraft = image_patch.exists('aircraft')
+    result = bool_to_yesno(or_expr(has_airplane, or_expr(has_plane, or_expr(has_jet, has_aircraft))))
+    return result

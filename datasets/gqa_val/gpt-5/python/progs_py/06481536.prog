@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    grass_patches = image_patch.find("grass")
+    # If no grass is found, ask the question directly
+    if len(grass_patches) == 0:
+        return image_patch.simple_query("Is there any grass that is not brown?")
+    # If any grass patch is not brown, answer yes
+    for grass_patch in grass_patches:
+        if not grass_patch.verify_property("grass", "brown"):
+            return "yes"
+    return "no"

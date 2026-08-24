@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    kettle_patches = image_patch.find("kettle")
+    # Need at least two kettles to disambiguate "the one to the right of the other"
+    if len(kettle_patches) < 2:
+        return image_patch.simple_query("Is the kettle that is to the right of the other kettle metallic and green?")
+    # Choose the kettle that is to the right of the other(s) — the rightmost one
+    kettle_right = max(kettle_patches, key=lambda k: k.horizontal_center)
+    # Ensure there exists at least one other kettle to its left
+    if not any(k.horizontal_center < kettle_right.horizontal_center for k in kettle_patches if k is not kettle_right):
+        return image_patch.simple_query("Is the kettle that is to the right of the other kettle metallic and green?")
+    is_metallic = kettle_right.verify_property("kettle", "metallic")
+    is_green = kettle_right.verify_property("kettle", "green")
+    return "yes" if is_metallic and is_green else "no"

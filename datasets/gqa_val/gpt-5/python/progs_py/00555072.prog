@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    broccoli_patches = image_patch.find("broccoli")
+    for broccoli_patch in broccoli_patches:
+        if broccoli_patch.verify_property("broccoli", "green"):
+            return "yes"
+
+    lettuce_patches = image_patch.find("lettuce")
+    for lettuce_patch in lettuce_patches:
+        if lettuce_patch.verify_property("lettuce", "green"):
+            return "yes"
+
+    if len(broccoli_patches) == 0 and len(lettuce_patches) == 0:
+        return image_patch.simple_query("Do you see any green broccoli or lettuce?")
+
+    return "no"

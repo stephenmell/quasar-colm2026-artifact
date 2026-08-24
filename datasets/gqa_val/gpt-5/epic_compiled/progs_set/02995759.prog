@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    color_options = None
+    image_patch = None
+    result = None
+    sky_color = None
+    sky_patch = None
+    sky_patches = None
+    truck_color = None
+    truck_patch = None
+    truck_patches = None
+    image_patch = ImagePatch(image)
+    sky_patches = image_patch.find('sky')
+    truck_patches = image_patch.find('truck')
+
+    def _if(color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches):
+        result = image_patch.simple_query('Are both the sky and the truck the same color?')
+        return (color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches)
+
+    def _else(color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches):
+        sky_patch = sky_patches[0]
+        truck_patch = truck_patches[0]
+        color_options = ('blue', 'white', 'gray', 'black', 'red', 'green', 'yellow', 'brown', 'orange', 'pink', 'purple', 'silver', 'gold')
+        sky_color = sky_patch.best_text_match(color_options)
+        truck_color = truck_patch.best_text_match(color_options)
+
+        def _if(color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches):
+            result = 'yes'
+            return (color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches)
+
+        def _else(color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches):
+            result = 'no'
+            return (color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches)
+        color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches = if_stmt(_if, _else, sky_color == truck_color, (color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches))
+        return (color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches)
+    color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches = if_stmt(_if, _else, or_expr(len(sky_patches) == 0, len(truck_patches) == 0), (color_options, image_patch, result, sky_color, sky_patch, sky_patches, truck_color, truck_patch, truck_patches))
+    return result

@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find("pillow")
+
+    if len(pillow_patches) == 0:
+        result = image_patch.simple_query("Do you see mirrors to the right of the pillow on the chair?")
+    else:
+        chair_patches = image_patch.find("chair")
+        mirror_patches = image_patch.find("mirror")
+        result = "no"
+
+        for pillow_patch in pillow_patches:
+            on_chair = False
+            for chair_patch in chair_patches:
+                in_horiz = pillow_patch.horizontal_center >= chair_patch.left and pillow_patch.horizontal_center <= chair_patch.right
+                in_vert = pillow_patch.vertical_center >= chair_patch.upper and pillow_patch.vertical_center <= chair_patch.lower
+                if in_horiz and in_vert:
+                    on_chair = True
+            if on_chair:
+                for mirror_patch in mirror_patches:
+                    if mirror_patch.horizontal_center > pillow_patch.horizontal_center:
+                        result = "yes"
+    return result

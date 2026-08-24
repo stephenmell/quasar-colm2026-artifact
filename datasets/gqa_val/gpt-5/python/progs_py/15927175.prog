@@ -1,0 +1,21 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    furniture_types = [
+        "chair", "table", "desk", "bed", "sofa", "couch", "bench", "dresser",
+        "bookshelf", "shelf", "nightstand", "stool", "cabinet", "wardrobe",
+        "cupboard", "coffee table", "end table", "armchair", "tv stand",
+        "side table", "bookcase", "chest", "drawer", "dining table",
+        "rocking chair", "ottoman"
+    ]
+    for furn in furniture_types:
+        furn_patches = image_patch.find(furn)
+        for furn_patch in furn_patches:
+            is_wood = furn_patch.verify_property(furn, "wood") or furn_patch.verify_property(furn, "wooden")
+            if not is_wood:
+                # Fallback to a direct yes/no question if property check is uncertain
+                is_wood = (furn_patch.simple_query(f"Is the {furn} made of wood?") == "yes") or \
+                          (furn_patch.simple_query("Is this made of wood?") == "yes")
+            if is_wood:
+                return furn_patch.simple_query("What is the piece of furniture that is made of wood called?")
+    # If no wooden furniture is found explicitly, ask the whole image
+    return image_patch.simple_query("What is the piece of furniture that is made of wood called?")

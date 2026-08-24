@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    man_patches = image_patch.find("man")
+
+    if len(man_patches) == 0:
+        result = image_patch.simple_query("Do you see any bulls to the left of the man that is on the right of the image?")
+    else:
+        # Find the man on the right of the image (rightmost man)
+        rightmost_man = man_patches[0]
+        rightmost_x = rightmost_man.horizontal_center
+        for man_patch in man_patches:
+            if man_patch.horizontal_center > rightmost_x:
+                rightmost_man = man_patch
+                rightmost_x = man_patch.horizontal_center
+
+        bull_patches = image_patch.find("bull")
+        if len(bull_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for bull_patch in bull_patches:
+                if bull_patch.horizontal_center < rightmost_man.horizontal_center:
+                    result = "yes"
+    return result

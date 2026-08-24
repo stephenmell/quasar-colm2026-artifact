@@ -1,0 +1,1 @@
+"Hi Emma Johnson at Blue Sparrow Tech. I’m ready to translate your request into structured Python code using the available tools. Please provide the specific task you’d like me to perform (for example: send an email, search inbox, manage calendar events, or work with files) and include any necessary details such as dates/times, recipients/emails, subjects, filenames, or queries."

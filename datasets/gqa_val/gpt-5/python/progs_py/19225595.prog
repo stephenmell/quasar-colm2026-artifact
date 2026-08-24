@@ -1,0 +1,38 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find the blue bowl
+    bowl_patches = image_patch.find("bowl")
+    blue_bowls = []
+    for bowl_patch in bowl_patches:
+        if bowl_patch.verify_property("bowl", "blue"):
+            blue_bowls.append(bowl_patch)
+        else:
+            # Fallback verification via QA on the bowl patch
+            if bowl_patch.simple_query("Is the bowl blue?") == "yes":
+                blue_bowls.append(bowl_patch)
+    if len(blue_bowls) == 0:
+        # Fallback: ask the full image directly
+        return image_patch.simple_query("What is the name of the appliance to the right of the blue bowl?")
+    bowl_patch = blue_bowls[0]
+
+    # Look for common appliances to the right of the blue bowl
+    appliance_names = [
+        "microwave", "oven", "stove", "refrigerator", "fridge",
+        "dishwasher", "toaster", "blender", "coffee maker", "kettle", "mixer"
+    ]
+    best_patch = None
+    best_dx = None
+    for name in appliance_names:
+        patches = image_patch.find(name)
+        for p in patches:
+            if p.horizontal_center > bowl_patch.horizontal_center:
+                dx = p.horizontal_center - bowl_patch.horizontal_center
+                if best_dx is None or dx < best_dx:
+                    best_dx = dx
+                    best_patch = p
+
+    if best_patch is not None:
+        return best_patch.simple_query("What is this?")
+
+    # Final fallback: ask directly with the relational query
+    return image_patch.simple_query("What is the name of the appliance to the right of the blue bowl?")

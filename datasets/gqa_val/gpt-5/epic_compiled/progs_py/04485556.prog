@@ -1,0 +1,13 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    towel_exists = image_patch.exists("towel")
+    if towel_exists:
+        towel_patches = image_patch.find("towel")
+        for towel_patch in towel_patches:
+            if towel_patch.verify_property("towel", "white"):
+                result = "yes"
+    else:
+        result = image_patch.simple_query("Are there white towels in this image?")
+    return result

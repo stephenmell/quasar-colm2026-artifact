@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    found_any = False
+    queries = [
+        ("woman", "Is the woman walking?"),
+        ("women", "Are the women walking?"),
+        ("person", "Is the person walking?"),
+        ("people", "Are the people walking?")
+    ]
+
+    for obj_name, question in queries:
+        patches = image_patch.find(obj_name)
+        if len(patches) > 0:
+            found_any = True
+        for patch in patches:
+            if patch.simple_query(question) == "yes":
+                return "yes"
+
+    if found_any:
+        return "no"
+
+    # If no relevant subjects are detected, ask the image directly
+    return image_patch.simple_query("Are there any women or people that are walking?")

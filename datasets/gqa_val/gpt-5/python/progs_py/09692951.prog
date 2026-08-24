@@ -1,0 +1,10 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    if len(table_patches) == 0:
+        # If no table is found, query the image directly
+        return image_patch.simple_query("Is there any table in the scene that is brown?")
+    for table_patch in table_patches:
+        if table_patch.verify_property("table", "brown"):
+            return "yes"
+    return "no"

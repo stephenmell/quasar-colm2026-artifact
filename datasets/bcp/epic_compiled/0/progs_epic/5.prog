@@ -1,0 +1,66 @@
+({1615: 'context', 1624: 'llm_query', 1631: '.join', 1641: 'return_result'},
+ ('def',
+  1613,
+  ((),
+   ((('call', (1614,), -1, ()),
+     ('def',
+      1616,
+      ((1626, 1617),
+       ((('prim', 1618, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (1619,), 80, (1618, 1617)),
+         ('prim', 1620, '\nEND_DOCUMENT\n'),
+         ('call', (1621,), 80, (1619, 1620)),
+         ('prim',
+          1622,
+          'From this document alone, extract any information that could help '
+          'identify the cover designer asked about below. Only include an item '
+          'if the document clearly supports it.\n'
+          'Provide a list of zero or more findings. For each, include '
+          "'Finding:' then 'Quotes:' and keep each finding concise.\n"
+          'Look for any of the following:\n'
+          '- A World Health Organization global report (published between 2012 '
+          'and 2019 inclusive). If present, give: the report title, year, '
+          "foreword author, introduction author, and any 'Cover design by' or "
+          "'Cover designer' credit (name and any bio details).\n"
+          '- Any person profile/bio that matches ALL of these: completed a '
+          "program named 'Leadership Strategies in Book Publishing' sometime "
+          "between 2010 and 2019; earned a Bachelor's degree in Graphic Design "
+          'between 2001 and 2009; previously worked at Malaria Consortium and '
+          'also at Ogilvy & Mather. If present, give the full name and the '
+          'details.\n'
+          '- Any mention of an introduction author whose first name begins '
+          "with 'Z' tied to a WHO report, and any evidence that the same 'Z' "
+          'person co-authored an opinion piece with a co-author whose first '
+          "name begins with 'J' published between 2021 and 2023.\n"
+          'If nothing relevant is present, output nothing.'),
+         ('call', (1623,), 80, (1621, 1622)),
+         ('call', (1625,), 1624, (1623,)),
+         ('call', (1627,), -1, (1625,)),
+         ('call', (1628,), 80, (1626, 1627))),
+        (1628,)))),
+     ('call', (1630,), 79, (1615,)),
+     ('call', (1629,), 1630, (1614, 1616)),
+     ('prim',
+      1633,
+      'Here are extracted findings from the provided documents:\n'),
+     ('prim', 1632, '\n\n'),
+     ('call', (1634,), 1631, (1632, 1629)),
+     ('call', (1635,), 80, (1633, 1634)),
+     ('prim', 1636, '\n\n'),
+     ('call', (1637,), 80, (1635, 1636)),
+     ('prim',
+      1638,
+      'Task: Using only the above findings, identify the specific WHO global '
+      'report (2012-2019) that has a foreword by an Eritrean individual who '
+      'holds an MSc in Immunology of Infectious Diseases from a UK university '
+      '(note: Dr Tedros Adhanom Ghebreyesus fits this), and an introduction '
+      "authored by someone whose first name begins with 'Z' who also "
+      'co-authored an opinion piece with a co-author whose first name begins '
+      "with 'J' between 2021 and 2023 (e.g., Zoleka Mandela with Jean Todt is "
+      'an example pattern to check if present). Once you have identified the '
+      'correct report, extract the cover designer credit from the findings.\n'
+      "Return only the cover designer's first and last name, nothing else."),
+     ('call', (1639,), 80, (1637, 1638)),
+     ('call', (1640,), 1624, (1639,)),
+     ('call', (1642,), 1641, (1640,))),
+    (1642,)))))

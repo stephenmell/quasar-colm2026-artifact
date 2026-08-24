@@ -1,0 +1,5 @@
+{
+  "result": "You have 3 appointments on May 15th, 2024.\n\nSummaries of descriptions:\n1. Team Sync: AbstractOther(_possibilities=frozenset({'Team sync to review project progress and challenges each week.', 'Weekly team meeting to discuss project updates and address roadblocks.'}))\n2. Lunch with Sarah: AbstractOther(_possibilities=frozenset({'Lunch meeting to catch up.', 'Meet to catch up during lunch.'}))\n3. Introductory meeting: Introductory meeting with clients to discuss potential collaboration opportunities.",
+  "time_ns": 4391665,
+  "utility": true
+}

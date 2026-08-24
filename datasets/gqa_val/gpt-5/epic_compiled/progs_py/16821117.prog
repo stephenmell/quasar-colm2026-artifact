@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Check for trucks (including common specific types)
+    any_truck = image_patch.exists("truck")
+    truck_synonyms = ("pickup truck", "fire truck", "semi truck", "dump truck", "garbage truck")
+    for t_name in truck_synonyms:
+        if image_patch.exists(t_name):
+            any_truck = True
+
+    # Check for airplanes (including common synonyms)
+    any_airplane = False
+    airplane_synonyms = ("airplane", "plane", "jet", "aircraft", "airliner")
+    for a_name in airplane_synonyms:
+        if image_patch.exists(a_name):
+            any_airplane = True
+
+    result = bool_to_yesno(any_truck and any_airplane)
+    return result

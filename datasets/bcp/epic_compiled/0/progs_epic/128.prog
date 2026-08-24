@@ -1,0 +1,106 @@
+({1042: 'context',
+  1045: 'llm_query',
+  1056: '.join',
+  1062: 'return_result',
+  1063: '.strip'},
+ ('def',
+  1040,
+  ((),
+   ((('call', (1041,), -1, ()),
+     ('def',
+      1043,
+      ((1051, 1044),
+       ((('prim',
+          1046,
+          'You will be given a single document. Analyze it to see if it '
+          'matches either of two target articles, and extract key facts. Use '
+          'only what is in the document plus widely known facts like a major '
+          "media company's founding year. Be precise and include short quotes "
+          'from the document where relevant.\n'
+          '\n'
+          'TARGET A (2019 article):\n'
+          '- Description: An article published in November 2019 by a media '
+          'company founded in the 1960s. The article discusses different '
+          'scoring methods for various types of the same sport. The article '
+          'references only one professional athlete by name throughout the '
+          'entire article.\n'
+          '- If the document matches this, extract: publisher/media company; '
+          'its founding year; publication date; the sport; the different '
+          "scoring methods/types discussed; the single professional athlete's "
+          "full name; a brief quote that shows the athlete's name appears; and "
+          'confirm that it is the only professional athlete named.\n'
+          '\n'
+          'TARGET B (2020 article):\n'
+          '- Description: An article published in January 2020 by a media '
+          'company that originated in the 1950s, about the athlete identified '
+          'in TARGET A, that includes excerpts from an interview with the '
+          'athlete.\n'
+          '- If the document matches this, extract: publisher/media company; '
+          "its founding year; publication date; athlete's full name; clear "
+          "indication that it contains interview excerpts; and the athlete's "
+          'hometown as stated in the article, with an exact quote showing the '
+          'hometown wording.\n'
+          '\n'
+          'OUTPUT FORMAT:\n'
+          'Document Summary:\n'
+          '- Detected title/headline (if present):\n'
+          '- Detected publisher/media company (if present or inferable):\n'
+          '- Publisher founding year (if known):\n'
+          '- Detected publication date (if present):\n'
+          '- Sport(s) discussed (if any):\n'
+          '\n'
+          'Target A (Nov 2019 scoring article) Assessment:\n'
+          '- Matches Target A: Yes/No\n'
+          '- Athlete named (if matches):\n'
+          '- Sport and scoring types referenced (if matches):\n'
+          '- Evidence quotes (include the athlete name line and scoring '
+          'discussion lines):\n'
+          '- Notes:\n'
+          '\n'
+          'Target B (Jan 2020 interview article) Assessment:\n'
+          '- Matches Target B: Yes/No\n'
+          '- Athlete (if matches):\n'
+          '- Media company and founding year (if matches):\n'
+          '- Publication date (if matches):\n'
+          '- Interview excerpt evidence (short quote):\n'
+          '- Hometown as stated (exact wording in quotes):\n'
+          '- Evidence quotes for hometown:\n'
+          '\n'
+          'Begin Document:\n'),
+         ('call', (1047,), 80, (1046, 1044)),
+         ('prim', 1048, '\nEnd Document.'),
+         ('call', (1049,), 80, (1047, 1048)),
+         ('call', (1050,), 1045, (1049,)),
+         ('call', (1052,), -1, (1050,)),
+         ('call', (1053,), 80, (1051, 1052))),
+        (1053,)))),
+     ('call', (1055,), 79, (1042,)),
+     ('call', (1054,), 1055, (1041, 1043)),
+     ('prim',
+      1058,
+      'You will be given multiple per-document analyses. Your task is to '
+      'determine the athlete and their hometown based on the following logic:\n'
+      '\n'
+      '1) Identify which document(s) match TARGET A: an article published in '
+      'November 2019 by a media company founded in the 1960s, discussing '
+      'different scoring methods for various types of the same sport, and that '
+      "names exactly one professional athlete. Extract that athlete's full "
+      'name.\n'
+      '2) Using that athlete, identify which document(s) match TARGET B: an '
+      'article published in January 2020 by a media company that originated in '
+      'the 1950s, containing interview excerpts with that athlete. From that '
+      "specific 2020 article, extract the athlete's hometown exactly as stated "
+      'in the article text.\n'
+      '3) Output ONLY the hometown string exactly as it appears in the 2020 '
+      'article. Do not include any additional words, labels, punctuation, or '
+      'explanation. If you cannot determine the hometown from the provided '
+      'analyses, output exactly: Unknown\n'
+      '\n'
+      'Here are the analyses:\n'),
+     ('prim', 1057, '\n\n-----\n\n'),
+     ('call', (1059,), 1056, (1057, 1054)),
+     ('call', (1060,), 80, (1058, 1059)),
+     ('call', (1061,), 1045, (1060,)),
+     ('call', (1064,), 1063, (1061,)),
+     ('call', (1065,), 1062, (1064,))),
+    (1065,)))))

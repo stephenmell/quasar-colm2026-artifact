@@ -1,0 +1,18 @@
+# Does the person to the left of the horse appear to be jumping?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    horse_patches = image_patch.find("horse")
+    if len(horse_patches) == 0:
+        result = image_patch.simple_query("Does the person to the left of the horse appear to be jumping?")
+    else:
+        person_patches = image_patch.find("person")
+        if len(person_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for horse_patch in horse_patches:
+                for person_patch in person_patches:
+                    if person_patch.horizontal_center < horse_patch.horizontal_center:
+                        if person_patch.verify_property("person", "jumping"):
+                            result = "yes"
+    return result

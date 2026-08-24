@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    dresser_patches = image_patch.find("dresser")
+    if len(dresser_patches) == 0:
+        result = image_patch.simple_query("What is the piece of furniture to the left of the dresser?")
+    else:
+        chosen_dresser = dresser_patches[0]
+        for dp in dresser_patches:
+            if dp.horizontal_center < chosen_dresser.horizontal_center:
+                chosen_dresser = dp
+        left_bound = image_patch.left
+        right_bound = chosen_dresser.left
+        lower_bound = image_patch.lower
+        upper_bound = image_patch.upper
+        if right_bound <= left_bound + 1:
+            result = image_patch.simple_query("What is the piece of furniture to the left of the dresser?")
+        else:
+            left_area_patch = image_patch.crop(left_bound, lower_bound, right_bound, upper_bound)
+            result = left_area_patch.simple_query("What piece of furniture is there?")
+    return result

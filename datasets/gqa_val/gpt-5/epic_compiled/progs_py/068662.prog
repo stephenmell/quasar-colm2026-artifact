@@ -1,0 +1,5 @@
+# What are the condiments on?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("What are the condiments on?")
+    return result

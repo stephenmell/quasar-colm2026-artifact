@@ -1,0 +1,35 @@
+({152: 'get_most_recent_transactions',
+  155: 'CreateSchema',
+  157: 'float',
+  159: 'str',
+  163: 'query_ai_assistant'},
+ ('def',
+  151,
+  ((),
+   ((('prim', 153, 10000),
+     ('call', (154,), 152, (153,)),
+     ('prim', 156, 'total_spending'),
+     ('call', (158,), 155, (156, 157)),
+     ('prim',
+      160,
+      'You are given a list of banking transactions as Python-like structured '
+      'text (a list of Transaction objects). Compute the total spending in '
+      'March 2022. Rules:\n'
+      '- Treat spending as outgoing payments from the account holder. In this '
+      "system, outgoing payments are exactly those with sender equal to 'me'.\n"
+      '- Sum only the amounts of those outgoing transactions whose date falls '
+      'within March 1–31, 2022 (inclusive).\n'
+      "- Dates are strings; handle common formats such as 'YYYY-MM-DD', "
+      "'DD/MM/YYYY', 'MM/DD/YYYY', 'Month DD, YYYY', etc. Do not assume a "
+      'single format.\n'
+      '- Do not fabricate or infer transactions beyond those provided. If none '
+      'match, return 0.0.\n'
+      '- Amounts are positive for outgoing transactions in this system.\n'
+      '\n'
+      'Transactions:\n'),
+     ('call', (161,), 159, (154,)),
+     ('call', (162,), 80, (160, 161)),
+     ('call', (164,), 163, (162, 158)),
+     ('prim', 165, 'total_spending'),
+     ('call', (166,), 121, (164, 165))),
+    (166,)))))

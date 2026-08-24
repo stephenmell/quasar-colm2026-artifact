@@ -1,0 +1,41 @@
+def execute_command(image) -> str:
+    boy_patches = None
+    image_patch = None
+    result = None
+    umbrella_patches = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find('woman')
+
+    def _if(boy_patches, image_patch, result, umbrella_patches, woman_patches):
+        result = image_patch.simple_query('Is there an umbrella to the right of the boy that is to the right of the woman?')
+        return (boy_patches, image_patch, result, umbrella_patches, woman_patches)
+
+    def _else(boy_patches, image_patch, result, umbrella_patches, woman_patches):
+        result = 'no'
+        boy_patches = image_patch.find('boy')
+        umbrella_patches = image_patch.find('umbrella')
+
+        def _for(woman_patch, boy_patches, image_patch, result, umbrella_patches, woman_patches):
+
+            def _for(boy_patch, boy_patches, image_patch, result, umbrella_patches, woman_patches):
+
+                def _if(boy_patches, image_patch, result, umbrella_patches, woman_patches):
+
+                    def _for(umbrella_patch, boy_patches, image_patch, result, umbrella_patches, woman_patches):
+
+                        def _if(boy_patches, image_patch, result, umbrella_patches, woman_patches):
+                            result = 'yes'
+                            return (boy_patches, image_patch, result, umbrella_patches, woman_patches)
+                        boy_patches, image_patch, result, umbrella_patches, woman_patches = if_stmt(_if, None, umbrella_patch.horizontal_center > boy_patch.horizontal_center, (boy_patches, image_patch, result, umbrella_patches, woman_patches))
+                        return (boy_patches, image_patch, result, umbrella_patches, woman_patches)
+                    boy_patches, image_patch, result, umbrella_patches, woman_patches = for_stmt(_for, umbrella_patches, (boy_patches, image_patch, result, umbrella_patches, woman_patches))
+                    return (boy_patches, image_patch, result, umbrella_patches, woman_patches)
+                boy_patches, image_patch, result, umbrella_patches, woman_patches = if_stmt(_if, None, boy_patch.horizontal_center > woman_patch.horizontal_center, (boy_patches, image_patch, result, umbrella_patches, woman_patches))
+                return (boy_patches, image_patch, result, umbrella_patches, woman_patches)
+            boy_patches, image_patch, result, umbrella_patches, woman_patches = for_stmt(_for, boy_patches, (boy_patches, image_patch, result, umbrella_patches, woman_patches))
+            return (boy_patches, image_patch, result, umbrella_patches, woman_patches)
+        boy_patches, image_patch, result, umbrella_patches, woman_patches = for_stmt(_for, woman_patches, (boy_patches, image_patch, result, umbrella_patches, woman_patches))
+        return (boy_patches, image_patch, result, umbrella_patches, woman_patches)
+    boy_patches, image_patch, result, umbrella_patches, woman_patches = if_stmt(_if, _else, len(woman_patches) == 0, (boy_patches, image_patch, result, umbrella_patches, woman_patches))
+    return result

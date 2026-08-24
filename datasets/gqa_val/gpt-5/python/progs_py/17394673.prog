@@ -1,0 +1,39 @@
+# How is the device to the right of the woman on the left called?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    woman_patches = image_patch.find("woman")
+    # If no woman is found, ask directly with the relational question
+    if len(woman_patches) == 0:
+        return image_patch.simple_query("How is the device to the right of the woman on the left called?")
+    # Choose the leftmost woman
+    leftmost_woman = min(woman_patches, key=lambda p: p.horizontal_center)
+
+    # Try to find generic "device"
+    device_patches = image_patch.find("device")
+
+    # If "device" is not detected, try common device synonyms
+    if len(device_patches) == 0:
+        device_candidates = [
+            "laptop", "computer", "desktop computer", "monitor",
+            "phone", "cell phone", "mobile phone", "smartphone",
+            "tablet", "tv", "television", "microwave", "camera",
+            "printer", "keyboard", "mouse", "remote", "radio", "speaker"
+        ]
+        for name in device_candidates:
+            device_patches.extend(image_patch.find(name))
+
+    # Filter devices that are to the right of the leftmost woman
+    right_side_devices = [p for p in device_patches if p.horizontal_center > leftmost_woman.horizontal_center]
+
+    # If none found on the right, fall back to asking directly
+    if len(right_side_devices) == 0:
+        return image_patch.simple_query("How is the device to the right of the woman on the left called?")
+
+    # Choose the closest device to the right of the leftmost woman
+    target_device = min(
+        right_side_devices,
+        key=lambda p: p.horizontal_center - leftmost_woman.horizontal_center
+    )
+
+    # Ask the cropped device patch what it is
+    return target_device.simple_query()  # defaults to "What is this?"

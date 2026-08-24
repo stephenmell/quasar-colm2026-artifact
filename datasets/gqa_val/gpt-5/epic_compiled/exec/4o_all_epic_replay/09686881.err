@@ -1,0 +1,14 @@
+Stage: epics_syntax.observe_term_as_value
+Error: ('call', '', (Var(id=54, name='exists_any'),), Var(id=51, name='object_names'), (Var(id=52, name='exists_any'), Var(id=53, name='#for#')))
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 276, in main
+    epic_exec_result_value = epics_syntax.observe_term_as_value(epic_exec_result)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/epics_syntax.py", line 157, in observe_term_as_value
+    if outp in stmt_return_vars(stmt):
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sm1/projects/conformal_viper/epic/epics_syntax.py", line 152, in stmt_return_vars
+    assert False, s
+           ^^^^^
+AssertionError: ('call', '', (Var(id=54, name='exists_any'),), Var(id=51, name='object_names'), (Var(id=52, name='exists_any'), Var(id=53, name='#for#')))

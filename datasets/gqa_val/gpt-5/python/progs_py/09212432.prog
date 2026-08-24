@@ -1,0 +1,35 @@
+# Are both the fence and the shoe the same color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find("fence")
+    shoe_patches = image_patch.find("shoe")
+
+    # If either object is not detected, ask the question directly
+    if len(fence_patches) == 0 or len(shoe_patches) == 0:
+        return image_patch.simple_query("Are both the fence and the shoe the same color?")
+
+    # Choose the most prominent (largest) patch for each
+    def pick_main(patches):
+        return max(patches, key=lambda p: p.width * p.height)
+
+    fence_patch = pick_main(fence_patches)
+    shoe_patch = pick_main(shoe_patches)
+
+    # Standard color palette for comparison
+    colors = [
+        "black", "white", "gray", "grey", "red", "orange", "yellow",
+        "green", "blue", "purple", "brown", "pink", "tan", "beige",
+        "gold", "silver"
+    ]
+
+    # Get best-matching colors for each object
+    fence_color = fence_patch.best_text_match(colors).lower().strip()
+    shoe_color = shoe_patch.best_text_match(colors).lower().strip()
+
+    # Normalize grey/gray
+    if fence_color == "grey":
+        fence_color = "gray"
+    if shoe_color == "grey":
+        shoe_color = "gray"
+
+    return "yes" if fence_color == shoe_color else "no"

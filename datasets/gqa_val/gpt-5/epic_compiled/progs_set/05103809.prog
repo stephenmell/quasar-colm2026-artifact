@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    result = None
+    tablecloth_patches = None
+    image_patch = ImagePatch(image)
+    tablecloth_patches = image_patch.find('tablecloth')
+
+    def _if(image_patch, result, tablecloth_patches):
+        result = image_patch.simple_query('Is that a red tablecloth?')
+        return (image_patch, result, tablecloth_patches)
+
+    def _else(image_patch, result, tablecloth_patches):
+        result = 'no'
+
+        def _for(tablecloth_patch, image_patch, result, tablecloth_patches):
+
+            def _if(image_patch, result, tablecloth_patches):
+                result = 'yes'
+                return (image_patch, result, tablecloth_patches)
+            image_patch, result, tablecloth_patches = if_stmt(_if, None, tablecloth_patch.verify_property('tablecloth', 'red'), (image_patch, result, tablecloth_patches))
+            return (image_patch, result, tablecloth_patches)
+        image_patch, result, tablecloth_patches = for_stmt(_for, tablecloth_patches, (image_patch, result, tablecloth_patches))
+        return (image_patch, result, tablecloth_patches)
+    image_patch, result, tablecloth_patches = if_stmt(_if, _else, len(tablecloth_patches) == 0, (image_patch, result, tablecloth_patches))
+    return result

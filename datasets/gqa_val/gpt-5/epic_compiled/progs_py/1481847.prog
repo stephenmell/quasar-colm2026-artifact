@@ -1,0 +1,22 @@
+# Do you see yellow traffic lights or tennis balls?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for yellow traffic lights
+    traffic_light_exists = image_patch.exists("traffic light")
+    if traffic_light_exists:
+        traffic_lights = image_patch.find("traffic light")
+        for tl_patch in traffic_lights:
+            if tl_patch.verify_property("traffic light", "yellow"):
+                result = "yes"
+
+    # Check for tennis balls
+    tennis_ball_exists = image_patch.exists("tennis ball")
+    if tennis_ball_exists:
+        result = "yes"
+
+    # Fallback: directly ask if uncertain
+    if result == "no":
+        result = image_patch.simple_query("Do you see yellow traffic lights or tennis balls?")
+    return result

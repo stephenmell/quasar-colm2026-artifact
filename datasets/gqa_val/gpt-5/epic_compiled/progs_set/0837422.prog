@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    bed_patch = None
+    bed_patches = None
+    ground_patch = None
+    ground_patches = None
+    image_patch = None
+    left = None
+    lower = None
+    result = None
+    right = None
+    union_patch = None
+    upper = None
+    image_patch = ImagePatch(image)
+    bed_patches = image_patch.find('bed')
+    ground_patches = image_patch.find('ground')
+
+    def _if(bed_patch, bed_patches, ground_patch, ground_patches, image_patch, left, lower, result, right, union_patch, upper):
+        result = image_patch.simple_query('Does the bed have the same color as the ground?')
+        return (bed_patch, bed_patches, ground_patch, ground_patches, image_patch, left, lower, result, right, union_patch, upper)
+
+    def _else(bed_patch, bed_patches, ground_patch, ground_patches, image_patch, left, lower, result, right, union_patch, upper):
+        bed_patch = bed_patches[0]
+        ground_patch = ground_patches[0]
+        left = bed_patch.left if bed_patch.left < ground_patch.left else ground_patch.left
+        right = bed_patch.right if bed_patch.right > ground_patch.right else ground_patch.right
+        lower = bed_patch.lower if bed_patch.lower < ground_patch.lower else ground_patch.lower
+        upper = bed_patch.upper if bed_patch.upper > ground_patch.upper else ground_patch.upper
+        union_patch = image_patch.crop(left, lower, right, upper)
+        result = union_patch.simple_query('Does the bed have the same color as the ground?')
+        return (bed_patch, bed_patches, ground_patch, ground_patches, image_patch, left, lower, result, right, union_patch, upper)
+    bed_patch, bed_patches, ground_patch, ground_patches, image_patch, left, lower, result, right, union_patch, upper = if_stmt(_if, _else, or_expr(len(bed_patches) == 0, len(ground_patches) == 0), (bed_patch, bed_patches, ground_patch, ground_patches, image_patch, left, lower, result, right, union_patch, upper))
+    return result

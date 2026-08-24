@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    has_crate = None
+    has_knife_block = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_knife_block = or_expr(image_patch.exists('knife block'), image_patch.exists('knife blocks'))
+    has_crate = or_expr(image_patch.exists('crate'), image_patch.exists('crates'))
+    result = bool_to_yesno(or_expr(has_knife_block, has_crate))
+    return result

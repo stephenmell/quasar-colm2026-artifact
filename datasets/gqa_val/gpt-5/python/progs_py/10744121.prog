@@ -1,0 +1,17 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    table_patches = image_patch.find("table")
+    chair_patches = image_patch.find("chair")
+    if len(table_patches) == 0 and len(chair_patches) == 0:
+        return image_patch.simple_query("Are there any tables or chairs that are made of wood?")
+    for table_patch in table_patches:
+        if (table_patch.verify_property("table", "made of wood")
+            or table_patch.verify_property("table", "wooden")
+            or table_patch.verify_property("table", "wood")):
+            return "yes"
+    for chair_patch in chair_patches:
+        if (chair_patch.verify_property("chair", "made of wood")
+            or chair_patch.verify_property("chair", "wooden")
+            or chair_patch.verify_property("chair", "wood")):
+            return "yes"
+    return "no"

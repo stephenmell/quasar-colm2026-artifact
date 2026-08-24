@@ -1,0 +1,26 @@
+# Are there any clocks or trash cans that are metallic?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    found_any = False
+
+    # Check clocks
+    clock_patches = image_patch.find("clock")
+    if len(clock_patches) > 0:
+        found_any = True
+        for clock_patch in clock_patches:
+            if clock_patch.verify_property("clock", "metallic"):
+                return "yes"
+
+    # Check trash cans
+    trash_patches = image_patch.find("trash can")
+    if len(trash_patches) > 0:
+        found_any = True
+        for trash_patch in trash_patches:
+            if trash_patch.verify_property("trash can", "metallic"):
+                return "yes"
+
+    # If neither clocks nor trash cans were detected, ask directly
+    if not found_any:
+        return image_patch.simple_query("Are there any clocks or trash cans that are metallic?")
+
+    return "no"

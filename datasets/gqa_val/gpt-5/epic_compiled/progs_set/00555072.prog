@@ -1,0 +1,48 @@
+def execute_command(image) -> str:
+    broccoli_exists = None
+    broccoli_patches = None
+    image_patch = None
+    lettuce_exists = None
+    lettuce_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    broccoli_exists = image_patch.exists('broccoli')
+    lettuce_exists = image_patch.exists('lettuce')
+
+    def _if(broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result):
+        result = image_patch.simple_query('Do you see any green broccoli or lettuce?')
+        return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result)
+
+    def _else(broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result):
+
+        def _if(broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result):
+            broccoli_patches = image_patch.find('broccoli')
+
+            def _for(broccoli_patch, broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result):
+
+                def _if(broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result):
+                    result = 'yes'
+                    return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result)
+                broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result = if_stmt(_if, None, broccoli_patch.verify_property('broccoli', 'green'), (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result))
+                return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result)
+            broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result = for_stmt(_for, broccoli_patches, (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result))
+            return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result)
+        broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result = if_stmt(_if, None, broccoli_exists, (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, result))
+
+        def _if(broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result):
+            lettuce_patches = image_patch.find('lettuce')
+
+            def _for(lettuce_patch, broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result):
+
+                def _if(broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result):
+                    result = 'yes'
+                    return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result)
+                broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result = if_stmt(_if, None, lettuce_patch.verify_property('lettuce', 'green'), (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result))
+                return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result)
+            broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result = for_stmt(_for, lettuce_patches, (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result))
+            return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result)
+        broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result = if_stmt(_if, None, lettuce_exists, (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result))
+        return (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result)
+    broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result = if_stmt(_if, _else, and_expr(not broccoli_exists, not lettuce_exists), (broccoli_exists, broccoli_patches, image_patch, lettuce_exists, lettuce_patches, result))
+    return result

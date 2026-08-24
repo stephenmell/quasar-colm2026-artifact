@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cabbage_patches = image_patch.find("cabbage")
+    if len(cabbage_patches) == 0:
+        result = image_patch.simple_query("Is the green cabbage to the left of a cup?")
+    else:
+        cup_patches = image_patch.find("cup")
+        if len(cup_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for cabbage_patch in cabbage_patches:
+                is_green = cabbage_patch.verify_property("cabbage", "green")
+                if is_green:
+                    for cup_patch in cup_patches:
+                        if cabbage_patch.horizontal_center < cup_patch.horizontal_center:
+                            result = "yes"
+    return result

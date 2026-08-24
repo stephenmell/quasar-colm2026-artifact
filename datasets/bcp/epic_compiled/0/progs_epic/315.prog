@@ -1,0 +1,144 @@
+({2678: 'context', 2685: 'llm_query', 2692: '.join', 2728: 'return_result'},
+ ('def',
+  2676,
+  ((),
+   ((('call', (2677,), -1, ()),
+     ('def',
+      2679,
+      ((2687, 2680),
+       ((('prim',
+          2681,
+          'You are given a document. Determine whether it contains information '
+          'about a European football club founded in the 1920s that, in a '
+          'single league season prior to 2023, recorded exactly the following '
+          'league statistics: 7 wins, 16 draws, 15 losses; 37 goals scored '
+          '(GF); goal difference -12; and fewer than 50 goals conceded (i.e., '
+          'likely 49). If such a club-season appears in the document, extract '
+          'the following:\n'
+          '- Club name\n'
+          "- Founding year (if mentioned; otherwise 'unknown')\n"
+          '- League name\n'
+          '- Season (e.g., 2019–20)\n'
+          '- GF, GA, GD, W, D, L\n'
+          'Additionally, if this same document includes league-only player '
+          "statistics for that club-season, identify the club's second-highest "
+          'league goal scorer and report their total minutes played in the '
+          'league (minutes should be for league matches, not all '
+          'competitions). If multiple players tie for second-most goals, '
+          'choose the one with the most minutes; if still tied, choose any.\n'
+          "Return your findings in this exact template (use 'unknown' where "
+          'data is missing):\n'
+          'FOUND: yes/no\n'
+          'CLUB: <club>\n'
+          'FOUNDING_YEAR: <year>\n'
+          'LEAGUE: <league>\n'
+          'SEASON: <season>\n'
+          'GF: <gf>\n'
+          'GA: <ga>\n'
+          'GD: <gd>\n'
+          'W: <w>\n'
+          'D: <d>\n'
+          'L: <l>\n'
+          'SECOND_SCORER_NAME: <name or unknown>\n'
+          'SECOND_SCORER_GOALS: <goals or unknown>\n'
+          'SECOND_SCORER_MINUTES: <minutes or unknown>\n'
+          'EVIDENCE: <short quotes from the document that support these '
+          'values>\n'
+          '\n'
+          'Document begins below:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2682,), 80, (2681, 2680)),
+         ('prim', 2683, '\nEND_DOCUMENT'),
+         ('call', (2684,), 80, (2682, 2683)),
+         ('call', (2686,), 2685, (2684,)),
+         ('call', (2688,), -1, (2686,)),
+         ('call', (2689,), 80, (2687, 2688))),
+        (2689,)))),
+     ('call', (2691,), 79, (2678,)),
+     ('call', (2690,), 2691, (2677, 2679)),
+     ('prim',
+      2694,
+      'Below are extraction results from multiple documents about a target '
+      'club-season. Your task: select the single club-season that EXACTLY '
+      'matches all constraints: the club is European and founded in the 1920s; '
+      'the season is prior to 2023; and the league record is W7-D16-L15 with '
+      'GF 37, GD -12, and GA < 50 (i.e., 49). Prefer entries with explicit '
+      'matching evidence. Output exactly one line in the format:\n'
+      'CLUB|SEASON|LEAGUE\n'
+      'If no match is found, output:\n'
+      'NONE\n'
+      '\n'
+      'BEGIN_RESULTS\n'),
+     ('prim', 2693, '\n\n---\n\n'),
+     ('call', (2695,), 2692, (2693, 2690)),
+     ('call', (2696,), 80, (2694, 2695)),
+     ('prim', 2697, '\nEND_RESULTS'),
+     ('call', (2698,), 80, (2696, 2697)),
+     ('call', (2699,), 2685, (2698,)),
+     ('call', (2700,), -1, ()),
+     ('def',
+      2701,
+      ((2713, 2702),
+       ((('prim',
+          2704,
+          'We are targeting the following club-season (CLUB|SEASON|LEAGUE):\n'),
+         ('call', (2705,), 80, (2704, 2699)),
+         ('prim',
+          2706,
+          '\n'
+          '\n'
+          'Given the document below, if it contains league-only player '
+          "statistics for the targeted club-season, identify the club's "
+          'second-highest league goal-scorer and report the total minutes they '
+          'played in the league. If multiple players tie for second-most '
+          'league goals, choose the one with the most minutes; if still tied, '
+          'choose any. Return exactly one line in this format:\n'
+          'NAME|GOALS|MINUTES\n'
+          'If the document does not contain relevant league-only player '
+          'minutes for the targeted club-season, return:\n'
+          'NOT_FOUND\n'
+          '\n'
+          'Document begins below:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2707,), 80, (2705, 2706)),
+         ('call', (2708,), 80, (2707, 2702)),
+         ('prim', 2709, '\nEND_DOCUMENT'),
+         ('call', (2710,), 80, (2708, 2709)),
+         ('call', (2712,), 2685, (2710,)),
+         ('call', (2714,), -1, (2712,)),
+         ('call', (2715,), 80, (2713, 2714))),
+        (2715,)))),
+     ('call', (2717,), 79, (2678,)),
+     ('call', (2716,), 2717, (2700, 2701)),
+     ('prim',
+      2718,
+      'We are interested in the total league minutes played by the '
+      'second-highest league goal-scorer for the targeted club-season provided '
+      'below.\n'
+      'TARGET: '),
+     ('call', (2719,), 80, (2718, 2699)),
+     ('prim',
+      2720,
+      '\n'
+      '\n'
+      "Here are candidate extractions (each either 'NAME|GOALS|MINUTES' or "
+      "'NOT_FOUND') from different documents:\n"),
+     ('call', (2722,), 80, (2719, 2720)),
+     ('prim', 2721, '\n'),
+     ('call', (2723,), 2692, (2721, 2716)),
+     ('call', (2724,), 80, (2722, 2723)),
+     ('prim',
+      2725,
+      '\n'
+      '\n'
+      'Instructions:\n'
+      '- Choose the best-supported candidate that clearly corresponds to the '
+      'targeted club-season and that provides MINUTES.\n'
+      '- If multiple candidates provide minutes, prefer the one with explicit '
+      'evidence or the most precise minutes figure.\n'
+      '- Output ONLY the number of minutes (digits only, no commas, no spaces, '
+      "no words). If unknown, output 'unknown'."),
+     ('call', (2726,), 80, (2724, 2725)),
+     ('call', (2727,), 2685, (2726,)),
+     ('call', (2729,), 2728, (2727,))),
+    (2729,)))))

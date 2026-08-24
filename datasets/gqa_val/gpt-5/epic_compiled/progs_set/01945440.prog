@@ -1,0 +1,36 @@
+def execute_command(image) -> str:
+    clothing_categories = None
+    image_patch = None
+    patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    clothing_categories = ('shirt', 't-shirt', 'tee shirt', 'top', 'blouse', 'jacket', 'coat', 'sweater', 'hoodie', 'dress', 'skirt', 'shorts', 'pants', 'jeans', 'trousers', 'scarf', 'belt', 'tie', 'bow tie', 'sock', 'socks', 'shoe', 'shoes', 'sneaker', 'sneakers', 'hat', 'cap', 'suit', 'clothes', 'clothing')
+
+    def _for(category, clothing_categories, image_patch, patches, result):
+        patches = image_patch.find(category)
+
+        def _if(clothing_categories, image_patch, patches, result):
+
+            def _for(p, clothing_categories, image_patch, patches, result):
+
+                def _if(clothing_categories, image_patch, patches, result):
+
+                    def _if(clothing_categories, image_patch, patches, result):
+                        result = p.simple_query('What is the blue clothing item?')
+                        return (clothing_categories, image_patch, patches, result)
+                    clothing_categories, image_patch, patches, result = if_stmt(_if, None, not_expr(result), (clothing_categories, image_patch, patches, result))
+                    return (clothing_categories, image_patch, patches, result)
+                clothing_categories, image_patch, patches, result = if_stmt(_if, None, p.verify_property(category, 'blue'), (clothing_categories, image_patch, patches, result))
+                return (clothing_categories, image_patch, patches, result)
+            clothing_categories, image_patch, patches, result = for_stmt(_for, patches, (clothing_categories, image_patch, patches, result))
+            return (clothing_categories, image_patch, patches, result)
+        clothing_categories, image_patch, patches, result = if_stmt(_if, None, len(patches) > 0, (clothing_categories, image_patch, patches, result))
+        return (clothing_categories, image_patch, patches, result)
+    clothing_categories, image_patch, patches, result = for_stmt(_for, clothing_categories, (clothing_categories, image_patch, patches, result))
+
+    def _if(clothing_categories, image_patch, patches, result):
+        result = image_patch.simple_query('What is the blue clothing item?')
+        return (clothing_categories, image_patch, patches, result)
+    clothing_categories, image_patch, patches, result = if_stmt(_if, None, not_expr(result), (clothing_categories, image_patch, patches, result))
+    return result

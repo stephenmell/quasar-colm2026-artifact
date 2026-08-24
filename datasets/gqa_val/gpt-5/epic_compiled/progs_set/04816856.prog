@@ -1,0 +1,45 @@
+def execute_command(image) -> str:
+    car_patches = None
+    image_patch = None
+    is_wearing_jacket = None
+    person_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    person_patches = image_patch.find('person')
+
+    def _if(car_patches, image_patch, is_wearing_jacket, person_patches, result):
+        result = image_patch.simple_query('Are there cars to the left of the person that wears a jacket?')
+        return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+
+    def _else(car_patches, image_patch, is_wearing_jacket, person_patches, result):
+        car_patches = image_patch.find('car')
+
+        def _if(car_patches, image_patch, is_wearing_jacket, person_patches, result):
+            result = 'no'
+            return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+
+        def _else(car_patches, image_patch, is_wearing_jacket, person_patches, result):
+
+            def _for(person_patch, car_patches, image_patch, is_wearing_jacket, person_patches, result):
+                is_wearing_jacket = person_patch.simple_query('Is the person wearing a jacket?') == 'yes'
+
+                def _if(car_patches, image_patch, is_wearing_jacket, person_patches, result):
+
+                    def _for(car_patch, car_patches, image_patch, is_wearing_jacket, person_patches, result):
+
+                        def _if(car_patches, image_patch, is_wearing_jacket, person_patches, result):
+                            result = 'yes'
+                            return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+                        car_patches, image_patch, is_wearing_jacket, person_patches, result = if_stmt(_if, None, car_patch.horizontal_center < person_patch.horizontal_center, (car_patches, image_patch, is_wearing_jacket, person_patches, result))
+                        return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+                    car_patches, image_patch, is_wearing_jacket, person_patches, result = for_stmt(_for, car_patches, (car_patches, image_patch, is_wearing_jacket, person_patches, result))
+                    return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+                car_patches, image_patch, is_wearing_jacket, person_patches, result = if_stmt(_if, None, is_wearing_jacket, (car_patches, image_patch, is_wearing_jacket, person_patches, result))
+                return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+            car_patches, image_patch, is_wearing_jacket, person_patches, result = for_stmt(_for, person_patches, (car_patches, image_patch, is_wearing_jacket, person_patches, result))
+            return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+        car_patches, image_patch, is_wearing_jacket, person_patches, result = if_stmt(_if, _else, len(car_patches) == 0, (car_patches, image_patch, is_wearing_jacket, person_patches, result))
+        return (car_patches, image_patch, is_wearing_jacket, person_patches, result)
+    car_patches, image_patch, is_wearing_jacket, person_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (car_patches, image_patch, is_wearing_jacket, person_patches, result))
+    return result

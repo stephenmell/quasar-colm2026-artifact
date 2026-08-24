@@ -1,0 +1,32 @@
+def execute_command(image) -> str:
+    cap_patches = None
+    image_patch = None
+    is_worn = None
+    result = None
+    image_patch = ImagePatch(image)
+    cap_patches = image_patch.find('cap')
+
+    def _if(cap_patches, image_patch, is_worn, result):
+        result = image_patch.simple_query('Who is wearing the cap?')
+        return (cap_patches, image_patch, is_worn, result)
+
+    def _else(cap_patches, image_patch, is_worn, result):
+        result = None
+
+        def _for(cap_patch, cap_patches, image_patch, is_worn, result):
+            is_worn = cap_patch.simple_query('Is the cap being worn?') == 'yes'
+
+            def _if(cap_patches, image_patch, is_worn, result):
+                result = cap_patch.simple_query('Who is wearing the cap?')
+                return (cap_patches, image_patch, is_worn, result)
+            cap_patches, image_patch, is_worn, result = if_stmt(_if, None, is_worn, (cap_patches, image_patch, is_worn, result))
+            return (cap_patches, image_patch, is_worn, result)
+        cap_patches, image_patch, is_worn, result = for_stmt(_for, cap_patches, (cap_patches, image_patch, is_worn, result))
+
+        def _if(cap_patches, image_patch, is_worn, result):
+            result = image_patch.simple_query('Who is wearing the cap?')
+            return (cap_patches, image_patch, is_worn, result)
+        cap_patches, image_patch, is_worn, result = if_stmt(_if, None, not_expr(result), (cap_patches, image_patch, is_worn, result))
+        return (cap_patches, image_patch, is_worn, result)
+    cap_patches, image_patch, is_worn, result = if_stmt(_if, _else, len(cap_patches) == 0, (cap_patches, image_patch, is_worn, result))
+    return result

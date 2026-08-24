@@ -1,0 +1,25 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    question = "Are there any girls to the right of the kid that is holding the corn?"
+    result = "no"
+    
+    kid_patches = image_patch.find("kid")
+    if len(kid_patches) == 0:
+        result = image_patch.simple_query(question)
+    else:
+        target_kid_patch = None
+        for kid_patch in kid_patches:
+            is_holding_corn = (kid_patch.simple_query("Is the kid holding the corn?") == "yes")
+            if is_holding_corn:
+                target_kid_patch = kid_patch
+        if target_kid_patch is None:
+            result = image_patch.simple_query(question)
+        else:
+            girl_patches = image_patch.find("girl")
+            if len(girl_patches) == 0:
+                result = "no"
+            else:
+                for girl_patch in girl_patches:
+                    if girl_patch.horizontal_center > target_kid_patch.horizontal_center:
+                        result = "yes"
+    return result

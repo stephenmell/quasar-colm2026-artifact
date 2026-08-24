@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bedroom_patches = image_patch.find("bedroom")
+
+    if len(bedroom_patches) == 0:
+        result = image_patch.simple_query("What kind of appliance is in the bedroom?")
+    else:
+        bedroom_patch = bedroom_patches[0]
+        appliance_patches = bedroom_patch.find("appliance")
+        if len(appliance_patches) == 0:
+            result = bedroom_patch.simple_query("What kind of appliance is in the bedroom?")
+        else:
+            result = ""
+            for appliance_patch in appliance_patches:
+                candidate = appliance_patch.simple_query("What kind of appliance is this?")
+                if not result:
+                    result = candidate
+            if not result:
+                result = bedroom_patch.simple_query("What kind of appliance is in the bedroom?")
+    return result

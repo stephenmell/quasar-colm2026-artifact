@@ -1,0 +1,24 @@
+# Is the kitchen counter made of marble?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to find the kitchen counter (use a few common synonyms)
+    counter_patches = []
+    for name in ["kitchen counter", "countertop", "counter", "kitchen countertop"]:
+        counter_patches.extend(image_patch.find(name))
+
+    # If no counter is found, ask the question directly about the whole image
+    if len(counter_patches) == 0:
+        return image_patch.simple_query("Is the kitchen counter made of marble?")
+
+    # Check within any found counter patches
+    for counter_patch in counter_patches:
+        # Ask directly within the crop
+        if counter_patch.simple_query("Is the counter made of marble?") == "yes":
+            return "yes"
+        # Also try verifying the property explicitly
+        if (counter_patch.verify_property("kitchen counter", "marble") or
+            counter_patch.verify_property("countertop", "marble") or
+            counter_patch.verify_property("counter", "marble")):
+            return "yes"
+
+    return "no"

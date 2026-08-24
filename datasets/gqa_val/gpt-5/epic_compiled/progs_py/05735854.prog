@@ -1,0 +1,35 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    wetsuit_patches = image_patch.find("wetsuit")
+    if len(wetsuit_patches) == 0:
+        result = image_patch.simple_query("Does the black wetsuit look long sleeved?")
+    else:
+        has_black_wetsuit = False
+        black_wetsuit_long_sleeved = False
+
+        for wetsuit_patch in wetsuit_patches:
+            is_black = wetsuit_patch.verify_property("wetsuit", "black")
+            if is_black:
+                has_black_wetsuit = True
+                is_long_sleeved = wetsuit_patch.verify_property("wetsuit", "long sleeved")
+                if not is_long_sleeved:
+                    alt_long_sleeved = wetsuit_patch.verify_property("wetsuit", "long-sleeved")
+                    if alt_long_sleeved:
+                        is_long_sleeved = True
+                if not is_long_sleeved:
+                    alt_long_sleeves = wetsuit_patch.verify_property("wetsuit", "long sleeves")
+                    if alt_long_sleeves:
+                        is_long_sleeved = True
+                if is_long_sleeved:
+                    black_wetsuit_long_sleeved = True
+
+        if has_black_wetsuit:
+            if black_wetsuit_long_sleeved:
+                result = "yes"
+            else:
+                result = "no"
+        else:
+            result = image_patch.simple_query("Does the black wetsuit look long sleeved?")
+    return result

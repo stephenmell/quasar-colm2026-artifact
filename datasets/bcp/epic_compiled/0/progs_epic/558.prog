@@ -1,0 +1,93 @@
+({658: 'context', 664: 'llm_query', 672: 'str', 691: 'return_result'},
+ ('def',
+  655,
+  ((),
+   ((('prim', 656, ''),
+     ('prim', 657, 0),
+     ('def',
+      659,
+      ((682, 660),
+       ((('unpack', (670, 661), 682),
+         ('prim', 662, 1),
+         ('call', (663,), 80, (661, 662)),
+         ('prim',
+          665,
+          'You will be given one document. Extract concise, relevant facts '
+          'that could help solve the following puzzle. Use short bullet '
+          'points, include direct short quotes when available, and clearly '
+          'label entities and dates. If nothing relevant, return an empty '
+          'string.\n'
+          '\n'
+          'Puzzle criteria:\n'
+          '- We seek an individual who founded a museum established between '
+          '1972 and 1975 (inclusive). As of Dec 31, 2023, the museum is on the '
+          'second floor of a building.\n'
+          '- The museum is 24–25 miles (aerial distance) from a library that '
+          'opened between 1992 and 1995 and is over 70,000 square feet.\n'
+          '- The individual was editor and publisher of a magazine for over 30 '
+          'years.\n'
+          '- Three marine species have been named in their honor.\n'
+          '- Their parent had the first name Frank and a sibling had the first '
+          'name Steve.\n'
+          '- They died on January 8 between 2021 and 2023 (inclusive) in a '
+          'different country than their birthplace.\n'
+          '- In 2014, they received an award in recognition of their work.\n'
+          '\n'
+          'For any relevant item you find in the document, give:\n'
+          '- Entity type '
+          '(museum/library/person/family/award/species/magazine/death/location/distance/other)\n'
+          '- The key detail(s)\n'
+          '- A brief quote from the document\n'
+          '\n'
+          'Document begins:\n'),
+         ('call', (666,), 80, (665, 660)),
+         ('prim', 667, '\nDocument ends.'),
+         ('call', (668,), 80, (666, 667)),
+         ('call', (669,), 664, (668,)),
+         ('prim', 671, '\n---- Document '),
+         ('call', (673,), 80, (670, 671)),
+         ('call', (674,), 672, (663,)),
+         ('call', (675,), 80, (673, 674)),
+         ('prim', 676, ' Extracts ----\n'),
+         ('call', (677,), 80, (675, 676)),
+         ('call', (678,), 80, (677, 669)),
+         ('pack', 683, (678, 663))),
+        (683,)))),
+     ('pack', 684, (656, 657)),
+     ('call', (685,), 79, (658,)),
+     ('call', (681,), 685, (684, 659)),
+     ('unpack', (679, 680), 681),
+     ('prim',
+      686,
+      'You will be given aggregated extracts from multiple documents. Identify '
+      'the ONE individual who satisfies ALL of the following constraints:\n'
+      '- Founded a museum established between 1972 and 1975 (inclusive).\n'
+      '- As of Dec 31, 2023, the museum is located on the second floor of a '
+      'building.\n'
+      '- The museum is located 24–25 miles (in aerial distance) from a library '
+      'that opened between 1992 and 1995 and is over 70,000 square feet.\n'
+      '- The individual was the editor and publisher of a magazine for over '
+      'thirty years.\n'
+      '- Three marine species have been named in their honor.\n'
+      '- This individual had a parent with the first name Frank and a sibling '
+      'with the first name Steve.\n'
+      '- They passed away on January 8 between 2021 and 2023 (inclusive) in a '
+      'country different from their birthplace.\n'
+      '- In 2014, they received an award in recognition of their work.\n'
+      '\n'
+      'Instructions:\n'
+      '1) Carefully cross-link the facts from the extracts to ensure they '
+      'refer to the same person and institutions.\n'
+      '2) If the distance is not explicitly stated, infer plausibility using '
+      'the locations mentioned (you may approximate aerial distance based on '
+      'well-known geography within the extracts if both places are named).\n'
+      '3) Only provide the person’s full name in your final output, with no '
+      'additional text.\n'
+      '\n'
+      'Aggregated extracts:\n'),
+     ('call', (687,), 80, (686, 679)),
+     ('prim', 688, '\n\nFinal answer (full name only):'),
+     ('call', (689,), 80, (687, 688)),
+     ('call', (690,), 664, (689,)),
+     ('call', (692,), 691, (690,))),
+    (692,)))))

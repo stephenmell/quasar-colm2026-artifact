@@ -1,0 +1,40 @@
+{
+  "find": [
+    [
+      [
+        [
+          "2334334",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "chair"
+      ],
+      [],
+      9431664452
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2334334",
+          [
+            0,
+            0,
+            500,
+            375
+          ]
+        ],
+        "Is the computer to the right of the empty chair?"
+      ],
+      "Yes.",
+      974776188
+    ]
+  ],
+  "best_text_match": []
+}

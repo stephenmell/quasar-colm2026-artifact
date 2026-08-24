@@ -1,0 +1,42 @@
+# Is the yellow sign on the pole?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    # Find signs and filter yellow ones
+    sign_patches = image_patch.find("sign")
+    yellow_sign_patches = ()
+    for sign_patch in sign_patches:
+        if sign_patch.verify_property("sign", "yellow"):
+            yellow_sign_patches = yellow_sign_patches + (sign_patch,)
+
+    # Find poles
+    pole_patches = image_patch.find("pole")
+
+    # If key objects are missing, ask directly
+    direct_query = False
+    if len(sign_patches) == 0:
+        direct_query = True
+    if len(yellow_sign_patches) == 0:
+        direct_query = True
+    if len(pole_patches) == 0:
+        direct_query = True
+
+    if direct_query:
+        result = image_patch.simple_query("Is the yellow sign on the pole?")
+    else:
+        result = "no"
+        for ys in yellow_sign_patches:
+            for pole in pole_patches:
+                overlap_left = max(ys.left, pole.left)
+                overlap_right = min(ys.right, pole.right)
+                horizontal_overlap = overlap_right - overlap_left
+
+                overlap_lower = max(ys.lower, pole.lower)
+                overlap_upper = min(ys.upper, pole.upper)
+                vertical_overlap = overlap_upper - overlap_lower
+
+                on_condition = (horizontal_overlap > 0 and vertical_overlap > 0) or (ys.horizontal_center >= pole.left and ys.horizontal_center <= pole.right)
+                if on_condition:
+                    result = "yes"
+    return result

@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2397559",
+          [
+            0,
+            0,
+            500,
+            281
+          ]
+        ],
+        "Is the bus on top of the road both tall and high?"
+      ],
+      "Yes.",
+      784567787
+    ]
+  ],
+  "best_text_match": []
+}

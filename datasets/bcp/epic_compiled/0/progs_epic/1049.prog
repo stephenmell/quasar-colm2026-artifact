@@ -1,0 +1,110 @@
+({285: 'context',
+  289: 'llm_query',
+  301: '.join',
+  307: 'return_result',
+  308: '.strip'},
+ ('def',
+  282,
+  ((),
+   ((('prim',
+      283,
+      'Plan:\n'
+      '- Iterate through each context document.\n'
+      '- Ask a sub-LLM to identify any singer who fits all constraints:\n'
+      '  (1) Released an album between 2010–2012 whose title was inspired by a '
+      'phrase one of their parents used to say.\n'
+      '  (2) Experienced a tragic event with a loved one between 2009–2022.\n'
+      '  (3) Released an album between 2015–2023 that includes a song title '
+      'significant to the tragic event.\n'
+      '  (4) For that later album, the singer received three award nominations '
+      'and also won an award for a music video featuring another artist who is '
+      'the youngest child and visually impaired.\n'
+      '- Collect per-document candidates with quoted evidence and extracted '
+      "key fields (loved one's first name).\n"
+      '- Feed the collected findings to a sub-LLM to decide on the '
+      'best-supported answer.\n'
+      '- Return only the loved one’s first name as the final result.'),
+     ('call', (284,), -1, ()),
+     ('def',
+      286,
+      ((296, 287),
+       ((('prim',
+          288,
+          'You are given a document. Find any singer in the document who '
+          'satisfies ALL of the following, and extract the detailed evidence:\n'
+          'Constraints:\n'
+          '1) They released an album between 2010 and 2012 (inclusive) whose '
+          'title was inspired by a phrase that one of their parents used to '
+          'say.\n'
+          '2) They experienced a tragic event involving a loved one between '
+          "2009 and 2022 (inclusive). Extract the loved one's first name.\n"
+          '3) Between 2015 and 2023 (inclusive), an album was released that '
+          'includes a song title that holds significance to the tragic event '
+          '(e.g., named after the person, age, or directly referencing the '
+          'event). Provide that album and song title(s), and explain the '
+          'significance.\n'
+          '4) For that later album, the singer received three award '
+          'nominations, and also WON an award for a music video featuring '
+          'another artist who is the youngest child and is visually impaired. '
+          'Identify the featured artist, confirm they are the youngest child '
+          'and visually impaired, and provide the award name/year.\n'
+          'Instructions:\n'
+          '- If the document contains such a singer, output:\n'
+          '  Singer: <name>\n'
+          '  Parent-phrase album (2010–2012): <title, year, the parent phrase '
+          'and which parent>\n'
+          "  Tragic event (2009–2022): <what happened, year, loved one's first "
+          'name>\n'
+          '  Later album (2015–2023): <title, year>\n'
+          '  Significant song(s): <title(s) and why they are significant to '
+          'the tragic event>\n'
+          '  Awards: <the three nominations for the later album (list them), '
+          'and the award WON for a music video; include award show name and '
+          'year>\n'
+          '  Featured artist in winning video: <name> (confirm: youngest '
+          'child? visually impaired?)\n'
+          '  Quotes: <verbatim lines from the document that substantiate each '
+          'of the above items>\n'
+          '- If the document does not fully satisfy all constraints, but '
+          'partially matches, still extract as much as possible and clearly '
+          'indicate which constraints are missing.\n'
+          '- If no relevant information, output: No match.'),
+         ('prim', 290, 'BEGIN_DOCUMENT\n'),
+         ('call', (291,), 80, (290, 287)),
+         ('prim', 292, '\nEND_DOCUMENT\n'),
+         ('call', (293,), 80, (291, 292)),
+         ('call', (294,), 80, (293, 288)),
+         ('call', (295,), 289, (294,)),
+         ('call', (297,), -1, (295,)),
+         ('call', (298,), 80, (296, 297))),
+        (298,)))),
+     ('call', (300,), 79, (285,)),
+     ('call', (299,), 300, (284, 286)),
+     ('prim',
+      303,
+      'You will be given extractions from multiple documents about a query.\n'
+      'Goal: Identify the singer who fits ALL constraints and return ONLY the '
+      'first name of the loved one involved in the tragic event.\n'
+      'Constraints recap:\n'
+      '- Album released 2010–2012 with title inspired by a phrase one of their '
+      'parents used to say.\n'
+      '- A tragic event involving a loved one between 2009–2022; we need that '
+      "loved one's first name.\n"
+      '- Between 2015–2023, an album includes a song title significant to the '
+      'tragic event.\n'
+      '- For that later album, the singer received three award nominations and '
+      'also WON an award for a music video featuring another artist who is the '
+      'youngest child and visually impaired.\n'
+      'Instructions:\n'
+      '- Use the extractions and their quotes to verify all constraints. If '
+      'multiple candidates exist, choose the one that satisfies all '
+      'constraints with the strongest, explicit evidence.\n'
+      '- Output ONLY the loved one’s first name, nothing else.\n'
+      'Here are the extractions:\n'),
+     ('prim', 302, '\n\n-----\n\n'),
+     ('call', (304,), 301, (302, 299)),
+     ('call', (305,), 80, (303, 304)),
+     ('call', (306,), 289, (305,)),
+     ('call', (309,), 308, (306,)),
+     ('call', (310,), 307, (309,))),
+    (310,)))))

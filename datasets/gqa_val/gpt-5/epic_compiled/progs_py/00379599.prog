@@ -1,0 +1,46 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bowl_patches = image_patch.find("bowl")
+    placemat_patches = image_patch.find("placemat")
+    pizza_patches = image_patch.find("pizza")
+
+    if len(bowl_patches) == 0 or len(placemat_patches) == 0 or len(pizza_patches) == 0:
+        result = image_patch.simple_query("Is the bowl to the right or to the left of the placemat near the pizza?")
+    else:
+        # Find the placemat nearest to any pizza
+        nearest_placemat = None
+        nearest_placemat_dist = None
+        for placemat_patch in placemat_patches:
+            closest_to_this_placemat = None
+            for pizza_patch in pizza_patches:
+                dx = placemat_patch.horizontal_center - pizza_patch.horizontal_center
+                dy = placemat_patch.vertical_center - pizza_patch.vertical_center
+                dist_sq = dx * dx + dy * dy
+                if closest_to_this_placemat is None or dist_sq < closest_to_this_placemat:
+                    closest_to_this_placemat = dist_sq
+            if nearest_placemat is None or (closest_to_this_placemat is not None and closest_to_this_placemat < nearest_placemat_dist):
+                nearest_placemat = placemat_patch
+                nearest_placemat_dist = closest_to_this_placemat
+
+        if nearest_placemat is None or len(bowl_patches) == 0:
+            result = image_patch.simple_query("Is the bowl to the right or to the left of the placemat near the pizza?")
+        else:
+            # Find the bowl nearest to the chosen placemat
+            nearest_bowl = None
+            nearest_bowl_dist = None
+            for bowl_patch in bowl_patches:
+                dxb = bowl_patch.horizontal_center - nearest_placemat.horizontal_center
+                dyb = bowl_patch.vertical_center - nearest_placemat.vertical_center
+                dist_b_sq = dxb * dxb + dyb * dyb
+                if nearest_bowl is None or dist_b_sq < nearest_bowl_dist:
+                    nearest_bowl = bowl_patch
+                    nearest_bowl_dist = dist_b_sq
+
+            if nearest_bowl is None:
+                result = image_patch.simple_query("Is the bowl to the right or to the left of the placemat near the pizza?")
+            else:
+                if nearest_bowl.horizontal_center > nearest_placemat.horizontal_center:
+                    result = "right"
+                else:
+                    result = "left"
+    return result

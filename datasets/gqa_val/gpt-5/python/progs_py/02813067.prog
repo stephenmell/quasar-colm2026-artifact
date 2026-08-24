@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    carriage_patches = image_patch.find("carriage")
+    horse_patches = image_patch.find("horse")
+    # If either object isn't detected, ask directly
+    if len(carriage_patches) == 0 or len(horse_patches) == 0:
+        return image_patch.simple_query("Is the black carriage to the left of the brown horse?")
+    # Filter by color
+    black_carriages = [p for p in carriage_patches if p.verify_property("carriage", "black")]
+    brown_horses = [p for p in horse_patches if p.verify_property("horse", "brown")]
+    if len(black_carriages) == 0 or len(brown_horses) == 0:
+        return "no"
+    # Check spatial relation: left means smaller horizontal center
+    for carriage_patch in black_carriages:
+        for horse_patch in brown_horses:
+            if carriage_patch.horizontal_center < horse_patch.horizontal_center:
+                return "yes"
+    return "no"

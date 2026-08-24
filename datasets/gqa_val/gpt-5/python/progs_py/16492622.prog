@@ -1,0 +1,9 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cd_patches = image_patch.find("cd")
+    if len(cd_patches) == 0:
+        return image_patch.simple_query("Is the CD in the top part of the picture?")
+    for cd_patch in cd_patches:
+        if cd_patch.vertical_center >= image_patch.vertical_center:
+            return "yes"
+    return "no"

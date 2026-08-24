@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    bag_patches = None
+    bread_patches = None
+    image_patch = None
+    is_bag_on_bread = None
+    result = None
+    umbrella_patches = None
+    image_patch = ImagePatch(image)
+    bread_patches = image_patch.find('bread')
+
+    def _if(bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+        result = image_patch.simple_query('Do you see an umbrella to the left of the bag that is on top of the bread?')
+        return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+
+    def _else(bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+        result = 'no'
+        bag_patches = image_patch.find('bag')
+        umbrella_patches = image_patch.find('umbrella')
+
+        def _for(bread_patch, bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+
+            def _for(bag_patch, bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+                is_bag_on_bread = False
+
+                def _if(bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+
+                    def _if(bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+                        is_bag_on_bread = True
+                        return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+                    bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = if_stmt(_if, None, and_expr(bag_patch.horizontal_center >= bread_patch.left, bag_patch.horizontal_center <= bread_patch.right), (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+                    return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+                bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = if_stmt(_if, None, bag_patch.vertical_center < bread_patch.vertical_center, (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+
+                def _if(bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+
+                    def _for(umbrella_patch, bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+
+                        def _if(bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches):
+                            result = 'yes'
+                            return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+                        bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = if_stmt(_if, None, umbrella_patch.horizontal_center < bag_patch.horizontal_center, (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+                        return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+                    bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = for_stmt(_for, umbrella_patches, (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+                    return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+                bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = if_stmt(_if, None, is_bag_on_bread, (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+                return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+            bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = for_stmt(_for, bag_patches, (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+            return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+        bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = for_stmt(_for, bread_patches, (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+        return (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches)
+    bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches = if_stmt(_if, _else, len(bread_patches) == 0, (bag_patches, bread_patches, image_patch, is_bag_on_bread, result, umbrella_patches))
+    return result

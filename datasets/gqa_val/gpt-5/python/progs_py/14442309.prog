@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bird_patches = image_patch.find("bird")
+    # If no bird is found, query the image directly
+    if len(bird_patches) == 0:
+        return image_patch.simple_query("Is there a giraffe to the left of the bird on the right side?")
+    # Consider only birds on the right side of the image
+    right_side_birds = [b for b in bird_patches if b.horizontal_center > image_patch.horizontal_center]
+    if len(right_side_birds) == 0:
+        return "no"
+    giraffe_patches = image_patch.find("giraffe")
+    if len(giraffe_patches) == 0:
+        return "no"
+    for bird_patch in right_side_birds:
+        for giraffe_patch in giraffe_patches:
+            if giraffe_patch.horizontal_center < bird_patch.horizontal_center:
+                return "yes"
+    return "no"

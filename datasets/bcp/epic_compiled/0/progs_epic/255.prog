@@ -1,0 +1,103 @@
+({477: 'context', 484: 'llm_query', 505: 'return_result'},
+ ('def',
+  475,
+  ((),
+   ((('call', (476,), -1, ()),
+     ('def',
+      478,
+      ((486, 479),
+       ((('prim',
+          480,
+          'You are given one document. Determine if it contains the scenario '
+          'described below and extract precise facts if present.\n'
+          '\n'
+          'Scenario to match:\n'
+          '- An article written before 2000 but after 1995 (1996–1999) '
+          'commemorates an onslaught that happened 100 years earlier.\n'
+          '- Driving through the area at the time, one could see a stream with '
+          'a bridge and a steep ridge.\n'
+          '- In the town closest to the scene, there is a cemetery where a '
+          'descendant of the leaders of that time lies buried. This descendant '
+          'also took part in the onslaught.\n'
+          '- The descendant was described as tall and thin, with the '
+          'surprising appearance of a gentleman, and he spoke English rather '
+          'well.\n'
+          '- When captured, he was issued a receipt listing four confiscated '
+          'items.\n'
+          '- He survived the war and had four children after the war; only one '
+          'of his children was born before the war.\n'
+          '- The question we must answer: Provide the full first names and '
+          'surname of the oldest child.\n'
+          '\n'
+          'Instructions:\n'
+          '- State whether this document is relevant to the scenario.\n'
+          '- If relevant, extract and report the following, using exact names '
+          'and wording from the document where possible:\n'
+          '  1) Article year and event year (and event name if available).\n'
+          '  2) Place details: stream with a bridge; steep ridge; closest '
+          'town; cemetery reference.\n'
+          '  3) Descendant’s full name; relationship to leadership '
+          '(“descendant of …”); description (tall, thin, gentlemanly, spoke '
+          'English well).\n'
+          '  4) Capture details: explicitly list the four confiscated items on '
+          'the receipt (verbatim if given).\n'
+          '  5) Children: list all children with full first names and surname; '
+          'indicate birth timing relative to the war (before/after); identify '
+          'the oldest child among them.\n'
+          '- Include short quotes for any claims, especially the children’s '
+          'names and the oldest child.\n'
+          '- End with a single line: ANSWER_CANDIDATE: <full first names and '
+          'surname of the oldest child>.\n'
+          '\n'
+          'Document:\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (481,), 80, (480, 479)),
+         ('prim', 482, '\nEND_DOCUMENT'),
+         ('call', (483,), 80, (481, 482)),
+         ('call', (485,), 484, (483,)),
+         ('call', (487,), -1, (485,)),
+         ('call', (488,), 80, (486, 487))),
+        (488,)))),
+     ('call', (490,), 79, (477,)),
+     ('call', (489,), 490, (476, 478)),
+     ('prim', 491, ''),
+     ('def',
+      492,
+      ((494, 493),
+       ((('prim', 495, '\n\n=== DOCUMENT ANALYSIS ===\n'),
+         ('call', (496,), 80, (494, 495)),
+         ('call', (497,), 80, (496, 493))),
+        (497,)))),
+     ('call', (499,), 79, (489,)),
+     ('call', (498,), 499, (491, 492)),
+     ('prim',
+      500,
+      'You will be given analyses of multiple documents. Your task is to '
+      'choose the single best match that satisfies ALL of the following '
+      'constraints and then output ONLY the final answer (no explanations):\n'
+      'Constraints to satisfy:\n'
+      '- The source is an article written between 1996 and 1999, commemorating '
+      'an onslaught that occurred exactly 100 years prior.\n'
+      '- The area description includes: a stream with a bridge and a steep '
+      'ridge.\n'
+      '- The closest town has a cemetery where a descendant of the leaders of '
+      'that time is buried; this descendant took part in the onslaught, was '
+      'described as tall and thin with a surprising gentlemanly appearance, '
+      'and spoke English rather well.\n'
+      '- Upon capture, he was issued a receipt for four confiscated items.\n'
+      '- He survived the war and had four children after the war; only one of '
+      'his children was born before the war.\n'
+      'Your output must be ONLY the full first names and surname of the oldest '
+      'child, and nothing else. Do not include any labels or explanations.\n'
+      '\n'
+      'Here are the document analyses:\n'),
+     ('call', (501,), 80, (500, 498)),
+     ('prim',
+      502,
+      '\n'
+      '\n'
+      'Now, output ONLY the full first names and surname of the oldest child.'),
+     ('call', (503,), 80, (501, 502)),
+     ('call', (504,), 484, (503,)),
+     ('call', (506,), 505, (504,))),
+    (506,)))))

@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    answer = None
+    chair_patches = None
+    image_patch = None
+    is_wood = None
+    result = None
+    table_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    table_patches = image_patch.find('table')
+
+    def _for(table_patch, answer, image_patch, is_wood, result, table_patches):
+        is_wood = or_expr(table_patch.verify_property('table', 'wood'), or_expr(table_patch.verify_property('table', 'wooden'), table_patch.verify_property('table', 'made of wood')))
+
+        def _if(answer, image_patch, is_wood, result, table_patches):
+            answer = table_patch.simple_query('Is the table made of wood?')
+
+            def _if(answer, image_patch, is_wood, result, table_patches):
+                is_wood = True
+                return (answer, image_patch, is_wood, result, table_patches)
+            answer, image_patch, is_wood, result, table_patches = if_stmt(_if, None, answer == 'yes', (answer, image_patch, is_wood, result, table_patches))
+            return (answer, image_patch, is_wood, result, table_patches)
+        answer, image_patch, is_wood, result, table_patches = if_stmt(_if, None, not_expr(is_wood), (answer, image_patch, is_wood, result, table_patches))
+
+        def _if(answer, image_patch, is_wood, result, table_patches):
+            result = 'yes'
+            return (answer, image_patch, is_wood, result, table_patches)
+        answer, image_patch, is_wood, result, table_patches = if_stmt(_if, None, is_wood, (answer, image_patch, is_wood, result, table_patches))
+        return (answer, image_patch, is_wood, result, table_patches)
+    answer, image_patch, is_wood, result, table_patches = for_stmt(_for, table_patches, (answer, image_patch, is_wood, result, table_patches))
+    chair_patches = image_patch.find('chair')
+
+    def _for(chair_patch, answer, chair_patches, image_patch, is_wood, result, table_patches):
+        is_wood = or_expr(chair_patch.verify_property('chair', 'wood'), or_expr(chair_patch.verify_property('chair', 'wooden'), chair_patch.verify_property('chair', 'made of wood')))
+
+        def _if(answer, chair_patches, image_patch, is_wood, result, table_patches):
+            answer = chair_patch.simple_query('Is the chair made of wood?')
+
+            def _if(answer, chair_patches, image_patch, is_wood, result, table_patches):
+                is_wood = True
+                return (answer, chair_patches, image_patch, is_wood, result, table_patches)
+            answer, chair_patches, image_patch, is_wood, result, table_patches = if_stmt(_if, None, answer == 'yes', (answer, chair_patches, image_patch, is_wood, result, table_patches))
+            return (answer, chair_patches, image_patch, is_wood, result, table_patches)
+        answer, chair_patches, image_patch, is_wood, result, table_patches = if_stmt(_if, None, not_expr(is_wood), (answer, chair_patches, image_patch, is_wood, result, table_patches))
+
+        def _if(answer, chair_patches, image_patch, is_wood, result, table_patches):
+            result = 'yes'
+            return (answer, chair_patches, image_patch, is_wood, result, table_patches)
+        answer, chair_patches, image_patch, is_wood, result, table_patches = if_stmt(_if, None, is_wood, (answer, chair_patches, image_patch, is_wood, result, table_patches))
+        return (answer, chair_patches, image_patch, is_wood, result, table_patches)
+    answer, chair_patches, image_patch, is_wood, result, table_patches = for_stmt(_for, chair_patches, (answer, chair_patches, image_patch, is_wood, result, table_patches))
+    return result

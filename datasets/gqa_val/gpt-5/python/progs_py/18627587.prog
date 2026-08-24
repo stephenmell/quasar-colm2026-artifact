@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    girl_patches = image_patch.find("girl")
+    # Question assumes only one girl patch
+    if len(girl_patches) == 0:
+        # If no girl is found, query the image directly
+        return image_patch.simple_query("Is the girl in the top part of the photo?")
+    girl_patch = girl_patches[0]
+    if girl_patch.vertical_center > image_patch.vertical_center:
+        return "yes"
+    else:
+        return "no"

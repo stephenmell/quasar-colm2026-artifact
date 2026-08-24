@@ -1,0 +1,76 @@
+def execute_command(image) -> str:
+    color = None
+    found = None
+    image_patch = None
+    left_area_patch = None
+    min_left = None
+    onion_patches = None
+    result = None
+    right_bound = None
+    veggie_names = None
+    veggie_patches = None
+    image_patch = ImagePatch(image)
+    onion_patches = image_patch.find('onion')
+
+    def _if(image_patch, onion_patches):
+        onion_patches = image_patch.find('onions')
+        return (image_patch, onion_patches)
+    image_patch, onion_patches = if_stmt(_if, None, len(onion_patches) == 0, (image_patch, onion_patches))
+
+    def _if(color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches):
+        result = image_patch.simple_query('Do the veggies to the left of the onions look white or green?')
+        return (color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches)
+
+    def _else(color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches):
+        min_left = onion_patches[0].left
+
+        def _for(op, image_patch, min_left, onion_patches):
+
+            def _if(image_patch, min_left, onion_patches):
+                min_left = op.left
+                return (image_patch, min_left, onion_patches)
+            image_patch, min_left, onion_patches = if_stmt(_if, None, op.left < min_left, (image_patch, min_left, onion_patches))
+            return (image_patch, min_left, onion_patches)
+        image_patch, min_left, onion_patches = for_stmt(_for, onion_patches, (image_patch, min_left, onion_patches))
+        right_bound = min_left
+
+        def _if(image_patch, min_left, onion_patches, right_bound):
+            right_bound = image_patch.left + 1
+            return (image_patch, min_left, onion_patches, right_bound)
+        image_patch, min_left, onion_patches, right_bound = if_stmt(_if, None, right_bound <= image_patch.left, (image_patch, min_left, onion_patches, right_bound))
+        left_area_patch = image_patch.crop(image_patch.left, image_patch.lower, right_bound, image_patch.upper)
+        veggie_patches = ()
+        veggie_names = ('veggies', 'veggie', 'vegetable', 'vegetables')
+
+        def _for(name, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches):
+            found = left_area_patch.find(name)
+            veggie_patches = veggie_patches + found
+            return (found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches)
+        found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches = for_stmt(_for, veggie_names, (found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches))
+
+        def _if(color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches):
+            result = left_area_patch.best_text_match(('white', 'green'))
+            return (color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches)
+
+        def _else(color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches):
+            color = None
+
+            def _for(vp, color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches):
+
+                def _if(color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches):
+                    color = vp.best_text_match(('white', 'green'))
+                    return (color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches)
+                color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches = if_stmt(_if, None, not_expr(color), (color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches))
+                return (color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches)
+            color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches = for_stmt(_for, veggie_patches, (color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches))
+
+            def _if(color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches):
+                color = left_area_patch.best_text_match(('white', 'green'))
+                return (color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches)
+            color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches = if_stmt(_if, None, not_expr(color), (color, found, image_patch, left_area_patch, min_left, onion_patches, right_bound, veggie_names, veggie_patches))
+            result = color
+            return (color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches)
+        color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches = if_stmt(_if, _else, len(veggie_patches) == 0, (color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches))
+        return (color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches)
+    color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches = if_stmt(_if, _else, len(onion_patches) == 0, (color, found, image_patch, left_area_patch, min_left, onion_patches, result, right_bound, veggie_names, veggie_patches))
+    return result

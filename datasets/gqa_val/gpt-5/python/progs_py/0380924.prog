@@ -1,0 +1,15 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    telephone_patches = image_patch.find("telephone")
+    # Question assumes at least one telephone
+    if len(telephone_patches) == 0:
+        # If no telephone is found, query the image directly
+        return image_patch.simple_query("Is the telephone to the left of a pillow?")
+    pillow_patches = image_patch.find("pillow")
+    if len(pillow_patches) == 0:
+        return "no"
+    for telephone_patch in telephone_patches:
+        for pillow_patch in pillow_patches:
+            if pillow_patch.horizontal_center > telephone_patch.horizontal_center:
+                return "yes"
+    return "no"

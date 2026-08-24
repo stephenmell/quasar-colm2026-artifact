@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    any_found = None
+    image_patch = None
+    result = None
+    search_terms = None
+    image_patch = ImagePatch(image)
+    search_terms = ('picture', 'picture frame', 'painting', 'poster', 'photo', 'photograph', 'art', 'artwork', 'frame')
+    any_found = False
+
+    def _for(term, any_found, image_patch, search_terms):
+
+        def _if(any_found, image_patch, search_terms):
+            any_found = True
+            return (any_found, image_patch, search_terms)
+        any_found, image_patch, search_terms = if_stmt(_if, None, image_patch.exists(term), (any_found, image_patch, search_terms))
+        return (any_found, image_patch, search_terms)
+    any_found, image_patch, search_terms = for_stmt(_for, search_terms, (any_found, image_patch, search_terms))
+    result = bool_to_yesno(any_found)
+    return result

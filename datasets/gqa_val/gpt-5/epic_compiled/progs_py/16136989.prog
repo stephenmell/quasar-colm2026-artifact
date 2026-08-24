@@ -1,0 +1,7 @@
+# Are there either any plates or containers?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    has_plate = image_patch.exists("plate")
+    has_container = image_patch.exists("container")
+    result = bool_to_yesno(has_plate or has_container)
+    return result

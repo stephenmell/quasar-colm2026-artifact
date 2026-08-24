@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    # contains a relation (on top of), so ask directly
+    image_patch = ImagePatch(image)
+    return image_patch.simple_query("What's located on top of the water?")

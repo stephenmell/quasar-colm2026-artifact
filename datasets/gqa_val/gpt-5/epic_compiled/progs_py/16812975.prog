@@ -1,0 +1,33 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = None
+
+    blanket_patches = image_patch.find("blanket")
+    target_blanket = None
+    for blanket_patch in blanket_patches:
+        is_pink_brown = blanket_patch.verify_property("blanket", "pink and brown")
+        is_pink = blanket_patch.verify_property("blanket", "pink")
+        is_brown = blanket_patch.verify_property("blanket", "brown")
+        if is_pink_brown or (is_pink and is_brown):
+            if target_blanket is None:
+                target_blanket = blanket_patch
+
+    if target_blanket is not None:
+        animal_patches = image_patch.find("animal")
+        best_animal_patch = None
+        best_x = None
+        for animal_patch in animal_patches:
+            if animal_patch.horizontal_center < target_blanket.horizontal_center:
+                if best_animal_patch is None:
+                    best_animal_patch = animal_patch
+                    best_x = animal_patch.horizontal_center
+                else:
+                    if best_x is None or animal_patch.horizontal_center > best_x:
+                        best_animal_patch = animal_patch
+                        best_x = animal_patch.horizontal_center
+        if best_animal_patch is not None:
+            result = best_animal_patch.simple_query("What animal is this?")
+
+    if not result:
+        result = image_patch.simple_query("What animal is to the left of the blanket that looks pink and brown?")
+    return result

@@ -1,0 +1,67 @@
+def execute_command(image) -> str:
+    area = None
+    donkey_max_area = None
+    donkey_patches = None
+    image_patch = None
+    result = None
+    zebra_max_area = None
+    zebra_patches = None
+    image_patch = ImagePatch(image)
+    donkey_patches = image_patch.find('donkey')
+    zebra_patches = image_patch.find('zebra')
+
+    def _if(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+        result = image_patch.best_text_match(('donkey', 'zebra'))
+        return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+
+    def _else(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+
+        def _if(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+            result = 'donkey'
+            return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+
+        def _else(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+
+            def _if(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+                result = 'zebra'
+                return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+
+            def _else(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+                donkey_max_area = 0
+
+                def _for(donkey_patch, area, donkey_max_area, donkey_patches, image_patch, zebra_patches):
+                    area = donkey_patch.width * donkey_patch.height
+
+                    def _if(area, donkey_max_area, donkey_patches, image_patch, zebra_patches):
+                        donkey_max_area = area
+                        return (area, donkey_max_area, donkey_patches, image_patch, zebra_patches)
+                    area, donkey_max_area, donkey_patches, image_patch, zebra_patches = if_stmt(_if, None, area > donkey_max_area, (area, donkey_max_area, donkey_patches, image_patch, zebra_patches))
+                    return (area, donkey_max_area, donkey_patches, image_patch, zebra_patches)
+                area, donkey_max_area, donkey_patches, image_patch, zebra_patches = for_stmt(_for, donkey_patches, (area, donkey_max_area, donkey_patches, image_patch, zebra_patches))
+                zebra_max_area = 0
+
+                def _for(zebra_patch, area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches):
+                    area = zebra_patch.width * zebra_patch.height
+
+                    def _if(area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches):
+                        zebra_max_area = area
+                        return (area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches)
+                    area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches = if_stmt(_if, None, area > zebra_max_area, (area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches))
+                    return (area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches)
+                area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches = for_stmt(_for, zebra_patches, (area, donkey_max_area, donkey_patches, image_patch, zebra_max_area, zebra_patches))
+
+                def _if(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+                    result = 'donkey'
+                    return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+
+                def _else(area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches):
+                    result = 'zebra'
+                    return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+                area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches = if_stmt(_if, _else, donkey_max_area >= zebra_max_area, (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches))
+                return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+            area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches = if_stmt(_if, _else, and_expr(len(zebra_patches) > 0, len(donkey_patches) == 0), (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches))
+            return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+        area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches = if_stmt(_if, _else, and_expr(len(donkey_patches) > 0, len(zebra_patches) == 0), (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches))
+        return (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches)
+    area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches = if_stmt(_if, _else, and_expr(len(donkey_patches) == 0, len(zebra_patches) == 0), (area, donkey_max_area, donkey_patches, image_patch, result, zebra_max_area, zebra_patches))
+    return result

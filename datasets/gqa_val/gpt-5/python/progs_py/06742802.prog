@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    glove_patches = image_patch.find("glove")
+    # Question assumes only one glove patch
+    if len(glove_patches) == 0:
+        # If no glove is found, query the image directly
+        return image_patch.simple_query("What color is the glove?")
+    return glove_patches[0].simple_query("What color is the glove?")

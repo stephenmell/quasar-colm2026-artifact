@@ -1,0 +1,26 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Find the person closest to the center of the image
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        return image_patch.simple_query("Is the white van to the right or to the left of the person in the center?")
+    img_cx, img_cy = image_patch.horizontal_center, image_patch.vertical_center
+    center_person = min(
+        person_patches,
+        key=lambda p: (p.horizontal_center - img_cx) ** 2 + (p.vertical_center - img_cy) ** 2
+    )
+
+    # Find white vans
+    van_patches = image_patch.find("van")
+    white_vans = [v for v in van_patches if v.verify_property("van", "white")]
+    if len(white_vans) == 0:
+        # Fallback: try finding "white van" directly
+        white_vans = image_patch.find("white van")
+    if len(white_vans) == 0:
+        return image_patch.simple_query("Is the white van to the right or to the left of the person in the center?")
+
+    # Choose the white van closest to the center person horizontally
+    target_van = min(white_vans, key=lambda v: abs(v.horizontal_center - center_person.horizontal_center))
+
+    return "right" if target_van.horizontal_center > center_person.horizontal_center else "left"

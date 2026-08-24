@@ -1,0 +1,9 @@
+Stage: other execution error
+Error: can only concatenate tuple (not "AbstractTuple") to tuple
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 295, in main
+    exec_result = execute_command(image)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "05540057.prog", line 21, in execute_command
+TypeError: can only concatenate tuple (not "AbstractTuple") to tuple

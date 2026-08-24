@@ -1,0 +1,27 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_blue = None
+    result = None
+    window_patches = None
+    image_patch = ImagePatch(image)
+    window_patches = image_patch.find('window')
+
+    def _if(image_patch, is_blue, result, window_patches):
+        result = image_patch.simple_query('Are there any windows that are not blue?')
+        return (image_patch, is_blue, result, window_patches)
+
+    def _else(image_patch, is_blue, result, window_patches):
+        result = 'no'
+
+        def _for(window_patch, image_patch, is_blue, result, window_patches):
+            is_blue = window_patch.verify_property('window', 'blue')
+
+            def _if(image_patch, is_blue, result, window_patches):
+                result = 'yes'
+                return (image_patch, is_blue, result, window_patches)
+            image_patch, is_blue, result, window_patches = if_stmt(_if, None, not_expr(is_blue), (image_patch, is_blue, result, window_patches))
+            return (image_patch, is_blue, result, window_patches)
+        image_patch, is_blue, result, window_patches = for_stmt(_for, window_patches, (image_patch, is_blue, result, window_patches))
+        return (image_patch, is_blue, result, window_patches)
+    image_patch, is_blue, result, window_patches = if_stmt(_if, _else, len(window_patches) == 0, (image_patch, is_blue, result, window_patches))
+    return result

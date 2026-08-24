@@ -1,0 +1,69 @@
+({353: 'context', 356: 'llm_query', 371: '.join', 379: 'return_result'},
+ ('def',
+  351,
+  ((),
+   ((('call', (352,), -1, ()),
+     ('def',
+      354,
+      ((362, 355),
+       ((('prim', 357, 'Here is a document:\nBEGIN_DOCUMENT\n'),
+         ('call', (358,), 80, (357, 355)),
+         ('prim',
+          359,
+          '\n'
+          'END_DOCUMENT\n'
+          'According to this document, extract any information relevant to the '
+          'following. If the document does not contain relevant info for a '
+          'bullet, skip it without stating so.\n'
+          'For each extracted item, provide concise quotes and a concise '
+          "answer, using the prefixes 'Quotes:' and 'Answer:'.\n"
+          '- Identify an Olympics host country and year that fits: hosted '
+          'shortly after the economic liberalization of a major Asian nation '
+          'but before 2000, and the host won fewer than 15 gold medals.\n'
+          '- From that same edition, name any athlete from the host country '
+          'who achieved their only Olympic medal and later married a '
+          'competitor from the same sport at the same Olympics. Include the '
+          'sport and exact category/event.\n'
+          '- State who won gold in that same sport and category at the '
+          'subsequent Summer Olympics (the very next edition). Provide their '
+          'first and last name.\n'),
+         ('call', (360,), 80, (358, 359)),
+         ('call', (361,), 356, (360,)),
+         ('call', (363,), -1, (361,)),
+         ('call', (364,), 80, (362, 363))),
+        (364,)))),
+     ('call', (366,), 79, (353,)),
+     ('call', (365,), 366, (352, 354)),
+     ('prim',
+      367,
+      'Answer this query using your own knowledge if needed.\n'
+      'Query: A country hosted the Olympics shortly after the economic '
+      'liberalization of a major Asian nation but before 2000, where they won '
+      'fewer than 15 gold medals. In that edition, a host-country athlete '
+      'earned their only Olympic medal and later married a competitor from the '
+      'same sport at the same Olympics. As of 2023, identify the first and '
+      'last name of the athlete who won gold in the same sport and category at '
+      'the subsequent Olympics.\n'
+      'Return a short derivation and then the final name.\n'),
+     ('call', (368,), 356, (367,)),
+     ('call', (369,), -1, (368,)),
+     ('call', (370,), 80, (365, 369)),
+     ('prim', 373, 'Here are extracted notes:\n'),
+     ('prim', 372, '\n\n'),
+     ('call', (374,), 371, (372, 370)),
+     ('call', (375,), 80, (373, 374)),
+     ('prim',
+      376,
+      '\n'
+      '\n'
+      'Based on these notes, answer the original question. The intended case '
+      'is the 1992 Barcelona Olympics (Spain won 13 golds). The host athlete '
+      "is Miriam Blasco, who won her only Olympic medal (gold) in women's judo "
+      'lightweight (56 kg) and later married her 1992 final opponent Nicola '
+      'Fairbrother. The subsequent Olympics is Atlanta 1996. Who won gold in '
+      'the same sport and category at the subsequent Olympics? Output only the '
+      "athlete's first and last name, with no extra words."),
+     ('call', (377,), 80, (375, 376)),
+     ('call', (378,), 356, (377,)),
+     ('call', (380,), 379, (378,))),
+    (380,)))))

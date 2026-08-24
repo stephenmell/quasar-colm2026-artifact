@@ -1,0 +1,37 @@
+def execute_command():
+    DinnerLocationSchema = None
+    current_day = None
+    events = None
+    location_text = None
+    result = None
+    selection = None
+    events = search_calendar_events('Dinner with Blue Sparrow Tech', None)
+
+    def _if(events):
+        events = search_calendar_events('Dinner with Blue Sparrow', None)
+        return (events,)
+    events, = if_stmt(_if, None, len(events) == 0, (events,))
+
+    def _if(events):
+        events = search_calendar_events('Blue Sparrow Tech', None)
+        return (events,)
+    events, = if_stmt(_if, None, len(events) == 0, (events,))
+    current_day = get_current_day()
+    DinnerLocationSchema = CreateSchema('found', bool, 'location', str)
+    selection = query_ai_assistant("You are given a list of calendar events as structured objects. Identify the single event whose title matches or closely matches 'Dinner with Blue Sparrow Tech' that occurs on May 24 (any year). Use the current date {} to select the most relevant one: prefer the next upcoming event relative to today; if none are upcoming, select the most recent past one. If multiple occur on that date, select the one with the latest start time. If no such event exists, set found to false and location to an empty string. If the event exists but has no location, set location to an empty string. Events: {}".format(current_day, events), DinnerLocationSchema)
+    result = "I couldn't find any 'Dinner with Blue Sparrow Tech' event on May 24 in your calendar."
+
+    def _if(DinnerLocationSchema, current_day, events, location_text, result, selection):
+        location_text = selection.location
+
+        def _if(DinnerLocationSchema, current_day, events, location_text, result, selection):
+            result = "The location for 'Dinner with Blue Sparrow Tech' on May 24 is not specified."
+            return (DinnerLocationSchema, current_day, events, location_text, result, selection)
+
+        def _else(DinnerLocationSchema, current_day, events, location_text, result, selection):
+            result = "The 'Dinner with Blue Sparrow Tech' on May 24 is going to be at {}.".format(location_text)
+            return (DinnerLocationSchema, current_day, events, location_text, result, selection)
+        DinnerLocationSchema, current_day, events, location_text, result, selection = if_stmt(_if, _else, location_text == '', (DinnerLocationSchema, current_day, events, location_text, result, selection))
+        return (DinnerLocationSchema, current_day, events, location_text, result, selection)
+    DinnerLocationSchema, current_day, events, location_text, result, selection = if_stmt(_if, None, selection.found, (DinnerLocationSchema, current_day, events, location_text, result, selection))
+    return result

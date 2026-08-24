@@ -1,0 +1,14 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    cat_patches = image_patch.find("cat")
+    # Question assumes potentially multiple cat patches
+
+    if len(cat_patches) == 0:
+        # If no cats are found, query the image directly
+        result = image_patch.simple_query("Are there any happy cats?")
+    else:
+        result = "no"
+        for cat_patch in cat_patches:
+            if cat_patch.verify_property("cat", "happy"):
+                result = "yes"
+    return result

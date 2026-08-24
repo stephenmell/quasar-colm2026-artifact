@@ -1,0 +1,5 @@
+# Is the fresh pizza to the left of the plate next to the boy?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = image_patch.simple_query("Is the fresh pizza to the left of the plate next to the boy?")
+    return result

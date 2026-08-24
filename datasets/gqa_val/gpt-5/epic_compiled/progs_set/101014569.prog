@@ -1,0 +1,97 @@
+def execute_command(image) -> str:
+    base_colors = None
+    cloud_color = None
+    cloud_first = None
+    cloud_patch = None
+    cloud_patches = None
+    cloud_recognized = None
+    image_patch = None
+    result = None
+    shrub_color = None
+    shrub_first = None
+    shrub_patch = None
+    shrub_patches = None
+    shrub_recognized = None
+    image_patch = ImagePatch(image)
+    shrub_patches = image_patch.find('shrub')
+    cloud_patches = image_patch.find('cloud')
+    result = 'no'
+
+    def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+        result = image_patch.simple_query('Do the shrub and the cloud have a different colors?')
+        return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+
+    def _else(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+        shrub_patch = shrub_patches[0]
+        cloud_patch = cloud_patches[0]
+        base_colors = ('white', 'black', 'gray', 'green', 'blue', 'red', 'yellow', 'brown', 'orange', 'pink', 'purple', 'tan', 'gold', 'silver')
+        shrub_color = shrub_patch.best_text_match(base_colors)
+        cloud_color = cloud_patch.best_text_match(base_colors)
+
+        def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+            result = 'yes'
+            return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+
+        def _else(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+            shrub_recognized = 'no'
+            cloud_recognized = 'no'
+
+            def _for(col, base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized):
+
+                def _if(base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized):
+                    shrub_recognized = 'yes'
+                    return (base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized)
+                base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, None, shrub_patch.verify_property('shrub', col), (base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized))
+
+                def _if(base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized):
+                    cloud_recognized = 'yes'
+                    return (base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized)
+                base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, None, cloud_patch.verify_property('cloud', col), (base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized))
+                return (base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized)
+            base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized = for_stmt(_for, base_colors, (base_colors, cloud_color, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_patch, shrub_patches, shrub_recognized))
+
+            def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+                shrub_first = ''
+                cloud_first = ''
+
+                def _for(col, base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+
+                    def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+
+                        def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+                            shrub_first = col
+                            return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+                        base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, None, shrub_patch.verify_property('shrub', col), (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+                        return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+                    base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, None, shrub_first == '', (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+
+                    def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+
+                        def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+                            cloud_first = col
+                            return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+                        base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, None, cloud_patch.verify_property('cloud', col), (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+                        return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+                    base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, None, cloud_first == '', (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+                    return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+                base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = for_stmt(_for, base_colors, (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+
+                def _if(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+                    result = 'yes'
+                    return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+
+                def _else(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+                    result = 'no'
+                    return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+                base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, _else, and_expr(shrub_first != '', and_expr(cloud_first != '', shrub_first != cloud_first)), (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+                return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+
+            def _else(base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized):
+                result = image_patch.simple_query('Do the shrub and the cloud have a different colors?')
+                return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+            base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, _else, and_expr(shrub_recognized == 'yes', cloud_recognized == 'yes'), (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+            return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+        base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, _else, and_expr(shrub_color != '', and_expr(cloud_color != '', shrub_color != cloud_color)), (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+        return (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized)
+    base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized = if_stmt(_if, _else, or_expr(len(shrub_patches) == 0, len(cloud_patches) == 0), (base_colors, cloud_color, cloud_first, cloud_patch, cloud_patches, cloud_recognized, image_patch, result, shrub_color, shrub_first, shrub_patch, shrub_patches, shrub_recognized))
+    return result

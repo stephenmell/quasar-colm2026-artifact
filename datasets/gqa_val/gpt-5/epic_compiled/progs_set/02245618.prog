@@ -1,0 +1,95 @@
+def execute_command(image) -> str:
+    answer = None
+    detected = None
+    found_any = None
+    image_patch = None
+    prop_hit = None
+    prop_tuple = None
+    result = None
+    synonym_tuple = None
+    vest_patches = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+
+    def _if(image_patch, result):
+        result = 'yes'
+        return (image_patch, result)
+    image_patch, result = if_stmt(_if, None, image_patch.exists('safety jacket'), (image_patch, result))
+
+    def _if(found_any, image_patch, result, synonym_tuple):
+        synonym_tuple = ('safety vest', 'life jacket', 'life vest', 'reflective vest', 'hi-vis vest', 'high visibility vest', 'life preserver', 'personal flotation device', 'pfd')
+        found_any = False
+
+        def _for(synonym, found_any, image_patch, result, synonym_tuple):
+
+            def _if(found_any, image_patch, result, synonym_tuple):
+                found_any = True
+                return (found_any, image_patch, result, synonym_tuple)
+            found_any, image_patch, result, synonym_tuple = if_stmt(_if, None, image_patch.exists(synonym), (found_any, image_patch, result, synonym_tuple))
+            return (found_any, image_patch, result, synonym_tuple)
+        found_any, image_patch, result, synonym_tuple = for_stmt(_for, synonym_tuple, (found_any, image_patch, result, synonym_tuple))
+
+        def _if(found_any, image_patch, result, synonym_tuple):
+            result = 'yes'
+            return (found_any, image_patch, result, synonym_tuple)
+        found_any, image_patch, result, synonym_tuple = if_stmt(_if, None, found_any, (found_any, image_patch, result, synonym_tuple))
+        return (found_any, image_patch, result, synonym_tuple)
+    found_any, image_patch, result, synonym_tuple = if_stmt(_if, None, result == 'no', (found_any, image_patch, result, synonym_tuple))
+
+    def _if(detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+
+        def _if(detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+            vest_patches = image_patch.find('vest')
+            detected = False
+
+            def _for(vest_patch, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+                prop_tuple = ('reflective', 'high visibility', 'hi-vis', 'neon', 'fluorescent', 'safety', 'orange', 'yellow')
+                prop_hit = False
+
+                def _for(prop, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+
+                    def _if(detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+                        prop_hit = True
+                        return (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+                    detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, None, vest_patch.verify_property('vest', prop), (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+                    return (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+                detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = for_stmt(_for, prop_tuple, (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+
+                def _if(detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+                    detected = True
+                    return (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+                detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, None, prop_hit, (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+                return (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+            detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = for_stmt(_for, vest_patches, (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+
+            def _if(detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+                result = 'yes'
+                return (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+            detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, None, detected, (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+            return (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+        detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, None, image_patch.exists('vest'), (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+        return (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+    detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, None, result == 'no', (detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+
+    def _if(answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+        answer = image_patch.simple_query('Are there any safety jackets in the image?')
+
+        def _if(answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+            result = 'yes'
+            return (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+
+        def _else(answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+
+            def _if(answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+                result = 'no'
+                return (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+
+            def _else(answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches):
+                result = image_patch.best_text_match(('yes', 'no'))
+                return (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+            answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, _else, answer == 'no', (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+            return (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+        answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, _else, answer == 'yes', (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+        return (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches)
+    answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches = if_stmt(_if, None, result == 'no', (answer, detected, found_any, image_patch, prop_hit, prop_tuple, result, synonym_tuple, vest_patches))
+    return result

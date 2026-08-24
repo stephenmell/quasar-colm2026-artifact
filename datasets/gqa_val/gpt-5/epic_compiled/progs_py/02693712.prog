@@ -1,0 +1,15 @@
+# What animal is brown?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    animal_patches = image_patch.find("animal")
+    if len(animal_patches) == 0:
+        result = image_patch.simple_query("What animal is brown?")
+    else:
+        result = None
+        for animal_patch in animal_patches:
+            is_brown = animal_patch.verify_property("animal", "brown")
+            if is_brown:
+                result = animal_patch.simple_query("What animal is brown?")
+        if not result:
+            result = animal_patches[0].simple_query("What animal is brown?")
+    return result

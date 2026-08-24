@@ -1,0 +1,18 @@
+def execute_command(image) -> str:
+    has_glasses = None
+    has_sunglasses = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    has_glasses = image_patch.exists('glasses')
+    has_sunglasses = image_patch.exists('sunglasses')
+
+    def _if(has_glasses, has_sunglasses, image_patch, result):
+        result = 'yes'
+        return (has_glasses, has_sunglasses, image_patch, result)
+
+    def _else(has_glasses, has_sunglasses, image_patch, result):
+        result = image_patch.simple_query('Are there glasses?')
+        return (has_glasses, has_sunglasses, image_patch, result)
+    has_glasses, has_sunglasses, image_patch, result = if_stmt(_if, _else, or_expr(has_glasses, has_sunglasses), (has_glasses, has_sunglasses, image_patch, result))
+    return result

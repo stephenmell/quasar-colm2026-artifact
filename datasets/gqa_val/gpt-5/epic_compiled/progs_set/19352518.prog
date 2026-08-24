@@ -1,0 +1,78 @@
+def execute_command(image) -> str:
+    colors = None
+    image_patch = None
+    lid_color = None
+    lid_patch = None
+    lid_patches = None
+    result = None
+    toilet_color = None
+    toilet_patch = None
+    toilet_patches = None
+    image_patch = ImagePatch(image)
+    lid_patches = image_patch.find('toilet lid')
+
+    def _if(image_patch, lid_patches):
+        lid_patches = image_patch.find('lid')
+        return (image_patch, lid_patches)
+    image_patch, lid_patches = if_stmt(_if, None, len(lid_patches) == 0, (image_patch, lid_patches))
+    toilet_patches = image_patch.find('toilet')
+    result = 'no'
+
+    def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+        result = image_patch.simple_query('Are both the lid and the toilet the same color?')
+        return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+
+    def _else(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+        lid_patch = lid_patches[0]
+        toilet_patch = toilet_patches[0]
+        colors = ('white', 'off white', 'cream', 'beige', 'tan', 'gray', 'grey', 'black', 'silver', 'gold', 'brown', 'blue', 'green', 'red', 'yellow', 'pink', 'purple', 'orange')
+        lid_color = ''
+
+        def _for(c, colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches):
+
+            def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches):
+
+                def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches):
+                    lid_color = c
+                    return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches)
+                colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches = if_stmt(_if, None, lid_patch.verify_property('lid', c), (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches))
+                return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches)
+            colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches = if_stmt(_if, None, lid_color == '', (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches))
+            return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches)
+        colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches = for_stmt(_for, colors, (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_patch, toilet_patches))
+        toilet_color = ''
+
+        def _for(c, colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+
+            def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+
+                def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+                    toilet_color = c
+                    return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+                colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches = if_stmt(_if, None, toilet_patch.verify_property('toilet', c), (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches))
+                return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+            colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches = if_stmt(_if, None, toilet_color == '', (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches))
+            return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+        colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches = for_stmt(_for, colors, (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches))
+
+        def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+            lid_color = lid_patch.best_text_match(colors)
+            return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+        colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches = if_stmt(_if, None, lid_color == '', (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches))
+
+        def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+            toilet_color = toilet_patch.best_text_match(colors)
+            return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+        colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches = if_stmt(_if, None, toilet_color == '', (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches))
+
+        def _if(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+            result = 'yes'
+            return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+
+        def _else(colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches):
+            result = 'no'
+            return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+        colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches = if_stmt(_if, _else, lid_color == toilet_color, (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches))
+        return (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches)
+    colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches = if_stmt(_if, _else, or_expr(len(lid_patches) == 0, len(toilet_patches) == 0), (colors, image_patch, lid_color, lid_patch, lid_patches, result, toilet_color, toilet_patch, toilet_patches))
+    return result

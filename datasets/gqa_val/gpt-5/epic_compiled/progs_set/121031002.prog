@@ -1,0 +1,56 @@
+def execute_command(image) -> str:
+    glasses_patches = None
+    image_patch = None
+    keyboard_patches = None
+    man_left_of_glasses = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    man_patches = image_patch.find('man')
+
+    def _if(glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+        result = image_patch.simple_query('Do you see a keyboard to the left of the man that is to the left of the glasses?')
+        return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+
+    def _else(glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+        glasses_patches = image_patch.find('glasses')
+
+        def _if(glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+            keyboard_patches = image_patch.find('keyboard')
+
+            def _if(glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+
+                def _for(man_patch, glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+                    man_left_of_glasses = False
+
+                    def _for(glasses_patch, glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+
+                        def _if(glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+                            man_left_of_glasses = True
+                            return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+                        glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = if_stmt(_if, None, man_patch.horizontal_center < glasses_patch.horizontal_center, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+                        return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+                    glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = for_stmt(_for, glasses_patches, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+
+                    def _if(glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+
+                        def _for(keyboard_patch, glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+
+                            def _if(glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result):
+                                result = 'yes'
+                                return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+                            glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = if_stmt(_if, None, keyboard_patch.horizontal_center < man_patch.horizontal_center, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+                            return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+                        glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = for_stmt(_for, keyboard_patches, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+                        return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+                    glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = if_stmt(_if, None, man_left_of_glasses, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+                    return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+                glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = for_stmt(_for, man_patches, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+                return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+            glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = if_stmt(_if, None, len(keyboard_patches) > 0, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+            return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+        glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = if_stmt(_if, None, len(glasses_patches) > 0, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+        return (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result)
+    glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result = if_stmt(_if, _else, len(man_patches) == 0, (glasses_patches, image_patch, keyboard_patches, man_left_of_glasses, man_patches, result))
+    return result

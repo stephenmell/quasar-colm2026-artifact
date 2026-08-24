@@ -1,0 +1,21 @@
+# Does the green bottle look tall?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    green_bottle_patches = image_patch.find("green bottle")
+    if len(green_bottle_patches) == 0:
+        bottle_patches = image_patch.find("bottle")
+        if len(bottle_patches) == 0:
+            result = image_patch.simple_query("Does the green bottle look tall?")
+        else:
+            for bottle_patch in bottle_patches:
+                is_green = bottle_patch.verify_property("bottle", "green")
+                is_tall = bottle_patch.verify_property("bottle", "tall")
+                if is_green and is_tall:
+                    result = "yes"
+    else:
+        for green_bottle_patch in green_bottle_patches:
+            if green_bottle_patch.verify_property("bottle", "tall"):
+                result = "yes"
+    return result

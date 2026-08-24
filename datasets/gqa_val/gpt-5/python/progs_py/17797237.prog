@@ -1,0 +1,16 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_patches = image_patch.find("fence")
+    # If no fence is found, ask directly
+    if len(fence_patches) == 0:
+        return image_patch.simple_query("Do you see horses to the left of the fence that looks black?")
+    horse_patches = image_patch.find("horse")
+    if len(horse_patches) == 0:
+        return "no"
+    # Look for any black fence with a horse to its left
+    for fence_patch in fence_patches:
+        if fence_patch.verify_property("fence", "black"):
+            for horse_patch in horse_patches:
+                if horse_patch.horizontal_center < fence_patch.horizontal_center:
+                    return "yes"
+    return "no"

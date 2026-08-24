@@ -1,0 +1,27 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+
+    # Try to directly find a "white helmet"
+    white_helmet_patches = image_patch.find("white helmet")
+
+    # If not found, find helmets and filter by white property
+    if len(white_helmet_patches) == 0:
+        helmet_patches = image_patch.find("helmet")
+        for helmet_patch in helmet_patches:
+            if helmet_patch.verify_property("helmet", "white"):
+                white_helmet_patches.append(helmet_patch)
+
+    # If still no white helmet detected, fall back to asking directly
+    if len(white_helmet_patches) == 0:
+        return image_patch.simple_query("Are there men to the left of the white helmet?")
+
+    # Find men and check if any is to the left of any white helmet
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return "no"
+
+    for helmet_patch in white_helmet_patches:
+        for man_patch in man_patches:
+            if man_patch.horizontal_center < helmet_patch.horizontal_center:
+                return "yes"
+    return "no"

@@ -1,0 +1,52 @@
+def execute_command(image) -> str:
+    best_dist = None
+    best_idx = None
+    dist = None
+    idx = None
+    image_center_x = None
+    image_patch = None
+    middle_person = None
+    person_patches = None
+    purse_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find('person')
+
+    def _if(best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result):
+        result = image_patch.simple_query('Do you see any purses to the right of the person in the middle?')
+        return (best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result)
+
+    def _else(best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result):
+        image_center_x = image_patch.horizontal_center
+        best_idx = 0
+        best_dist = None
+        idx = 0
+
+        def _for(person_patch, best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches):
+            dist = abs(person_patch.horizontal_center - image_center_x)
+
+            def _if(best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches):
+                best_dist = dist
+                best_idx = idx
+                return (best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches)
+            best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches = if_stmt(_if, None, or_expr(best_dist is None, dist < best_dist), (best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches))
+            idx = idx + 1
+            return (best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches)
+        best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches = for_stmt(_for, person_patches, (best_dist, best_idx, dist, idx, image_center_x, image_patch, person_patches))
+        middle_person = person_patches[best_idx]
+        result = 'no'
+        purse_patches = ()
+        purse_patches = purse_patches + image_patch.find('purse')
+        purse_patches = purse_patches + image_patch.find('handbag')
+
+        def _for(purse_patch, best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result):
+
+            def _if(best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result):
+                result = 'yes'
+                return (best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result)
+            best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result = if_stmt(_if, None, purse_patch.horizontal_center > middle_person.horizontal_center, (best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result))
+            return (best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result)
+        best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result = for_stmt(_for, purse_patches, (best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result))
+        return (best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result)
+    best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result = if_stmt(_if, _else, len(person_patches) == 0, (best_dist, best_idx, dist, idx, image_center_x, image_patch, middle_person, person_patches, purse_patches, result))
+    return result

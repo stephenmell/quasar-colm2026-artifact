@@ -1,0 +1,37 @@
+def execute_command(image) -> str:
+    image_patch = None
+    player_patch = None
+    player_patches = None
+    racket_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    player_patches = image_patch.find('player')
+
+    def _if(image_patch, player_patch, player_patches, racket_patches, result):
+        result = image_patch.simple_query('Is there a racket to the left of the player in the picture?')
+        return (image_patch, player_patch, player_patches, racket_patches, result)
+
+    def _else(image_patch, player_patch, player_patches, racket_patches, result):
+        player_patch = player_patches[0]
+        racket_patches = image_patch.find('racket')
+
+        def _if(image_patch, player_patch, player_patches, racket_patches, result):
+            result = 'no'
+            return (image_patch, player_patch, player_patches, racket_patches, result)
+
+        def _else(image_patch, player_patch, player_patches, racket_patches, result):
+            result = 'no'
+
+            def _for(racket_patch, image_patch, player_patch, player_patches, racket_patches, result):
+
+                def _if(image_patch, player_patch, player_patches, racket_patches, result):
+                    result = 'yes'
+                    return (image_patch, player_patch, player_patches, racket_patches, result)
+                image_patch, player_patch, player_patches, racket_patches, result = if_stmt(_if, None, racket_patch.horizontal_center < player_patch.horizontal_center, (image_patch, player_patch, player_patches, racket_patches, result))
+                return (image_patch, player_patch, player_patches, racket_patches, result)
+            image_patch, player_patch, player_patches, racket_patches, result = for_stmt(_for, racket_patches, (image_patch, player_patch, player_patches, racket_patches, result))
+            return (image_patch, player_patch, player_patches, racket_patches, result)
+        image_patch, player_patch, player_patches, racket_patches, result = if_stmt(_if, _else, len(racket_patches) == 0, (image_patch, player_patch, player_patches, racket_patches, result))
+        return (image_patch, player_patch, player_patches, racket_patches, result)
+    image_patch, player_patch, player_patches, racket_patches, result = if_stmt(_if, _else, len(player_patches) == 0, (image_patch, player_patch, player_patches, racket_patches, result))
+    return result

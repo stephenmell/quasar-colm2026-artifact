@@ -1,0 +1,32 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    racket_patches = image_patch.find("racket")
+
+    if len(racket_patches) == 0:
+        result = image_patch.simple_query("Are there any girls to the left of the racket on the right side?")
+    else:
+        # Prefer a racket on the right half; if none, use the rightmost racket overall
+        right_side_racket = None
+        for r_patch in racket_patches:
+            if r_patch.horizontal_center > image_patch.horizontal_center:
+                if right_side_racket is None:
+                    right_side_racket = r_patch
+                else:
+                    if r_patch.horizontal_center > right_side_racket.horizontal_center:
+                        right_side_racket = r_patch
+
+        if right_side_racket is None:
+            right_side_racket = racket_patches[0]
+            for r_patch in racket_patches:
+                if r_patch.horizontal_center > right_side_racket.horizontal_center:
+                    right_side_racket = r_patch
+
+        girl_patches = image_patch.find("girl")
+        if len(girl_patches) == 0:
+            result = "no"
+        else:
+            result = "no"
+            for girl_patch in girl_patches:
+                if girl_patch.horizontal_center < right_side_racket.horizontal_center:
+                    result = "yes"
+    return result

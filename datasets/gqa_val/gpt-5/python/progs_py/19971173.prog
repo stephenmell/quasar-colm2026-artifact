@@ -1,0 +1,18 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    stove_patches = image_patch.find("stove")
+    # Question assumes at least one stove
+    if len(stove_patches) == 0:
+        # If no stove is found, query the image directly
+        return image_patch.simple_query("Is the stove to the right of drawers?")
+    # Try both singular and plural for drawers
+    drawer_patches = image_patch.find("drawer")
+    if len(drawer_patches) == 0:
+        drawer_patches = image_patch.find("drawers")
+    if len(drawer_patches) == 0:
+        return "no"
+    for stove_patch in stove_patches:
+        for drawer_patch in drawer_patches:
+            if stove_patch.horizontal_center > drawer_patch.horizontal_center:
+                return "yes"
+    return "no"

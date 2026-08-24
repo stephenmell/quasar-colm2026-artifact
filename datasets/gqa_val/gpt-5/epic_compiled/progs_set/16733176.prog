@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    image_patch = None
+    object_names = None
+    result = None
+    seen = None
+    image_patch = ImagePatch(image)
+    object_names = ('woman', 'women', 'father', 'fathers', 'dad', 'dads', 'lady', 'ladies')
+    seen = False
+
+    def _for(name, image_patch, object_names, seen):
+
+        def _if(image_patch, object_names, seen):
+            seen = True
+            return (image_patch, object_names, seen)
+        image_patch, object_names, seen = if_stmt(_if, None, image_patch.exists(name), (image_patch, object_names, seen))
+        return (image_patch, object_names, seen)
+    image_patch, object_names, seen = for_stmt(_for, object_names, (image_patch, object_names, seen))
+    result = bool_to_yesno(seen)
+    return result

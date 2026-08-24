@@ -1,0 +1,13 @@
+# Does the shirt look blue?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    shirt_patches = image_patch.find("shirt")
+    if len(shirt_patches) == 0:
+        result = image_patch.simple_query("Does the shirt look blue?")
+    else:
+        is_blue = False
+        for shirt_patch in shirt_patches:
+            if shirt_patch.verify_property("shirt", "blue"):
+                is_blue = True
+        result = bool_to_yesno(is_blue)
+    return result

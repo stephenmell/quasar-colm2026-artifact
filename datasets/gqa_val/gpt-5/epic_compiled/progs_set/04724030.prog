@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    bus_exists = None
+    bus_patches = None
+    direct_answer = None
+    image_patch = None
+    result_bool = None
+    train_exists = None
+    train_patches = None
+    image_patch = ImagePatch(image)
+    result_bool = False
+    bus_exists = image_patch.exists('bus')
+
+    def _if(bus_exists, bus_patches, image_patch, result_bool):
+        bus_patches = image_patch.find('bus')
+
+        def _for(bus_patch, bus_exists, bus_patches, image_patch, result_bool):
+
+            def _if(bus_exists, bus_patches, image_patch, result_bool):
+                result_bool = True
+                return (bus_exists, bus_patches, image_patch, result_bool)
+            bus_exists, bus_patches, image_patch, result_bool = if_stmt(_if, None, bus_patch.verify_property('bus', 'colorful'), (bus_exists, bus_patches, image_patch, result_bool))
+            return (bus_exists, bus_patches, image_patch, result_bool)
+        bus_exists, bus_patches, image_patch, result_bool = for_stmt(_for, bus_patches, (bus_exists, bus_patches, image_patch, result_bool))
+        return (bus_exists, bus_patches, image_patch, result_bool)
+    bus_exists, bus_patches, image_patch, result_bool = if_stmt(_if, None, bus_exists, (bus_exists, bus_patches, image_patch, result_bool))
+    train_exists = image_patch.exists('train')
+
+    def _if(bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches):
+        train_patches = image_patch.find('train')
+
+        def _for(train_patch, bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches):
+
+            def _if(bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches):
+                result_bool = True
+                return (bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches)
+            bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches = if_stmt(_if, None, train_patch.verify_property('train', 'colorful'), (bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches))
+            return (bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches)
+        bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches = for_stmt(_for, train_patches, (bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches))
+        return (bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches)
+    bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches = if_stmt(_if, None, train_exists, (bus_exists, bus_patches, image_patch, result_bool, train_exists, train_patches))
+
+    def _if(bus_exists, bus_patches, direct_answer, image_patch, result_bool, train_exists, train_patches):
+        direct_answer = image_patch.simple_query('Are there either buses or trains that are colorful?')
+        result_bool = direct_answer == 'yes'
+        return (bus_exists, bus_patches, direct_answer, image_patch, result_bool, train_exists, train_patches)
+    bus_exists, bus_patches, direct_answer, image_patch, result_bool, train_exists, train_patches = if_stmt(_if, None, and_expr(not result_bool, and_expr(not bus_exists, not train_exists)), (bus_exists, bus_patches, direct_answer, image_patch, result_bool, train_exists, train_patches))
+    return bool_to_yesno(result_bool)

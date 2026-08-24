@@ -1,0 +1,39 @@
+def execute_command(image) -> str:
+    chair_patches = None
+    has_wood_chair_name = None
+    image_patch = None
+    is_wood = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    has_wood_chair_name = or_expr(image_patch.exists('wood chair'), image_patch.exists('wooden chair'))
+
+    def _if(has_wood_chair_name, image_patch, result):
+        result = 'yes'
+        return (has_wood_chair_name, image_patch, result)
+    has_wood_chair_name, image_patch, result = if_stmt(_if, None, has_wood_chair_name, (has_wood_chair_name, image_patch, result))
+
+    def _if(chair_patches, has_wood_chair_name, image_patch, is_wood, result):
+
+        def _if(chair_patches, has_wood_chair_name, image_patch, is_wood, result):
+            chair_patches = image_patch.find('chair')
+
+            def _for(chair_patch, chair_patches, has_wood_chair_name, image_patch, is_wood, result):
+                is_wood = or_expr(chair_patch.verify_property('chair', 'wood'), chair_patch.verify_property('chair', 'wooden'))
+
+                def _if(chair_patches, has_wood_chair_name, image_patch, is_wood, result):
+                    result = 'yes'
+                    return (chair_patches, has_wood_chair_name, image_patch, is_wood, result)
+                chair_patches, has_wood_chair_name, image_patch, is_wood, result = if_stmt(_if, None, is_wood, (chair_patches, has_wood_chair_name, image_patch, is_wood, result))
+                return (chair_patches, has_wood_chair_name, image_patch, is_wood, result)
+            chair_patches, has_wood_chair_name, image_patch, is_wood, result = for_stmt(_for, chair_patches, (chair_patches, has_wood_chair_name, image_patch, is_wood, result))
+            return (chair_patches, has_wood_chair_name, image_patch, is_wood, result)
+        chair_patches, has_wood_chair_name, image_patch, is_wood, result = if_stmt(_if, None, image_patch.exists('chair'), (chair_patches, has_wood_chair_name, image_patch, is_wood, result))
+        return (chair_patches, has_wood_chair_name, image_patch, is_wood, result)
+    chair_patches, has_wood_chair_name, image_patch, is_wood, result = if_stmt(_if, None, result == 'no', (chair_patches, has_wood_chair_name, image_patch, is_wood, result))
+
+    def _if(chair_patches, has_wood_chair_name, image_patch, is_wood, result):
+        result = image_patch.simple_query('Are there any wood chairs?')
+        return (chair_patches, has_wood_chair_name, image_patch, is_wood, result)
+    chair_patches, has_wood_chair_name, image_patch, is_wood, result = if_stmt(_if, None, result == 'no', (chair_patches, has_wood_chair_name, image_patch, is_wood, result))
+    return result

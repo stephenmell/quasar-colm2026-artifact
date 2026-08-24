@@ -1,0 +1,9 @@
+# Does that water bottle have green color?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    water_bottle_patches = image_patch.find("water bottle")
+    if len(water_bottle_patches) == 0:
+        result = image_patch.simple_query("Does that water bottle have green color?")
+    else:
+        result = bool_to_yesno(water_bottle_patches[0].verify_property("water bottle", "green"))
+    return result

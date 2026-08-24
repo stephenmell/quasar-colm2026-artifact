@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    bottle_patches = image_patch.find("bottle")
+    plate_patches = image_patch.find("plate")
+
+    # If neither object is detected, query the image directly
+    if len(bottle_patches) == 0 and len(plate_patches) == 0:
+        return image_patch.simple_query("Is there any bottle or plate that is not empty?")
+
+    # Check bottles
+    for bottle_patch in bottle_patches:
+        if not bottle_patch.verify_property("bottle", "empty"):
+            return "yes"
+
+    # Check plates
+    for plate_patch in plate_patches:
+        if not plate_patch.verify_property("plate", "empty"):
+            return "yes"
+
+    return "no"

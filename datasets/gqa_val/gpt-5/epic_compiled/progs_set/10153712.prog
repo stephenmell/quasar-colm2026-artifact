@@ -1,0 +1,69 @@
+def execute_command(image) -> str:
+    below_patch = None
+    color_answer = None
+    has_area = None
+    image_patch = None
+    left = None
+    local_answer = None
+    lower = None
+    plate_patches = None
+    result = None
+    right = None
+    table_patches = None
+    upper = None
+    image_patch = ImagePatch(image)
+    plate_patches = image_patch.find('plate')
+
+    def _if(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+        result = image_patch.simple_query('What color is the table under the plate?')
+        return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+
+    def _else(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+        result = None
+
+        def _for(plate_patch, below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+            left = plate_patch.left
+            right = plate_patch.right
+            lower = image_patch.lower
+            upper = plate_patch.lower
+            has_area = and_expr(upper is not None, and_expr(lower is not None, and_expr(right is not None, and_expr(left is not None, and_expr(upper > lower, right > left)))))
+
+            def _if(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+                below_patch = image_patch.crop(left, lower, right, upper)
+                table_patches = below_patch.find('table')
+
+                def _if(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+                    local_answer = below_patch.simple_query('What color is the table?')
+                    return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+
+                def _else(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+                    local_answer = None
+
+                    def _for(table_patch, below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+                        color_answer = table_patch.simple_query('What color is the table?')
+
+                        def _if(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+                            local_answer = color_answer
+                            return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+                        below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = if_stmt(_if, None, color_answer, (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+                        return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+                    below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = for_stmt(_for, table_patches, (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+                    return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+                below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = if_stmt(_if, _else, len(table_patches) == 0, (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+
+                def _if(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+                    result = local_answer
+                    return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+                below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = if_stmt(_if, None, local_answer, (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+                return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+            below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = if_stmt(_if, None, has_area, (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+            return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+        below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = for_stmt(_for, plate_patches, (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+
+        def _if(below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper):
+            result = image_patch.simple_query('What color is the table under the plate?')
+            return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+        below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = if_stmt(_if, None, not_expr(result), (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+        return (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper)
+    below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper = if_stmt(_if, _else, len(plate_patches) == 0, (below_patch, color_answer, has_area, image_patch, left, local_answer, lower, plate_patches, result, right, table_patches, upper))
+    return result

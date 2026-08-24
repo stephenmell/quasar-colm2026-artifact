@@ -1,0 +1,10 @@
+Stage: other execution error
+Error: 
+Traceback:
+Traceback (most recent call last):
+  File "/home/sm1/projects/conformal_viper/GQA/pipeline_run_gqa.py", line 248, in main
+    run_utils.load_model_outputs(model_outputs_filepath, CONTEXT)
+  File "/home/sm1/projects/conformal_viper/eval/run_utils.py", line 94, in load_model_outputs
+    assert y == y2
+           ^^^^^^^
+AssertionError

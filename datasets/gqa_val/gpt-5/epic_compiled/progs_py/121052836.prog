@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    # Check for blue bags (handle singular and plural)
+    bag_patches = image_patch.find("bag") + image_patch.find("bags")
+    found_blue_bag = False
+    for bag_patch in bag_patches:
+        is_blue_single = bag_patch.verify_property("bag", "blue")
+        is_blue_plural = bag_patch.verify_property("bags", "blue")
+        if is_blue_single or is_blue_plural:
+            found_blue_bag = True
+    if found_blue_bag:
+        result = "yes"
+
+    # If no blue bags found, check for any coats (singular or plural)
+    if result != "yes":
+        if image_patch.exists("coat") or image_patch.exists("coats"):
+            result = "yes"
+
+    # If still uncertain, ask directly
+    if result == "no":
+        result = image_patch.simple_query("Do you see either blue bags or coats?")
+    return result

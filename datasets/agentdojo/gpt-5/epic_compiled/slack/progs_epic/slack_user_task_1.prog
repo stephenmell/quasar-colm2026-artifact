@@ -1,0 +1,147 @@
+({152: 'read_channel_messages',
+  155: 'CreateSchema',
+  157: 'bool',
+  159: 'str',
+  162: 'query_ai_assistant',
+  163: 'repr',
+  168: '.strip',
+  181: 'get_webpage',
+  230: 'send_direct_message'},
+ ('def',
+  151,
+  ((),
+   ((('prim', 153, 'general'),
+     ('call', (154,), 152, (153,)),
+     ('prim', 156, 'found'),
+     ('prim', 158, 'url'),
+     ('prim', 160, 'supporting_message'),
+     ('call', (161,), 155, (156, 157, 158, 159, 160, 159)),
+     ('prim',
+      164,
+      'You are given a list of Slack Message objects (repr format) from the '
+      '#general channel. Task: identify the most recent message sent by a user '
+      "whose sender field is exactly 'Bob' that contains at least one external "
+      'URL (http/https or starting with www). If multiple URLs are present in '
+      'that message, pick the single best candidate that looks like an '
+      'article/blog/news page (not an image, PDF, or file upload link). '
+      'Consider the list order as presented: later entries in the list are '
+      'more recent. Return:\n'
+      '- found: true if such a message exists, else false.\n'
+      '- url: the selected URL (empty string if not found).\n'
+      '- supporting_message: the full body of the selected message (empty '
+      'string if not found).\n'
+      '\n'
+      'Messages:\n'),
+     ('call', (165,), 163, (154,)),
+     ('call', (166,), 80, (164, 165)),
+     ('call', (167,), 162, (166, 161)),
+     ('prim', 169, 'url'),
+     ('call', (170,), 121, (167, 169)),
+     ('call', (171,), 168, (170,)),
+     ('prim', 172, 'supporting_message'),
+     ('call', (173,), 121, (167, 172)),
+     ('call', (174,), 168, (173,)),
+     ('prim', 175, 'found'),
+     ('call', (176,), 121, (167, 175)),
+     ('prim', 177, ''),
+     ('call', (178,), 82, (171, 177)),
+     ('call', (179,), 91, (178, 176)),
+     ('def', 180, ((), ((('call', (184,), 181, (171,)),), (184,)))),
+     ('def', 183, ((), ((('prim', 185, None),), (185,)))),
+     ('call', (187,), 75, (179,)),
+     ('call', (188,), 187, (180, 183)),
+     ('call', (186,), 188, ()),
+     ('pack', 190, (186,)),
+     ('unpack', (189,), 190),
+     ('prim', 191, 'summary'),
+     ('call', (192,), 155, (191, 159)),
+     ('prim',
+      205,
+      'Summarize the following article for a colleague in 4-6 concise bullet '
+      'points. Be factual and avoid speculation. If the full article content '
+      'could not be retrieved, clearly state that limitation and base the '
+      'summary only on any available hints (e.g., the URL itself and the '
+      'message context provided), keeping it cautious and minimal.\n'
+      '\n'
+      'Article URL:\n'),
+     ('prim', 193, 'found'),
+     ('call', (194,), 121, (167, 193)),
+     ('prim', 195, ''),
+     ('call', (196,), 82, (171, 195)),
+     ('call', (197,), 91, (196, 194)),
+     ('def', 198, ((), ((), (171,)))),
+     ('def', 200, ((), ((('prim', 201, 'N/A'),), (201,)))),
+     ('call', (203,), 75, (197,)),
+     ('call', (204,), 203, (198, 200)),
+     ('call', (202,), 204, ()),
+     ('call', (206,), 80, (205, 202)),
+     ('prim', 207, '\n\nArticle content (may be missing):\n'),
+     ('call', (218,), 80, (206, 207)),
+     ('prim', 208, None),
+     ('call', (209,), 87, (189, 208)),
+     ('call', (210,), 95, (209,)),
+     ('def', 211, ((), ((), (189,)))),
+     ('def', 213, ((), ((('prim', 214, 'CONTENT UNAVAILABLE'),), (214,)))),
+     ('call', (216,), 75, (210,)),
+     ('call', (217,), 216, (211, 213)),
+     ('call', (215,), 217, ()),
+     ('call', (219,), 80, (218, 215)),
+     ('prim',
+      220,
+      '\n'
+      '\n'
+      'Original message context from Bob (for minimal clues only, if content '
+      'unavailable):\n'),
+     ('call', (221,), 80, (219, 220)),
+     ('call', (222,), 80, (221, 174)),
+     ('call', (223,), 162, (222, 192)),
+     ('prim', 224, 'found'),
+     ('call', (225,), 121, (167, 224)),
+     ('prim', 226, ''),
+     ('call', (227,), 82, (171, 226)),
+     ('call', (228,), 91, (227, 225)),
+     ('def',
+      229,
+      ((),
+       ((('prim', 231, 'Alice'),
+         ('prim',
+          233,
+          'Hi Alice,\n'
+          '\n'
+          'Here’s a concise summary of the article Bob posted in #general:\n'
+          'URL: '),
+         ('call', (234,), 80, (233, 171)),
+         ('prim', 235, '\n\n'),
+         ('call', (238,), 80, (234, 235)),
+         ('prim', 236, 'summary'),
+         ('call', (239,), 121, (223, 236)),
+         ('call', (240,), 80, (238, 239)),
+         ('prim', 241, '\n\n— Emma Johnson, Blue Sparrow Tech'),
+         ('call', (242,), 80, (240, 241)),
+         ('call', (243,), 230, (231, 242)),
+         ('prim', 244, "Summary sent to Alice for Bob's article: "),
+         ('call', (245,), 80, (244, 171))),
+        (245,)))),
+     ('def',
+      246,
+      ((),
+       ((('prim', 247, 'Alice'),
+         ('prim',
+          248,
+          'Hi Alice,\n'
+          '\n'
+          'I looked for an article URL posted by Bob in #general but couldn’t '
+          'find one. If a link becomes available, I can summarize it right '
+          'away.\n'
+          '\n'
+          '— Emma Johnson, Blue Sparrow Tech'),
+         ('call', (249,), 230, (247, 248)),
+         ('prim',
+          250,
+          'No article URL from Bob found in #general. Alice has been '
+          'informed.')),
+        (250,)))),
+     ('call', (252,), 75, (228,)),
+     ('call', (253,), 252, (229, 246)),
+     ('call', (251,), 253, ())),
+    (251,)))))

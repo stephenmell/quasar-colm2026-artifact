@@ -1,0 +1,64 @@
+def execute_command(image) -> str:
+    bench_patches = None
+    chosen_bench = None
+    chosen_man = None
+    dist = None
+    image_patch = None
+    is_leaning = None
+    man_patches = None
+    min_dist = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'left'
+    bench_patches = image_patch.find('bench')
+    man_patches = image_patch.find('man')
+
+    def _if(bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+        result = image_patch.simple_query('Is the bench to the right or to the left of the man that is leaning on the fence?')
+        return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+
+    def _else(bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+        chosen_man = None
+
+        def _for(man_patch, bench_patches, chosen_man, image_patch, is_leaning, man_patches, result):
+            is_leaning = man_patch.simple_query('Is the man leaning on the fence?') == 'yes'
+
+            def _if(bench_patches, chosen_man, image_patch, is_leaning, man_patches, result):
+                chosen_man = man_patch
+                return (bench_patches, chosen_man, image_patch, is_leaning, man_patches, result)
+            bench_patches, chosen_man, image_patch, is_leaning, man_patches, result = if_stmt(_if, None, and_expr(chosen_man is None, is_leaning), (bench_patches, chosen_man, image_patch, is_leaning, man_patches, result))
+            return (bench_patches, chosen_man, image_patch, is_leaning, man_patches, result)
+        bench_patches, chosen_man, image_patch, is_leaning, man_patches, result = for_stmt(_for, man_patches, (bench_patches, chosen_man, image_patch, is_leaning, man_patches, result))
+
+        def _if(bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+            result = image_patch.simple_query('Is the bench to the right or to the left of the man that is leaning on the fence?')
+            return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+
+        def _else(bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+            chosen_bench = None
+            min_dist = None
+
+            def _for(bench_patch, bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+                dist = abs(bench_patch.horizontal_center - chosen_man.horizontal_center)
+
+                def _if(bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+                    min_dist = dist
+                    chosen_bench = bench_patch
+                    return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+                bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result = if_stmt(_if, None, or_expr(min_dist is None, dist < min_dist), (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result))
+                return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+            bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result = for_stmt(_for, bench_patches, (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result))
+
+            def _if(bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+                result = 'right'
+                return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+
+            def _else(bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result):
+                result = 'left'
+                return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+            bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result = if_stmt(_if, _else, and_expr(chosen_bench, chosen_bench.horizontal_center > chosen_man.horizontal_center), (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result))
+            return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+        bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result = if_stmt(_if, _else, not_expr(chosen_man), (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result))
+        return (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result)
+    bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result = if_stmt(_if, _else, or_expr(len(bench_patches) == 0, len(man_patches) == 0), (bench_patches, chosen_bench, chosen_man, dist, image_patch, is_leaning, man_patches, min_dist, result))
+    return result

@@ -1,0 +1,23 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    boy_patches = image_patch.find("boy")
+    # If no boy is found, ask directly
+    if len(boy_patches) == 0:
+        return image_patch.simple_query("Is the drink to the right of the boy that eats a pizza?")
+    # Find the boy that is eating a pizza
+    eating_boy = None
+    for boy_patch in boy_patches:
+        if boy_patch.simple_query("Is the boy eating a pizza?") == "yes":
+            eating_boy = boy_patch
+            break
+    # If we can't identify a pizza-eating boy, ask directly
+    if eating_boy is None:
+        return image_patch.simple_query("Is the drink to the right of the boy that eats a pizza?")
+    # Find drinks and check if any is to the right of the identified boy
+    drink_patches = image_patch.find("drink")
+    if len(drink_patches) == 0:
+        return "no"
+    for drink_patch in drink_patches:
+        if drink_patch.horizontal_center > eating_boy.horizontal_center:
+            return "yes"
+    return "no"

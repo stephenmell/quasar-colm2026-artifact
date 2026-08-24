@@ -1,0 +1,70 @@
+def execute_command(image) -> str:
+    best_dx = None
+    candidate_patch = None
+    dx = None
+    image_patch = None
+    is_right = None
+    onion_patch = None
+    onion_patches = None
+    result = None
+    right_area_patch = None
+    vegetable_patches = None
+    image_patch = ImagePatch(image)
+    onion_patches = image_patch.find('onion')
+
+    def _if(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches):
+        result = image_patch.simple_query('What vegetable is to the right of the onion?')
+        return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches)
+
+    def _else(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches):
+        onion_patch = onion_patches[0]
+        vegetable_patches = image_patch.find('vegetable')
+
+        def _if(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches):
+            right_area_patch = image_patch.crop(onion_patch.right, onion_patch.lower, image_patch.right, onion_patch.upper)
+            result = right_area_patch.simple_query('What vegetable is to the right of the onion?')
+            return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches)
+
+        def _else(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches):
+            candidate_patch = None
+            best_dx = None
+
+            def _for(vegetable_patch, best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches):
+                is_right = vegetable_patch.horizontal_center > onion_patch.horizontal_center
+
+                def _if(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches):
+                    dx = vegetable_patch.horizontal_center - onion_patch.horizontal_center
+
+                    def _if(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches):
+                        candidate_patch = vegetable_patch
+                        best_dx = dx
+                        return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches)
+
+                    def _else(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches):
+
+                        def _if(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches):
+                            candidate_patch = vegetable_patch
+                            best_dx = dx
+                            return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches)
+                        best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches = if_stmt(_if, None, dx < best_dx, (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches))
+                        return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches)
+                    best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches = if_stmt(_if, _else, best_dx is None, (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches))
+                    return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches)
+                best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches = if_stmt(_if, None, is_right, (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches))
+                return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches)
+            best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches = for_stmt(_for, vegetable_patches, (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, vegetable_patches))
+
+            def _if(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches):
+                result = candidate_patch.simple_query('What vegetable is this?')
+                return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches)
+
+            def _else(best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches):
+                right_area_patch = image_patch.crop(onion_patch.right, onion_patch.lower, image_patch.right, onion_patch.upper)
+                result = right_area_patch.simple_query('What vegetable is to the right of the onion?')
+                return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches)
+            best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches = if_stmt(_if, _else, candidate_patch, (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches))
+            return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches)
+        best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches = if_stmt(_if, _else, len(vegetable_patches) == 0, (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches))
+        return (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches)
+    best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches = if_stmt(_if, _else, len(onion_patches) == 0, (best_dx, candidate_patch, dx, image_patch, is_right, onion_patch, onion_patches, result, right_area_patch, vegetable_patches))
+    return result

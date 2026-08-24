@@ -1,0 +1,111 @@
+({1394: 'context', 1397: 'llm_query', 1408: '.join', 1416: 'return_result'},
+ ('def',
+  1392,
+  ((),
+   ((('call', (1393,), -1, ()),
+     ('def',
+      1395,
+      ((1403, 1396),
+       ((('prim',
+          1398,
+          'You are a cricket data extractor. Read the document below and '
+          'identify any specific match that meets ALL of the following 9 '
+          'constraints. If a match is found, output concise structured info '
+          "for each candidate as specified; otherwise, output 'No match in "
+          "this document'.\n"
+          '\n'
+          'Constraints (must ALL be satisfied):\n'
+          '1) For the winning team, the sum of runs scored by all batters '
+          'EXCEPT their single highest run-scorer is between 75 and 80 '
+          'inclusive.\n'
+          '2) The highest scorer of the losing team scored between 35 and 45 '
+          'inclusive.\n'
+          "3) That losing team's top-scorer had 'control' (batting control "
+          'percentage) between 60% and 63% inclusive.\n'
+          '4) The losing team won the toss.\n'
+          '5) Both teams completed their full quota of overs, and the absolute '
+          'difference between their run rates (runs per over) is greater than '
+          '6.0.\n'
+          '6) The highest scorer of the winning team hit more sixes than fours '
+          'in that innings.\n'
+          '7) The highest scorer of the winning team also took exactly 2 '
+          'wickets in the match.\n'
+          "8) On the final ball of the winning team's innings, a batter was "
+          'dismissed.\n'
+          '9) Across the entire match, more than 6 batters (combined across '
+          'both teams) had single-digit scores (0–9 inclusive).\n'
+          '\n'
+          'Clarifications:\n'
+          '- For constraint 1, compute: (sum of runs by all batters on the '
+          'winning side) minus (runs by the single highest run-scorer of that '
+          'side), and check if it is in [75, 80].\n'
+          '- Run rate is total runs divided by overs faced; both must have '
+          'batted full overs (e.g., 20 overs in T20, 50 in ODI, etc.).\n'
+          "- 'Control' is a metric often presented as a percentage in "
+          'ball-by-ball analytics; it must be explicitly present in the '
+          'document.\n'
+          '\n'
+          'If a match is found, provide for each candidate match:\n'
+          '- Match number/ID/label (as written in the document):\n'
+          '- Tournament/series name:\n'
+          '- Year:\n'
+          '- Teams and result (winner/loser):\n'
+          '- Toss (who won):\n'
+          '- Overs and totals for both teams; computed run rates for both:\n'
+          "- Winning team's top-scorer: name, runs, 4s and 6s, confirmation of "
+          'more 6s than 4s (Yes/No), wickets taken by that player (must be '
+          'exactly 2):\n'
+          "- Sum of runs by the rest of the winning team's batters (excluding "
+          'the top-scorer):\n'
+          "- Last ball of the winning team's innings was a wicket (Yes/No), "
+          'and brief evidence:\n'
+          "- Losing team's top-scorer: name, runs, control percentage:\n"
+          '- Count of single-digit scores across the whole match:\n'
+          '- Evidence quotes (copy exact lines from the document proving each '
+          'point):\n'
+          '- Meets all constraints: Yes/No (if No, list the specific '
+          'constraint numbers that fail or are unknown)\n'
+          '\n'
+          'Only use information directly found in this document; do not guess. '
+          'Be concise but include the exact evidence lines.\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (1399,), 80, (1398, 1396)),
+         ('prim', 1400, '\nEND_DOCUMENT'),
+         ('call', (1401,), 80, (1399, 1400)),
+         ('call', (1402,), 1397, (1401,)),
+         ('call', (1404,), -1, (1402,)),
+         ('call', (1405,), 80, (1403, 1404))),
+        (1405,)))),
+     ('call', (1407,), 79, (1394,)),
+     ('call', (1406,), 1407, (1393, 1395)),
+     ('prim', 1409, '\n\n----- DOCUMENT ANALYSIS RESULT -----\n\n'),
+     ('call', (1410,), 1408, (1409, 1406)),
+     ('prim',
+      1411,
+      'We need to find exactly one cricket match that satisfies ALL 9 '
+      'constraints. Below are analyses (one per document). Choose the single '
+      'match that satisfies all constraints, with explicit evidence where '
+      'possible.\n'
+      '\n'
+      'Analyses:\n'),
+     ('call', (1412,), 80, (1411, 1410)),
+     ('prim',
+      1413,
+      '\n'
+      '\n'
+      'Instructions:\n'
+      '- If you identify exactly one match meeting all constraints, output '
+      'ONLY one line in this exact format:\n'
+      'Match number | Tournament | Year\n'
+      '- If multiple matches qualify, choose the one with the strongest '
+      'explicit evidence and still output exactly one line as above.\n'
+      '- If no match satisfies all constraints, output exactly:\n'
+      'Not found\n'
+      '\n'
+      'Do not add any extra text or explanation. Just the single required '
+      'line.'),
+     ('call', (1414,), 80, (1412, 1413)),
+     ('call', (1415,), 1397, (1414,)),
+     ('call', (1417,), 1416, (1415,))),
+    (1417,)))))

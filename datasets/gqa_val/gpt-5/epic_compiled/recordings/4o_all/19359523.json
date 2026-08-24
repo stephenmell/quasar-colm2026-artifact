@@ -1,0 +1,23 @@
+{
+  "find": [],
+  "verify_property": [],
+  "simple_query": [
+    [
+      [
+        [
+          "2381611",
+          [
+            0,
+            0,
+            500,
+            224
+          ]
+        ],
+        "What is the vehicle that is parked in the street?"
+      ],
+      "A pickup truck.",
+      1006172644
+    ]
+  ],
+  "best_text_match": []
+}

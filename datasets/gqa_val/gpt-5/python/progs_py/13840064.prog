@@ -1,0 +1,11 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    water_patches = image_patch.find("water")
+    # Question assumes only one water patch
+    if len(water_patches) == 0:
+        # If no water is found, query the image directly
+        return image_patch.simple_query("Is that water calm?")
+    for water_patch in water_patches:
+        if water_patch.verify_property("water", "calm"):
+            return "yes"
+    return "no"

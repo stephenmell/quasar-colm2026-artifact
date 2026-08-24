@@ -1,0 +1,12 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tent_patches = image_patch.find("tent")
+    # Question assumes only one tent patch
+    if len(tent_patches) == 0:
+        # If no tent is found, query the image directly
+        return image_patch.simple_query("Is the tent in the top part of the image?")
+    tent_patch = tent_patches[0]
+    if tent_patch.vertical_center >= image_patch.vertical_center:
+        return "yes"
+    else:
+        return "no"

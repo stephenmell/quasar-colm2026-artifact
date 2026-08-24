@@ -1,0 +1,10 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_fork = None
+    is_lemon = None
+    result = None
+    image_patch = ImagePatch(image)
+    is_lemon = image_patch.exists('lemon')
+    is_fork = image_patch.exists('fork')
+    result = bool_to_yesno(or_expr(is_lemon, is_fork))
+    return result

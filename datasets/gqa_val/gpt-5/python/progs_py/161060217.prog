@@ -1,0 +1,4 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    is_present = image_patch.exists("woman") or image_patch.exists("women")
+    return bool_to_yesno(is_present)

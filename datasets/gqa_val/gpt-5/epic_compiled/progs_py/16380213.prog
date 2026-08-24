@@ -1,0 +1,9 @@
+# Are there fences in this photo?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    fence_exists = image_patch.exists("fence")
+    if fence_exists:
+        result = "yes"
+    else:
+        result = image_patch.simple_query("Are there fences in this photo?")
+    return result

@@ -1,0 +1,44 @@
+def execute_command(image) -> str:
+    boy_patch = None
+    boy_patches = None
+    goggles_in_boy = None
+    goggles_in_image = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = None
+    boy_patches = image_patch.find('boy')
+
+    def _if(boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result):
+        result = image_patch.simple_query('Of which color are the goggles of the boy?')
+        return (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result)
+
+    def _else(boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result):
+        boy_patch = boy_patches[0]
+        goggles_in_boy = boy_patch.find('goggles')
+
+        def _if(boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result):
+            goggles_in_image = image_patch.find('goggles')
+
+            def _if(boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result):
+                result = boy_patch.simple_query('Of which color are the goggles of the boy?')
+                return (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result)
+
+            def _else(boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result):
+                result = goggles_in_image[0].simple_query('What color are the goggles?')
+                return (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result)
+            boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result = if_stmt(_if, _else, len(goggles_in_image) == 0, (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result))
+            return (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result)
+
+        def _else(boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result):
+            result = goggles_in_boy[0].simple_query('What color are the goggles?')
+            return (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result)
+        boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result = if_stmt(_if, _else, len(goggles_in_boy) == 0, (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result))
+        return (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result)
+    boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result = if_stmt(_if, _else, len(boy_patches) == 0, (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result))
+
+    def _if(boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result):
+        result = image_patch.simple_query('Of which color are the goggles of the boy?')
+        return (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result)
+    boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result = if_stmt(_if, None, not_expr(result), (boy_patch, boy_patches, goggles_in_boy, goggles_in_image, image_patch, result))
+    return result

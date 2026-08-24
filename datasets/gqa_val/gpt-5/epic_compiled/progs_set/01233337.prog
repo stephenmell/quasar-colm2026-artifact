@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    bed_patches = None
+    found_pillow_on_bed = None
+    found_red_pillow_on_bed = None
+    image_patch = None
+    pillow_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    bed_patches = image_patch.find('bed')
+
+    def _if(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+        result = image_patch.simple_query('Do the pillows on the bed look red?')
+        return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+
+    def _else(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+        found_pillow_on_bed = False
+        found_red_pillow_on_bed = False
+
+        def _for(bed_patch, bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+            pillow_patches = bed_patch.find('pillow')
+
+            def _if(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+                found_pillow_on_bed = True
+                return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+            bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result = if_stmt(_if, None, len(pillow_patches) > 0, (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result))
+
+            def _for(pillow_patch, bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+
+                def _if(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+                    found_red_pillow_on_bed = True
+                    return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+                bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result = if_stmt(_if, None, pillow_patch.verify_property('pillow', 'red'), (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result))
+                return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+            bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result = for_stmt(_for, pillow_patches, (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result))
+            return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+        bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result = for_stmt(_for, bed_patches, (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result))
+
+        def _if(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+            result = 'yes'
+            return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+
+        def _else(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+
+            def _if(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+                result = image_patch.simple_query('Do the pillows on the bed look red?')
+                return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+
+            def _else(bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result):
+                result = 'no'
+                return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+            bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result = if_stmt(_if, _else, not_expr(found_pillow_on_bed), (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result))
+            return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+        bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result = if_stmt(_if, _else, found_red_pillow_on_bed, (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result))
+        return (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result)
+    bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result = if_stmt(_if, _else, len(bed_patches) == 0, (bed_patches, found_pillow_on_bed, found_red_pillow_on_bed, image_patch, pillow_patches, result))
+    return result

@@ -1,0 +1,20 @@
+# Are the desk and the lamp made of the same material?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    desk_patches = image_patch.find("desk")
+    lamp_patches = image_patch.find("lamp")
+
+    # If either object isn't reliably found, ask directly
+    if len(desk_patches) == 0 or len(lamp_patches) == 0:
+        return image_patch.simple_query("Are the desk and the lamp made of the same material?")
+
+    desk_patch = desk_patches[0]
+    lamp_patch = lamp_patches[0]
+
+    # Common material categories
+    materials = ["wood", "metal", "plastic", "glass", "ceramic", "fabric", "stone", "paper", "leather", "marble"]
+
+    desk_material = desk_patch.best_text_match(materials)
+    lamp_material = lamp_patch.best_text_match(materials)
+
+    return "yes" if desk_material == lamp_material else "no"

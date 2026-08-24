@@ -1,0 +1,47 @@
+def execute_command(image) -> str:
+    dist_sq = None
+    dx = None
+    dy = None
+    image_patch = None
+    middle_oven_patch = None
+    min_dist_sq = None
+    oven_patches = None
+    result = None
+    woman_patches = None
+    image_patch = ImagePatch(image)
+    oven_patches = image_patch.find('oven')
+    woman_patches = image_patch.find('woman')
+
+    def _if(dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches):
+        result = image_patch.simple_query('Is the woman to the right of the oven in the middle?')
+        return (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches)
+
+    def _else(dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches):
+        min_dist_sq = None
+        middle_oven_patch = oven_patches[0]
+
+        def _for(oven_patch, dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches):
+            dx = oven_patch.horizontal_center - image_patch.horizontal_center
+            dy = oven_patch.vertical_center - image_patch.vertical_center
+            dist_sq = dx * dx + dy * dy
+
+            def _if(dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches):
+                min_dist_sq = dist_sq
+                middle_oven_patch = oven_patch
+                return (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches)
+            dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches = if_stmt(_if, None, or_expr(min_dist_sq is None, dist_sq < min_dist_sq), (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches))
+            return (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches)
+        dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches = for_stmt(_for, oven_patches, (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, woman_patches))
+        result = 'no'
+
+        def _for(woman_patch, dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches):
+
+            def _if(dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches):
+                result = 'yes'
+                return (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches)
+            dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches = if_stmt(_if, None, woman_patch.horizontal_center > middle_oven_patch.horizontal_center, (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches))
+            return (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches)
+        dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches = for_stmt(_for, woman_patches, (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches))
+        return (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches)
+    dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches = if_stmt(_if, _else, or_expr(len(oven_patches) == 0, len(woman_patches) == 0), (dist_sq, dx, dy, image_patch, middle_oven_patch, min_dist_sq, oven_patches, result, woman_patches))
+    return result

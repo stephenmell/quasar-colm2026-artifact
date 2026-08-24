@@ -1,0 +1,35 @@
+def execute_command(image) -> str:
+    handbag_patches = None
+    image_patch = None
+    man_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    result = 'no'
+    handbag_patches = image_patch.find('handbag')
+    man_patches = image_patch.find('man')
+
+    def _if(handbag_patches, image_patch, man_patches, result):
+        result = image_patch.simple_query('Is the man that is to the left of the handbag carrying a surfboard?')
+        return (handbag_patches, image_patch, man_patches, result)
+
+    def _else(handbag_patches, image_patch, man_patches, result):
+
+        def _for(handbag_patch, handbag_patches, image_patch, man_patches, result):
+
+            def _for(man_patch, handbag_patches, image_patch, man_patches, result):
+
+                def _if(handbag_patches, image_patch, man_patches, result):
+
+                    def _if(handbag_patches, image_patch, man_patches, result):
+                        result = 'yes'
+                        return (handbag_patches, image_patch, man_patches, result)
+                    handbag_patches, image_patch, man_patches, result = if_stmt(_if, None, man_patch.simple_query('Is the man carrying a surfboard?') == 'yes', (handbag_patches, image_patch, man_patches, result))
+                    return (handbag_patches, image_patch, man_patches, result)
+                handbag_patches, image_patch, man_patches, result = if_stmt(_if, None, man_patch.horizontal_center < handbag_patch.horizontal_center, (handbag_patches, image_patch, man_patches, result))
+                return (handbag_patches, image_patch, man_patches, result)
+            handbag_patches, image_patch, man_patches, result = for_stmt(_for, man_patches, (handbag_patches, image_patch, man_patches, result))
+            return (handbag_patches, image_patch, man_patches, result)
+        handbag_patches, image_patch, man_patches, result = for_stmt(_for, handbag_patches, (handbag_patches, image_patch, man_patches, result))
+        return (handbag_patches, image_patch, man_patches, result)
+    handbag_patches, image_patch, man_patches, result = if_stmt(_if, _else, or_expr(len(handbag_patches) == 0, len(man_patches) == 0), (handbag_patches, image_patch, man_patches, result))
+    return result

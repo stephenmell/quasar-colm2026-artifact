@@ -1,0 +1,20 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Try to locate the apron first, then ask who is wearing it within that crop
+    apron_patches = image_patch.find("apron")
+    if len(apron_patches) == 0:
+        # If no apron is found, query the image directly
+        return image_patch.simple_query("Who is wearing an apron?")
+    for apron_patch in apron_patches:
+        answer = apron_patch.simple_query("Who is wearing an apron?")
+        if answer:
+            return answer
+    # As a fallback, check common person categories and see who is wearing an apron
+    candidates = ["chef", "cook", "man", "woman", "person", "boy", "girl", "waiter", "waitress"]
+    for label in candidates:
+        patches = image_patch.find(label)
+        for p in patches:
+            if p.simple_query(f"Is the {label} wearing an apron?") == "yes":
+                return p.simple_query("Who is wearing an apron?")
+    # Final fallback
+    return image_patch.simple_query("Who is wearing an apron?")

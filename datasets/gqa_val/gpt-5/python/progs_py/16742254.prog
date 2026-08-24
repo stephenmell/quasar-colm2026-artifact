@@ -1,0 +1,20 @@
+# Is the blue helmet in the bottom or in the top part of the image?
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    helmet_patches = image_patch.find("helmet")
+    if len(helmet_patches) == 0:
+        # If no helmet is found, query the image directly
+        return image_patch.simple_query("Is the blue helmet in the bottom or in the top part of the image?")
+    # Filter to helmets that are blue
+    blue_helmets = [h for h in helmet_patches if h.verify_property("helmet", "blue")]
+    # If color verification fails to find one, try finding "blue helmet" directly
+    if len(blue_helmets) == 0:
+        blue_helmets = image_patch.find("blue helmet")
+    if len(blue_helmets) == 0:
+        # If no blue helmet is found, query directly
+        return image_patch.simple_query("Is the blue helmet in the bottom or in the top part of the image?")
+    target = blue_helmets[0]
+    if target.vertical_center < image_patch.vertical_center:
+        return "bottom"
+    else:
+        return "top"

@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    cup_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    cup_patches = image_patch.find('cup')
+
+    def _if(cup_patches, image_patch, result):
+        result = image_patch.simple_query('Is the cup in the top of the picture?')
+        return (cup_patches, image_patch, result)
+
+    def _else(cup_patches, image_patch, result):
+        result = 'no'
+
+        def _for(cup_patch, cup_patches, image_patch, result):
+
+            def _if(cup_patches, image_patch, result):
+                result = 'yes'
+                return (cup_patches, image_patch, result)
+            cup_patches, image_patch, result = if_stmt(_if, None, cup_patch.vertical_center >= image_patch.vertical_center, (cup_patches, image_patch, result))
+            return (cup_patches, image_patch, result)
+        cup_patches, image_patch, result = for_stmt(_for, cup_patches, (cup_patches, image_patch, result))
+        return (cup_patches, image_patch, result)
+    cup_patches, image_patch, result = if_stmt(_if, _else, len(cup_patches) == 0, (cup_patches, image_patch, result))
+    return result

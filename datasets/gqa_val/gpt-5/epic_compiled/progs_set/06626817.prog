@@ -1,0 +1,57 @@
+def execute_command(image) -> str:
+    candidate_patches = None
+    color_options = None
+    gate_color = None
+    gate_patch = None
+    gate_patches = None
+    image_patch = None
+    result = None
+    tee_color = None
+    tee_patch = None
+    tee_variants = None
+    image_patch = ImagePatch(image)
+    result = None
+    gate_patches = image_patch.find('gate')
+    gate_patch = None
+
+    def _if(gate_patch, gate_patches, image_patch, result):
+        gate_patch = gate_patches[0]
+        return (gate_patch, gate_patches, image_patch, result)
+    gate_patch, gate_patches, image_patch, result = if_stmt(_if, None, len(gate_patches) > 0, (gate_patch, gate_patches, image_patch, result))
+    tee_variants = ('tee shirt', 't shirt', 't-shirt', 'tshirt', 'shirt')
+    tee_patch = None
+
+    def _for(name, candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants):
+
+        def _if(candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants):
+            candidate_patches = image_patch.find(name)
+
+            def _if(candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants):
+                tee_patch = candidate_patches[0]
+                return (candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants)
+            candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants = if_stmt(_if, None, len(candidate_patches) > 0, (candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants))
+            return (candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants)
+        candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants = if_stmt(_if, None, tee_patch is None, (candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants))
+        return (candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants)
+    candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants = for_stmt(_for, tee_variants, (candidate_patches, gate_patch, gate_patches, image_patch, result, tee_patch, tee_variants))
+
+    def _if(candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants):
+        result = image_patch.simple_query('Does the gate have a different color than the tee shirt?')
+        return (candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants)
+
+    def _else(candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants):
+        color_options = ('red', 'blue', 'green', 'black', 'white', 'gray', 'grey', 'brown', 'yellow', 'orange', 'pink', 'purple', 'tan', 'beige', 'gold', 'silver')
+        gate_color = gate_patch.best_text_match(color_options)
+        tee_color = tee_patch.best_text_match(color_options)
+
+        def _if(candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants):
+            result = 'yes'
+            return (candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants)
+
+        def _else(candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants):
+            result = 'no'
+            return (candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants)
+        candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants = if_stmt(_if, _else, gate_color != tee_color, (candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants))
+        return (candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants)
+    candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants = if_stmt(_if, _else, or_expr(gate_patch is None, tee_patch is None), (candidate_patches, color_options, gate_color, gate_patch, gate_patches, image_patch, result, tee_color, tee_patch, tee_variants))
+    return result

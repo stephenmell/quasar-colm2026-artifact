@@ -1,0 +1,29 @@
+def execute_command(image) -> str:
+    image_patch = None
+    is_red = None
+    is_top = None
+    result = None
+    salad_patches = None
+    image_patch = ImagePatch(image)
+    salad_patches = image_patch.find('salad')
+
+    def _if(image_patch, is_red, is_top, result, salad_patches):
+        result = image_patch.simple_query('Is the red salad in the top of the picture?')
+        return (image_patch, is_red, is_top, result, salad_patches)
+
+    def _else(image_patch, is_red, is_top, result, salad_patches):
+        result = 'no'
+
+        def _for(salad_patch, image_patch, is_red, is_top, result, salad_patches):
+            is_red = salad_patch.verify_property('salad', 'red')
+            is_top = salad_patch.vertical_center >= image_patch.vertical_center
+
+            def _if(image_patch, is_red, is_top, result, salad_patches):
+                result = 'yes'
+                return (image_patch, is_red, is_top, result, salad_patches)
+            image_patch, is_red, is_top, result, salad_patches = if_stmt(_if, None, and_expr(is_red, is_top), (image_patch, is_red, is_top, result, salad_patches))
+            return (image_patch, is_red, is_top, result, salad_patches)
+        image_patch, is_red, is_top, result, salad_patches = for_stmt(_for, salad_patches, (image_patch, is_red, is_top, result, salad_patches))
+        return (image_patch, is_red, is_top, result, salad_patches)
+    image_patch, is_red, is_top, result, salad_patches = if_stmt(_if, _else, len(salad_patches) == 0, (image_patch, is_red, is_top, result, salad_patches))
+    return result

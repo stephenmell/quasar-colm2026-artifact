@@ -1,0 +1,24 @@
+def execute_command(image) -> str:
+    frisbee_patches = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    frisbee_patches = image_patch.find('frisbee')
+
+    def _if(frisbee_patches, image_patch, result):
+        result = image_patch.simple_query('On which side is the frisbee, the right or the left?')
+        return (frisbee_patches, image_patch, result)
+
+    def _else(frisbee_patches, image_patch, result):
+
+        def _if(frisbee_patches, image_patch, result):
+            result = 'right'
+            return (frisbee_patches, image_patch, result)
+
+        def _else(frisbee_patches, image_patch, result):
+            result = 'left'
+            return (frisbee_patches, image_patch, result)
+        frisbee_patches, image_patch, result = if_stmt(_if, _else, frisbee_patches[0].horizontal_center > image_patch.horizontal_center, (frisbee_patches, image_patch, result))
+        return (frisbee_patches, image_patch, result)
+    frisbee_patches, image_patch, result = if_stmt(_if, _else, len(frisbee_patches) == 0, (frisbee_patches, image_patch, result))
+    return result

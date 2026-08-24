@@ -1,0 +1,11 @@
+{
+  "result": {
+    "_possibilities": [
+      "Yes, there is a brown horse in the photo.",
+      "No, there is not a brown horse in the photo.",
+      "no",
+      "yes"
+    ]
+  },
+  "time_ns": 7491493547
+}

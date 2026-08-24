@@ -1,0 +1,19 @@
+def execute_command(image) -> str:
+    helmet_found = None
+    helmet_names = None
+    image_patch = None
+    result = None
+    image_patch = ImagePatch(image)
+    helmet_found = False
+    helmet_names = ('helmet', 'hard hat', 'bike helmet', 'motorcycle helmet')
+
+    def _for(name, helmet_found, helmet_names, image_patch):
+
+        def _if(helmet_found, helmet_names, image_patch):
+            helmet_found = True
+            return (helmet_found, helmet_names, image_patch)
+        helmet_found, helmet_names, image_patch = if_stmt(_if, None, image_patch.exists(name), (helmet_found, helmet_names, image_patch))
+        return (helmet_found, helmet_names, image_patch)
+    helmet_found, helmet_names, image_patch = for_stmt(_for, helmet_names, (helmet_found, helmet_names, image_patch))
+    result = bool_to_yesno(helmet_found)
+    return result

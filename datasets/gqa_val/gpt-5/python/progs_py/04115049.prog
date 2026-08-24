@@ -1,0 +1,8 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    tap_patches = image_patch.find("tap")
+    # Question assumes only one tap patch
+    if len(tap_patches) == 0:
+        # If no tap is found, query the image directly
+        return image_patch.simple_query("Does the tap have black color?")
+    return bool_to_yesno(tap_patches[0].verify_property("tap", "black"))

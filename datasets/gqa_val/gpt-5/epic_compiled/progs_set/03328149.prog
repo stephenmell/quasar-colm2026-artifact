@@ -1,0 +1,25 @@
+def execute_command(image) -> str:
+    image_patch = None
+    pillow_patches = None
+    result = None
+    image_patch = ImagePatch(image)
+    pillow_patches = image_patch.find('pillow')
+
+    def _if(image_patch, pillow_patches, result):
+        result = image_patch.simple_query('Is the pillow on the left side?')
+        return (image_patch, pillow_patches, result)
+
+    def _else(image_patch, pillow_patches, result):
+        result = 'no'
+
+        def _for(pillow_patch, image_patch, pillow_patches, result):
+
+            def _if(image_patch, pillow_patches, result):
+                result = 'yes'
+                return (image_patch, pillow_patches, result)
+            image_patch, pillow_patches, result = if_stmt(_if, None, pillow_patch.horizontal_center < image_patch.horizontal_center, (image_patch, pillow_patches, result))
+            return (image_patch, pillow_patches, result)
+        image_patch, pillow_patches, result = for_stmt(_for, pillow_patches, (image_patch, pillow_patches, result))
+        return (image_patch, pillow_patches, result)
+    image_patch, pillow_patches, result = if_stmt(_if, _else, len(pillow_patches) == 0, (image_patch, pillow_patches, result))
+    return result

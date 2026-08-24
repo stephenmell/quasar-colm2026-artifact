@@ -1,0 +1,23 @@
+{
+  "find": [
+    [
+      [
+        [
+          "3898",
+          [
+            0,
+            0,
+            800,
+            600
+          ]
+        ],
+        "traffic light"
+      ],
+      [],
+      8041805595
+    ]
+  ],
+  "verify_property": [],
+  "simple_query": [],
+  "best_text_match": []
+}

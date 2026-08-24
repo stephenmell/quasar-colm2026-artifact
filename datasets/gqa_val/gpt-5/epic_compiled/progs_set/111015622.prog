@@ -1,0 +1,65 @@
+def execute_command(image) -> str:
+    bottle_patches = None
+    image_patch = None
+    is_left_of_any_silver_utensil = None
+    result = None
+    silver_utensil_centers = None
+    utensil_patches = None
+    image_patch = ImagePatch(image)
+    utensil_patches = image_patch.find('utensil')
+
+    def _if(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+        result = image_patch.simple_query('Do you see bottles to the left of the utensil that looks silver?')
+        return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+
+    def _else(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+        silver_utensil_centers = ()
+
+        def _for(utensil_patch, image_patch, silver_utensil_centers, utensil_patches):
+
+            def _if(image_patch, silver_utensil_centers, utensil_patches):
+                silver_utensil_centers = silver_utensil_centers + (utensil_patch.horizontal_center,)
+                return (image_patch, silver_utensil_centers, utensil_patches)
+            image_patch, silver_utensil_centers, utensil_patches = if_stmt(_if, None, utensil_patch.verify_property('utensil', 'silver'), (image_patch, silver_utensil_centers, utensil_patches))
+            return (image_patch, silver_utensil_centers, utensil_patches)
+        image_patch, silver_utensil_centers, utensil_patches = for_stmt(_for, utensil_patches, (image_patch, silver_utensil_centers, utensil_patches))
+
+        def _if(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+            result = image_patch.simple_query('Do you see bottles to the left of the utensil that looks silver?')
+            return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+
+        def _else(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+            bottle_patches = image_patch.find('bottle')
+
+            def _if(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+                result = 'no'
+                return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+
+            def _else(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+                result = 'no'
+
+                def _for(bottle_patch, bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+                    is_left_of_any_silver_utensil = False
+
+                    def _for(center, bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+
+                        def _if(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+                            is_left_of_any_silver_utensil = True
+                            return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+                        bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches = if_stmt(_if, None, bottle_patch.horizontal_center < center, (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches))
+                        return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+                    bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches = for_stmt(_for, silver_utensil_centers, (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches))
+
+                    def _if(bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches):
+                        result = 'yes'
+                        return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+                    bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches = if_stmt(_if, None, is_left_of_any_silver_utensil, (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches))
+                    return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+                bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches = for_stmt(_for, bottle_patches, (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches))
+                return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+            bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches = if_stmt(_if, _else, len(bottle_patches) == 0, (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches))
+            return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+        bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches = if_stmt(_if, _else, len(silver_utensil_centers) == 0, (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches))
+        return (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches)
+    bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches = if_stmt(_if, _else, len(utensil_patches) == 0, (bottle_patches, image_patch, is_left_of_any_silver_utensil, result, silver_utensil_centers, utensil_patches))
+    return result

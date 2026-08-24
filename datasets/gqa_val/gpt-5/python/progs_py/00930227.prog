@@ -1,0 +1,30 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    # Find people first
+    person_patches = image_patch.find("person")
+    if len(person_patches) == 0:
+        # If no person is found, ask directly
+        return image_patch.simple_query("Are there men to the right of the sitting person on the bench?")
+    # Filter to people who are sitting and on the bench
+    sitting_on_bench_people = []
+    for person_patch in person_patches:
+        is_sitting = person_patch.verify_property("person", "sitting") or (
+            person_patch.simple_query("Is the person sitting?") == "yes"
+        )
+        if not is_sitting:
+            continue
+        on_bench = (person_patch.simple_query("Is the person on the bench?") == "yes")
+        if on_bench:
+            sitting_on_bench_people.append(person_patch)
+    if len(sitting_on_bench_people) == 0:
+        # If no sitting-on-bench person is identified, ask directly
+        return image_patch.simple_query("Are there men to the right of the sitting person on the bench?")
+    # Find men and check spatial relation
+    man_patches = image_patch.find("man")
+    if len(man_patches) == 0:
+        return "no"
+    for sitting_person in sitting_on_bench_people:
+        for man_patch in man_patches:
+            if man_patch.horizontal_center > sitting_person.horizontal_center:
+                return "yes"
+    return "no"

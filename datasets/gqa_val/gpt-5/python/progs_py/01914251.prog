@@ -1,0 +1,24 @@
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    person_patches = image_patch.find("person")
+    # Question assumes one person patch
+    if len(person_patches) == 0:
+        # If no person is found, query the image directly
+        return image_patch.simple_query("Is the person to the left of the brown bag?")
+    # Find brown bags (by color property or direct class name)
+    bag_patches = image_patch.find("bag")
+    brown_bag_patches = []
+    for bag_patch in bag_patches:
+        if bag_patch.verify_property("bag", "brown"):
+            brown_bag_patches.append(bag_patch)
+    if len(brown_bag_patches) == 0:
+        # Fallback: try detecting "brown bag" directly
+        brown_bag_patches = image_patch.find("brown bag")
+    if len(brown_bag_patches) == 0:
+        return "no"
+    # Check if any person is to the left of any brown bag
+    for person_patch in person_patches:
+        for bag_patch in brown_bag_patches:
+            if person_patch.horizontal_center < bag_patch.horizontal_center:
+                return "yes"
+    return "no"

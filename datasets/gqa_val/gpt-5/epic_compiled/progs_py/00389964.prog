@@ -1,0 +1,34 @@
+# INSERT_PROMPT_HERE
+def execute_command(image)->str:
+    image_patch = ImagePatch(image)
+    result = "no"
+
+    napkin_patches = image_patch.find("napkin")
+    table_patches = image_patch.find("table")
+
+    if len(napkin_patches) == 0 or len(table_patches) == 0:
+        result = image_patch.simple_query("Does the napkin on the table look square?")
+    else:
+        found_on_table = False
+        is_square = False
+
+        for napkin_patch in napkin_patches:
+            on_table = False
+            for table_patch in table_patches:
+                inside_horiz = (napkin_patch.horizontal_center >= table_patch.left) and (napkin_patch.horizontal_center <= table_patch.right)
+                inside_vert = (napkin_patch.vertical_center >= table_patch.lower) and (napkin_patch.vertical_center <= table_patch.upper)
+                if inside_horiz and inside_vert:
+                    on_table = True
+            if on_table:
+                found_on_table = True
+                if napkin_patch.verify_property("napkin", "square"):
+                    is_square = True
+
+        if found_on_table:
+            if is_square:
+                result = "yes"
+            else:
+                result = "no"
+        else:
+            result = image_patch.simple_query("Does the napkin on the table look square?")
+    return result

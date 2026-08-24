@@ -1,0 +1,86 @@
+({2018: 'context',
+  2021: 'llm_query',
+  2032: '.join',
+  2040: 'return_result',
+  2041: '.strip'},
+ ('def',
+  2016,
+  ((),
+   ((('call', (2017,), -1, ()),
+     ('def',
+      2019,
+      ((2027, 2020),
+       ((('prim',
+          2022,
+          "You will be given one document. The 'machine' in the user's "
+          'question refers to an elevator (US) / lift (UK). We are looking for '
+          'an article (likely from the 2010s) about incidents/accidents '
+          "surrounding elevators/lifts that includes a story where someone's "
+          'sibling was injured by an elevator on Thanksgiving and suffered a '
+          'catastrophic injury.\n'
+          '\n'
+          'Instructions:\n'
+          '- Read the document below.\n'
+          '- If the document contains such a story, extract the following:\n'
+          '  - Name: the full name of the person whose sibling was injured '
+          '(not the injured sibling’s name).\n'
+          '  - Year: the publication year if present or inferable from the '
+          'document; otherwise write "unknown".\n'
+          '  - Source: the article/site title or identifier if present; '
+          'otherwise write "unknown".\n'
+          '  - Quotes: brief quotes that explicitly mention Thanksgiving and '
+          'catastrophic injury (or equivalent phrasing) that supports the '
+          'extraction.\n'
+          '- If the document does NOT contain such a story, output nothing at '
+          'all.\n'
+          '\n'
+          'Format the output exactly as follows if and only if a match is '
+          'found:\n'
+          'Name: <full name>\n'
+          'Year: <year or unknown>\n'
+          'Source: <source or unknown>\n'
+          'Quotes:\n'
+          '"<quote 1>"\n'
+          '"<quote 2>" (include if helpful)\n'
+          '\n'
+          'BEGIN_DOCUMENT\n'),
+         ('call', (2023,), 80, (2022, 2020)),
+         ('prim', 2024, '\nEND_DOCUMENT'),
+         ('call', (2025,), 80, (2023, 2024)),
+         ('call', (2026,), 2021, (2025,)),
+         ('call', (2028,), -1, (2026,)),
+         ('call', (2029,), 80, (2027, 2028))),
+        (2029,)))),
+     ('call', (2031,), 79, (2018,)),
+     ('call', (2030,), 2031, (2017, 2019)),
+     ('prim', 2033, '\n---\n'),
+     ('call', (2034,), 2032, (2033, 2030)),
+     ('prim',
+      2035,
+      'We are answering this user question:\n'
+      '"According to an article from the 2010s about incidents surrounding '
+      'elevators/lifts, what is the name of the person whose sibling got '
+      'injured by this machine on Thanksgiving and sustained a catastrophic '
+      'injury?"\n'
+      '\n'
+      'Below are candidate extractions from the context documents (some may be '
+      'empty if no match was found):\n'
+      '\n'),
+     ('call', (2036,), 80, (2035, 2034)),
+     ('prim',
+      2037,
+      '\n'
+      '\n'
+      'Task:\n'
+      '- From the above, pick the single best matching extraction where the '
+      "story clearly states someone's sibling was injured by an elevator "
+      '(lift) on Thanksgiving and suffered a catastrophic injury.\n'
+      '- Prefer entries that come from an article in the 2010s if Year is '
+      'provided; otherwise, rely on the strongest matching quotes.\n'
+      "- Output ONLY the person's full name (the person whose sibling was "
+      'injured), with no extra words, punctuation, or explanation.'),
+     ('call', (2038,), 80, (2036, 2037)),
+     ('call', (2039,), 2021, (2038,)),
+     ('call', (2042,), 2041, (2039,)),
+     ('call', (2043,), 2040, (2042,))),
+    (2043,)))))
